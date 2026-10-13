@@ -1,0 +1,83 @@
+{
+  "goal_id": "demo-match-goal-1",
+  "match_id": "demo-match",
+  "source": "evidence-only",
+  "testimonies": [
+    {
+      "player_id": "away-6",
+      "source": "evidence-only",
+      "claims": [
+        {
+          "evidence_id": "demo-match-link-0",
+          "player_id": "away-6",
+          "description": "Lost the midfield duel.",
+          "blame_percent": 60.0
+        }
+      ],
+      "statement": "I acknowledge the verified evidence: Lost the midfield duel. My attributed blame is 60% (demo-match-link-0).",
+      "rebuttal": false
+    },
+    {
+      "player_id": "away-3",
+      "source": "evidence-only",
+      "claims": [
+        {
+          "evidence_id": "demo-match-link-1",
+          "player_id": "away-3",
+          "description": "Stepped up late and allowed the cross.",
+          "blame_percent": 40.0
+        }
+      ],
+      "statement": "I acknowledge the verified evidence: Stepped up late and allowed the cross. My attributed blame is 40% (demo-match-link-1).",
+      "rebuttal": false
+    }
+  ],
+  "accepted_claims": [
+    {
+      "evidence_id": "demo-match-link-0",
+      "player_id": "away-6",
+      "description": "Lost the midfield duel.",
+      "blame_percent": 60.0
+    },
+    {
+      "evidence_id": "demo-match-link-1",
+      "player_id": "away-3",
+      "description": "Stepped up late and allowed the cross.",
+      "blame_percent": 40.0
+    }
+  ],
+  "rejected_claims": [],
+  "blame_order": [
+    {
+      "evidence_id": "demo-match-link-0",
+      "player_id": "away-6",
+      "second": 1,
+      "bug_type": "duel_lost",
+      "description": "Lost the midfield duel.",
+      "blame_percent": 60.0,
+      "baseline_goals": 160,
+      "fixed_goals": 40,
+      "trials": 200
+    },
+    {
+      "evidence_id": "demo-match-link-1",
+      "player_id": "away-3",
+      "second": 2,
+      "bug_type": "late_step",
+      "description": "Stepped up late and allowed the cross.",
+      "blame_percent": 40.0,
+      "baseline_goals": 160,
+      "fixed_goals": 80,
+      "trials": 200
+    }
+  ],
+  "reasoning": "The verified engine attribution determines the blame order. Every accepted claim matches its evidence; unsupported claims are rejected.",
+  "recaps": {
+    "fan": "The goal's chain of mistakes: away-6: Lost the midfield duel. (60% blame; evidence demo-match-link-0); away-3: Stepped up late and allowed the cross. (40% blame; evidence demo-match-link-1)",
+    "analyst": "Counterfactual attribution: away-6: Lost the midfield duel. (60% blame; evidence demo-match-link-0); away-3: Stepped up late and allowed the cross. (40% blame; evidence demo-match-link-1)",
+    "studio": "Goal review: away-6: Lost the midfield duel. (60% blame; evidence demo-match-link-0); away-3: Stepped up late and allowed the cross. (40% blame; evidence demo-match-link-1)"
+  },
+  "root_cause_evidence_id": "demo-match-link-0",
+  "latency_ms": 0,
+  "warnings": []
+}

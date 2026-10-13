@@ -1,0 +1,18 @@
+name: Team task
+description: One task, one owner, one acceptance check
+title: "[Role] "
+body:
+  - type: dropdown
+    id: role
+    attributes:
+      label: Owning role
+      options: ["Role 1 — UI/UX", "Role 2 — Engine/Debugger", "Role 3 — Agents/Cloud"]
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Expected result and validation
+      description: Include contract/handoff dependencies and the check that proves completion.
+    validations:
+      required: true

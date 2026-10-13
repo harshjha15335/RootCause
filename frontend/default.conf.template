@@ -1,0 +1,6 @@
+server {
+    listen 8080;
+    root /usr/share/nginx/html;
+    location / { try_files $uri /index.html; }
+    location = /config { default_type application/json; return 200 '{"apiUrl":"${API_URL}"}'; }
+}

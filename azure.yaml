@@ -1,0 +1,38 @@
+name: rootcause
+metadata:
+  template: rootcause-role3
+infra:
+  provider: bicep
+  path: infra
+services:
+  api:
+    project: .
+    host: containerapp
+    language: python
+    resourceName: ${AZURE_CONTAINER_APP_API_NAME}
+    docker:
+      path: Dockerfile
+      context: .
+  frontend:
+    project: frontend
+    host: containerapp
+    language: js
+    resourceName: ${AZURE_CONTAINER_APP_FRONTEND_NAME}
+    docker:
+      path: Dockerfile
+      context: .
+  detector:
+    project: .build/function
+    host: function
+    language: python
+    resourceName: ${AZURE_FUNCTION_NAME}
+hooks:
+  preprovision:
+    shell: sh
+    run: bash scripts/azure_prepare.sh
+  prepackage:
+    shell: sh
+    run: python scripts/package_function.py
+  postdeploy:
+    shell: sh
+    run: bash scripts/azure_finish.sh

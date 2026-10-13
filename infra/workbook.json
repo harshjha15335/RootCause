@@ -1,0 +1,9 @@
+{
+  "version":"Notebook/1.0",
+  "items":[
+    {"type":1,"content":{"json":"# Root Cause workflow telemetry\nInspect per-goal latency, model token usage and fallbacks. Sensitive evidence/prompt content is not recorded."}},
+    {"type":3,"content":{"version":"KqlItem/1.0","query":"dependencies | where name == 'goal.workflow' | summarize mean_ms=avg(duration / 1ms), p95_ms=percentile(duration / 1ms, 95), goals=count() by bin(timestamp, 5m)","size":0,"title":"Goal workflow latency","queryType":0,"resourceType":"microsoft.insights/components","visualization":"timechart"}},
+    {"type":3,"content":{"version":"KqlItem/1.0","query":"dependencies | where isnotempty(customDimensions['gen_ai.request.model']) | summarize input_tokens=sum(tolong(customDimensions['gen_ai.usage.input_token_count'])), output_tokens=sum(tolong(customDimensions['gen_ai.usage.output_token_count'])) by model=tostring(customDimensions['gen_ai.request.model'])","size":0,"title":"Returned model token usage","queryType":0,"resourceType":"microsoft.insights/components","visualization":"table"}},
+    {"type":3,"content":{"version":"KqlItem/1.0","query":"traces | where message has_any ('fallback', 'failed', 'unavailable') | project timestamp, message, operation_Id | order by timestamp desc","size":0,"title":"Failures and fallback diagnostics","queryType":0,"resourceType":"microsoft.insights/components","visualization":"table"}}
+  ]
+}

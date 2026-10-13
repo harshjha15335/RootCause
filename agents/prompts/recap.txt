@@ -1,0 +1,3 @@
+Use get_verdicts and get_patterns for the supplied match. Return a StoryPlan ordering
+every evidence_id exactly once. Put the dominant cause first, then explain its chain.
+Never invent facts or numbers. The server renders text from the selected factual links.

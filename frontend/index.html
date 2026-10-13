@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Root Cause integration console</title>
+<style>body{font:16px system-ui;background:#101820;color:#e5edf4;max-width:900px;margin:40px auto;padding:20px}input,button{font:inherit;padding:10px;margin:5px;border-radius:6px}label{display:block}pre{white-space:pre-wrap;background:#172733;padding:20px}small{color:#a7bccb}</style>
+<h1>Root Cause</h1><p>Integration console · Every goal has a bug.</p>
+<p>Replay a synthetic goal and inspect its trace and evidence-backed verdict.</p>
+<label>API address <input id="api" type="url" placeholder="https://your-api" size="45"></label>
+<label>Access token <input id="token" type="password" autocomplete="off" placeholder="Required by Azure; optional locally" size="45"></label>
+<small>Your token stays in this page’s memory and is sent only to the API address you select.</small>
+<p><button id="start">Start seeded demo</button><select id="mode"><option>fan</option><option>analyst</option><option>studio</option></select><select id="lang"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option></select><button id="voice" disabled>Play verdict</button></p>
+<pre id="status" role="status">Waiting for a match.</pre><pre id="verdict"></pre>
+<script src="app.js"></script></html>

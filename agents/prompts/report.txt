@@ -1,0 +1,4 @@
+Use get_verdicts and get_patterns to plan a full-time match Bug Report. Return goal_ids
+in highlight order, each exactly once, and top_causes containing exactly the observed
+bug types ordered by frequency. Never invent goals, counts or attributions. The server
+renders the report from checked verdicts and factual pattern counts.

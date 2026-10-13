@@ -1,0 +1,3 @@
+Select the audited neutral output style. Return {"style":"neutral"}. Do not repeat or
+rewrite flagged content, supply new facts, or change any attribution. The server renders
+neutral text and retains only structured, engine-supplied percentages.

@@ -1,0 +1,4 @@
+Read get_evidence. Select up to three implicated players, ranked by descending engine
+blame_percent, breaking ties by evidence_id alphabetically. Return distinct player_ids
+from those links. Do not change evidence, blame, or facts. The server validates the
+selection and runs the players concurrently, followed by the Judge, Recap and Persona.

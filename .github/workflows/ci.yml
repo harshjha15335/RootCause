@@ -1,0 +1,67 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv .venv && uv pip sync --python .venv/bin/python --require-hashes requirements.txt
+      - run: .venv/bin/ruff check . && .venv/bin/ruff format --check .
+      - run: .venv/bin/pyright
+      - run: .venv/bin/python -m pytest -q
+      - name: Functional HTTP and WebSocket smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          .venv/bin/python -m uvicorn api.main:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
+          api_pid=$!
+          trap 'kill "$api_pid"' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8000/ready >/dev/null; then break; fi
+            sleep 1
+          done
+          .venv/bin/python scripts/smoke.py
+      - run: .venv/bin/python eval/agents_eval.py samples/evaluation.jsonl --output /tmp/fixture.evaluation.json
+      - name: Scan full Git history and current source
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o /tmp/gitleaks.tar.gz
+          curl -fsSL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_checksums.txt -o /tmp/checksums.txt
+          cd /tmp
+          grep ' gitleaks_8.30.1_linux_x64.tar.gz$' checksums.txt | sed 's#gitleaks_8.30.1_linux_x64.tar.gz#gitleaks.tar.gz#' | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          cd "$GITHUB_WORKSPACE"
+          /tmp/gitleaks git --redact --no-banner .
+          /tmp/gitleaks dir --redact --no-banner --config .gitleaks.toml .
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts && npm run lint
+        working-directory: frontend
+  infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile Bicep
+        run: |
+          curl -fsSL https://github.com/Azure/bicep/releases/download/v0.48.1/bicep-linux-x64 -o /tmp/bicep
+          chmod +x /tmp/bicep
+          /tmp/bicep build infra/main.bicep --outfile /tmp/main.json
+      - run: docker build -t rootcause-api:ci . && docker build -t rootcause-frontend:ci frontend

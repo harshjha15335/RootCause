@@ -1,0 +1,5 @@
+[extend]
+useDefault = true
+[[allowlists]]
+description = "Generated dependency and tool caches; scan project code and all Git history"
+paths = ['''(^|/)\.venv/''', '''(^|/)\.build/''', '''(^|/)node_modules/''', '''(^|/)\.pytest_cache/''', '''(^|/)\.ruff_cache/''']

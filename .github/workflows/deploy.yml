@@ -1,0 +1,59 @@
+name: Deploy Azure
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+concurrency:
+  group: rootcause-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    # Configure these repository variables and a federated identity before enabling deployment.
+    if: vars.AZURE_CLIENT_ID != '' && vars.AZURE_SUBSCRIPTION_ID != '' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv .venv && uv pip sync --python .venv/bin/python --require-hashes requirements.txt
+      - run: .venv/bin/ruff check . && .venv/bin/pyright && .venv/bin/python -m pytest -q
+      - run: npm ci --ignore-scripts && npm run lint
+        working-directory: frontend
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: Azure/setup-azd@v2
+      - name: Authenticate azd using federated identity
+        run: azd auth login --client-id "$AZURE_CLIENT_ID" --tenant-id "$AZURE_TENANT_ID" --federated-credential-provider github
+        env:
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      - name: Provision and deploy
+        run: |
+          azd env new "$AZURE_ENV_NAME" --no-prompt
+          azd env set AZURE_SUBSCRIPTION_ID "$AZURE_SUBSCRIPTION_ID"
+          azd env set AZURE_LOCATION "$AZURE_LOCATION"
+          azd env set API_CLIENT_ID "$API_CLIENT_ID"
+          azd env set BUDGET_EMAIL "$BUDGET_EMAIL"
+          azd up --no-prompt
+        env:
+          AZURE_ENV_NAME: rootcause-production
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          API_CLIENT_ID: ${{ vars.API_CLIENT_ID }}
+          BUDGET_EMAIL: ${{ vars.BUDGET_EMAIL }}
