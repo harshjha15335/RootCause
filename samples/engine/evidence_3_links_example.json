@@ -1,0 +1,25 @@
+{
+  "contract_version": "1.0.0",
+  "match_id": "p-1012",
+  "goal_id": "p-1012-g2",
+  "scorer": "A9",
+  "team": "AWAY",
+  "clock_s": 1162,
+  "possession_id": 129,
+  "chain_start_s": 1140,
+  "baseline_goal_rate": 0.70,
+  "runs_per_link": 200,
+  "root_cause_rank": 1,
+  "links": [
+    {"rank": 1, "clock_s": 1145, "player_id": "H3", "team": "HOME", "bug": "LATE_STEP_UP",
+     "fixed_goal_rate": 0.05, "drop": 0.65, "blame": 0.6075,
+     "facts": {"metres_behind_line": 5.8}},
+    {"rank": 2, "clock_s": 1141, "player_id": "H8", "team": "HOME", "bug": "DUEL_LOST",
+     "fixed_goal_rate": 0.40, "drop": 0.30, "blame": 0.2804,
+     "facts": {"opponent": "A6"}},
+    {"rank": 3, "clock_s": 1150, "player_id": "H6", "team": "HOME", "bug": "PRESS_MISSED",
+     "fixed_goal_rate": 0.58, "drop": 0.12, "blame": 0.1121,
+     "facts": {"distance_to_carrier_m": 7.8, "carrier": "A10"}}
+  ],
+  "weights_version": "illustrative"
+}

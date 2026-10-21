@@ -1,0 +1,29 @@
+{
+  "contract_version": "1.0.0",
+  "match_id": "p-1012",
+  "goal_id": "p-1012-g2",
+  "scorer": "A9",
+  "team": "AWAY",
+  "clock_s": 1162,
+  "possession_id": 129,
+  "chain_start_s": 1144,
+  "baseline_goal_rate": 0.6994,
+  "runs_per_link": 200,
+  "root_cause_rank": 1,
+  "links": [
+    {
+      "rank": 1,
+      "clock_s": 1145,
+      "player_id": "H3",
+      "team": "HOME",
+      "bug": "LATE_STEP_UP",
+      "fixed_goal_rate": 0.0,
+      "drop": 0.6994,
+      "blame": 1.0,
+      "facts": {
+        "metres_behind_line": 5.8
+      }
+    }
+  ],
+  "weights_version": "faae4bf55590"
+}

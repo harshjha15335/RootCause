@@ -1,0 +1,129 @@
+{
+  "$defs": {
+    "PlayerMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        },
+        "position": {
+          "title": "Position",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "number",
+        "position"
+      ],
+      "title": "PlayerMeta",
+      "type": "object"
+    },
+    "TeamMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "HOME",
+            "AWAY"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "short_name": {
+          "title": "Short Name",
+          "type": "string"
+        },
+        "kit_primary": {
+          "title": "Kit Primary",
+          "type": "string"
+        },
+        "kit_secondary": {
+          "title": "Kit Secondary",
+          "type": "string"
+        },
+        "formation": {
+          "title": "Formation",
+          "type": "string"
+        },
+        "players": {
+          "items": {
+            "$ref": "#/$defs/PlayerMeta"
+          },
+          "title": "Players",
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "name",
+        "short_name",
+        "kit_primary",
+        "kit_secondary",
+        "formation",
+        "players"
+      ],
+      "title": "TeamMeta",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "match_id": {
+      "title": "Match Id",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "contract_version": {
+      "default": "1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "pitch_length_m": {
+      "default": 105.0,
+      "title": "Pitch Length M",
+      "type": "number"
+    },
+    "pitch_width_m": {
+      "default": 68.0,
+      "title": "Pitch Width M",
+      "type": "number"
+    },
+    "duration_s": {
+      "default": 5400,
+      "title": "Duration S",
+      "type": "integer"
+    },
+    "home": {
+      "$ref": "#/$defs/TeamMeta"
+    },
+    "away": {
+      "$ref": "#/$defs/TeamMeta"
+    }
+  },
+  "required": [
+    "match_id",
+    "seed",
+    "home",
+    "away"
+  ],
+  "title": "MatchMeta",
+  "type": "object"
+}

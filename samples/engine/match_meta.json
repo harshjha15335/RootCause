@@ -1,0 +1,160 @@
+{
+  "match_id": "p-1012",
+  "seed": 1012,
+  "contract_version": "1.0.0",
+  "pitch_length_m": 105.0,
+  "pitch_width_m": 68.0,
+  "duration_s": 5400,
+  "home": {
+    "code": "HOME",
+    "name": "Harbour Town FC",
+    "short_name": "HTN",
+    "kit_primary": "#1F4E8C",
+    "kit_secondary": "#F2C14E",
+    "formation": "4-3-3",
+    "players": [
+      {
+        "id": "H1",
+        "name": "Ode Marrin",
+        "number": 1,
+        "position": "GK"
+      },
+      {
+        "id": "H2",
+        "name": "Kasio Brell",
+        "number": 2,
+        "position": "RB"
+      },
+      {
+        "id": "H3",
+        "name": "Tam Velloway",
+        "number": 3,
+        "position": "LB"
+      },
+      {
+        "id": "H4",
+        "name": "Rui Ostrander",
+        "number": 4,
+        "position": "RCB"
+      },
+      {
+        "id": "H5",
+        "name": "Femi Calloway",
+        "number": 5,
+        "position": "LCB"
+      },
+      {
+        "id": "H6",
+        "name": "Jory Penhallow",
+        "number": 6,
+        "position": "DM"
+      },
+      {
+        "id": "H7",
+        "name": "Nilo Ardenne",
+        "number": 7,
+        "position": "RW"
+      },
+      {
+        "id": "H8",
+        "name": "Sami Quellan",
+        "number": 8,
+        "position": "RCM"
+      },
+      {
+        "id": "H9",
+        "name": "Bram Tovick",
+        "number": 9,
+        "position": "ST"
+      },
+      {
+        "id": "H10",
+        "name": "Elio Fenwhistle",
+        "number": 10,
+        "position": "LCM"
+      },
+      {
+        "id": "H11",
+        "name": "Dario Kestrel",
+        "number": 11,
+        "position": "LW"
+      }
+    ]
+  },
+  "away": {
+    "code": "AWAY",
+    "name": "Northgate Rovers",
+    "short_name": "NGR",
+    "kit_primary": "#B23A3A",
+    "kit_secondary": "#FFFFFF",
+    "formation": "4-4-2",
+    "players": [
+      {
+        "id": "A1",
+        "name": "Pell Hartigan",
+        "number": 1,
+        "position": "GK"
+      },
+      {
+        "id": "A2",
+        "name": "Oran Tsvelko",
+        "number": 2,
+        "position": "RB"
+      },
+      {
+        "id": "A3",
+        "name": "Mika Dunleavy",
+        "number": 3,
+        "position": "LB"
+      },
+      {
+        "id": "A4",
+        "name": "Ivo Brannoch",
+        "number": 4,
+        "position": "RCB"
+      },
+      {
+        "id": "A5",
+        "name": "Lucan Weyre",
+        "number": 5,
+        "position": "LCB"
+      },
+      {
+        "id": "A6",
+        "name": "Teodor Ashgrove",
+        "number": 6,
+        "position": "RCM"
+      },
+      {
+        "id": "A7",
+        "name": "Remy Calderwick",
+        "number": 7,
+        "position": "RM"
+      },
+      {
+        "id": "A8",
+        "name": "Hollis Vane",
+        "number": 8,
+        "position": "LCM"
+      },
+      {
+        "id": "A9",
+        "name": "Kofi Strand",
+        "number": 9,
+        "position": "ST"
+      },
+      {
+        "id": "A10",
+        "name": "Aldo Merriweather",
+        "number": 10,
+        "position": "ST2"
+      },
+      {
+        "id": "A11",
+        "name": "Jesper Holloran",
+        "number": 11,
+        "position": "LM"
+      }
+    ]
+  }
+}

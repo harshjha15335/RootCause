@@ -1,0 +1,179 @@
+{
+  "$defs": {
+    "ChainLink": {
+      "additionalProperties": false,
+      "properties": {
+        "rank": {
+          "description": "1 = most blame = root cause",
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "clock_s": {
+          "title": "Clock S",
+          "type": "integer"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "team": {
+          "enum": [
+            "HOME",
+            "AWAY"
+          ],
+          "title": "Team",
+          "type": "string"
+        },
+        "bug": {
+          "enum": [
+            "LATE_STEP_UP",
+            "DUEL_LOST",
+            "PRESS_MISSED",
+            "MARKING_LOST",
+            "CROSS_NOT_BLOCKED"
+          ],
+          "title": "Bug",
+          "type": "string"
+        },
+        "fixed_goal_rate": {
+          "description": "goal rate when only this mistake is fixed",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Fixed Goal Rate",
+          "type": "number"
+        },
+        "drop": {
+          "description": "baseline_goal_rate - fixed_goal_rate, floored at 0",
+          "minimum": 0,
+          "title": "Drop",
+          "type": "number"
+        },
+        "blame": {
+          "description": "drop / sum of drops; sums to 1 across links",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Blame",
+          "type": "number"
+        },
+        "facts": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": "the ONLY details the explanation agent may use for this link",
+          "title": "Facts",
+          "type": "object"
+        }
+      },
+      "required": [
+        "rank",
+        "clock_s",
+        "player_id",
+        "team",
+        "bug",
+        "fixed_goal_rate",
+        "drop",
+        "blame",
+        "facts"
+      ],
+      "title": "ChainLink",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "default": "1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "match_id": {
+      "title": "Match Id",
+      "type": "string"
+    },
+    "goal_id": {
+      "description": "\"<match_id>-g<n>\"",
+      "title": "Goal Id",
+      "type": "string"
+    },
+    "scorer": {
+      "title": "Scorer",
+      "type": "string"
+    },
+    "team": {
+      "description": "scoring team",
+      "enum": [
+        "HOME",
+        "AWAY"
+      ],
+      "title": "Team",
+      "type": "string"
+    },
+    "clock_s": {
+      "title": "Clock S",
+      "type": "integer"
+    },
+    "possession_id": {
+      "title": "Possession Id",
+      "type": "integer"
+    },
+    "chain_start_s": {
+      "title": "Chain Start S",
+      "type": "integer"
+    },
+    "baseline_goal_rate": {
+      "description": "goal rate replaying the possession unchanged",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Baseline Goal Rate",
+      "type": "number"
+    },
+    "runs_per_link": {
+      "title": "Runs Per Link",
+      "type": "integer"
+    },
+    "root_cause_rank": {
+      "default": 1,
+      "title": "Root Cause Rank",
+      "type": "integer"
+    },
+    "links": {
+      "description": "sorted by rank (blame, descending)",
+      "items": {
+        "$ref": "#/$defs/ChainLink"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "weights_version": {
+      "description": "hash of config/weights.yaml used",
+      "title": "Weights Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "match_id",
+    "goal_id",
+    "scorer",
+    "team",
+    "clock_s",
+    "possession_id",
+    "chain_start_s",
+    "baseline_goal_rate",
+    "runs_per_link",
+    "links",
+    "weights_version"
+  ],
+  "title": "EvidencePackage",
+  "type": "object"
+}

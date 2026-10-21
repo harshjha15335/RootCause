@@ -90,7 +90,8 @@ has one active owner; a distributed multi-replica fanout layer is not implemente
 
 Local mode uses volatile memory and evidence-only agents. The replay's counterfactual
 numbers/causal chain are fixed sample data, not a simulation or measured accuracy result.
-Only positions vary with seed. Role 2's engine/debugger are **not included**. A direct
+Only positions vary with seed. Role 2's engine and Debugger now live in `engine/` and `debugger/`
+(see *Engine & Debugger* below); set `DEBUGGER_MODULE=debugger.plugin` to use them. A direct
 `POST /ingest/evidence` route supports recorded traces when Event Hubs is unavailable.
 
 Azure API routes require v2 Entra delegated access tokens with the Root Cause scope;
@@ -139,3 +140,50 @@ Both installation paths check the same lockfile hashes. Containers run without r
 
 See [docs/SPEC.md](docs/SPEC.md) and [samples](samples) for the proposed team contracts.
 They remain provisional until the UI and engine owners agree on them.
+
+## Engine & Debugger (Role 2)
+
+The truth layer: a seeded synthetic match engine, planted mistakes with ground truth, and a
+Debugger that assigns blame by counterfactual replay. Plain Python + NumPy, no language models.
+Formats and the mapping onto `docs/SPEC.md`: [`docs/ENGINE.md`](docs/ENGINE.md). Every tunable
+number: [`config/weights.yaml`](config/weights.yaml).
+
+```bash
+python -m engine.simulate --seed 7                                   # one match -> matches/
+python -m engine.mistakes --bug LATE_STEP_UP --player H3 --minute 30 --seed 7
+python -m engine.stream matches/m-0007.events.jsonl --ws --speed 10  # ws://localhost:8765
+```
+
+**Backend integration.** `DEBUGGER_MODULE=debugger.plugin`. `debugger.plugin.trace(event_dict)`
+takes a team-contract goal event and returns a team-contract `Evidence` with `source="debugger"`
+(tested against `api/ingestion.py` in `tests/test_plugin.py`). Matches are rebuilt from their ID:
+`m-0007` is a free match with seed 7, `p-1012` has one planted mistake.
+`debugger.plugin.team_events(match_id)` returns a match's events for publishing.
+
+**Match engine.** A second-by-second state machine. Players move toward formation slots that shift
+with the ball; the back four hold a line, man-mark near their own goal and press; offside is
+enforced. The ball carrier duels, holds, shoots (more eagerly the better the chance), passes,
+crosses or carries. Same seed, same match; any second can be snapshotted and resumed exactly.
+Realism targets checked by `tests/test_realism.py`: 2,000–3,000 events, 75–85% pass accuracy,
+20–28 shots, 1–3.5 total xG per match.
+
+**Goal probability.** `1 / (1 + exp(-(w0 + w1·angle − w2·distance − w3·blockers − w4·pressure)))`.
+
+**Planted mistakes.** `engine/mistakes.py` forces a known mistake (late step-up, duel lost, press
+missed, marking lost, cross not blocked) during a dangerous attack. It keeps the mistake only if
+that attack scores and the same attack with the same randomness but without the mistake does not
+(a "but-for" test), so every planted goal really was caused by its mistake. The Debugger never sees
+the ground truth.
+
+**Counterfactual blame.** For one goal:
+1. Walk back through the possession (up to 25 s) and detect mistakes from the bug catalogue.
+2. Replay the attack 200 times from one second before the earliest link, using Pearl's three steps:
+   - **Abduction.** The attackers' runs and actions are replayed exactly. An action that succeeded
+     with probability p succeeds again with probability p_new / p, where p_new is the engine's
+     formula against the replayed defence.
+   - **Action.** Fix one mistake.
+   - **Prediction.** Re-simulate the defenders. The mean is the chance the goal still happens.
+3. Blame = that link's drop in goal chance ÷ the sum of drops. The biggest share is the root cause.
+
+**Accuracy.** _Pending: `eval/accuracy.py` will report top-1 / top-3 accuracy on 100 planted goals.
+Only the LATE_STEP_UP detector exists so far; fixes exist for all five bug types._

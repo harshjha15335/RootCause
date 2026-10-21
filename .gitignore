@@ -9,3 +9,5 @@ __pycache__/
 infra/*.json.tmp
 *.evaluation.json
 frontend/node_modules/
+matches/
+exports/*.parquet
