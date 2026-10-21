@@ -8,7 +8,7 @@ from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSoc
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.auth import EntraAuth
-from api.contracts import Evidence, StartMatch, Verdict
+from api.contracts import Evidence, Explanation, StartMatch
 from api.demo import fixture
 from api.pipeline import Runtime
 from api.settings import Settings
@@ -53,7 +53,7 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
         if credential:
             await credential.close()
 
-    app = FastAPI(title="Root Cause", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="Root Cause", version="0.3.0", lifespan=lifespan)
     app.state.store = state
     import os
 
@@ -81,19 +81,31 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
             raise HTTPException(404, "Match not found")
         return match
 
-    async def text_for(text, lang):
+    async def localize(explanation: Explanation, lang: str):
+        from agents.grounding import iter_sentences
+
         if lang == "en":
-            return text, "en", None
+            return explanation, "en", None
         if lang not in {"hi", "es"}:
             raise HTTPException(422, "Supported languages: en, hi, es")
         if not state.services:
-            raise HTTPException(503, "Translation is not configured; request lang=en")
+            return explanation, "en", "Translation unavailable; showing English"
         try:
-            translated = await asyncio.wait_for(state.services.translate(text, lang), 10)
-            return translated, lang, None
-        except Exception as error:  # noqa: BLE001 - explicitly disclosed English fallback
+            texts = list(dict.fromkeys(s.text for s in iter_sentences(explanation)))
+            translated = await asyncio.wait_for(state.services.translate_many(texts, lang), 10)
+            if len(translated) != len(texts):
+                raise ValueError("Translator returned incomplete output")
+            mapping = dict(zip(texts, translated, strict=True))
+            result = explanation.model_copy(deep=True)
+            for sentence in iter_sentences(result):
+                sentence.text = mapping[sentence.text]
+            return result, lang, None
+        except Exception as error:  # noqa: BLE001 - atomically fall back to explicitly labeled English
             logger.warning("Translation fallback: %s", type(error).__name__)
-            return text, "en", "Translation unavailable; showing English"
+            return explanation, "en", "Translation unavailable; showing English"
+
+    def display(sentences):
+        return "\n".join(sentence.tagged() for sentence in sentences)
 
     async def replay(match_id, seed):
         try:
@@ -110,7 +122,7 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
                         evidence=evidence if event.type == "goal" else None,
                     )
                 async with asyncio.timeout(45):
-                    while not await state.store.get("verdicts", evidence.goal_id):
+                    while not await state.store.get("explanations", evidence.goal_id):
                         await asyncio.sleep(0.5)
                 match = await match_or_404(match_id)
                 match["status"] = "finished"
@@ -201,15 +213,16 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
             raise HTTPException(404, "Trace not found")
         return Evidence.model_validate(item)
 
-    @app.get("/goals/{goal_id}/verdict")
-    async def verdict(
+    @app.get("/goals/{goal_id}/explanation")
+    async def explanation(
         goal_id: str, mode: Literal["fan", "analyst", "studio"] = "fan", lang: str = "en"
     ):
-        item = await state.store.get("verdicts", goal_id)
+        item = await state.store.get("explanations", goal_id)
         if item is None:
-            raise HTTPException(404, "Verdict not found")
-        parsed = Verdict.model_validate(item)
-        text, actual_lang, warning = await text_for(parsed.recaps[mode], lang)
+            raise HTTPException(404, "Explanation not found")
+        parsed = Explanation.model_validate(item)
+        parsed, actual_lang, warning = await localize(parsed, lang)
+        text = display(parsed.recaps[mode])
         return {
             **parsed.model_dump(),
             "mode": mode,
@@ -217,7 +230,8 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
             "requested_lang": lang,
             "text": text,
             "translation_warning": warning,
-            "audio_available": bool(state.services),
+            "audio_available": bool(state.services) and warning is None,
+            "sentences": [sentence.model_dump() for sentence in parsed.recaps[mode]],
         }
 
     @app.get("/goals/{goal_id}/audio")
@@ -228,50 +242,56 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
     ):
         if not state.services:
             raise HTTPException(503, "Speech is not configured")
-        item = await state.store.get("verdicts", goal_id)
+        item = await state.store.get("explanations", goal_id)
         if item is None:
-            raise HTTPException(404, "Verdict not found")
-        text, actual_lang, _ = await text_for(item["recaps"][mode], lang)
+            raise HTTPException(404, "Explanation not found")
+        parsed, actual_lang, warning = await localize(Explanation.model_validate(item), lang)
+        if warning:
+            raise HTTPException(503, "Translation unavailable; use English text")
+        # Speak prose without reading machine evidence IDs aloud.
+        text = " ".join(sentence.text for sentence in parsed.recaps[mode])
         try:
             data = await asyncio.wait_for(state.services.speech(text, actual_lang), 15)
             return Response(
                 data, media_type="audio/mpeg", headers={"Content-Language": actual_lang}
             )
         except Exception:  # noqa: BLE001 - hide audio when speech is unavailable
-            raise HTTPException(503, "Speech unavailable; use text verdict") from None
+            raise HTTPException(503, "Speech unavailable; use text explanation") from None
 
     @app.get("/matches/{match_id}/report")
     async def report(
         match_id: str, mode: Literal["fan", "analyst", "studio"] = "fan", lang: str = "en"
     ):
         match = await match_or_404(match_id)
-        if match["status"] not in {"finished", "streaming"}:
+        if match["status"] != "finished":
             raise HTTPException(409, "Match has not finished")
-        verdicts = await state.store.list("verdicts", match_id)
-        if len(verdicts) < len(match["goal_ids"]):
-            raise HTTPException(409, "Verdicts are still processing")
+        explanations = await state.store.list("explanations", match_id)
+        if len(explanations) < len(match["goal_ids"]):
+            raise HTTPException(409, "Explanations are still processing")
         counts = {}
         goals = []
-        for item in verdicts:
+        for item in explanations:
             for link in item["blame_order"]:
                 counts[link["bug_type"]] = counts.get(link["bug_type"], 0) + 1
-            text, actual_lang, warning = await text_for(item["recaps"][mode], lang)
+            localized, actual_lang, warning = await localize(Explanation.model_validate(item), lang)
+            text = display(localized.recaps[mode])
             goals.append(
                 {
                     "goal_id": item["goal_id"],
                     "text": text,
+                    "sentences": [sentence.model_dump() for sentence in localized.recaps[mode]],
                     "lang": actual_lang,
                     "translation_warning": warning,
                 }
             )
-        highlight_order = [x["goal_id"] for x in verdicts]
+        highlight_order = [x["goal_id"] for x in explanations]
         report_warning = None
-        if state.provider and verdicts:
+        if state.provider and explanations:
             from agents.recap import match_report
 
             try:
                 plan = await asyncio.wait_for(
-                    match_report(state.provider, match_id, verdicts, counts), 10
+                    match_report(state.provider, match_id, explanations, counts), 10
                 )
                 highlight_order = plan.goal_ids
             except Exception as error:  # noqa: BLE001 - full-time recap fallback
@@ -282,7 +302,7 @@ def create_app(tick_seconds: float = 1, settings=None, runtime=None) -> FastAPI:
             "mode": mode,
             "requested_lang": lang,
             "source": "evidence-only"
-            if any(x["source"] == "evidence-only" for x in verdicts)
+            if any(x["source"] == "evidence-only" for x in explanations)
             else "model",
             "goals": goals,
             "patterns": counts,

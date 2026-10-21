@@ -1,9 +1,11 @@
 # Root Cause coding instructions
 
-Read docs/SPEC.md before editing integration contracts. Use synthetic data and invented
-players only. Do not invent attribution numbers or present fixtures as measured results.
-Bind player tools to one player ID. Check every structured claim against its evidence.
-Always preserve an explicitly labeled evidence-only fallback. Never commit credentials.
-Use environment settings or managed identity for future cloud configuration. Do not
-claim integrations, evaluations, deployment, or Copilot usage without actual evidence.
-Run pytest and Ruff from the repository root. Keep local demo operation credential-free.
+Read docs/SPEC.md before changing contracts. Implement the explanation pipeline:
+Orchestrator → parallel Explainer/Highlights → Recap → parallel Persona modes.
+Use synthetic matches and invented players only. Numerical attribution belongs to Role 2.
+Give every displayed sentence its evidence IDs. Evidence tools must never access raw
+match state or another goal. Preserve a cited template, status=pending, and the complete
+trace/blame if any model fails. Evaluate actual displayed prose and citation bindings,
+not a filtered set of accepted claims. Never commit credentials or invent live service,
+evaluation, deployment or Copilot-usage results. Run pytest, Ruff and Pyright from the
+repository root. Local operation must require no cloud credentials.

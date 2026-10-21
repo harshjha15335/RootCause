@@ -63,20 +63,20 @@ async def test_translate_uses_entra_auth_and_checks_the_translated_text():
 
 def test_translation_and_speech_outages_disclose_fallback_in_the_api():
     class Services:
-        translate = AsyncMock(side_effect=RuntimeError("down"))
+        translate_many = AsyncMock(side_effect=RuntimeError("down"))
         speech = AsyncMock(side_effect=RuntimeError("down"))
         close = AsyncMock()
 
     async def prepare():
         _, evidence = fixture("m", 42)
-        verdict = await run(evidence, noop)
+        explanation = await run(evidence, noop)
         store = MemoryStore()
-        await store.put("verdicts", evidence.goal_id, "m", verdict.model_dump())
+        await store.put("explanations", evidence.goal_id, "m", explanation.model_dump())
         return Runtime(store=store, services=Services()), evidence
 
     runtime, evidence = asyncio.run(prepare())
     with TestClient(create_app(runtime=runtime)) as client:
-        result = client.get(f"/goals/{evidence.goal_id}/verdict?lang=hi").json()
+        result = client.get(f"/goals/{evidence.goal_id}/explanation?lang=hi").json()
         assert result["requested_lang"] == "hi" and result["lang"] == "en"
         assert result["translation_warning"]
         assert client.get(f"/goals/{evidence.goal_id}/audio").status_code == 503
@@ -181,22 +181,22 @@ async def test_eventhub_recorded_envelope_keeps_fixture_label_and_checks_goal():
     assert raw == events[0] and recorded is None
 
 
-async def test_goal_processing_recovers_verdict_notification_after_write_failure():
+async def test_goal_processing_recovers_explanation_notification_after_write_failure():
     _, evidence = fixture("m", 42)
     runtime = Runtime()
     await runtime.process(evidence)
-    # Simulate a durable verdict write followed by a lost notification write.
+    # Simulate a durable explanation write followed by a lost notification write.
     keys = [
         key
         for key, value in runtime.store.data.items()
-        if value["payload"].get("type") == "verdict.ready"
+        if value["payload"].get("type") == "explanation.ready"
     ]
     for key in keys:
         del runtime.store.data[key]
     restarted = Runtime(store=runtime.store)
     await restarted.process(evidence)
     messages = await runtime.store.list("agent_steps", "m")
-    assert sum(x.get("type") == "verdict.ready" for x in messages) == 1
+    assert sum(x.get("type") == "explanation.ready" for x in messages) == 1
 
 
 async def test_concurrent_duplicate_goal_events_do_not_duplicate_score():
@@ -219,7 +219,7 @@ async def test_debugger_plugin_missing_is_a_real_blocker():
 def test_evidence_cannot_expose_future_observations_or_invent_a_player():
     _, evidence = fixture("m", 42)
     raw = evidence.model_dump()
-    raw["views"][0]["second"] = 999
+    raw["events"][0]["second"] = 999
     with pytest.raises(ValueError):
         Evidence.model_validate(raw)
     raw = evidence.model_dump()
@@ -342,3 +342,100 @@ async def test_speech_uses_managed_identity_voice_and_escaped_ssml(monkeypatch):
         assert "&lt;voice&gt;" in seen["ssml"] and "en-US-JennyNeural" in seen["ssml"]
     finally:
         await svc.close()
+
+
+@pytest.mark.parametrize("failure", ["flagged", "unavailable"])
+async def test_safety_preserves_blame_and_withholds_every_narrative_field(failure):
+    from agents.grounding import NEUTRAL, iter_sentences
+
+    _, evidence = fixture("m", 42)
+    explanation = await run(evidence, noop)
+
+    class Safety:
+        async def analyze_text(self, options):
+            if failure == "unavailable":
+                raise RuntimeError("down")
+            return SimpleNamespace(categories_analysis=[SimpleNamespace(severity=4)])
+
+        async def close(self):
+            pass
+
+    svc = AzureServices(Settings(), None, safety=Safety(), http=httpx.AsyncClient())
+    try:
+        safe = await svc.filter_explanation(explanation)
+        assert safe.status == "pending" and safe.source == "evidence-only"
+        assert safe.blame_order == evidence.links
+        assert all(s.text == NEUTRAL and s.evidence_ids for s in iter_sentences(safe))
+    finally:
+        await svc.close()
+
+
+async def test_flagged_text_uses_the_light_neutral_rewrite():
+    from api.contracts import NeutralPlan
+
+    _, evidence = fixture("m", 42)
+    calls = []
+
+    class Provider:
+        async def generate(self, role, payload, schema, light=False):
+            calls.append((role, light))
+            return NeutralPlan(style="neutral")
+
+    class Safety:
+        async def analyze_text(self, options):
+            return SimpleNamespace(categories_analysis=[SimpleNamespace(severity=4)])
+
+        async def close(self):
+            pass
+
+    svc = AzureServices(
+        Settings(), None, safety=Safety(), http=httpx.AsyncClient(), provider=Provider()
+    )
+    try:
+        await svc.filter_explanation(await run(evidence, noop))
+        assert calls == [("neutral", True)]
+    finally:
+        await svc.close()
+
+
+def test_translation_preserves_all_sentence_citations_and_speaks_without_ids():
+    from agents.grounding import iter_sentences
+
+    class Services:
+        def __init__(self):
+            self.seen = []
+
+        async def translate_many(self, texts, lang):
+            assert all("[" not in text for text in texts)
+            self.seen.extend(texts)
+            return ["Traducido: " + text for text in texts]
+
+        speech = AsyncMock(return_value=b"mp3")
+        close = AsyncMock()
+
+    services = Services()
+
+    async def prepare():
+        _, evidence = fixture("m", 42)
+        explanation = await run(evidence, noop)
+        store = MemoryStore()
+        await store.put("explanations", evidence.goal_id, "m", explanation.model_dump())
+        return Runtime(store=store, services=services), evidence, explanation
+
+    runtime, evidence, canonical = asyncio.run(prepare())
+    with TestClient(create_app(runtime=runtime)) as client:
+        response = client.get(f"/goals/{evidence.goal_id}/explanation?lang=es")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["lang"] == "es" and data["audio_available"]
+        from api.contracts import Explanation
+
+        localized = Explanation.model_validate({k: data[k] for k in Explanation.model_fields})
+        assert [s.evidence_ids for s in iter_sentences(localized)] == [
+            s.evidence_ids for s in iter_sentences(canonical)
+        ]
+        assert all(s.text.startswith("Traducido: ") for s in iter_sentences(localized))
+        audio = client.get(f"/goals/{evidence.goal_id}/audio?lang=es")
+        assert audio.status_code == 200
+        assert "[" not in services.speech.call_args.args[0]
+        assert services.speech.call_args.args[1] == "es"

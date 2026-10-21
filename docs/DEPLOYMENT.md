@@ -40,6 +40,7 @@ has run against an Azure subscription. A successful Bicep compile is not a servi
    API_CLIENT_ID, AZURE_TENANT_ID and FOUNDRY_PROJECT_ENDPOINT. Authenticate through Azure
    CLI/managed identity. Run `.venv/bin/python scripts/cloud_check.py`; it fails if agents,
    the durable pipeline, safety, translation, speech, or match recap falls back.
+   For Foundry evaluation also set EVALUATION_MODEL_ENDPOINT to the deployment output.
    Then run the actual planted-goal evaluation; inspect Application Insights latency/tokens.
 
 All Azure resources use identities for data access. `AZURE_CLIENT_ID` selects the
@@ -64,12 +65,12 @@ Role 2's publisher must have Event Hubs Data Sender permission and authenticate 
 configured namespace. The API has a separate `api` consumer group and the Function uses
 `detector`. The Function writes traces before completion markers. The API polls pending
 traces only after receiving their goal event, leases each goal, runs the workflow, stores
-verdicts, and broadcasts progress. Use POST /ingest/evidence for recorded replay when
+explanations, and broadcasts progress. Use POST /ingest/evidence for recorded replay when
 external ingestion is unavailable. Mark an external match finished with
 POST /matches/{id}/finish before its full-time report.
 
 Role 1 consumes the documented contracts/WebSocket stream and should replace the small
-integration console with the real match/debugger/courtroom experience. A live timing
+integration console with the real match/debugger/root-cause experience. A live timing
 measurement and end-to-end integration day remain necessary.
 
 ## Microsoft Fabric
@@ -118,3 +119,12 @@ Scale idle Container Apps down when no live ingestion is needed. The API is prov
 with one replica to consume events; scaling to zero pauses that consumer. Review
 subscription costs and delete unused resources through `azd down` when the project is
 finished. Deletion needs an explicit decision and is not part of the setup scripts.
+
+## Explanation contract rollout
+
+Update the engine and UI against docs/SPEC.md v0.3 and samples/explanation.json. Views,
+player testimony, judge output, /verdict and verdict.ready are removed. New output uses
+the explanations Cosmos container and explanation.ready event. Existing legacy containers
+are retained by incremental Bicep deployment; existing trace records require conversion
+before replay. No Azure data was migrated in this workspace. A pending explanation has
+cited template paragraphs and immutable attribution while model prose is unavailable.

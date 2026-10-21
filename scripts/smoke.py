@@ -32,22 +32,25 @@ async def main(base_url: str):
                 while True:
                     message = json.loads(await websocket.recv())
                     messages.append(message)
-                    if message["type"] == "verdict.ready":
+                    if message["type"] == "explanation.ready":
                         break
         assert {m["type"] for m in messages} == {
             "match.event",
             "goal.detected",
             "trace.ready",
             "agent.step",
-            "verdict.ready",
+            "explanation.ready",
         }
         assert [m["sequence"] for m in messages] == list(range(1, len(messages) + 1))
         goal_id = messages[-1]["payload"]["goal_id"]
-        verdict = await client.get(f"/goals/{goal_id}/verdict")
-        verdict.raise_for_status()
-        assert verdict.json()["source"] in {"evidence-only", "model"}
-        assert len(verdict.json()["blame_order"]) == 2
-        assert verdict.json()["blame_order"][0]["blame_percent"] == 60
+        explanation = await client.get(f"/goals/{goal_id}/explanation")
+        explanation.raise_for_status()
+        assert explanation.json()["source"] in {"evidence-only", "model"}
+        assert explanation.json()["paragraphs"] and explanation.json()["highlights"]
+        assert all(row["evidence_ids"] for row in explanation.json()["sentences"])
+        assert all("[" in line for line in explanation.json()["text"].splitlines())
+        assert len(explanation.json()["blame_order"]) == 2
+        assert explanation.json()["blame_order"][0]["blame_percent"] == 60
         trace = await client.get(f"/goals/{goal_id}/trace")
         trace.raise_for_status()
         assert trace.json()["source"] == "synthetic-fixture"
@@ -61,7 +64,7 @@ async def main(base_url: str):
         report = await client.get(f"/matches/{match_id}/report")
         report.raise_for_status()
         assert report.json()["goals"][0]["goal_id"] == goal_id
-        print("HTTP/WebSocket smoke passed: goal → trace → testimony → verdict → report")
+        print("HTTP/WebSocket smoke passed: goal → trace → explanation → highlights → report")
 
 
 if __name__ == "__main__":

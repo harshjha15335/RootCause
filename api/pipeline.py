@@ -112,15 +112,15 @@ class Runtime:
     async def process(self, evidence: Evidence):
         if evidence.goal_id in self.completed:
             return
-        existing = await self.store.get("verdicts", evidence.goal_id)
+        existing = await self.store.get("explanations", evidence.goal_id)
         if existing:
             prior = await self.store.list("agent_steps", evidence.match_id)
             if not any(
-                x.get("type") == "verdict.ready"
+                x.get("type") == "explanation.ready"
                 and x.get("payload", {}).get("goal_id") == evidence.goal_id
                 for x in prior
             ):
-                await self.emit(evidence.match_id, "verdict.ready", existing)
+                await self.emit(evidence.match_id, "explanation.ready", existing)
             self.completed.add(evidence.goal_id)
             return
         if not await self.store.acquire(evidence.goal_id, evidence.match_id):
@@ -140,12 +140,14 @@ class Runtime:
         async def emit(kind, payload):
             await self.emit(evidence.match_id, kind, {"goal_id": evidence.goal_id, **payload})
 
-        verdict = await run(evidence, emit, provider=self.provider)
+        explanation = await run(evidence, emit, provider=self.provider)
         if self.services:
-            # Service failures are bounded and fail closed inside filter_verdict.
-            verdict = await asyncio.wait_for(self.services.filter_verdict(verdict), 10)
-        await self.store.put("verdicts", evidence.goal_id, evidence.match_id, verdict.model_dump())
-        await self.emit(evidence.match_id, "verdict.ready", verdict.model_dump())
+            # Service failures are bounded and fail closed inside filter_explanation.
+            explanation = await asyncio.wait_for(self.services.filter_explanation(explanation), 10)
+        await self.store.put(
+            "explanations", evidence.goal_id, evidence.match_id, explanation.model_dump()
+        )
+        await self.emit(evidence.match_id, "explanation.ready", explanation.model_dump())
         self.completed.add(evidence.goal_id)
 
     async def resume(self):

@@ -216,21 +216,767 @@
       "trials": 200
     }
   ],
-  "views": [
+  "events": [
     {
-      "player_id": "away-6",
-      "second": 1,
-      "observations": [
-        "Lost the midfield duel."
+      "id": "demo-match-event-0",
+      "match_id": "demo-match",
+      "second": 0,
+      "type": "pass",
+      "team": "home",
+      "player_id": "home-9",
+      "ball": {
+        "x": 50.0,
+        "y": 34.0
+      },
+      "players": [
+        {
+          "player_id": "home-1",
+          "team": "home",
+          "position": {
+            "x": 67.14,
+            "y": 1.7
+          }
+        },
+        {
+          "player_id": "home-2",
+          "team": "home",
+          "position": {
+            "x": 28.88,
+            "y": 15.18
+          }
+        },
+        {
+          "player_id": "home-3",
+          "team": "home",
+          "position": {
+            "x": 77.33,
+            "y": 46.02
+          }
+        },
+        {
+          "player_id": "home-4",
+          "team": "home",
+          "position": {
+            "x": 93.68,
+            "y": 5.91
+          }
+        },
+        {
+          "player_id": "home-5",
+          "team": "home",
+          "position": {
+            "x": 44.3,
+            "y": 2.03
+          }
+        },
+        {
+          "player_id": "home-6",
+          "team": "home",
+          "position": {
+            "x": 22.96,
+            "y": 34.36
+          }
+        },
+        {
+          "player_id": "home-7",
+          "team": "home",
+          "position": {
+            "x": 2.79,
+            "y": 13.52
+          }
+        },
+        {
+          "player_id": "home-8",
+          "team": "home",
+          "position": {
+            "x": 68.24,
+            "y": 37.06
+          }
+        },
+        {
+          "player_id": "home-9",
+          "team": "home",
+          "position": {
+            "x": 23.15,
+            "y": 40.07
+          }
+        },
+        {
+          "player_id": "home-10",
+          "team": "home",
+          "position": {
+            "x": 84.99,
+            "y": 0.44
+          }
+        },
+        {
+          "player_id": "home-11",
+          "team": "home",
+          "position": {
+            "x": 84.61,
+            "y": 47.47
+          }
+        },
+        {
+          "player_id": "away-1",
+          "team": "away",
+          "position": {
+            "x": 35.73,
+            "y": 10.57
+          }
+        },
+        {
+          "player_id": "away-2",
+          "team": "away",
+          "position": {
+            "x": 100.51,
+            "y": 22.89
+          }
+        },
+        {
+          "player_id": "away-3",
+          "team": "away",
+          "position": {
+            "x": 9.74,
+            "y": 6.58
+          }
+        },
+        {
+          "player_id": "away-4",
+          "team": "away",
+          "position": {
+            "x": 88.99,
+            "y": 41.05
+          }
+        },
+        {
+          "player_id": "away-5",
+          "team": "away",
+          "position": {
+            "x": 84.75,
+            "y": 49.62
+          }
+        },
+        {
+          "player_id": "away-6",
+          "team": "away",
+          "position": {
+            "x": 56.3,
+            "y": 66.17
+          }
+        },
+        {
+          "player_id": "away-7",
+          "team": "away",
+          "position": {
+            "x": 39.75,
+            "y": 37.54
+          }
+        },
+        {
+          "player_id": "away-8",
+          "team": "away",
+          "position": {
+            "x": 87.09,
+            "y": 42.06
+          }
+        },
+        {
+          "player_id": "away-9",
+          "team": "away",
+          "position": {
+            "x": 90.48,
+            "y": 39.26
+          }
+        },
+        {
+          "player_id": "away-10",
+          "team": "away",
+          "position": {
+            "x": 73.98,
+            "y": 3.12
+          }
+        },
+        {
+          "player_id": "away-11",
+          "team": "away",
+          "position": {
+            "x": 23.93,
+            "y": 19.68
+          }
+        }
       ]
     },
     {
-      "player_id": "away-3",
+      "id": "demo-match-event-1",
+      "match_id": "demo-match",
+      "second": 1,
+      "type": "duel",
+      "team": "home",
+      "player_id": "home-9",
+      "ball": {
+        "x": 60.0,
+        "y": 34.0
+      },
+      "players": [
+        {
+          "player_id": "home-1",
+          "team": "home",
+          "position": {
+            "x": 67.14,
+            "y": 1.7
+          }
+        },
+        {
+          "player_id": "home-2",
+          "team": "home",
+          "position": {
+            "x": 28.88,
+            "y": 15.18
+          }
+        },
+        {
+          "player_id": "home-3",
+          "team": "home",
+          "position": {
+            "x": 77.33,
+            "y": 46.02
+          }
+        },
+        {
+          "player_id": "home-4",
+          "team": "home",
+          "position": {
+            "x": 93.68,
+            "y": 5.91
+          }
+        },
+        {
+          "player_id": "home-5",
+          "team": "home",
+          "position": {
+            "x": 44.3,
+            "y": 2.03
+          }
+        },
+        {
+          "player_id": "home-6",
+          "team": "home",
+          "position": {
+            "x": 22.96,
+            "y": 34.36
+          }
+        },
+        {
+          "player_id": "home-7",
+          "team": "home",
+          "position": {
+            "x": 2.79,
+            "y": 13.52
+          }
+        },
+        {
+          "player_id": "home-8",
+          "team": "home",
+          "position": {
+            "x": 68.24,
+            "y": 37.06
+          }
+        },
+        {
+          "player_id": "home-9",
+          "team": "home",
+          "position": {
+            "x": 23.15,
+            "y": 40.07
+          }
+        },
+        {
+          "player_id": "home-10",
+          "team": "home",
+          "position": {
+            "x": 84.99,
+            "y": 0.44
+          }
+        },
+        {
+          "player_id": "home-11",
+          "team": "home",
+          "position": {
+            "x": 84.61,
+            "y": 47.47
+          }
+        },
+        {
+          "player_id": "away-1",
+          "team": "away",
+          "position": {
+            "x": 35.73,
+            "y": 10.57
+          }
+        },
+        {
+          "player_id": "away-2",
+          "team": "away",
+          "position": {
+            "x": 100.51,
+            "y": 22.89
+          }
+        },
+        {
+          "player_id": "away-3",
+          "team": "away",
+          "position": {
+            "x": 9.74,
+            "y": 6.58
+          }
+        },
+        {
+          "player_id": "away-4",
+          "team": "away",
+          "position": {
+            "x": 88.99,
+            "y": 41.05
+          }
+        },
+        {
+          "player_id": "away-5",
+          "team": "away",
+          "position": {
+            "x": 84.75,
+            "y": 49.62
+          }
+        },
+        {
+          "player_id": "away-6",
+          "team": "away",
+          "position": {
+            "x": 56.3,
+            "y": 66.17
+          }
+        },
+        {
+          "player_id": "away-7",
+          "team": "away",
+          "position": {
+            "x": 39.75,
+            "y": 37.54
+          }
+        },
+        {
+          "player_id": "away-8",
+          "team": "away",
+          "position": {
+            "x": 87.09,
+            "y": 42.06
+          }
+        },
+        {
+          "player_id": "away-9",
+          "team": "away",
+          "position": {
+            "x": 90.48,
+            "y": 39.26
+          }
+        },
+        {
+          "player_id": "away-10",
+          "team": "away",
+          "position": {
+            "x": 73.98,
+            "y": 3.12
+          }
+        },
+        {
+          "player_id": "away-11",
+          "team": "away",
+          "position": {
+            "x": 23.93,
+            "y": 19.68
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo-match-event-2",
+      "match_id": "demo-match",
       "second": 2,
-      "observations": [
-        "Stepped up late and allowed the cross."
+      "type": "cross",
+      "team": "home",
+      "player_id": "home-9",
+      "ball": {
+        "x": 85.0,
+        "y": 34.0
+      },
+      "players": [
+        {
+          "player_id": "home-1",
+          "team": "home",
+          "position": {
+            "x": 67.14,
+            "y": 1.7
+          }
+        },
+        {
+          "player_id": "home-2",
+          "team": "home",
+          "position": {
+            "x": 28.88,
+            "y": 15.18
+          }
+        },
+        {
+          "player_id": "home-3",
+          "team": "home",
+          "position": {
+            "x": 77.33,
+            "y": 46.02
+          }
+        },
+        {
+          "player_id": "home-4",
+          "team": "home",
+          "position": {
+            "x": 93.68,
+            "y": 5.91
+          }
+        },
+        {
+          "player_id": "home-5",
+          "team": "home",
+          "position": {
+            "x": 44.3,
+            "y": 2.03
+          }
+        },
+        {
+          "player_id": "home-6",
+          "team": "home",
+          "position": {
+            "x": 22.96,
+            "y": 34.36
+          }
+        },
+        {
+          "player_id": "home-7",
+          "team": "home",
+          "position": {
+            "x": 2.79,
+            "y": 13.52
+          }
+        },
+        {
+          "player_id": "home-8",
+          "team": "home",
+          "position": {
+            "x": 68.24,
+            "y": 37.06
+          }
+        },
+        {
+          "player_id": "home-9",
+          "team": "home",
+          "position": {
+            "x": 23.15,
+            "y": 40.07
+          }
+        },
+        {
+          "player_id": "home-10",
+          "team": "home",
+          "position": {
+            "x": 84.99,
+            "y": 0.44
+          }
+        },
+        {
+          "player_id": "home-11",
+          "team": "home",
+          "position": {
+            "x": 84.61,
+            "y": 47.47
+          }
+        },
+        {
+          "player_id": "away-1",
+          "team": "away",
+          "position": {
+            "x": 35.73,
+            "y": 10.57
+          }
+        },
+        {
+          "player_id": "away-2",
+          "team": "away",
+          "position": {
+            "x": 100.51,
+            "y": 22.89
+          }
+        },
+        {
+          "player_id": "away-3",
+          "team": "away",
+          "position": {
+            "x": 9.74,
+            "y": 6.58
+          }
+        },
+        {
+          "player_id": "away-4",
+          "team": "away",
+          "position": {
+            "x": 88.99,
+            "y": 41.05
+          }
+        },
+        {
+          "player_id": "away-5",
+          "team": "away",
+          "position": {
+            "x": 84.75,
+            "y": 49.62
+          }
+        },
+        {
+          "player_id": "away-6",
+          "team": "away",
+          "position": {
+            "x": 56.3,
+            "y": 66.17
+          }
+        },
+        {
+          "player_id": "away-7",
+          "team": "away",
+          "position": {
+            "x": 39.75,
+            "y": 37.54
+          }
+        },
+        {
+          "player_id": "away-8",
+          "team": "away",
+          "position": {
+            "x": 87.09,
+            "y": 42.06
+          }
+        },
+        {
+          "player_id": "away-9",
+          "team": "away",
+          "position": {
+            "x": 90.48,
+            "y": 39.26
+          }
+        },
+        {
+          "player_id": "away-10",
+          "team": "away",
+          "position": {
+            "x": 73.98,
+            "y": 3.12
+          }
+        },
+        {
+          "player_id": "away-11",
+          "team": "away",
+          "position": {
+            "x": 23.93,
+            "y": 19.68
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo-match-event-3",
+      "match_id": "demo-match",
+      "second": 3,
+      "type": "goal",
+      "team": "home",
+      "player_id": "home-9",
+      "ball": {
+        "x": 105.0,
+        "y": 34.0
+      },
+      "players": [
+        {
+          "player_id": "home-1",
+          "team": "home",
+          "position": {
+            "x": 67.14,
+            "y": 1.7
+          }
+        },
+        {
+          "player_id": "home-2",
+          "team": "home",
+          "position": {
+            "x": 28.88,
+            "y": 15.18
+          }
+        },
+        {
+          "player_id": "home-3",
+          "team": "home",
+          "position": {
+            "x": 77.33,
+            "y": 46.02
+          }
+        },
+        {
+          "player_id": "home-4",
+          "team": "home",
+          "position": {
+            "x": 93.68,
+            "y": 5.91
+          }
+        },
+        {
+          "player_id": "home-5",
+          "team": "home",
+          "position": {
+            "x": 44.3,
+            "y": 2.03
+          }
+        },
+        {
+          "player_id": "home-6",
+          "team": "home",
+          "position": {
+            "x": 22.96,
+            "y": 34.36
+          }
+        },
+        {
+          "player_id": "home-7",
+          "team": "home",
+          "position": {
+            "x": 2.79,
+            "y": 13.52
+          }
+        },
+        {
+          "player_id": "home-8",
+          "team": "home",
+          "position": {
+            "x": 68.24,
+            "y": 37.06
+          }
+        },
+        {
+          "player_id": "home-9",
+          "team": "home",
+          "position": {
+            "x": 23.15,
+            "y": 40.07
+          }
+        },
+        {
+          "player_id": "home-10",
+          "team": "home",
+          "position": {
+            "x": 84.99,
+            "y": 0.44
+          }
+        },
+        {
+          "player_id": "home-11",
+          "team": "home",
+          "position": {
+            "x": 84.61,
+            "y": 47.47
+          }
+        },
+        {
+          "player_id": "away-1",
+          "team": "away",
+          "position": {
+            "x": 35.73,
+            "y": 10.57
+          }
+        },
+        {
+          "player_id": "away-2",
+          "team": "away",
+          "position": {
+            "x": 100.51,
+            "y": 22.89
+          }
+        },
+        {
+          "player_id": "away-3",
+          "team": "away",
+          "position": {
+            "x": 9.74,
+            "y": 6.58
+          }
+        },
+        {
+          "player_id": "away-4",
+          "team": "away",
+          "position": {
+            "x": 88.99,
+            "y": 41.05
+          }
+        },
+        {
+          "player_id": "away-5",
+          "team": "away",
+          "position": {
+            "x": 84.75,
+            "y": 49.62
+          }
+        },
+        {
+          "player_id": "away-6",
+          "team": "away",
+          "position": {
+            "x": 56.3,
+            "y": 66.17
+          }
+        },
+        {
+          "player_id": "away-7",
+          "team": "away",
+          "position": {
+            "x": 39.75,
+            "y": 37.54
+          }
+        },
+        {
+          "player_id": "away-8",
+          "team": "away",
+          "position": {
+            "x": 87.09,
+            "y": 42.06
+          }
+        },
+        {
+          "player_id": "away-9",
+          "team": "away",
+          "position": {
+            "x": 90.48,
+            "y": 39.26
+          }
+        },
+        {
+          "player_id": "away-10",
+          "team": "away",
+          "position": {
+            "x": 73.98,
+            "y": 3.12
+          }
+        },
+        {
+          "player_id": "away-11",
+          "team": "away",
+          "position": {
+            "x": 23.93,
+            "y": 19.68
+          }
+        }
       ]
     }
   ],
-  "root_cause_evidence_id": null
+  "root_cause_evidence_id": "demo-match-link-0"
 }

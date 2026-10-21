@@ -4,7 +4,8 @@ from xml.sax.saxutils import escape
 
 import httpx
 
-from api.contracts import Verdict
+from agents.grounding import NEUTRAL, iter_sentences
+from api.contracts import CitedSentence, Explanation
 
 logger = logging.getLogger(__name__)
 
@@ -34,59 +35,78 @@ class AzureServices:
                     return False
         return True
 
-    async def filter_verdict(self, verdict: Verdict) -> Verdict:
-        result = verdict.model_copy(deep=True)
+    async def filter_explanation(self, explanation: Explanation) -> Explanation:
+        result = explanation.model_copy(deep=True)
         try:
-            # Check every courtroom output, including rejection and attribution descriptions.
-            if await asyncio.wait_for(self.safe(result.model_dump_json()), 5):
+            text = "\n".join(s.text for s in iter_sentences(result))
+            if await asyncio.wait_for(self.safe(text), 5):
                 return result
-            result.warnings.append(
-                "Content Safety flagged output; neutral evidence view substituted"
-            )
+            result.warnings.append("Content Safety flagged output; neutral rewrite substituted")
             if self.provider:
                 from api.contracts import NeutralPlan
 
-                # The light model selects only an audited neutral rewrite, never new facts.
                 await asyncio.wait_for(
                     self.provider.generate("neutral", {}, NeutralPlan, light=True), 2
                 )
-        except Exception as error:  # noqa: BLE001 - fail closed on safety service failure
+        except Exception as error:  # noqa: BLE001 - safety failures withhold narrative
             logger.warning("Safety unavailable: %s", type(error).__name__)
             result.warnings.append("Content Safety unavailable; narrative withheld")
-        # Only server-controlled neutral text is retained. No flagged generated text escapes.
+
+        def neutral(eid):
+            return CitedSentence(text=NEUTRAL, evidence_ids=[eid], kind="neutral")
+
+        for paragraph in result.paragraphs:
+            paragraph.sentences = [neutral(paragraph.evidence_id)]
+        result.root_summary = [neutral(result.root_cause_evidence_id)]
+        for clip in result.highlights:
+            clip.caption = neutral(clip.evidence_id)
         result.recaps = {
-            mode: "Narrative withheld. Review the structured attribution."
-            for mode in ("fan", "analyst", "studio")
+            mode: [neutral(result.root_cause_evidence_id)] for mode in ("fan", "analyst", "studio")
         }
-        result.reasoning = "Narrative withheld by output safety checks."
-        for testimony in result.testimonies:
-            testimony.statement = "Testimony withheld by output safety checks."
-            testimony.claims = []
-        result.accepted_claims = []
-        result.rejected_claims = []
-        for link in result.blame_order:
-            link.description = "Description withheld by output safety checks."
-            link.bug_type = "withheld"
+        # Preserve immutable blame and the separately available trace, even when prose is withheld.
         result.source = "evidence-only"
+        result.status = "pending"
         return result
 
     async def translate(self, text: str, lang: str):
+        return (await self.translate_many([text], lang))[0]
+
+    async def translate_many(self, texts: list[str], lang: str) -> list[str]:
         if lang == "en":
-            return text
+            return texts
         if lang not in {"hi", "es"}:
             raise ValueError("Unsupported language")
         token = await self.credential.get_token("https://cognitiveservices.azure.com/.default")
-        response = await self.http.post(
-            self.settings.translator_endpoint.rstrip("/") + "/translator/text/v3.0/translate",
-            params={"api-version": "3.0", "from": "en", "to": lang},
-            headers={"Authorization": f"Bearer {token.token}"},
-            json=[{"Text": text}],
-        )
-        response.raise_for_status()
-        translated = response.json()[0]["translations"][0]["text"]
-        if not await self.safe(translated):
-            raise ValueError("Translated output failed safety checks")
-        return translated
+        results = []
+        # Bound the request size below Translator's 50,000-character limit.
+        batches = []
+        batch = []
+        size = 0
+        for text in texts:
+            if batch and (size + len(text) > 10000 or len(batch) >= 100):
+                batches.append(batch)
+                batch = []
+                size = 0
+            batch.append(text)
+            size += len(text)
+        if batch:
+            batches.append(batch)
+        for batch in batches:
+            response = await self.http.post(
+                self.settings.translator_endpoint.rstrip("/") + "/translator/text/v3.0/translate",
+                params={"api-version": "3.0", "from": "en", "to": lang},
+                headers={"Authorization": f"Bearer {token.token}"},
+                json=[{"Text": text} for text in batch],
+            )
+            response.raise_for_status()
+            rows = response.json()
+            if len(rows) != len(batch):
+                raise ValueError("Translator omitted a sentence")
+            translated = [row["translations"][0]["text"] for row in rows]
+            if not await self.safe("\n".join(translated)):
+                raise ValueError("Translation failed Content Safety")
+            results.extend(translated)
+        return results
 
     async def speech(self, text: str, lang: str) -> bytes:
         import azure.cognitiveservices.speech as speechsdk

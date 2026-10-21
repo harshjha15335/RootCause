@@ -91,7 +91,7 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-05-15
   name: 'rootcause'
   properties: { resource: { id: 'rootcause' } }
 }
-resource containers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-05-15' = [for name in ['goals', 'traces', 'verdicts', 'agent_steps']: {
+resource containers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-05-15' = [for name in ['goals', 'traces', 'explanations', 'agent_steps']: {
   parent: database
   name: name
   properties: {
@@ -354,3 +354,5 @@ output insightsConnection string = insights.properties.ConnectionString
 output apiName string = api.name
 output frontendName string = frontend.name
 output detectorName string = detector.name
+
+output evaluationEndpoint string = 'https://${foundry.name}.cognitiveservices.azure.com/'

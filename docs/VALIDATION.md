@@ -5,7 +5,7 @@ subscription was supplied, so live service validation and deployment remain bloc
 
 | Check | Outcome |
 | --- | --- |
-| Python suite | 38 tests passed: orchestration/rebuttal, stage failures, global deadline, player isolation, claim/evidence validation, durable notifications/leases, Function deduplication, Cosmos document/query shape, JWT signature/claims, media fallback, Fabric reuse, Event Hubs routing and checkpoint order |
+| Python suite | 45 tests passed: parallel Explainer/Highlights, Recap barrier, three Persona modes, stage failures, global deadline, scoped tools, actual sentence/citation validation, durable notifications/leases, Function deduplication, Cosmos document/query shape, JWT signature/claims, media fallback, Fabric reuse, Event Hubs routing and checkpoint order |
 | Actual Framework/OpenAI request protocol | Passed with HTTP mocked at the network boundary; not a live model call |
 | Ruff lint/format and Pyright | Passed |
 | Frontend ESLint / JavaScript syntax | Passed |
@@ -17,7 +17,7 @@ subscription was supplied, so live service validation and deployment remain bloc
 | Azure CLI / azd | Installed and version-checked; no login/account available |
 | Current source secret scan | Gitleaks passed with values redacted; dependency/build caches excluded |
 | Full Git history scan | Scanned locally after the initial commit; CI also scans full history |
-| Fixture evaluation | One labeled fixture, structured accepted-claim grounding 1.0; engine accuracy is null, not an accuracy claim |
+| Fixture evaluation | One labeled fixture, actual sentence grounding 1.0, pending evidence-only output; engine accuracy is null, not an accuracy claim |
 | Foundry / Cosmos / Event Hubs / Function live calls | Unrun: subscription, endpoints, identities, deployments and quota unavailable |
 | Translator / Speech / Content Safety live calls | Unrun; transport/failure behavior tested with mocks |
 | Foundry groundedness upload / 100 planted-goal evaluation | Unrun: live project and Role 2 dataset unavailable |
@@ -34,7 +34,7 @@ signature or checksum checks were disabled. Container ports are isolated from th
 workspace, so functional checks were executed inside the containers against their real
 HTTP/WebSocket servers. The native workspace API was also smoke-tested separately.
 
-The deadline fallback retains a verdict, but the roughly 20-second live target has not
+The deadline fallback retains a pending, cited explanation and structured trace, but the roughly 20-second live target has not
 been measured on Foundry. Each workflow has a 20-second graph budget plus bounded
 safety/persistence work; failure-path completion can exceed 20 seconds. Per-goal tracing
 and the live validation script make that performance check explicit after provisioning.

@@ -1,7 +1,7 @@
 import random
 from typing import Literal
 
-from api.contracts import Evidence, Link, MatchEvent, PlayerPosition, Position, View
+from api.contracts import Evidence, Link, MatchEvent, PlayerPosition, Position
 
 
 def fixture(match_id: str, seed: int) -> tuple[list[MatchEvent], Evidence]:
@@ -58,9 +58,6 @@ def fixture(match_id: str, seed: int) -> tuple[list[MatchEvent], Evidence]:
         source="synthetic-fixture",
         goal=events[-1],
         links=links,
-        views=[
-            View(player_id=x.player_id, second=x.second, observations=[x.description])
-            for x in links
-        ],
+        events=events,
     )
     return events, evidence

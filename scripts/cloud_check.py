@@ -27,18 +27,18 @@ async def main():
                         import json
 
                         message = json.loads(await websocket.recv())
-                        if message["type"] == "verdict.ready":
-                            verdict = message["payload"]
+                        if message["type"] == "explanation.ready":
+                            explanation = message["payload"]
                             break
             if (
-                verdict["source"] != "model"
-                or verdict["warnings"]
-                or any(t["source"] != "model" for t in verdict["testimonies"])
+                explanation["source"] != "model"
+                or explanation["warnings"]
+                or explanation["status"] != "ready"
             ):
                 raise RuntimeError("A model or safety stage fell back; inspect goal telemetry")
-            goal = verdict["goal_id"]
+            goal = explanation["goal_id"]
             for lang in ["hi", "es"]:
-                response = await client.get(f"/goals/{goal}/verdict", params={"lang": lang})
+                response = await client.get(f"/goals/{goal}/explanation", params={"lang": lang})
                 response.raise_for_status()
                 if response.json()["lang"] != lang or response.json()["translation_warning"]:
                     raise RuntimeError("Translation did not run successfully")

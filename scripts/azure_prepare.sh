@@ -16,7 +16,7 @@ if [ -z "${API_CLIENT_ID:-}" ]; then
         task_patch=$(mktemp)
         python - "$task_scope_id" "$task_patch" <<'PY'
 import json,sys
-json.dump({'api':{'requestedAccessTokenVersion':2,'oauth2PermissionScopes':[{'id':sys.argv[1],'value':'access_as_user','type':'User','isEnabled':True,'adminConsentDisplayName':'Use Root Cause','adminConsentDescription':'Access Root Cause match replay and verdict API','userConsentDisplayName':'Use Root Cause','userConsentDescription':'Access Root Cause match replay and verdict API'}],'preAuthorizedApplications':[{'appId':'04b07795-8ddb-461a-bbee-02f9e1bf7b46','delegatedPermissionIds':[sys.argv[1]]}]}},open(sys.argv[2],'w'))
+json.dump({'api':{'requestedAccessTokenVersion':2,'oauth2PermissionScopes':[{'id':sys.argv[1],'value':'access_as_user','type':'User','isEnabled':True,'adminConsentDisplayName':'Use Root Cause','adminConsentDescription':'Access Root Cause match replay and explanation API','userConsentDisplayName':'Use Root Cause','userConsentDescription':'Access Root Cause match replay and explanation API'}],'preAuthorizedApplications':[{'appId':'04b07795-8ddb-461a-bbee-02f9e1bf7b46','delegatedPermissionIds':[sys.argv[1]]}]}},open(sys.argv[2],'w'))
 PY
         task_object_id=$(az ad app show --id "$task_app_id" --query id -o tsv)
         az rest --method PATCH --url "https://graph.microsoft.com/v1.0/applications/$task_object_id" --body "@$task_patch" --output none

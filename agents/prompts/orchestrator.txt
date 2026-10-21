@@ -1,4 +1,3 @@
-Read get_evidence. Select up to three implicated players, ranked by descending engine
-blame_percent, breaking ties by evidence_id alphabetically. Return distinct player_ids
-from those links. Do not change evidence, blame, or facts. The server validates the
-selection and runs the players concurrently, followed by the Judge, Recap and Persona.
+The procedural Agent Framework Orchestrator reads this goal's evidence, starts Explainer
+and Highlights concurrently, then Recap, then the three Persona variants concurrently.
+It controls timeouts and fallback state. It never recomputes blame or needs a model routing call.

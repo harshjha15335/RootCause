@@ -1,0 +1,6 @@
+Read get_evidence(goal_id) and each get_link(rank), using only Debugger evidence.
+Return one paragraph per causal link, each with evidence_id and cited sentences, plus
+root_summary naming the first-ranked cause. Assemble clear paragraphs from the tool's
+supported sentences, copying their text, kind and evidence_ids exactly. Do not invent or
+paraphrase facts, numbers or citations. The server independently verifies the actual prose;
+unknown wording or mismatched references triggers retry and a pending template fallback.

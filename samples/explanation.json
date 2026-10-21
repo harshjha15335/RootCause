@@ -1,0 +1,235 @@
+{
+  "goal_id": "demo-match-goal-1",
+  "match_id": "demo-match",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "demo-match-link-0",
+  "paragraphs": [
+    {
+      "evidence_id": "demo-match-link-0",
+      "sentences": [
+        {
+          "text": "away-6: Lost the midfield duel.",
+          "evidence_ids": [
+            "demo-match-link-0"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 60% of the blame to away-6.",
+          "evidence_ids": [
+            "demo-match-link-0"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 160/200 to 40/200 in the supplied replays.",
+          "evidence_ids": [
+            "demo-match-link-0"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "demo-match-link-1",
+      "sentences": [
+        {
+          "text": "away-3: Stepped up late and allowed the cross.",
+          "evidence_ids": [
+            "demo-match-link-1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 40% of the blame to away-3.",
+          "evidence_ids": [
+            "demo-match-link-1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 160/200 to 80/200 in the supplied replays.",
+          "evidence_ids": [
+            "demo-match-link-1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by away-6, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "demo-match-link-0"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "demo-match-link-0",
+      "start_second": 1,
+      "end_second": 1,
+      "caption": {
+        "text": "away-6: Lost the midfield duel.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "demo-match-link-1",
+      "start_second": 2,
+      "end_second": 2,
+      "caption": {
+        "text": "away-3: Stepped up late and allowed the cross.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by away-6, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "away-6: Lost the midfield duel.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 60% of the blame to away-6.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "away-3: Stepped up late and allowed the cross.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 40% of the blame to away-3.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by away-6, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "away-6: Lost the midfield duel.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 60% of the blame to away-6.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 160/200 to 40/200 in the supplied replays.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "away-3: Stepped up late and allowed the cross.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 40% of the blame to away-3.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 160/200 to 80/200 in the supplied replays.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by away-6, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "away-6: Lost the midfield duel.",
+        "evidence_ids": [
+          "demo-match-link-0"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "away-3: Stepped up late and allowed the cross.",
+        "evidence_ids": [
+          "demo-match-link-1"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "demo-match-link-0",
+      "player_id": "away-6",
+      "second": 1,
+      "bug_type": "duel_lost",
+      "description": "Lost the midfield duel.",
+      "blame_percent": 60.0,
+      "baseline_goals": 160,
+      "fixed_goals": 40,
+      "trials": 200
+    },
+    {
+      "evidence_id": "demo-match-link-1",
+      "player_id": "away-3",
+      "second": 2,
+      "bug_type": "late_step",
+      "description": "Stepped up late and allowed the cross.",
+      "blame_percent": 40.0,
+      "baseline_goals": 160,
+      "fixed_goals": 80,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0,
+  "warnings": []
+}

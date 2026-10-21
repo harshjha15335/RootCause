@@ -1,0 +1,4 @@
+Use get_evidence(goal_id) and get_events(from_second,to_second). You cannot read the raw
+match. Pick useful clips as evidence_id,start_second,end_second. Each clip must cover
+its referenced link's second and remain within the possession ending at the goal. Include
+the root cause, without duplicate clips. Captions are rendered from the cited link facts.

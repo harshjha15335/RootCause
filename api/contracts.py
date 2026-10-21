@@ -54,83 +54,93 @@ class Link(Contract):
     trials: Literal[200] = 200
 
 
-class View(Contract):
-    player_id: EntityId
-    second: int = Field(ge=0)
-    observations: list[Annotated[str, Field(max_length=1000)]] = Field(max_length=100)
-
-
 class Evidence(Contract):
     goal_id: EntityId
     match_id: EntityId
     source: Literal["synthetic-fixture", "debugger"]
     goal: MatchEvent
     links: list[Link] = Field(min_length=1, max_length=100)
-    views: list[View] = Field(max_length=1000)
+    events: list[MatchEvent] = Field(default_factory=list, max_length=1000)
     root_cause_evidence_id: EntityId | None = None
 
     @model_validator(mode="after")
     def consistent(self):
         if self.goal.match_id != self.match_id or self.goal.type != "goal":
             raise ValueError("Evidence must reference its match's goal event")
-        if abs(sum(link.blame_percent for link in self.links) - 100) > 0.01:
-            raise ValueError("Fixture blame must sum to 100 percent")
-        if len({link.evidence_id for link in self.links}) != len(self.links):
+        if abs(sum(x.blame_percent for x in self.links) - 100) > 0.01:
+            raise ValueError("Engine blame must sum to 100 percent")
+        if len({x.evidence_id for x in self.links}) != len(self.links):
             raise ValueError("Evidence IDs must be unique")
-        if any(link.second > self.goal.second for link in self.links):
-            raise ValueError("Causal links must precede the goal")
         players = {p.player_id for p in self.goal.players}
-        if any(x.player_id not in players for x in [*self.links, *self.views]):
-            raise ValueError("Evidence must reference players present in the match")
-        if any(x.second > self.goal.second for x in self.views):
-            raise ValueError("Player views cannot include future observations")
-        if len({(x.player_id, x.second) for x in self.views}) != len(self.views):
-            raise ValueError("Player view snapshots must be unique")
-        if self.root_cause_evidence_id and self.root_cause_evidence_id not in {
-            x.evidence_id for x in self.links
-        }:
-            raise ValueError("Declared engine root cause must reference an evidence link")
+        if any(x.second > self.goal.second or x.player_id not in players for x in self.links):
+            raise ValueError("Links must reference known players and precede the goal")
+        if any(e.match_id != self.match_id or e.second > self.goal.second for e in self.events):
+            raise ValueError(
+                "Evidence events must belong to this match and cannot include the future"
+            )
+        if len({e.id for e in self.events}) != len(self.events):
+            raise ValueError("Evidence event IDs must be unique")
+        # Stable ties preserve Role 2's ordering. No model computes or changes attribution.
+        self.links = sorted(
+            self.links, key=lambda x: -(x.baseline_goals - x.fixed_goals) / x.trials
+        )
+        root = self.links[0].evidence_id
+        if self.root_cause_evidence_id and self.root_cause_evidence_id != root:
+            raise ValueError("Root cause must be the Debugger's largest counterfactual drop")
+        self.root_cause_evidence_id = root
         return self
 
 
-class Claim(Contract):
+class CitedSentence(Contract):
+    text: str = Field(min_length=1, max_length=2000)
+    evidence_ids: list[EntityId] = Field(min_length=1, max_length=100)
+    kind: Literal["description", "attribution", "counterfactual", "root", "neutral"]
+
+    def tagged(self) -> str:
+        return self.text + " " + " ".join(f"[{eid}]" for eid in self.evidence_ids)
+
+
+class LinkExplanation(Contract):
     evidence_id: EntityId
-    player_id: EntityId
-    description: str = Field(max_length=1000)
-    blame_percent: float = Field(ge=0, le=100)
+    sentences: list[CitedSentence] = Field(min_length=1)
 
 
-class Testimony(Contract):
-    player_id: EntityId
-    source: Literal["evidence-only", "model"]
-    claims: list[Claim] = Field(max_length=100)
-    statement: str = ""
-    rebuttal: bool = False
+class ClipPlan(Contract):
+    evidence_id: EntityId
+    start_second: int = Field(ge=0)
+    end_second: int = Field(ge=0)
 
 
-class Verdict(Contract):
-    goal_id: str
-    match_id: str
-    source: Literal["evidence-only", "model"]
-    testimonies: list[Testimony]
-    accepted_claims: list[Claim]
-    rejected_claims: list[Claim]
-    blame_order: list[Link]
-    reasoning: str
-    recaps: dict[str, str]
-    root_cause_evidence_id: str = ""
+class Highlight(ClipPlan):
+    caption: CitedSentence
+
+
+class Explanation(Contract):
+    goal_id: EntityId
+    match_id: EntityId
+    status: Literal["ready", "pending"]
+    source: Literal["model", "evidence-only"]
+    root_cause_evidence_id: EntityId
+    paragraphs: list[LinkExplanation]
+    root_summary: list[CitedSentence] = Field(min_length=1)
+    highlights: list[Highlight]
+    recaps: dict[str, list[CitedSentence]]
+    blame_order: list[Link] = Field(min_length=1)
     latency_ms: float = 0
     warnings: list[str] = Field(default_factory=list)
 
 
-class JudgeDecision(Contract):
-    accepted_evidence_ids: list[str]
-    rejected_evidence_ids: list[str]
-    root_cause_evidence_id: str
+class ExplainerOutput(Contract):
+    paragraphs: list[LinkExplanation] = Field(min_length=1, max_length=100)
+    root_summary: list[CitedSentence] = Field(min_length=1, max_length=100)
+
+
+class HighlightsPlan(Contract):
+    clips: list[ClipPlan] = Field(min_length=1, max_length=100)
 
 
 class StoryPlan(Contract):
-    evidence_ids: list[str]
+    evidence_ids: list[EntityId]
 
 
 class PersonaPlan(Contract):
@@ -145,10 +155,6 @@ class ReportPlan(Contract):
 
 class NeutralPlan(Contract):
     style: Literal["neutral"]
-
-
-class OrchestrationPlan(Contract):
-    player_ids: list[EntityId] = Field(min_length=1, max_length=3)
 
 
 class StartMatch(Contract):

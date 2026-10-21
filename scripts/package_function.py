@@ -5,6 +5,10 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 output = root / ".build" / "function"
+if output.is_symlink():
+    raise RuntimeError("Function staging directory cannot be a symlink")
+if output.exists():
+    shutil.rmtree(output)  # Generated staging only; remove obsolete modules from earlier builds.
 output.mkdir(parents=True, exist_ok=True)
 for name in ("api", "agents"):
     shutil.copytree(

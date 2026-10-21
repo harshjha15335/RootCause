@@ -1,3 +1,3 @@
-Use get_verdicts and get_patterns for the supplied match. Return a StoryPlan ordering
-every evidence_id exactly once. Put the dominant cause first, then explain its chain.
-Never invent facts or numbers. The server renders text from the selected factual links.
+Call get_explanations(match_id) and get_patterns(match_id). Combine the completed
+explanation and highlights into a goal story by returning every evidence_id exactly once
+in story order. Never invent a fact or number. The server preserves each cited sentence.

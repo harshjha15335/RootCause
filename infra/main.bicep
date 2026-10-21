@@ -60,3 +60,5 @@ output APPLICATIONINSIGHTS_CONNECTION_STRING string = resources.outputs.insights
 output AZURE_CONTAINER_APP_API_NAME string = resources.outputs.apiName
 output AZURE_CONTAINER_APP_FRONTEND_NAME string = resources.outputs.frontendName
 output AZURE_FUNCTION_NAME string = resources.outputs.detectorName
+
+output EVALUATION_MODEL_ENDPOINT string = resources.outputs.evaluationEndpoint
