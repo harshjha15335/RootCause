@@ -8,7 +8,7 @@ team contracts. `debugger/plugin.py` does the conversion, so nothing outside `en
 | Engine format | Model | Sample | Team contract it maps to |
 |---------------|-------|--------|--------------------------|
 | Match event (+ match meta) | `engine/models.py: MatchEvent, MatchMeta` | `samples/engine/match_events.json`, `samples/engine/match_meta.json` | `MatchEvent` (pass/duel/cross/goal only) |
-| Evidence package | `engine/models.py: EvidencePackage` | `samples/engine/evidence.json` (real Debugger output), `samples/engine/evidence_3_links_example.json` (illustrative) | `Evidence`: `samples/engine/evidence_team_contract.json` |
+| Evidence package | `engine/models.py: EvidencePackage` | `samples/engine/evidence.json` (real Debugger output), `samples/engine/evidence_3_links_example.json` (illustrative) | `Evidence` (revised, no `views`): `samples/engine/evidence_team_contract.json` |
 | Ground truth (planted mistakes) | `engine/models.py: GroundTruth` | `samples/engine/ground_truth.json` | none (accuracy test only) |
 
 ## Plugging the Debugger into the backend
@@ -31,9 +31,15 @@ Mapping notes:
   `kickoff` and `half_time`/`full_time` events are not forwarded. A pass from the wide crossing
   area is sent as `cross`. **Open question for Roles 1 and 3:** the UI may want positions every
   second (engine `tick` events) for smooth animation.
-- `blame_percent` = blame share × 100 (sums to 100). `baseline_goals` / `fixed_goals` = goal chance
-  × 200 trials, rounded. `description` and `views` are generated from the bug catalogue and the
-  link's `facts`, with no language model involved.
+- Numbers are actual counts: each of the 200 replays scores or not, so `baseline_goals` /
+  `fixed_goals` are whole goal counts out of 200 (`trials`). `blame_percent` = that link's drop in
+  goals ÷ the sum of drops × 100, from the same counts, so counts, blame and root ordering always
+  agree. A rate that is not a whole count out of 200 is rejected, never rounded.
+- `description` is generated from the bug catalogue and the link's `facts`, with no language model
+  involved. The revised team contract has no `views` field. The plugin adds `views` only if the
+  installed backend's `Evidence` model still has it (the original contract on `main`).
+- Do not publish raw `engine.stream` JSON to the backend's MatchEvent input; publish
+  `team_events(match_id)`. External streams declare full time through the finish endpoint.
 - If no fix lowers the goal chance, `trace` raises an error instead of inventing blame.
 
 ## Conventions
@@ -58,8 +64,8 @@ Mapping notes:
 
 ## Evidence rules (engine format; the plugin carries them into the team contract)
 
-- `baseline_goal_rate` is "the chance this goal happens again" when the same attack is replayed 200
-  times against a re-simulated defence. `fixed_goal_rate` is the same with only that link's mistake
+- `baseline_goal_rate` is the share of 200 replays of the same attack, against a re-simulated
+  defence, in which the goal happens again (always a whole number of goals ÷ 200). `fixed_goal_rate` is the same with only that link's mistake
   fixed. Plain words: "with H3 holding the line, this goal happens 0% of the time instead of 70%".
 - `links` are sorted by `rank`; rank 1 is the root cause (biggest blame share).
 - `blame` values sum to 1 across links (or are all 0 if no fix lowered the goal rate).

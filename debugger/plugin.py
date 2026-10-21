@@ -3,12 +3,15 @@
     DEBUGGER_MODULE=debugger.plugin
 
 trace(event_dict) takes a team-contract goal event (api/contracts.py: MatchEvent) and returns a
-team-contract Evidence dict with source="debugger". The engine is deterministic, so the match is
-rebuilt from its ID: "m-0007" is a free match with seed 7, "p-1012" is
-engine.mistakes.random_plant(1012).
+team-contract Evidence dict with source="debugger". Its numbers are actual goal counts out of
+200 replays; drops, blame and ranking are all derived from those counts.
+
+The engine is deterministic, so the match is rebuilt from its ID: "m-0007" is a free match with
+seed 7, "p-1012" is engine.mistakes.random_plant(1012).
 
 team_events(match_id) gives the match's events in the team contract, for publishing.
-This module only produces plain dicts; it does not import the backend.
+This module produces plain dicts. It only looks at the backend to see whether its Evidence model
+still has the original `views` field (the revised contract forbids it).
 """
 
 from __future__ import annotations
@@ -89,17 +92,44 @@ def trace(event: dict) -> dict:
     return to_team_evidence(ev, event)
 
 
-def to_team_evidence(ev: EvidencePackage, goal_event: dict) -> dict:
-    total = sum(link.drop for link in ev.links)
+def _counts(rate: float, runs: int) -> int:
+    """Replay rates are exact goal counts / runs; recover the integer count."""
+    count = round(rate * runs)
+    if abs(count - rate * runs) > 1e-6:
+        raise ValueError(f"rate {rate} is not a whole number of goals out of {runs}")
+    return count
+
+
+def _backend_has_views() -> bool:
+    """The original team contract required `views`; the revised one forbids it."""
+    try:
+        from api.contracts import Evidence  # the backend, when installed alongside
+    except ImportError:
+        return False
+    return "views" in Evidence.model_fields
+
+
+def to_team_evidence(
+    ev: EvidencePackage, goal_event: dict, include_views: bool | None = None
+) -> dict:
+    """Team-contract Evidence. Counts, drops, blame and ranking all come from the same
+    integer goal counts out of TRIALS replays, so displayed numbers always agree."""
+    if ev.runs_per_link != TRIALS:
+        raise ValueError(f"team contract needs {TRIALS} replays per link, got {ev.runs_per_link}")
+    baseline = _counts(ev.baseline_goal_rate, TRIALS)
+    fixed = [_counts(link.fixed_goal_rate, TRIALS) for link in ev.links]
+    drops = [max(0, baseline - f) for f in fixed]
+    total = sum(drops)
     if not ev.links or total <= 0:
         raise ValueError(
             f"{ev.goal_id}: no detected mistake lowered the goal chance; no blame to assign"
         )
-    percents = [100.0 * link.drop / total for link in ev.links]
-    percents[-1] = 100.0 - sum(percents[:-1])  # exact 100 after float rounding
+    percents = [100.0 * d / total for d in drops]
+    top = max(range(len(percents)), key=lambda i: percents[i])
+    percents[top] += 100.0 - sum(percents)  # float residual onto the largest share: sums to 100
 
-    links, views = [], {}
-    for link, pct in zip(ev.links, percents):
+    links = []
+    for link, f, pct in zip(ev.links, fixed, percents, strict=True):
         bug = CATALOGUE[link.bug]
         facts = "; ".join(f"{k.replace('_', ' ')}: {v}" for k, v in link.facts.items())
         description = f"{bug.name}: {bug.description}" + (f" ({facts})" if facts else "")
@@ -110,24 +140,28 @@ def to_team_evidence(ev: EvidencePackage, goal_event: dict) -> dict:
                 "second": link.clock_s,
                 "bug_type": link.bug,
                 "description": description,
-                "blame_percent": round(pct, 6),
-                "baseline_goals": round(ev.baseline_goal_rate * TRIALS),
-                "fixed_goals": round(link.fixed_goal_rate * TRIALS),
+                "blame_percent": pct,
+                "baseline_goals": baseline,
+                "fixed_goals": f,
                 "trials": TRIALS,
             }
         )
-        views.setdefault((link.player_id, link.clock_s), []).append(description)
-    return {
+    out = {
         "goal_id": ev.goal_id,
         "match_id": ev.match_id,
         "source": "debugger",
         "goal": goal_event,
         "links": links,
-        "views": [
-            {"player_id": p, "second": s, "observations": obs} for (p, s), obs in views.items()
-        ],
         "root_cause_evidence_id": links[0]["evidence_id"],
     }
+    if include_views is None:
+        include_views = _backend_has_views()
+    if include_views:  # transitional: only for the original contract on main
+        out["views"] = [
+            {"player_id": x["player_id"], "second": x["second"], "observations": [x["description"]]}
+            for x in {(x["player_id"], x["second"]): x for x in links}.values()
+        ]
+    return out
 
 
 def _point(xy) -> dict:

@@ -28,6 +28,13 @@ def test_goal_rate_is_deterministic_and_bounded():
     assert a == b and 0.0 <= a <= 1.0
 
 
+def test_goal_count_is_a_whole_count_matching_the_rate():
+    m, plan = _plan()
+    n = counterfactual.goal_count(plan, m.ctx, 40, seed=2)
+    assert isinstance(n, int) and 0 <= n <= 40
+    assert counterfactual.goal_rate(plan, m.ctx, 40, seed=2) == n / 40
+
+
 def test_baseline_mostly_reproduces_the_goal():
     m, plan = _plan()
     assert counterfactual.goal_rate(plan, m.ctx, 50, seed=1) > 0.3

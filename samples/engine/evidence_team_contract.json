@@ -200,18 +200,9 @@
       "bug_type": "LATE_STEP_UP",
       "description": "Late step-up: A defender stays behind the defensive line and plays a runner onside. (metres behind line: 5.8)",
       "blame_percent": 100.0,
-      "baseline_goals": 140,
+      "baseline_goals": 137,
       "fixed_goals": 0,
       "trials": 200
-    }
-  ],
-  "views": [
-    {
-      "player_id": "H3",
-      "second": 1145,
-      "observations": [
-        "Late step-up: A defender stays behind the defensive line and plays a runner onside. (metres behind line: 5.8)"
-      ]
     }
   ],
   "root_cause_evidence_id": "p-1012-g2-l1"

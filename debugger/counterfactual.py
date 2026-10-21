@@ -12,9 +12,10 @@ Pearl's three steps, applied to one recorded attack:
    noise) and see if the attack still reaches the shot; the final shot scores with
    probability xG_new / xG_orig.
 
-The result is "the chance this goal still happens": near 1 with nothing fixed (only defensive
-movement noise changes), lower when a fix makes a pass offside, a lane busier, a shot more
-pressed, or wins the ball.
+Each replay ends in a goal or not, so the result is an actual count out of the runs (e.g. 140 of
+200). Rates, drops, ranking and blame are all derived from those same counts. The count is near
+the run total with nothing fixed (only defensive movement noise changes), and lower when a fix
+makes a pass offside, a lane busier, a shot more pressed, or wins the ball.
 
 Baseline and every fixed variant use the SAME seed per run and per second (common random
 numbers), so a difference comes from the fix, not from luck.
@@ -122,8 +123,8 @@ def replay_once(
     ctx: MatchContext,
     run_seed: list[int],
     intervention: Intervention | None = None,
-) -> float:
-    """Chance (0..1) that the recorded goal happens again in one replay of the defence."""
+) -> bool:
+    """Does the recorded goal happen again in this replay of the defence?"""
     wd = ctx.w["decisions"]
     st = plan.snapshot.copy()
     idx = pitch.TEAM_IDX[plan.team]
@@ -142,7 +143,7 @@ def replay_once(
             d = pitch.attack_dir(team_c, st.period)
             feats = goal_model.shot_features(st.pos[c], d, st.pos[pitch.TEAM_IDX[1 - team_c]])
             xg_new = goal_model.goal_probability(feats, ctx.w["goal_model"])
-            return min(1.0, xg_new / max(s.p_orig, 1e-9))
+            return u < min(1.0, xg_new / max(s.p_orig, 1e-9))
 
         if s.type == "hold":
             # a defender who is now close enough (and wasn't originally) may win the ball
@@ -153,7 +154,7 @@ def replay_once(
             ):
                 ch = _nearest_opponent(st.pos, c)
                 if not decisions.duel_outcome(st, c, ch, rng.random() < wd["duel_win_prob"]):
-                    return 0.0
+                    return False
 
         elif s.type == "duel":
             assert s.receiver is not None
@@ -167,10 +168,10 @@ def replay_once(
             assert s.receiver is not None
             if s.outcome == "complete":
                 if decisions.is_offside(st, team_c, s.receiver):
-                    return 0.0
+                    return False
                 p_new = decisions.pass_success_prob(st, ctx, c, s.receiver, _pressure(st.pos, c))
                 if u >= p_new / max(s.p_orig, 1e-9):
-                    return 0.0
+                    return False
             give_ball(st, s.carrier_after)
 
         elif (
@@ -188,19 +189,30 @@ def replay_once(
                 and not s.blocked_orig
                 and not decisions.duel_outcome(st, c, blocker, rng.random() < wd["duel_win_prob"])
             ):
-                return 0.0
+                return False
 
         if st.carrier != s.carrier_after:
-            return 0.0  # the attack went differently this time
+            return False  # the attack went differently this time
         st.clock_s += 1
         if st.overrides:
             st.overrides = [o for o in st.overrides if o.until_s >= st.clock_s]
-    return 0.0
+    return False
 
 
 def _nearest_opponent(pos: np.ndarray, carrier: int) -> int:
     opp_idx = pitch.TEAM_IDX[1 - pitch.team_of(carrier)]
     return int(opp_idx[int(np.argmin(np.hypot(*(pos[opp_idx] - pos[carrier]).T)))])
+
+
+def goal_count(
+    plan: AttackPlan,
+    ctx: MatchContext,
+    runs: int,
+    seed: int,
+    intervention: Intervention | None = None,
+) -> int:
+    """In how many of `runs` replays the goal still happens (an actual count, not an estimate)."""
+    return sum(replay_once(plan, ctx, [ctx.seed, seed, r], intervention) for r in range(runs))
 
 
 def goal_rate(
@@ -210,8 +222,5 @@ def goal_rate(
     seed: int,
     intervention: Intervention | None = None,
 ) -> float:
-    """Mean over `runs` replays of the chance the goal still happens."""
-    total = 0.0
-    for r in range(runs):
-        total += replay_once(plan, ctx, [ctx.seed, seed, r], intervention)
-    return total / runs
+    """goal_count / runs: the share of replays in which the goal still happens."""
+    return goal_count(plan, ctx, runs, seed, intervention) / runs

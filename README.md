@@ -90,8 +90,9 @@ has one active owner; a distributed multi-replica fanout layer is not implemente
 
 Local mode uses volatile memory and evidence-only agents. The replay's counterfactual
 numbers/causal chain are fixed sample data, not a simulation or measured accuracy result.
-Only positions vary with seed. Role 2's engine and Debugger now live in `engine/` and `debugger/`
-(see *Engine & Debugger* below); set `DEBUGGER_MODULE=debugger.plugin` to use them. A direct
+Only positions vary with seed. The lightweight backend demo uses fixed evidence. The separate
+Role 2 engine and Debugger are included in `engine/` and `debugger/`. Their adapter is
+`debugger.plugin`; integration with the explanation contract must pass the combined tests. A direct
 `POST /ingest/evidence` route supports recorded traces when Event Hubs is unavailable.
 
 Azure API routes require v2 Entra delegated access tokens with the Root Cause scope;
@@ -154,11 +155,14 @@ python -m engine.mistakes --bug LATE_STEP_UP --player H3 --minute 30 --seed 7
 python -m engine.stream matches/m-0007.events.jsonl --ws --speed 10  # ws://localhost:8765
 ```
 
-**Backend integration.** `DEBUGGER_MODULE=debugger.plugin`. `debugger.plugin.trace(event_dict)`
-takes a team-contract goal event and returns a team-contract `Evidence` with `source="debugger"`
-(tested against `api/ingestion.py` in `tests/test_plugin.py`). Matches are rebuilt from their ID:
-`m-0007` is a free match with seed 7, `p-1012` has one planted mistake.
-`debugger.plugin.team_events(match_id)` returns a match's events for publishing.
+**Backend integration.** `debugger.plugin.trace(event_dict)` takes a team-contract goal event and
+returns a team-contract `Evidence` with `source="debugger"` (tested against `api/ingestion.py` in
+`tests/test_plugin.py`). Once the combined tests and the Function packaging pass, the real-goal
+ingestion configuration is `DEBUGGER_MODULE=debugger.plugin`. Setting this variable alone does
+**not** replace the `/matches` fixture generator with a real engine stream. Matches are rebuilt from
+their ID: `m-0007` is a free match with seed 7, `p-1012` has one planted mistake.
+`debugger.plugin.team_events(match_id)` returns a match's converted events for publishing; do not
+publish raw `engine.stream` JSON to the backend.
 
 **Match engine.** A second-by-second state machine. Players move toward formation slots that shift
 with the ball; the back four hold a line, man-mark near their own goal and press; offside is
@@ -183,7 +187,13 @@ the ground truth.
      formula against the replayed defence.
    - **Action.** Fix one mistake.
    - **Prediction.** Re-simulate the defenders. The mean is the chance the goal still happens.
-3. Blame = that link's drop in goal chance ÷ the sum of drops. The biggest share is the root cause.
+3. Each replay either scores or not, so every number is an actual count out of 200 (e.g. 140 with
+   nothing fixed, 20 with the late step-up fixed). Blame = that link's drop in goals ÷ the sum of
+   drops, computed from the same counts. The biggest share is the root cause.
 
-**Accuracy.** _Pending: `eval/accuracy.py` will report top-1 / top-3 accuracy on 100 planted goals.
-Only the LATE_STEP_UP detector exists so far; fixes exist for all five bug types._
+**Accuracy and limitations.** _Not yet measured._ `eval/accuracy.py` (top-1 / top-3 root-cause
+accuracy on 100 planted goals) is unfinished. Only the LATE_STEP_UP detector exists so far; fixes
+exist for all five bug types. The Fabric exporter and an Event Hubs producer for the engine are
+placeholders. Keep measured results separate: local fixture sentence grounding
+(`eval/agents_eval.py`) is not engine root-cause accuracy, and neither proves live Foundry or Azure
+deployment.

@@ -13,6 +13,9 @@ RUN pip install --no-index --find-links=/wheels --no-cache-dir --require-hashes 
 FROM ${ROOTCAUSE_DEPENDENCY_STAGE} AS runtime
 COPY --chown=10001:10001 api api
 COPY --chown=10001:10001 agents agents
+COPY --chown=10001:10001 engine engine
+COPY --chown=10001:10001 debugger debugger
+COPY --chown=10001:10001 config config
 RUN useradd --create-home --uid 10001 appuser
 USER appuser
 EXPOSE 8000

@@ -5,7 +5,7 @@
   evidence.json       contract 2: the Debugger's real output for that goal
   ground_truth.json   the planted mistake (internal; used by the accuracy test)
   evidence_team_contract.json   the same evidence converted by debugger.plugin to the team
-                      contract (api/contracts.py: Evidence), as the backend receives it
+                      Evidence contract as revised by Role 3 (no `views` field)
 
 samples/engine/evidence_3_links_example.json is hand-written (illustrative numbers) to show a longer chain.
 Samples are part of the frozen contracts: regenerate only when docs/ENGINE.md changes.
@@ -41,7 +41,7 @@ def main() -> None:
     goal_event = next(
         x for e in m.events if e.seq == gt.goal_seq and (x := plugin.team_event(e, m)) is not None
     )
-    team_ev = plugin.to_team_evidence(ev, goal_event)
+    team_ev = plugin.to_team_evidence(ev, goal_event, include_views=False)
     (out / "evidence_team_contract.json").write_text(
         json.dumps(team_ev, indent=2), encoding="utf-8"
     )
