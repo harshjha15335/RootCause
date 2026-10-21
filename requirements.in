@@ -15,6 +15,8 @@ agent-framework-openai
 azure-ai-contentsafety==1.0.0
 azure-monitor-opentelemetry==1.8.11
 pyright
+numpy
+pyyaml
 aiohttp
 azure-cognitiveservices-speech
 azure-ai-evaluation==1.18.8

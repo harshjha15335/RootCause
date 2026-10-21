@@ -5,7 +5,7 @@ subscription was supplied, so live service validation and deployment remain bloc
 
 | Check | Outcome |
 | --- | --- |
-| Python suite | 45 tests passed: parallel Explainer/Highlights, Recap barrier, three Persona modes, stage failures, global deadline, scoped tools, actual sentence/citation validation, durable notifications/leases, Function deduplication, Cosmos document/query shape, JWT signature/claims, media fallback, Fabric reuse, Event Hubs routing and checkpoint order |
+| Python suite | 80 tests passed: engine determinism, planted mistakes, counterfactual counts, real Debugger ingestion, real trace-to-explanation with model failures, parallel Explainer/Highlights, Recap barrier, three Persona modes, scoped tools, sentence/citation validation, durable notifications/leases, Function deduplication, Cosmos, JWT, media fallback, Fabric reuse, Event Hubs routing and checkpoint order |
 | Actual Framework/OpenAI request protocol | Passed with HTTP mocked at the network boundary; not a live model call |
 | Ruff lint/format and Pyright | Passed |
 | Frontend ESLint / JavaScript syntax | Passed |
@@ -14,6 +14,7 @@ subscription was supplied, so live service validation and deployment remain bloc
 | Frontend Docker image | Built; static console, JavaScript, and injected API configuration validated by internal HTTP requests |
 | Bicep 0.48.1 compilation | Passed; no subscription-side validation or deployment performed |
 | Azure Developer CLI manifest | `azd show` parsed all three services; packaging helper staged shared Function code |
+| Function deployment layout | Includes engine, debugger and weights; isolated staged plugin import and config load passed; deleted Player/Judge modules absent |
 | Azure CLI / azd | Installed and version-checked; no login/account available |
 | Current source secret scan | Gitleaks passed with values redacted; dependency/build caches excluded |
 | Full Git history scan | Scanned locally after the initial commit; CI also scans full history |
@@ -23,7 +24,8 @@ subscription was supplied, so live service validation and deployment remain bloc
 | Foundry groundedness upload / 100 planted-goal evaluation | Unrun: live project and Role 2 dataset unavailable |
 | Fabric workspace/lakehouse/access | Helper tested with mocks; live capacity and tenant access unavailable |
 | GitHub deployment workflow / settings / project board | Files prepared; hosted execution and remote administration are not validated by local checks |
-| Role 1 UI / Role 2 engine integration | Missing their actual components and confirmed contracts |
+| Role 2 engine integration | Real `p-1012` goal passes revised backend evidence validation and cited explanation/highlight/Persona fallback tests; integer replay counts retained |
+| Role 1 UI integration | Finished Role 1 UI unavailable; lightweight integration console remains the local client |
 | VS Code Copilot usage / demo recording | Not performed and not claimed |
 
 Initial Docker checks found source ownership and template-directory permissions that

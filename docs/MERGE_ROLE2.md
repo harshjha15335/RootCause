@@ -1,5 +1,10 @@
 # Role 2 engine and Role 3 explanation pipeline: merge guide
 
+> Historical guide: the conflicts and review below describe the original `aa60252`
+> snapshot. The subsequent `5cfca1c` update and integration results are recorded in
+> [MERGE_RESULT.md](MERGE_RESULT.md). Preserve this guide as the original analysis;
+> use the result document for current status.
+
 Prepared on 21 October 2026. This document describes the inspected revisions below;
 recheck the diff if either branch advances. It is a merge proposal, not a record of a
 completed merge or deployment.
@@ -56,7 +61,7 @@ end of the original file and the appended paragraph as an overlapping merge regi
 The inspected conflict is:
 
 ```text
-<<<<<<< OUR LOCAL ROLE 3 VERSION
+    <<<<<<< OUR LOCAL ROLE 3 VERSION
 Read docs/SPEC.md before changing contracts. Implement the explanation pipeline:
 Orchestrator → parallel Explainer/Highlights → Recap → parallel Persona modes.
 Use synthetic matches and invented players only. Numerical attribution belongs to Role 2.
@@ -66,7 +71,7 @@ trace/blame if any model fails. Evaluate actual displayed prose and citation bin
 not a filtered set of accepted claims. Never commit credentials or invent live service,
 evaluation, deployment or Copilot-usage results. Run pytest, Ruff and Pyright from the
 repository root. Local operation must require no cloud credentials.
-=======
+    =======
 Read docs/SPEC.md before editing integration contracts. Use synthetic data and invented
 players only. Do not invent attribution numbers or present fixtures as measured results.
 Bind player tools to one player ID. Check every structured claim against its evidence.
@@ -81,7 +86,7 @@ Every tunable number lives in `config/weights.yaml`. Each bug type needs a match
 Override hook, trigger (`engine/mistakes.py`), detector (`debugger/chain.py`) and fix
 (`debugger/fixes.py`). Engine formats are in `docs/ENGINE.md`; `debugger/plugin.py` converts them
 to the team contracts in `docs/SPEC.md`.
->>>>>>> ROLE 2 VERSION
+    >>>>>>> ROLE 2 VERSION
 ```
 
 ### Exact recommended final content
@@ -118,13 +123,13 @@ engine constant has already been moved into YAML or that every detector exists.
 ### Exact conflict
 
 ```text
-<<<<<<< OUR LOCAL ROLE 3 VERSION
+    <<<<<<< OUR LOCAL ROLE 3 VERSION
 
 *.evaluation.sentences.jsonl
-=======
+    =======
 matches/
 exports/*.parquet
->>>>>>> ROLE 2 VERSION
+    >>>>>>> ROLE 2 VERSION
 ```
 
 ### Exact recommended final content

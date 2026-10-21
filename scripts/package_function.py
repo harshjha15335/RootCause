@@ -10,7 +10,7 @@ if output.is_symlink():
 if output.exists():
     shutil.rmtree(output)  # Generated staging only; remove obsolete modules from earlier builds.
 output.mkdir(parents=True, exist_ok=True)
-for name in ("api", "agents"):
+for name in ("api", "agents", "engine", "debugger", "config"):
     shutil.copytree(
         root / name,
         output / name,

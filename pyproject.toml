@@ -16,4 +16,4 @@ line-length = 100
 venvPath = "."
 venv = ".venv"
 typeCheckingMode = "basic"
-include = ["api", "agents", "functions", "tests", "scripts", "eval"]
+include = ["api", "agents", "functions", "tests", "scripts", "eval", "engine", "debugger", "data_export"]

@@ -1,0 +1,17 @@
+[
+  {
+    "match_id": "p-1012",
+    "seed": 1012,
+    "goal_id": "p-1012-g2",
+    "goal_seq": 1170,
+    "goal_clock_s": 1162,
+    "scoring_team": "AWAY",
+    "planted_at_s": 1144,
+    "root_cause_clock_s": 1144,
+    "root_cause_player_id": "H3",
+    "bug": "LATE_STEP_UP",
+    "params": {
+      "metres_behind_line": 4.0
+    }
+  }
+]

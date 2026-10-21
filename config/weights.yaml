@@ -1,0 +1,84 @@
+# Every tunable number in Root Cause's engine and Debugger lives here.
+# This file is shown in the README and in Analyst mode so judges can audit it.
+# Units: metres, seconds, probabilities in [0, 1].
+
+movement:
+  speed_mps: 5.0            # max off-ball speed per second
+  press_speed_mps: 6.5      # max speed of a player pressing the ball
+  noise_m: 0.35             # per-second positional noise (std dev)
+  center_base: 0.22         # team block centre (0 = own goal, 1 = opponent goal) when ball at own goal
+  center_ball: 0.50         # how far the block follows the ball's depth
+  poss_push: 0.06           # extra push forward when in possession
+  def_drop: 0.04            # extra drop back when out of possession
+  compact_in: 0.80          # vertical spread of the shape in possession
+  compact_out: 0.60         # vertical spread out of possession
+  ball_shift: 0.25          # how far the shape slides toward the ball's side
+  gk_ball: 0.08             # goalkeeper steps up with the ball
+  line_gap: 0.06            # defensive line stays this far goal-side of the ball
+  line_min: 0.06            # lowest defensive line (fraction of pitch from own goal)
+  mark_zone: 0.30           # ball closer than this to own goal (fraction of pitch) -> man-marking; else hold the line
+  mark_pull: 0.7            # how far a marker moves from his slot toward his attacker
+  marking_lost_m: 5.0       # MARKING_LOST: defender drifts this far off his runner, toward the ball
+  mark_goal_side_m: 1.5     # markers sit this far goal-side of their attacker
+  onside_margin_m: 0.5      # attackers aim to stay this far onside
+  own_third_extra_pressers: 2  # extra players close the ball down in their own third
+  wide_m: 20.0              # ball this far from the centre line of the pitch counts as wide (crossing area)
+
+decisions:
+  act_prob: 0.14            # chance per second the carrier does something (otherwise holds)
+  act_prob_pressed: 0.3    # same, when an opponent is within pressed_m
+  pressed_m: 3.0
+  duel_radius_m: 1.6        # an opponent this close can start a duel
+  duel_prob: 0.15           # chance per second a duel starts when an opponent is that close
+  duel_win_prob: 0.50       # carrier's chance of winning a duel
+  pass_prob: 0.68           # pass vs carry, before team directness
+  carry_min_m: 2.0
+  carry_max_m: 6.0
+  carry_block_m: 2.5        # carrying to within this of an opponent becomes a duel
+  shot_max_dist_m: 32.0
+  shot_k: 1.6               # shot chance per second = min(shot_max_prob, shot_k * xG * (0.5 + team risk))
+  shot_max_prob: 0.8
+  space_m: 8.0              # carrier with no opponent this close, in the attacking half, is "in space"
+  act_prob_space: 0.6       # ... then acts most seconds
+  carry_prob_space: 0.6     # ... and usually runs with the ball
+  shot_blocked_prob: 0.30   # non-goal shots: blocked / saved / off target split
+  shot_saved_prob: 0.35
+
+passing:
+  receiver_fwd: 1.2         # receiver choice: reward forward progress (per 10 m)
+  receiver_dist: 0.9        # penalty per 10 m of pass length
+  receiver_open: 1.0        # reward for a receiver with space (up to 6 m)
+  max_dist_m: 45.0
+  cross_zone: 0.72          # crosses come from beyond this depth, in the wide area (movement.wide_m)
+  cross_box_bonus: 2.0      # receiver choice: bonus for team-mates in the box when crossing
+  cross_closed: 0.6         # cross success penalty per metre the crosser is closed down (within 4 m)
+  lane_width_m: 2.0         # an opponent this close to the pass line is "in the lane"
+  success_a: 3.85            # pass success: sigmoid(a - b*dist - c*lane - d*receiver_pressure - e*passer_pressure)
+  success_b: 0.055
+  success_c: 0.9
+  success_d: 0.35          # receiver pressure: (3 - nearest opponent to receiver) metres
+  success_e: 0.25          # passer pressure: (3 - nearest opponent to passer) metres
+
+goal_model:
+  # goal probability = 1 / (1 + exp(-(w0 + w1*angle - w2*distance - w3*blockers - w4*pressure)))
+  # angle: radians between the posts seen from the ball; distance: metres to goal centre;
+  # blockers: opponents (incl. goalkeeper) inside the ball-post-post triangle;
+  # pressure: (3 - nearest opponent distance) / 3, clipped to [0, 1].
+  w0: -2.2
+  w1: 1.60
+  w2: 0.11
+  w3: 0.35
+  w4: 0.60
+  target_mean: 0.10         # calibration target for an average shot
+
+debugger:
+  window_s: 25              # how far back from the goal the chain walker looks
+  max_links: 6
+  runs: 200                 # counterfactual replays per link
+  max_trace_s: 3.0          # performance target per goal
+
+realism:                    # checked by tests/test_realism.py
+  events: [2000, 3000]
+  pass_accuracy: [0.75, 0.85]
+  shots: [20, 28]
+  total_xg: [1.0, 3.5]

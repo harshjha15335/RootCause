@@ -1,0 +1,249 @@
+{
+  "$defs": {
+    "PlayerPos": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "\"H1\"..\"H11\" or \"A1\"..\"A11\"; the number is the shirt number",
+          "title": "Id",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "x",
+        "y"
+      ],
+      "title": "PlayerPos",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "description": "Pitch coordinates in metres. Pitch is 105 x 68; (0, 0) is a corner flag.\nHOME attacks towards x = 105 in period 1 and towards x = 0 in period 2.",
+      "properties": {
+        "x": {
+          "maximum": 105,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "Score": {
+      "additionalProperties": false,
+      "properties": {
+        "HOME": {
+          "default": 0,
+          "title": "Home",
+          "type": "integer"
+        },
+        "AWAY": {
+          "default": 0,
+          "title": "Away",
+          "type": "integer"
+        }
+      },
+      "title": "Score",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One event. At least one event is emitted every match second (a \"tick\" if nothing\nelse happened), so the stream always carries all 22 positions each second.",
+  "properties": {
+    "match_id": {
+      "title": "Match Id",
+      "type": "string"
+    },
+    "seq": {
+      "description": "strictly increasing within a match",
+      "title": "Seq",
+      "type": "integer"
+    },
+    "clock_s": {
+      "description": "seconds since kick-off, continuous across halves (0..5400)",
+      "minimum": 0,
+      "title": "Clock S",
+      "type": "integer"
+    },
+    "period": {
+      "enum": [
+        1,
+        2
+      ],
+      "title": "Period",
+      "type": "integer"
+    },
+    "type": {
+      "enum": [
+        "kickoff",
+        "tick",
+        "pass",
+        "carry",
+        "duel",
+        "shot",
+        "goal",
+        "half_time",
+        "full_time"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "team": {
+      "anyOf": [
+        {
+          "enum": [
+            "HOME",
+            "AWAY"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "team in possession / acting team",
+      "title": "Team"
+    },
+    "player_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "ball carrier / acting player",
+      "title": "Player Id"
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "enum": [
+            "complete",
+            "incomplete",
+            "offside",
+            "won",
+            "lost",
+            "goal",
+            "saved",
+            "blocked",
+            "off_target"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Outcome"
+    },
+    "ball": {
+      "$ref": "#/$defs/Point"
+    },
+    "end": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Point"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "where the ball ended (pass, carry, shot)"
+    },
+    "receiver_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "intended receiver of a pass",
+      "title": "Receiver Id"
+    },
+    "possession_id": {
+      "description": "increments each time possession changes team",
+      "title": "Possession Id",
+      "type": "integer"
+    },
+    "players": {
+      "items": {
+        "$ref": "#/$defs/PlayerPos"
+      },
+      "maxItems": 22,
+      "minItems": 22,
+      "title": "Players",
+      "type": "array"
+    },
+    "pressure_m": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "distance from ball carrier to nearest opponent",
+      "title": "Pressure M"
+    },
+    "xg": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "goal probability, shots only",
+      "title": "Xg"
+    },
+    "score": {
+      "$ref": "#/$defs/Score"
+    }
+  },
+  "required": [
+    "match_id",
+    "seq",
+    "clock_s",
+    "period",
+    "type",
+    "team",
+    "player_id",
+    "ball",
+    "possession_id",
+    "players",
+    "pressure_m",
+    "score"
+  ],
+  "title": "MatchEvent",
+  "type": "object"
+}
