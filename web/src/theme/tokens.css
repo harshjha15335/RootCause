@@ -1,0 +1,27 @@
+/*
+ * Root Cause design tokens. Every colour means something:
+ *   turf   the floodlit pitch at night; all surfaces are cut from it
+ *   chalk  pitch-line white; text, lines, and anything neutral or "fixed"
+ *   flare  the bug. Only ever marks a mistake, the causal thread, or the root cause.
+ *   kits   come from the match data (MatchMeta), muted so they never compete with flare
+ * Stored as "r g b" so Tailwind can apply alpha.
+ */
+:root {
+  --turf-deep: 15 30 25;     /* #0f1e19 page */
+  --turf: 21 40 33;          /* #152821 panels */
+  --turf-raised: 30 54 45;   /* #1e362d cards, hover */
+  --turf-edge: 52 82 70;     /* #345246 hairlines */
+  --chalk: 238 240 230;      /* #eef0e6 */
+  --chalk-dim: 178 192 182;  /* #b2c0b6 secondary text, 7.9:1 on turf */
+  --chalk-faint: 140 160 150;/* #8ca096 tertiary, 5:1 on turf */
+  --flare: 255 138 61;       /* #ff8a3d the bug */
+  --flare-ink: 38 16 4;      /* text on flare */
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --header-h: 64px;
+  --replay-h: 64px;
+  color-scheme: dark;
+}

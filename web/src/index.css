@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: rgb(var(--turf-deep));
+    color: rgb(var(--chalk));
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+    scrollbar-color: rgb(var(--turf-edge)) rgb(var(--turf-deep));
+  }
+  body {
+    overflow-x: clip;
+    font-feature-settings: "ss01";
+  }
+  ::selection {
+    background: rgb(var(--chalk));
+    color: rgb(var(--turf-deep));
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--chalk));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button, [role="button"], [role="slider"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  /* press feedback: `scale` composes with any translate already on the element */
+  .rc-press {
+    transition-property: color, background-color, box-shadow, opacity, scale;
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-out);
+  }
+  .rc-press:active:not(:disabled) {
+    scale: 0.97;
+  }
+  .rc-spin {
+    animation: rc-spin 0.8s linear infinite;
+  }
+  .rc-blink {
+    animation: rc-blink 1.6s var(--ease-in-out) infinite;
+  }
+  .rc-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: -1;
+    animation: rc-draw 1.4s var(--ease-out) 0.2s forwards;
+    /* drawn backward: from the goal to the root cause */
+    transform-box: fill-box;
+  }
+}
+
+@keyframes rc-spin {
+  to { rotate: 360deg; }
+}
+@keyframes rc-blink {
+  50% { opacity: 0.25; }
+}
+@keyframes rc-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rc-draw { stroke-dashoffset: 0; }
+}
