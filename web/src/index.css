@@ -13,7 +13,7 @@
   }
   body {
     overflow-x: clip;
-    font-feature-settings: "ss01";
+    font-feature-settings: "ss01", "cv11";
   }
   ::selection {
     background: rgb(var(--chalk));
@@ -33,6 +33,29 @@
   button, [role="button"], [role="slider"] {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /* Instrument Serif has one weight: emphasis is size and italic, never bold or capitals */
+  .font-display {
+    font-weight: 400 !important;
+    text-transform: none !important;
+    letter-spacing: -0.02em;
+    font-feature-settings: "lnum";
+  }
+  .rc-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: rgb(var(--chalk-faint));
+  }
+  .rc-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: currentColor;
   }
 }
 
@@ -61,6 +84,29 @@
   }
 }
 
+.rc-rise {
+  transform: translateY(110%);
+  animation: rc-rise 1.15s var(--ease-out) forwards;
+}
+@keyframes rc-rise {
+  to { transform: none; }
+}
+.rc-fade-in {
+  opacity: 0;
+  animation: rc-fade-in 1.2s var(--ease-out) forwards;
+}
+@keyframes rc-fade-in {
+  to { opacity: 1; }
+}
+.rc-marquee {
+  display: flex;
+  width: max-content;
+  animation: rc-marquee 42s linear infinite;
+}
+@keyframes rc-marquee {
+  to { transform: translateX(-50%); }
+}
+
 @keyframes rc-spin {
   to { rotate: 360deg; }
 }
@@ -78,9 +124,14 @@
     transition-duration: 0.01ms !important;
   }
   .rc-draw { stroke-dashoffset: 0; }
+  .rc-rise { transform: none; }
+  .rc-fade-in { opacity: 1; }
+  .rc-marquee { animation: none; }
 }
 
-/* Devanagari needs room for its matras above and below; the condensed display leading would clip them */
+/* Devanagari has no serif here; it needs room for its matras above and below */
 :lang(hi) .font-display {
-  line-height: 1.12 !important;
+  font-family: "Noto Sans Devanagari", sans-serif;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
 }

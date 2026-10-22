@@ -21,7 +21,7 @@ function Segmented<T extends string>({
   id: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="relative flex rounded-full bg-turf-deep p-1 ring-1 ring-turf-edge">
+    <div role="radiogroup" aria-label={label} className="relative flex rounded-full p-1 ring-1 ring-inset ring-turf-edge">
       {options.map((o) => {
         const on = o.value === value;
         return (
@@ -44,7 +44,7 @@ function Segmented<T extends string>({
             }}
             data-v={o.value}
             tabIndex={on ? 0 : -1}
-            className={`rc-press relative z-10 min-h-[34px] rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 ease-out ${on ? "text-turf-deep" : "text-chalk-dim hover:text-chalk"}`}
+            className={`rc-press relative z-10 min-h-[34px] rounded-full px-3 text-[13px] font-medium transition-colors duration-300 ease-out ${on ? "text-turf-deep" : "text-chalk-faint hover:text-chalk"}`}
           >
             {on && (
               <motion.span
@@ -147,7 +147,7 @@ export function VoiceButton() {
           setState("off");
         }
       }}
-      className="rc-press inline-flex min-h-[42px] items-center gap-2 rounded-full bg-turf-deep px-3 text-[13px] font-semibold text-chalk-dim ring-1 ring-turf-edge transition-colors duration-150 ease-out enabled:hover:text-chalk disabled:cursor-not-allowed disabled:opacity-60"
+      className="rc-press inline-flex min-h-[42px] items-center gap-2 rounded-full px-3 text-[13px] font-medium text-chalk-faint ring-1 ring-inset ring-turf-edge transition-colors duration-150 ease-out enabled:hover:text-chalk disabled:cursor-not-allowed disabled:opacity-60"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
         <path d="M2.5 6v4h2.5l3.5 3V3L5 6z" fill="currentColor" stroke="none" />

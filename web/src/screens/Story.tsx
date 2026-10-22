@@ -13,6 +13,7 @@ import { useExplanation, useLatestGoal, useSelectedEvidence } from "../store/sel
 import { useTrace } from "../store/traceStore";
 import { useUi } from "../store/uiStore";
 import { ReplayGrid } from "./Counterfactual";
+import { RiseLines } from "../lib/motion";
 import { Sentences } from "./RootCause";
 
 const CHAPTERS = 6;
@@ -139,7 +140,7 @@ export function StoryPanel() {
             type="button"
             onClick={next}
             disabled={!canNext}
-            className="rc-press ml-auto inline-flex min-h-[46px] items-center gap-2 rounded-full bg-chalk px-6 text-[15px] font-bold text-turf transition-[opacity,background-color] duration-150 disabled:opacity-40"
+            className="rc-press ml-auto inline-flex min-h-[48px] items-center gap-2 rounded-full bg-chalk px-6 text-[15px] font-semibold text-turf transition-[opacity,background-color] duration-150 disabled:opacity-40"
           >
             {chapter === 0 ? t("story.skipAhead") : phase === "goal" || phase === "tracing" ? t("story.working") : t("story.next")}
             {canNext && (
@@ -189,11 +190,19 @@ function Rail({ chapter, hold, onDone }: { chapter: number; hold: number; onDone
 }
 
 function Title({ children }: { children: ReactNode }) {
-  return <h3 className="mt-1 font-display text-[clamp(40px,5vw,60px)] font-extrabold uppercase leading-[0.9] text-chalk">{children}</h3>;
+  return (
+    <h3 className="mt-2 font-display text-[clamp(48px,5vw,72px)] leading-[0.95] text-chalk">
+      <RiseLines lines={[children]} delay={0.05} />
+    </h3>
+  );
 }
 
 function Body({ children }: { children: ReactNode }) {
-  return <p className="mt-3 max-w-[48ch] text-[17px] leading-[1.6] text-chalk sm:text-[18px]">{children}</p>;
+  return (
+    <p className="rc-fade-in mt-5 max-w-[48ch] text-[17px] leading-[1.65] text-chalk-dim sm:text-[18px]" style={{ animationDelay: "0.25s" }}>
+      {children}
+    </p>
+  );
 }
 
 function Chapter({ chapter, ev }: { chapter: number; ev: Evidence | null }) {

@@ -16,26 +16,26 @@ export function makePitchTexture(margin = 6): CanvasTexture {
   const X = (m: number) => (m + margin) * px;
   const Y = (m: number) => (m + margin) * px;
 
-  g.fillStyle = "#1c3a2c";
+  g.fillStyle = "#0f120f";
   g.fillRect(0, 0, c.width, c.height);
   // mown stripes, 12 across the length
   const band = PITCH_L / 12;
   for (let i = 0; i < 12; i++) {
-    g.fillStyle = i % 2 ? "#21452f" : "#1f4130";
+    g.fillStyle = i % 2 ? "#131813" : "#111511";
     g.fillRect(X(i * band), Y(0), band * px + 1, PITCH_W * px);
   }
   // floodlight pools: four soft lifts at the corners of the stand roofs
   for (const [fx, fy] of [[0.2, 0.15], [0.8, 0.15], [0.2, 0.85], [0.8, 0.85]]) {
     const r = g.createRadialGradient(c.width * fx, c.height * fy, 0, c.width * fx, c.height * fy, c.width * 0.35);
-    r.addColorStop(0, "rgba(238,240,230,0.035)");
+    r.addColorStop(0, "rgba(233,236,230,0.03)");
     r.addColorStop(1, "rgba(238,240,230,0)");
     g.fillStyle = r;
     g.fillRect(0, 0, c.width, c.height);
   }
 
-  g.strokeStyle = "rgba(238,240,230,0.82)";
-  g.fillStyle = "rgba(238,240,230,0.82)";
-  g.lineWidth = 0.12 * px;
+  g.strokeStyle = "rgba(233,236,230,0.5)";
+  g.fillStyle = "rgba(233,236,230,0.5)";
+  g.lineWidth = 0.09 * px;
   const rect = (x: number, y: number, w: number, h: number) => g.strokeRect(X(x), Y(y), w * px, h * px);
   const circle = (x: number, y: number, r: number, a0 = 0, a1 = Math.PI * 2) => {
     g.beginPath();

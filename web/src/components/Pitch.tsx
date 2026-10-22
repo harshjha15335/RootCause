@@ -99,9 +99,9 @@ export function Pitch({
       role="img"
       aria-label={label ?? "Pitch with 22 players and the ball"}
     >
-      <rect width={PITCH_L + M * 2} height={PITCH_W + M * 2} fill="#1c3a2c" rx="1.5" />
+      <rect width={PITCH_L + M * 2} height={PITCH_W + M * 2} fill="#0f120f" rx="1.5" />
       {Array.from({ length: 12 }, (_, i) => (
-        <rect key={i} x={M + (i * PITCH_L) / 12} y={M} width={PITCH_L / 12} height={PITCH_W} fill={i % 2 ? "#21452f" : "#1f4130"} />
+        <rect key={i} x={M + (i * PITCH_L) / 12} y={M} width={PITCH_L / 12} height={PITCH_W} fill={i % 2 ? "#131813" : "#111511"} />
       ))}
       <g fill="none" stroke="rgb(238 240 230 / 0.7)" strokeWidth="0.25">
         <rect x={M} y={M} width={PITCH_L} height={PITCH_W} />
@@ -122,10 +122,10 @@ export function Pitch({
             y={backLine.cy + M - 1.5}
             width={Math.abs(backLine.lx - backLine.cx)}
             height="3"
-            fill="rgb(255 138 61 / 0.35)"
+            fill="rgb(255 107 44 / 0.35)"
           />
-          <line x1={backLine.lx + M} y1={M} x2={backLine.lx + M} y2={M + PITCH_W} stroke="#eef0e6" strokeWidth="0.35" strokeDasharray="1.2 0.8" />
-          <text x={(backLine.lx + backLine.cx) / 2 + M} y={backLine.cy + M - 2.6} textAnchor="middle" fontSize="2.6" fill="#ff8a3d" fontWeight="600" className="tabular-nums">
+          <line x1={backLine.lx + M} y1={M} x2={backLine.lx + M} y2={M + PITCH_W} stroke="#e9ece6" strokeWidth="0.35" strokeDasharray="1.2 0.8" />
+          <text x={(backLine.lx + backLine.cx) / 2 + M} y={backLine.cy + M - 2.6} textAnchor="middle" fontSize="2.6" fill="#ff6b2c" fontWeight="600" className="tabular-nums">
             {backLine.d.toFixed(1)} m
           </text>
         </g>
@@ -133,9 +133,9 @@ export function Pitch({
 
       {thread && (
         <g>
-          <path d={thread.d} fill="none" stroke="#ff8a3d" strokeWidth="0.6" strokeLinecap="round" className="rc-draw" pathLength={1} />
+          <path d={thread.d} fill="none" stroke="#ff6b2c" strokeWidth="0.6" strokeLinecap="round" className="rc-draw" pathLength={1} />
           {thread.root && (
-            <circle cx={thread.root[0] + M} cy={thread.root[1] + M} r="3.2" fill="rgb(255 138 61 / 0.16)" stroke="#ff8a3d" strokeWidth="0.45" />
+            <circle cx={thread.root[0] + M} cy={thread.root[1] + M} r="3.2" fill="rgb(255 107 44 / 0.16)" stroke="#ff6b2c" strokeWidth="0.45" />
           )}
         </g>
       )}
@@ -143,7 +143,7 @@ export function Pitch({
       {order.map((id, i) => {
         const info = playerInfo(meta, id);
         const kit = info.club?.kit_primary ?? (info.side === "home" ? "#3b6ea8" : "#9a4848");
-        const trim = info.club?.kit_secondary ?? "#eef0e6";
+        const trim = info.club?.kit_secondary ?? "#e9ece6";
         const hot = culprits.has(id);
         const isFocus = focusPlayer === id;
         return (
@@ -155,7 +155,7 @@ export function Pitch({
             onPointerLeave={at === undefined ? () => useTrace.getState().hover(null, null) : undefined}
             onClick={at === undefined ? () => useTrace.getState().pin(ev?.links.find((l) => l.player_id === id)?.evidence_id ?? null, id) : undefined}
           >
-            {(hot || isFocus) && <circle r={isFocus ? 2.9 : 2.4} fill="none" stroke={hot ? "#ff8a3d" : "#eef0e6"} strokeWidth="0.45" />}
+            {(hot || isFocus) && <circle r={isFocus ? 2.9 : 2.4} fill="none" stroke={hot ? "#ff6b2c" : "#e9ece6"} strokeWidth="0.45" />}
             <circle r="1.55" fill={kit} stroke={trim} strokeWidth="0.35" />
             <text y="0.62" textAnchor="middle" fontSize="1.65" fontWeight="700" fill={trim} className="pointer-events-none select-none tabular-nums">
               {info.number}
@@ -163,7 +163,7 @@ export function Pitch({
           </g>
         );
       })}
-      <circle ref={ballRef} r="0.8" fill="#f6f7f0" stroke="#0f1e19" strokeWidth="0.2" />
+      <circle ref={ballRef} r="0.8" fill="#f6f7f0" stroke="#0b0c0a" strokeWidth="0.2" />
     </svg>
   );
 }

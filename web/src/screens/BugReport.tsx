@@ -9,6 +9,7 @@ import { useMatch } from "../store/matchStore";
 import { useExplanation, useFullTime, useReport, useTruth } from "../store/selectors";
 import { useUi } from "../store/uiStore";
 import { ReplayGrid } from "./Counterfactual";
+import { Reveal, RiseLines, useSmoothScroll } from "../lib/motion";
 import { Sentences } from "./RootCause";
 import type { GroundTruth } from "../api/types";
 
@@ -20,7 +21,6 @@ import type { GroundTruth } from "../api/types";
 export function BugReport() {
   const { t } = useTranslation();
   const meta = useMatch((s) => s.meta);
-  const reduced = useUi((s) => s.reducedMotion);
   const report = useReport();
   const full = useFullTime();
   const featured: Evidence | undefined = [...full.traces].sort((a, b) => b.goal.second - a.goal.second)[0];
@@ -29,42 +29,26 @@ export function BugReport() {
   const finalAway = full.match?.score.away ?? 0;
   const total = finalHome + finalAway;
 
-  useEffect(() => {
-    if (reduced) return;
-    let lenis: { destroy(): void; raf(t: number): void } | null = null;
-    let raf = 0;
-    let off = false;
-    import("lenis").then(({ default: Lenis }) => {
-      if (off) return;
-      lenis = new Lenis({ duration: 1.1, easing: (x: number) => 1 - Math.pow(1 - x, 3) });
-      const loop = (time: number) => {
-        lenis!.raf(time);
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    });
-    return () => {
-      off = true;
-      cancelAnimationFrame(raf);
-      lenis?.destroy();
-    };
-  }, [reduced]);
+  useSmoothScroll();
 
   return (
-    <div className="paper min-h-[calc(100dvh-var(--header-h))] pb-24">
+    <div className="min-h-[calc(100dvh-var(--header-h))] bg-turf-deep pb-32">
       <section className="mx-auto max-w-[1200px] px-4 pb-10 pt-14 sm:px-8 sm:pt-20">
         <div className="flex items-center gap-3 text-[15px] text-chalk-dim">
           <Badge club={meta?.home ?? null} size={30} />
-          <span className="font-display text-[28px] font-extrabold uppercase text-chalk tabular-nums">
+          <span className="font-display text-[28px] text-chalk tabular-nums">
             {meta?.home.short_name} {finalHome}–{finalAway} {meta?.away.short_name}
           </span>
           <Badge club={meta?.away ?? null} size={30} />
           {full.match && <Pill>{full.match.status === "finished" && !report.data?.provisional ? t("report.fullTime") : t("report.provisional")}</Pill>}
         </div>
-        <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(64px,10vw,152px)] font-extrabold uppercase leading-[0.84] text-chalk">
-          {t("report.title")}
+        <h1 className="mt-8 font-display text-[clamp(64px,11vw,168px)] leading-[0.88] text-chalk">
+          <span className="sr-only">{t("report.title")}</span>
+          <span aria-hidden>
+            <RiseLines lines={[<em key="t" className="italic">{t("report.title")}</em>]} />
+          </span>
         </h1>
-        <p className="mt-6 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] leading-relaxed text-chalk-dim">
+        <p className="rc-fade-in mt-8 max-w-[52ch] text-[clamp(17px,1.6vw,21px)] leading-relaxed text-chalk-dim" style={{ animationDelay: "0.5s" }}>
           {full.loading ? t("report.loading") : t("report.lede", { goals: total, traced: full.traces.length, home: meta?.home.name ?? "", away: meta?.away.name ?? "" })}
         </p>
       </section>
@@ -107,15 +91,18 @@ function Chapter({ title, children, visual, tall = true }: { n?: number; title: 
   const ref = useRef<HTMLElement>(null);
   const reduced = useUi((s) => s.reducedMotion);
   const p = useProgress(ref, reduced);
-  return (
-    <section ref={ref} className={reduced || !tall ? "" : "h-[170svh]"} aria-label={title}>
+  const body = (
       <div className={`${reduced || !tall ? "" : "sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))]"} mx-auto grid max-w-[1200px] content-center gap-6 px-4 py-10 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12`}>
         <div className="order-2 lg:order-1">
-          <h2 className="font-display text-[clamp(40px,5vw,68px)] font-extrabold uppercase leading-[0.92] text-chalk">{title}</h2>
+          <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.95] text-chalk">{title}</h2>
           <div className="mt-4 text-[17px] leading-relaxed text-chalk-dim">{children(p)}</div>
         </div>
         <div className="order-1 lg:order-2">{visual(p)}</div>
       </div>
+  );
+  return (
+    <section ref={ref} className={reduced || !tall ? "" : "h-[170svh]"} aria-label={title}>
+      {tall ? body : <Reveal>{body}</Reveal>}
     </section>
   );
 }
@@ -191,7 +178,7 @@ function Story({ ev, truth }: { ev: Evidence; truth: GroundTruth | null }) {
           return (
             <div className="rounded-panel bg-turf p-5 ring-1 ring-turf-edge sm:p-7">
               <div className="flex items-end justify-between gap-4">
-                <div className="font-display text-[clamp(72px,10vw,132px)] font-extrabold leading-[0.85] text-chalk tabular-nums">
+                <div className="font-display text-[clamp(72px,10vw,140px)] leading-[0.85] text-flare tabular-nums">
                   {pct(rate(lit, root.trials))}
                 </div>
                 <div className="pb-2 text-right text-[14px] text-chalk-dim tabular-nums">
@@ -230,7 +217,7 @@ function Story({ ev, truth }: { ev: Evidence; truth: GroundTruth | null }) {
       >
         {() => (
           <div>
-            <p className="font-display text-[clamp(22px,2.4vw,28px)] font-bold leading-snug text-chalk">
+            <p className="font-display text-[clamp(26px,2.8vw,36px)] leading-snug text-chalk">
               {culprit.name}, <BugName code={root.bug_type} />, {clock(root.second)}. {t("studio.blame", { blame: pct(root.blame_percent) })}.
             </p>
             {explanation && (
@@ -250,9 +237,9 @@ function Story({ ev, truth }: { ev: Evidence; truth: GroundTruth | null }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <Verdict label={t("report.planted")} name={truthPlayer?.name ?? "—"} detail={truth ? `${t(`bug.${truth.bug}`)} · ${clock(truth.root_cause_clock_s)}` : t("report.noTruth")} />
             <Verdict label={t("report.found")} name={culprit.name} detail={`${t(`bug.${root.bug_type}`)} · ${clock(root.second)}`} flare />
-            <div className="rounded-panel bg-turf p-5 ring-1 ring-turf-edge sm:col-span-2">
+            <div className="paper rounded-panel bg-paper p-6 sm:col-span-2">
               <div className="text-[14px] text-chalk-dim">{t("report.accuracy")}</div>
-              <div className="mt-1 font-display text-[28px] font-extrabold text-chalk">{t("report.notMeasured")}</div>
+              <div className="mt-1 font-display text-[34px] text-chalk">{t("report.notMeasured")}</div>
               <p className="mt-2 text-[14px] leading-relaxed text-chalk-dim">{t("report.accuracyHow")}</p>
             </div>
           </div>
@@ -268,7 +255,7 @@ function Verdict({ label, name, detail, flare }: { label: string; name: string; 
   return (
     <div className={`rounded-panel bg-turf p-5 ring-1 ${flare ? "ring-flare/50" : "ring-turf-edge"}`}>
       <div className="text-[14px] text-chalk-dim">{label}</div>
-      <div className={`mt-1 font-display text-[24px] font-extrabold leading-tight ${flare ? "text-flare" : "text-chalk"}`}>{name}</div>
+      <div className={`mt-1 font-display text-[32px] leading-tight ${flare ? "text-flare" : "text-chalk"}`}>{name}</div>
       <div className="mt-1 text-[14px] text-chalk-dim">{detail}</div>
     </div>
   );
@@ -301,10 +288,12 @@ function Summary({ traces, total }: { traces: Evidence[]; total: number }) {
   const goalById = (id: string) => traces.find((e) => e.goal_id === id);
 
   return (
-    <section className="mx-auto mt-10 max-w-[1200px] px-4 sm:px-8" aria-labelledby="summary-h">
-      <h2 id="summary-h" className="font-display text-[clamp(40px,5vw,68px)] font-extrabold uppercase leading-[0.92] text-chalk">
-        {t("report.summary")}
-      </h2>
+    <section className="mx-auto mt-24 max-w-[1200px] border-t border-turf-edge px-4 pt-16 sm:px-8" aria-labelledby="summary-h">
+      <Reveal>
+        <h2 id="summary-h" className="font-display text-[clamp(44px,6vw,88px)] leading-[0.95] text-chalk">
+          {t("report.summary")}
+        </h2>
+      </Reveal>
       {report.isPending ? (
         <p className="mt-4 text-[17px] text-chalk-dim">{t("report.loading")}</p>
       ) : report.isError ? (
@@ -372,9 +361,9 @@ function Summary({ traces, total }: { traces: Evidence[]; total: number }) {
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-panel bg-turf p-5 ring-1 ring-turf-edge">
-      <h3 className="mb-3 text-[14px] font-semibold text-chalk-dim">{title}</h3>
+    <Reveal y={40} className="h-full rounded-panel bg-turf p-6 ring-1 ring-turf-edge">
+      <h3 className="mb-4 text-[13px] font-medium uppercase tracking-[0.14em] text-chalk-faint">{title}</h3>
       {children}
-    </div>
+    </Reveal>
   );
 }

@@ -22,10 +22,10 @@ import { playhead, useTrace } from "../store/traceStore";
 import { makePitchTexture } from "./pitchTexture";
 import { useUi } from "../store/uiStore";
 // a local font: troika would otherwise fetch one from a CDN at runtime
-import numberFont from "@fontsource/big-shoulders-display/files/big-shoulders-display-latin-800-normal.woff?url";
+import numberFont from "@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff?url";
 
-const FLARE = new Color("#ff8a3d");
-const CHALK = new Color("#eef0e6");
+const FLARE = new Color("#ff6b2c");
+const CHALK = new Color("#e9ece6");
 const HX = PITCH_L / 2;
 const HZ = PITCH_W / 2;
 const PLAYER_SCALE = 1.7; // exaggerated so 22 players read at broadcast distance
@@ -46,9 +46,9 @@ export default function Stage() {
       gl={{ antialias: true, powerPreference: "high-performance" }}
       onPointerMissed={() => useTrace.getState().hover(null, null)}
     >
-      <color attach="background" args={["#0f1e19"]} />
-      <fog attach="fog" args={["#0f1e19", 130, 260]} />
-      <hemisphereLight args={["#eef0e6", "#0f1e19", 1.1]} />
+      <color attach="background" args={["#0b0c0a"]} />
+      <fog attach="fog" args={["#0b0c0a", 130, 260]} />
+      <hemisphereLight args={["#e9ece6", "#0b0c0a", 1.1]} />
       <directionalLight position={[-30, 80, 40]} intensity={1.6} />
       <CameraRig />
       <Pitch />
@@ -68,7 +68,7 @@ function Pitch() {
     <group>
       <mesh rotation-x={-Math.PI / 2} position-y={-0.02}>
         <planeGeometry args={[400, 400]} />
-        <meshBasicMaterial color="#0f1e19" />
+        <meshBasicMaterial color="#0b0c0a" />
       </mesh>
       <mesh rotation-x={-Math.PI / 2}>
         <planeGeometry args={[PITCH_L + 12, PITCH_W + 12]} />
@@ -230,7 +230,7 @@ function Players() {
       {order.map((id, i) => {
         const info = playerInfo(meta, id);
         const kit = info.club?.kit_primary ?? (info.side === "home" ? "#3b6ea8" : "#9a4848");
-        const trim = info.club?.kit_secondary ?? "#eef0e6";
+        const trim = info.club?.kit_secondary ?? "#e9ece6";
         const isCulprit = culprits.has(id);
         const isFocus = focusId === id;
         return (
@@ -253,7 +253,7 @@ function Players() {
               <Ring color={isCulprit ? FLARE : CHALK} pulse={id === root} radius={isFocus ? 2.3 : 1.8} />
             )}
             <Billboard position-y={PLAYER_SCALE * 2.25}>
-              <Text font={numberFont} fontSize={isFocus ? 1.5 : 1.05} color={isCulprit ? "#ff8a3d" : "#eef0e6"} outlineWidth={0.06} outlineColor="#0f1e19" anchorY="bottom">
+              <Text font={numberFont} fontSize={isFocus ? 1.5 : 1.05} color={isCulprit ? "#ff6b2c" : "#e9ece6"} outlineWidth={0.06} outlineColor="#0b0c0a" anchorY="bottom">
                 {String(info.number ?? "")}
               </Text>
             </Billboard>
@@ -296,7 +296,7 @@ function Ball() {
     <group ref={ref}>
       <mesh position-y={0.55}>
         <sphereGeometry args={[0.55, 20, 20]} />
-        <meshStandardMaterial color="#f6f7f0" roughness={0.35} emissive="#eef0e6" emissiveIntensity={0.25} />
+        <meshStandardMaterial color="#f6f7f0" roughness={0.35} emissive="#e9ece6" emissiveIntensity={0.25} />
       </mesh>
       <mesh rotation-x={-Math.PI / 2} position-y={0.02}>
         <circleGeometry args={[0.6, 16]} />

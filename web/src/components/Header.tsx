@@ -13,12 +13,11 @@ import { go } from "../lib/nav";
 export function Wordmark() {
   return (
     <a href="#/" onClick={(e) => (e.preventDefault(), go("home"))} className="flex items-center gap-2" aria-label="Root Cause, home" translate="no">
-      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="10.25" fill="none" stroke="rgb(var(--chalk))" strokeWidth="1.5" />
-        <path d="M12 1.75v20.5" stroke="rgb(var(--chalk))" strokeWidth="1.5" />
-        <circle cx="12" cy="12" r="3.6" fill="rgb(var(--flare))" />
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <circle cx="11" cy="11" r="9.5" fill="none" stroke="rgb(var(--chalk))" strokeWidth="1" />
+        <circle cx="11" cy="11" r="3" fill="rgb(var(--flare))" />
       </svg>
-      <span className="font-display text-[23px] font-extrabold uppercase leading-none tracking-[0.01em] text-chalk">Root Cause</span>
+      <span className="text-[15px] font-semibold tracking-[0.01em] text-chalk">Root Cause</span>
     </a>
   );
 }
@@ -35,10 +34,10 @@ export function Scoreboard({ className = "" }: { className?: string }) {
   const away = goals.filter((g) => g.team === "away" && g.second <= second).length;
   const live = phase === "live";
   return (
-    <div className={`flex items-center gap-2.5 rounded-[10px] bg-turf-deep/90 py-1.5 pl-2 pr-3 ring-1 ring-turf-edge ${className}`}>
+    <div className={`flex items-center gap-2.5 rounded-full bg-turf-deep/80 py-1.5 pl-2 pr-4 ring-1 ring-turf-edge backdrop-blur-md ${className}`}>
       <Badge club={meta?.home ?? null} size={24} />
       <span className="hidden text-[13px] font-semibold text-chalk sm:inline">{meta?.home.short_name ?? t("score.home")}</span>
-      <span className="flex items-center gap-1 font-display text-[24px] font-extrabold leading-none text-chalk tabular-nums" aria-live="polite" aria-label={`${home}–${away}`}>
+      <span className="flex items-center gap-1 font-display text-[26px] leading-none text-chalk tabular-nums" aria-live="polite" aria-label={`${home}–${away}`}>
         <Flip value={home} />
         <span className="text-chalk-faint">–</span>
         <Flip value={away} />
@@ -46,7 +45,7 @@ export function Scoreboard({ className = "" }: { className?: string }) {
       <span className="hidden text-[13px] font-semibold text-chalk sm:inline">{meta?.away.short_name ?? t("score.away")}</span>
       <Badge club={meta?.away ?? null} size={24} />
       <span className="ml-0.5 h-5 w-px bg-turf-edge" aria-hidden="true" />
-      <span className="min-w-[3.2em] font-display text-[19px] font-bold leading-none text-chalk tabular-nums">{clock(second)}</span>
+      <span className="min-w-[3.2em] text-[14px] font-medium leading-none text-chalk tabular-nums">{clock(second)}</span>
       <span className={`flex items-center gap-1.5 text-[12px] font-medium ${live ? "text-chalk" : "text-chalk-dim"}`}>
         <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-chalk rc-blink" : "bg-chalk-faint"}`} aria-hidden="true" />
         <span className="hidden md:inline">{live ? (source.kind === "live" ? t("score.live") : t("score.recorded")) : t("score.replay")}</span>
@@ -89,12 +88,12 @@ function NavLinks() {
             href={k === "home" ? "#/" : `#/${k}`}
             aria-current={on ? "page" : undefined}
             onClick={(e) => (e.preventDefault(), go(k))}
-            className={`rc-press relative flex min-h-[40px] shrink-0 items-center rounded-full px-3 text-[14px] font-semibold transition-colors duration-150 ${
-              on ? "text-chalk" : "text-chalk-dim hover:text-chalk"
+            className={`rc-press relative flex min-h-[40px] shrink-0 items-center px-3 text-[14px] transition-colors duration-300 ${
+              on ? "text-chalk" : "text-chalk-faint hover:text-chalk"
             }`}
           >
             {t(`nav.${k}`)}
-            {on && <motion.span layoutId="nav-ink" className="absolute inset-x-3 bottom-1 h-[2px] rounded-full bg-flare" transition={{ type: "spring", duration: 0.35, bounce: 0.1 }} />}
+            {on && <motion.span layoutId="nav-ink" className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-flare" transition={{ type: "spring", duration: 0.4, bounce: 0.1 }} />}
           </a>
         );
       })}
@@ -115,14 +114,14 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-turf-edge/60 bg-turf-deep">
-      <div className="mx-auto flex h-[var(--header-h)] max-w-[1600px] items-center gap-4 px-4 lg:px-6">
+    <header className="sticky top-0 z-40 border-b border-turf-edge/60 bg-turf-deep/85 backdrop-blur-md">
+      <div className="mx-auto flex h-[var(--header-h)] max-w-[1600px] items-center gap-4 px-5 lg:px-10">
         <Wordmark />
         <div className="ml-4 hidden md:block">
           <NavLinks />
         </div>
         <div className="ml-auto hidden items-center gap-2 xl:flex">
-          <span className="text-[13px] text-chalk-dim">{t("controls.mode")}</span>
+          <span className="text-[13px] text-chalk-faint">{t("controls.mode")}</span>
           <ModeSwitch />
           <LanguageSelect />
           <VoiceButton />
@@ -133,7 +132,7 @@ export function Header() {
           aria-expanded={open}
           aria-controls="view-options"
           onClick={() => setOpen((o) => !o)}
-          className="rc-press ml-auto flex min-h-[40px] items-center gap-2 rounded-full bg-turf px-3.5 text-[13px] font-semibold text-chalk ring-1 ring-turf-edge xl:hidden"
+          className="rc-press ml-auto flex min-h-[42px] items-center gap-2 rounded-full px-4 text-[13px] font-medium text-chalk ring-1 ring-inset ring-turf-edge xl:hidden"
         >
           <span>{t(`mode.${mode}`)}</span>
           <span className="text-chalk-faint" aria-hidden="true">/</span>

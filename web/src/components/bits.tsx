@@ -27,7 +27,7 @@ export function Badge({ club, size = 28 }: { club: ClubMeta | null; size?: numbe
           <path d="M6 20 16 11l10 9" fill="none" stroke={b} strokeWidth="2.2" strokeLinejoin="round" />
         </>
       )}
-      <text x="16" y={home ? 13.2 : 27.2} textAnchor="middle" fontSize={home ? 6.4 : 5} fontWeight="800" fill={b} fontFamily="Big Shoulders Display Variable, sans-serif">
+      <text x="16" y={home ? 13.2 : 27.2} textAnchor="middle" fontSize={home ? 6.4 : 5} fontWeight="800" fill={b} fontFamily="Inter Tight Variable, sans-serif">
         {initials}
       </text>
     </svg>

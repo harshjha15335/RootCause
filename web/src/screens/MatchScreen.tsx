@@ -29,7 +29,7 @@ export function MatchScreen({ story = false }: { story?: boolean }) {
           </div>
         )}
       </div>
-      <div className="paper flex min-h-0 flex-col">{story ? <StoryPanel /> : <Panel />}</div>
+      <div className="flex min-h-0 flex-col border-l border-turf-edge/70 bg-turf">{story ? <StoryPanel /> : <Panel />}</div>
     </div>
   );
 }
@@ -236,10 +236,10 @@ function Panel() {
   return (
     <aside className="flex min-h-0 flex-col" aria-labelledby="panel-h">
       <div className="px-5 pt-5 sm:px-6">
-        <h2 id="panel-h" className="font-display text-[34px] font-extrabold uppercase leading-[0.95] text-chalk">
+        <h2 id="panel-h" className="font-display text-[44px] leading-[0.95] text-chalk">
           {ev && scorer ? t("panel.goalTitle", { club: scorer.club?.short_name ?? "", time: clock(ev.goal.second) }) : t("panel.label")}
         </h2>
-        <p className="mt-1.5 text-[15px] leading-snug text-chalk-dim">{t(`panel.hint.${active}`)}</p>
+        <p className="mt-2 text-[15px] leading-snug text-chalk-faint">{t(`panel.hint.${active}`)}</p>
       </div>
       <div role="tablist" aria-label={t("panel.label")} className="mt-3 flex gap-1 overflow-x-auto border-b border-turf-edge px-3 [scrollbar-width:none] sm:px-4">
         {(ev ? tabs : (["live"] as Tab[])).map((k) => (
@@ -249,10 +249,10 @@ function Panel() {
             type="button"
             aria-selected={active === k}
             onClick={() => useUi.getState().setTab(k)}
-            className={`rc-press relative min-h-[46px] shrink-0 px-2.5 text-[15px] font-semibold transition-colors duration-150 ${active === k ? "text-chalk" : "text-chalk-dim hover:text-chalk"}`}
+            className={`rc-press relative min-h-[48px] shrink-0 px-2.5 text-[15px] transition-colors duration-300 ${active === k ? "text-chalk" : "text-chalk-faint hover:text-chalk"}`}
           >
             {t(`tab.${k}`)}
-            {active === k && <motion.span layoutId="tab-ink" className="absolute inset-x-2 bottom-0 h-[3px] rounded-full bg-chalk" transition={{ type: "spring", duration: 0.35, bounce: 0.1 }} />}
+            {active === k && <motion.span layoutId="tab-ink" className="absolute inset-x-2 bottom-0 h-px bg-chalk" transition={{ type: "spring", duration: 0.35, bounce: 0.1 }} />}
           </button>
         ))}
       </div>

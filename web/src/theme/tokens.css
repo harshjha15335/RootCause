@@ -1,43 +1,42 @@
 /*
- * Root Cause design tokens: a floodlit matchday programme.
- *   turf   the stadium at night; the pitch and the chrome around it are cut from it
- *   chalk  pitch-line white; text, lines, and anything neutral or "fixed"
- *   paper  the programme: explanations are printed on it (see .paper, which re-inks the tokens)
+ * Root Cause design tokens: Nocturne. A match at night, set like an editorial.
+ *   turf   the dark: page, chrome and wells (names kept from the pitch they started as)
+ *   chalk  floodlight white; text, lines, anything neutral or "fixed"
+ *   paper  bone card stock for the verdict (see .paper, which re-inks the tokens)
  *   flare  the bug. Only ever marks a mistake, the causal thread, or the root cause.
- *   kits   come from the match data (MatchMeta), muted so they never compete with flare
  * Stored as "r g b" so Tailwind can apply alpha.
  */
 :root {
-  --turf-deep: 9 16 13;      /* #09100d the stands at night */
-  --turf: 15 28 22;          /* #0f1c16 chrome */
-  --turf-raised: 25 43 34;   /* #192b22 hover, wells */
-  --turf-edge: 44 68 56;     /* #2c4438 hairlines */
-  --chalk: 241 243 236;      /* #f1f3ec */
-  --chalk-dim: 184 196 188;  /* #b8c4bc secondary, 10:1 on turf */
-  --chalk-faint: 140 158 148;/* #8c9e94 tertiary, 6:1 on turf */
-  --flare: 255 138 61;       /* #ff8a3d the bug */
-  --flare-ink: 38 16 4;      /* text on flare */
-  --paper: 234 238 229;      /* #eaeee5 programme stock: chalk-green, not cream */
-  --ink: 14 26 20;           /* #0e1a14 printing ink */
+  --turf-deep: 11 12 10;     /* #0b0c0a night */
+  --turf: 17 19 16;          /* #111310 panels */
+  --turf-raised: 26 29 25;   /* #1a1d19 hover, wells */
+  --turf-edge: 44 48 43;     /* #2c302b hairlines */
+  --chalk: 233 236 230;      /* #e9ece6 */
+  --chalk-dim: 185 190 182;  /* #b9beb6 secondary, 11:1 */
+  --chalk-faint: 138 145 136;/* #8a9188 tertiary, 6:1 */
+  --flare: 255 107 44;       /* #ff6b2c the bug */
+  --flare-ink: 26 8 0;       /* text on flare */
+  --paper: 233 236 230;      /* #e9ece6 bone */
+  --ink: 11 12 10;
 
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-  --header-h: 60px;
+  --header-h: 68px;
   color-scheme: dark;
 }
 
-/* Programme pages: the same components, printed. Every token flips, so nothing is re-styled twice. */
+/* Bone cards: the same components, printed. Every token flips. */
 .paper {
-  --turf-deep: 221 227 214;  /* #dde3d6 wells */
-  --turf: 234 238 229;       /* #eaeee5 page */
-  --turf-raised: 223 229 216;/* #dfe5d8 hover */
-  --turf-edge: 192 202 186;  /* #c0caba rules */
-  --chalk: 14 26 20;         /* ink */
-  --chalk-dim: 56 72 62;     /* #38483e 8.6:1 */
-  --chalk-faint: 86 102 92;  /* #56665c 5.3:1 */
-  --flare: 194 70 10;        /* #c2460a the bug, printed: 4.9:1 on paper */
+  --turf-deep: 218 222 213;
+  --turf: 233 236 230;
+  --turf-raised: 222 226 217;
+  --turf-edge: 196 201 191;
+  --chalk: 11 12 10;
+  --chalk-dim: 61 66 60;     /* #3d423c 9:1 */
+  --chalk-faint: 90 96 89;   /* #5a6059 5.6:1 */
+  --flare: 191 64 10;        /* #bf400a the bug, printed: 5:1 */
   --flare-ink: 255 247 240;
   color-scheme: light;
   background: rgb(var(--turf));
