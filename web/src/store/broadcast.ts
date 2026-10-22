@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { liveFeed, recordedFeed, type Feed } from "../api/socket";
-import { liveSource, showcaseSource, startLiveMatch, type Source } from "../api/rest";
+import { liveSource, showcaseSource, startLiveMatch, type ShowcaseExtras, type Source } from "../api/rest";
 import { Track } from "../lib/frames";
 import { useMatch } from "./matchStore";
 import { playhead, useTrace } from "./traceStore";
@@ -14,7 +14,7 @@ export let source: Source = showcaseSource();
 export const fixedTracks = new Map<string, Track>(); // evidence id -> recorded fixed replay
 
 /** Showcase broadcast starts this long before the featured goal (the last traced one). */
-const LEAD_IN_S = 40;
+const LEAD_IN_S = 24;
 const FREEZE_MS = 1300;
 const MIN_TRACE_MS = 2400;
 const LIVE_TRACE_TIMEOUT_MS = 25000;
@@ -59,14 +59,79 @@ export function skipAhead() {
 let goalSeconds: number[] = [];
 let untracedEvents = new Set<string>();
 
+/**
+ * What the showcase is showing:
+ *  - "verdict": full time, the featured goal already traced, its chain on a loop (home, explore, report)
+ *  - "buildup": the broadcast from shortly before the featured goal, so the trace happens on screen (story)
+ */
+export type Session = "verdict" | "buildup";
+
+type Engine = { feed: Feed | null; handledGoals: number; extras: ShowcaseExtras | null; featured: number };
+const engine: Engine = { feed: null, handledGoals: 0, extras: null, featured: 0 };
+let loaded: Promise<ShowcaseExtras> | null = null;
+let pending: Session | null = null;
+
+/** Restart the showcase as `kind`. Safe to call before the recording has loaded. */
+export function begin(kind: Session) {
+  if (API) return;
+  if (!engine.extras) {
+    pending = kind;
+    return;
+  }
+  const x = engine.extras;
+  const match = useMatch.getState();
+  engine.feed?.close();
+  match.reset(source.matchId, x.meta);
+  const { track } = useMatch.getState();
+  for (const e of x.ticks) track.addEngine(e);
+  useMatch.setState({ replays: x.replays, untraced: Object.fromEntries(x.manifest.untraced.map((u) => [u.event_id, u.reason])) });
+  const tr = useTrace.getState();
+  tr.setMorph(0, null);
+  tr.pin(null, null);
+  tr.hover(null, null);
+  const featured = engine.featured;
+  if (kind === "buildup") {
+    const startSecond = featured - LEAD_IN_S;
+    playhead.edge = startSecond;
+    playhead.t = startSecond;
+    const goals = x.messages.filter((m) => m.type === "match.event" && m.payload.type === "goal");
+    engine.handledGoals = goals.filter((m) => m.type === "match.event" && m.payload.second <= startSecond).length;
+    engine.feed = recordedFeed(x.messages, startSecond, (m) => useMatch.getState().ingest(m));
+    tr.selectGoal(null);
+    tr.setWindow([startSecond, featured + 8]);
+    tr.setSpeed(1);
+    tr.setPlaying(true);
+    tr.setPhase("live");
+  } else {
+    // everything the server would replay on connect at full time, delivered at once
+    engine.feed = recordedFeed(x.messages, Number.POSITIVE_INFINITY, (m) => useMatch.getState().ingest(m));
+    engine.feed.advance(Number.POSITIVE_INFINITY, performance.now());
+    const m = useMatch.getState();
+    engine.handledGoals = m.goals.length;
+    playhead.edge = featured + 8;
+    const g = m.goals.find((x) => x.second === featured && x.goalId) ?? [...m.goals].reverse().find((x) => x.goalId);
+    if (!g?.goalId) {
+      tr.setPhase("review");
+      return;
+    }
+    const b = chainBounds(g.goalId)!;
+    tr.selectGoal(g.goalId);
+    tr.setWindow(b);
+    tr.seek(b[0]);
+    tr.setSpeed(0.5);
+    tr.setPlaying(true);
+    tr.setPhase("traced");
+    const ui = useUi.getState();
+    ui.setTab(ui.mode === "fan" ? "cause" : ui.mode === "analyst" ? "trace" : "script");
+  }
+}
+
 export function useBroadcast() {
   useEffect(() => {
-    let feed: Feed | null = null;
     let raf = 0;
     let cancelled = false;
     let lastNow = performance.now();
     let lastSecondPush = 0;
-    let handledGoals = 0;
     let goalAt = 0;
     let goalSecond = 0;
     let goalEvent = "";
@@ -77,34 +142,27 @@ export function useBroadcast() {
         const id = params.get("match") ?? (await startLiveMatch(API, Number(params.get("seed") ?? 42), TOKEN)).id;
         source = liveSource(API, id, TOKEN);
         match.reset(id, null);
-        feed = liveFeed(API, id, (m) => match.ingest(m), (s) => s === "open" && useMatch.getState().setStatus("streaming"), TOKEN);
+        engine.feed = liveFeed(API, id, (m) => match.ingest(m), (s) => s === "open" && useMatch.getState().setStatus("streaming"), TOKEN);
         playhead.edge = 0;
       } else {
         const sc = showcaseSource();
         source = sc;
-        const x = await sc.extras();
+        loaded ??= sc.extras();
+        const x = await loaded;
         if (cancelled) return;
-        match.reset(sc.matchId, x.meta);
-        const { track } = useMatch.getState();
-        for (const e of x.ticks) track.addEngine(e);
         for (const [, links] of Object.entries(x.replays)) {
           for (const [eid, rep] of Object.entries(links)) {
-            const t = new Track(track.order);
+            const t = new Track(x.meta ? [...x.meta.home.players, ...x.meta.away.players].map((p) => p.id) : undefined);
             for (const f of rep.frames) t.addReplay(f);
             fixedTracks.set(eid, t);
           }
         }
-        useMatch.setState({ replays: x.replays, untraced: Object.fromEntries(x.manifest.untraced.map((u) => [u.event_id, u.reason])) });
         untracedEvents = new Set(x.manifest.untraced.map((u) => u.event_id));
         goalSeconds = x.ticks.filter((e) => e.type === "goal").map((e) => e.clock_s);
-        const featured = x.truth?.goal_clock_s ?? goalSeconds[goalSeconds.length - 1];
-        const startSecond = featured - LEAD_IN_S;
-        playhead.edge = startSecond;
-        playhead.t = startSecond;
-        const goals = x.messages.filter((m) => m.type === "match.event" && m.payload.type === "goal");
-        handledGoals = goals.filter((m) => m.type === "match.event" && m.payload.second <= startSecond).length;
-        feed = recordedFeed(x.messages, startSecond, (m) => useMatch.getState().ingest(m));
-        useTrace.getState().setWindow([startSecond, featured + 8]);
+        engine.extras = x;
+        engine.featured = x.truth?.goal_clock_s ?? goalSeconds[goalSeconds.length - 1];
+        begin(pending ?? (useUi.getState().screen === "story" ? "buildup" : "verdict"));
+        pending = null;
       }
       raf = requestAnimationFrame(loop);
     };
@@ -121,13 +179,13 @@ export function useBroadcast() {
         if (source.kind === "showcase") playhead.edge += dt;
         else playhead.edge = Math.max(playhead.edge, m.head);
       }
-      feed?.advance(playhead.edge, now);
+      engine.feed?.advance(playhead.edge, now);
 
       // a new goal: freeze, swoop, rewind while the Debugger works
       const goals = useMatch.getState().goals;
-      if (goals.length > handledGoals) {
+      if (goals.length > engine.handledGoals) {
         const g = goals[goals.length - 1];
-        handledGoals = goals.length;
+        engine.handledGoals = goals.length;
         if (tr.phase === "live") {
           goalAt = now;
           goalSecond = g.second;
@@ -209,7 +267,7 @@ export function useBroadcast() {
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
-      feed?.close();
+      engine.feed?.close();
     };
   }, []);
 }

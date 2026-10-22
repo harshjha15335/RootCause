@@ -44,8 +44,7 @@ export function RootCause({ ev }: { ev: Evidence }) {
   return (
     <div className="space-y-5">
       <article className="relative overflow-hidden rounded-panel bg-turf-deep ring-1 ring-flare/50">
-        <div className="absolute inset-y-0 left-0 w-1 bg-flare" aria-hidden="true" />
-        <div className="p-5 pl-6">
+        <div className="p-5">
           <div className="flex items-center justify-between gap-3">
             <Pill tone="flare">{t("cause.label")}</Pill>
             <MomentButton second={root.second} playerId={root.player_id} evidenceId={root.evidence_id} className="text-[13px] font-semibold text-chalk-dim tabular-nums hover:text-chalk">

@@ -84,7 +84,7 @@ export const useMatch = create<MatchState>((set, get) => ({
         const e = m.payload;
         s.track.addTeam(e);
         set({
-          events: [...s.events.slice(-199), e],
+          events: [...s.events, e],
           head: Math.max(s.head, e.second),
           trackVersion: s.trackVersion + 1,
           status: s.status === "finished" ? s.status : "streaming",

@@ -79,3 +79,8 @@
   }
   .rc-draw { stroke-dashoffset: 0; }
 }
+
+/* Devanagari needs room for its matras above and below; the condensed display leading would clip them */
+:lang(hi) .font-display {
+  line-height: 1.12 !important;
+}

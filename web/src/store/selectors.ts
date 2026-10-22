@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { HttpError } from "../api/rest";
-import type { Evidence, ExplanationResponse } from "../api/types";
+import type { Evidence, ExplanationResponse, GroundTruth } from "../api/types";
 import { source } from "./broadcast";
 import { useMatch } from "./matchStore";
 import { useTrace } from "./traceStore";
@@ -60,4 +60,18 @@ export function useFullTime() {
     staleTime: Infinity,
   });
   return { match: match.data ?? null, traces: traces.data ?? [], loading: match.isPending || (ids.length > 0 && traces.isPending) };
+}
+
+/** The mistake planted in a synthetic showcase match, to check the Debugger against. Live matches have none. */
+export function useTruth(): GroundTruth | null {
+  const q = useQuery({
+    queryKey: ["truth", source.matchId],
+    queryFn: async () => {
+      if (source.kind !== "showcase") return null;
+      const r = await fetch(`${import.meta.env.BASE_URL}showcase/${source.matchId}/ground_truth.json`);
+      return r.ok ? ((await r.json()) as GroundTruth) : null;
+    },
+    staleTime: Infinity,
+  });
+  return q.data ?? null;
 }

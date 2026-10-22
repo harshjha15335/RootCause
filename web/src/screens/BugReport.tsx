@@ -5,9 +5,8 @@ import { Badge, BugName, Pill, RichText } from "../components/bits";
 import { Pitch } from "../components/Pitch";
 import { clock, pct, playerInfo, rate } from "../lib/format";
 import { chronological, rootLink } from "../lib/geometry";
-import { source } from "../store/broadcast";
 import { useMatch } from "../store/matchStore";
-import { useExplanation, useFullTime, useReport } from "../store/selectors";
+import { useExplanation, useFullTime, useReport, useTruth } from "../store/selectors";
 import { useUi } from "../store/uiStore";
 import { ReplayGrid } from "./Counterfactual";
 import { Sentences } from "./RootCause";
@@ -52,17 +51,17 @@ export function BugReport() {
   }, [reduced]);
 
   return (
-    <div className="pb-24">
+    <div className="paper min-h-[calc(100dvh-var(--header-h))] pb-24">
       <section className="mx-auto max-w-[1200px] px-4 pb-10 pt-14 sm:px-8 sm:pt-20">
         <div className="flex items-center gap-3 text-[15px] text-chalk-dim">
           <Badge club={meta?.home ?? null} size={30} />
-          <span className="font-display text-[22px] font-extrabold text-chalk tabular-nums">
+          <span className="font-display text-[28px] font-extrabold uppercase text-chalk tabular-nums">
             {meta?.home.short_name} {finalHome}–{finalAway} {meta?.away.short_name}
           </span>
           <Badge club={meta?.away ?? null} size={30} />
           {full.match && <Pill>{full.match.status === "finished" && !report.data?.provisional ? t("report.fullTime") : t("report.provisional")}</Pill>}
         </div>
-        <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(48px,9vw,120px)] font-black leading-[0.9] tracking-[-0.045em] text-chalk [font-stretch:115%]">
+        <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(64px,10vw,152px)] font-extrabold uppercase leading-[0.84] text-chalk">
           {t("report.title")}
         </h1>
         <p className="mt-6 max-w-[56ch] text-[clamp(17px,1.6vw,20px)] leading-relaxed text-chalk-dim">
@@ -75,18 +74,6 @@ export function BugReport() {
       <Summary traces={full.traces} total={total} />
     </div>
   );
-}
-
-function useTruth(): GroundTruth | null {
-  const [truth, setTruth] = useState<GroundTruth | null>(null);
-  useEffect(() => {
-    if (source.kind !== "showcase") return;
-    fetch(`${import.meta.env.BASE_URL}showcase/${source.matchId}/ground_truth.json`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setTruth)
-      .catch(() => setTruth(null));
-  }, []);
-  return truth;
 }
 
 /** Turns a tall section's scroll position into 0..1 (GSAP ScrollTrigger, scrubbed). */
@@ -121,10 +108,10 @@ function Chapter({ title, children, visual, tall = true }: { n?: number; title: 
   const reduced = useUi((s) => s.reducedMotion);
   const p = useProgress(ref, reduced);
   return (
-    <section ref={ref} className={reduced || !tall ? "" : "h-[240svh]"} aria-label={title}>
+    <section ref={ref} className={reduced || !tall ? "" : "h-[170svh]"} aria-label={title}>
       <div className={`${reduced || !tall ? "" : "sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))]"} mx-auto grid max-w-[1200px] content-center gap-6 px-4 py-10 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12`}>
         <div className="order-2 lg:order-1">
-          <h2 className="font-display text-[clamp(32px,4.4vw,56px)] font-extrabold leading-[0.98] tracking-[-0.03em] text-chalk [font-stretch:110%]">{title}</h2>
+          <h2 className="font-display text-[clamp(40px,5vw,68px)] font-extrabold uppercase leading-[0.92] text-chalk">{title}</h2>
           <div className="mt-4 text-[17px] leading-relaxed text-chalk-dim">{children(p)}</div>
         </div>
         <div className="order-1 lg:order-2">{visual(p)}</div>
@@ -204,7 +191,7 @@ function Story({ ev, truth }: { ev: Evidence; truth: GroundTruth | null }) {
           return (
             <div className="rounded-panel bg-turf p-5 ring-1 ring-turf-edge sm:p-7">
               <div className="flex items-end justify-between gap-4">
-                <div className="font-display text-[clamp(56px,9vw,112px)] font-black leading-[0.85] tracking-[-0.04em] text-chalk tabular-nums [font-stretch:112%]">
+                <div className="font-display text-[clamp(72px,10vw,132px)] font-extrabold leading-[0.85] text-chalk tabular-nums">
                   {pct(rate(lit, root.trials))}
                 </div>
                 <div className="pb-2 text-right text-[14px] text-chalk-dim tabular-nums">
@@ -315,7 +302,7 @@ function Summary({ traces, total }: { traces: Evidence[]; total: number }) {
 
   return (
     <section className="mx-auto mt-10 max-w-[1200px] px-4 sm:px-8" aria-labelledby="summary-h">
-      <h2 id="summary-h" className="font-display text-[clamp(32px,4.4vw,56px)] font-extrabold leading-[0.98] tracking-[-0.03em] text-chalk [font-stretch:110%]">
+      <h2 id="summary-h" className="font-display text-[clamp(40px,5vw,68px)] font-extrabold uppercase leading-[0.92] text-chalk">
         {t("report.summary")}
       </h2>
       {report.isPending ? (

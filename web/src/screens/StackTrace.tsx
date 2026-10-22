@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { Evidence } from "../api/types";
-import { BlameBar, BugName, MomentButton, PlayerChip } from "../components/bits";
+import { BlameBar, BugName, MomentButton } from "../components/bits";
 import { clock, playerInfo, rate } from "../lib/format";
 import { useMatch } from "../store/matchStore";
 import { useTrace } from "../store/traceStore";
@@ -53,7 +53,6 @@ export function StackTrace({ ev }: { ev: Evidence }) {
               transition={{ duration: 0.35, delay: 0.25 + i * 0.32, ease: [0.23, 1, 0.32, 1] }}
               className={`relative border-b border-turf-edge/70 last:border-b-0 ${root ? "bg-flare/[0.07]" : ""} ${on ? "bg-turf-raised" : ""} transition-colors duration-150`}
             >
-              {root && <span className="absolute inset-y-0 left-0 w-[3px] bg-flare" aria-hidden="true" />}
               <MomentButton second={l.second} playerId={l.player_id} evidenceId={l.evidence_id} className="block w-full px-4 py-3 text-left">
                 <div className="flex items-baseline justify-between gap-3 font-trace text-[13px]">
                   <span className={root ? "text-flare" : "text-chalk"}>
@@ -64,7 +63,7 @@ export function StackTrace({ ev }: { ev: Evidence }) {
                   <span className="tabular-nums text-chalk-dim">{clock(l.second)}</span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-[15px] text-chalk">
-                  <PlayerChip id={l.player_id} evidenceId={l.evidence_id} full />
+                  <PlayerName id={l.player_id} />
                   {root && <span className="text-[13px] font-semibold text-flare">{t("trace.rootCause")}</span>}
                 </div>
                 <div className="mt-2.5">
@@ -90,5 +89,18 @@ export function StackTrace({ ev }: { ev: Evidence }) {
       </ol>
       <p className="text-[13px] leading-relaxed text-chalk-dim">{t("trace.howBlame")}</p>
     </div>
+  );
+}
+
+/** The player's kit, number and name; the whole frame is already the button. */
+function PlayerName({ id }: { id: string }) {
+  const meta = useMatch((s) => s.meta);
+  const info = playerInfo(meta, id);
+  return (
+    <span className="inline-flex items-baseline gap-1 font-semibold" translate="no">
+      <span aria-hidden="true" className="inline-block h-2.5 w-2.5 self-center rounded-full ring-1 ring-chalk/40" style={{ background: info.club?.kit_primary ?? "#788c82" }} />
+      {info.number !== null && <span className="tabular-nums text-chalk-dim">{info.number}</span>}
+      {info.name}
+    </span>
   );
 }

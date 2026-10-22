@@ -8,6 +8,7 @@ import { useMatch } from "./store/matchStore";
 import { playhead, useTrace } from "./store/traceStore";
 import { useUi } from "./store/uiStore";
 import { MatchScreen } from "./screens/MatchScreen";
+import { Home } from "./screens/Home";
 import { chronological, rootLink } from "./lib/geometry";
 
 const BugReport = lazy(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
@@ -35,8 +36,10 @@ export default function App() {
           <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
             <BugReport />
           </Suspense>
+        ) : screen === "home" ? (
+          <Home />
         ) : (
-          <MatchScreen />
+          <MatchScreen story={screen === "story"} />
         )}
       </main>
       <Shortcuts />
@@ -50,7 +53,7 @@ function useKeyboard() {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (el.closest("input, textarea, select, [contenteditable]") || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (useUi.getState().screen !== "match" && !["?", "Escape", "1", "2", "3"].includes(e.key)) return;
+      if (!["story", "explore"].includes(useUi.getState().screen) && !["?", "Escape", "1", "2", "3"].includes(e.key)) return;
       const tr = useTrace.getState();
       const m = useMatch.getState();
       const ev = tr.selectedGoalId ? m.evidence[tr.selectedGoalId] : null;

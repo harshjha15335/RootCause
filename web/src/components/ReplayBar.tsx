@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { clock, playerInfo, surname } from "../lib/format";
-import { backToLive, jumpTo, skipAhead } from "../store/broadcast";
+import { backToLive, begin, jumpTo, skipAhead, source } from "../store/broadcast";
 import { useMatch } from "../store/matchStore";
 import { useSelectedEvidence } from "../store/selectors";
 import { playhead, useTrace } from "../store/traceStore";
@@ -119,8 +119,13 @@ export function ReplayBar() {
           {t("replay.skip")}
         </button>
       ) : (
-        <button type="button" disabled={busy} onClick={backToLive} className="rc-press min-h-[38px] shrink-0 rounded-full px-3 text-[13px] font-semibold text-chalk ring-1 ring-turf-edge transition-colors duration-150 hover:bg-turf-raised disabled:opacity-40">
-          {t("replay.live")}
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => (source.kind === "showcase" ? begin("buildup") : backToLive())}
+          className="rc-press min-h-[38px] shrink-0 rounded-full px-3 text-[13px] font-semibold text-chalk ring-1 ring-turf-edge transition-colors duration-150 hover:bg-turf-raised disabled:opacity-40"
+        >
+          {source.kind === "showcase" ? t("replay.buildup") : t("replay.live")}
         </button>
       )}
       <button

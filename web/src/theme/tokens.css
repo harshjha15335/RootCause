@@ -1,27 +1,49 @@
 /*
- * Root Cause design tokens. Every colour means something:
- *   turf   the floodlit pitch at night; all surfaces are cut from it
+ * Root Cause design tokens: a floodlit matchday programme.
+ *   turf   the stadium at night; the pitch and the chrome around it are cut from it
  *   chalk  pitch-line white; text, lines, and anything neutral or "fixed"
+ *   paper  the programme: explanations are printed on it (see .paper, which re-inks the tokens)
  *   flare  the bug. Only ever marks a mistake, the causal thread, or the root cause.
  *   kits   come from the match data (MatchMeta), muted so they never compete with flare
  * Stored as "r g b" so Tailwind can apply alpha.
  */
 :root {
-  --turf-deep: 15 30 25;     /* #0f1e19 page */
-  --turf: 21 40 33;          /* #152821 panels */
-  --turf-raised: 30 54 45;   /* #1e362d cards, hover */
-  --turf-edge: 52 82 70;     /* #345246 hairlines */
-  --chalk: 238 240 230;      /* #eef0e6 */
-  --chalk-dim: 178 192 182;  /* #b2c0b6 secondary text, 7.9:1 on turf */
-  --chalk-faint: 140 160 150;/* #8ca096 tertiary, 5:1 on turf */
+  --turf-deep: 9 16 13;      /* #09100d the stands at night */
+  --turf: 15 28 22;          /* #0f1c16 chrome */
+  --turf-raised: 25 43 34;   /* #192b22 hover, wells */
+  --turf-edge: 44 68 56;     /* #2c4438 hairlines */
+  --chalk: 241 243 236;      /* #f1f3ec */
+  --chalk-dim: 184 196 188;  /* #b8c4bc secondary, 10:1 on turf */
+  --chalk-faint: 140 158 148;/* #8c9e94 tertiary, 6:1 on turf */
   --flare: 255 138 61;       /* #ff8a3d the bug */
   --flare-ink: 38 16 4;      /* text on flare */
+  --paper: 234 238 229;      /* #eaeee5 programme stock: chalk-green, not cream */
+  --ink: 14 26 20;           /* #0e1a14 printing ink */
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-  --header-h: 64px;
-  --replay-h: 64px;
+  --header-h: 60px;
   color-scheme: dark;
+}
+
+/* Programme pages: the same components, printed. Every token flips, so nothing is re-styled twice. */
+.paper {
+  --turf-deep: 221 227 214;  /* #dde3d6 wells */
+  --turf: 234 238 229;       /* #eaeee5 page */
+  --turf-raised: 223 229 216;/* #dfe5d8 hover */
+  --turf-edge: 192 202 186;  /* #c0caba rules */
+  --chalk: 14 26 20;         /* ink */
+  --chalk-dim: 56 72 62;     /* #38483e 8.6:1 */
+  --chalk-faint: 86 102 92;  /* #56665c 5.3:1 */
+  --flare: 194 70 10;        /* #c2460a the bug, printed: 4.9:1 on paper */
+  --flare-ink: 255 247 240;
+  color-scheme: light;
+  background: rgb(var(--turf));
+  color: rgb(var(--chalk));
+}
+.paper ::selection {
+  background: rgb(var(--ink));
+  color: rgb(var(--paper));
 }

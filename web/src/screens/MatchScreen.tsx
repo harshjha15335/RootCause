@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Component, lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BugName } from "../components/bits";
-import { Pitch } from "../components/Pitch";
+import { Scoreboard } from "../components/Header";
+import { StageView, useStageMode } from "../components/StageView";
+import { StoryPanel } from "./Story";
 import { ReplayBar } from "../components/ReplayBar";
 import { clock, pct, playerInfo } from "../lib/format";
 import { rootLink } from "../lib/geometry";
@@ -16,87 +18,71 @@ import { RootCause } from "./RootCause";
 import { StackTrace } from "./StackTrace";
 import { StudioScript } from "./StudioScript";
 
-const Stage3D = lazy(() => import("../three/Stage"));
-
-function canRun3D() {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") ?? c.getContext("webgl"));
-  } catch {
-    return false;
-  }
-}
-
-export function MatchScreen() {
+export function MatchScreen({ story = false }: { story?: boolean }) {
   return (
-    <div className="mx-auto grid max-w-[1600px] lg:h-[calc(100dvh-var(--header-h))] lg:grid-cols-[minmax(0,1fr)_440px] xl:grid-cols-[minmax(0,1fr)_480px]">
-      <div className="flex min-h-0 flex-col lg:border-r lg:border-turf-edge/70">
-        <StageArea />
-        <div className="sticky bottom-0 z-30 lg:static">
-          <ReplayBar />
-        </div>
+    <div className="mx-auto grid max-w-[1600px] lg:h-[calc(100dvh-var(--header-h))] lg:grid-cols-[minmax(0,1fr)_460px] xl:grid-cols-[minmax(0,1fr)_520px]">
+      <div className="flex min-h-0 flex-col">
+        <StageArea story={story} />
+        {!story && (
+          <div className="sticky bottom-0 z-30 lg:static">
+            <ReplayBar />
+          </div>
+        )}
       </div>
-      <Panel />
+      <div className="paper flex min-h-0 flex-col">{story ? <StoryPanel /> : <Panel />}</div>
     </div>
   );
 }
 
-function StageArea() {
-  const view = useUi((s) => s.view);
-  const reduced = useUi((s) => s.reducedMotion);
-  const [webgl] = useState(canRun3D);
-  const use3d = view === "3d" && webgl && !reduced;
+function StageArea({ story }: { story: boolean }) {
+  const { webgl, reduced, view } = useStageMode();
   return (
-    <div className="relative h-[54svh] min-h-[300px] overflow-hidden bg-turf-deep lg:h-auto lg:min-h-0 lg:flex-1">
-      {use3d ? (
-        // the flat pitch holds the stage while the 3D chunk loads: never a blank box
-        <StageBoundary>
-          <Suspense fallback={<FlatStage />}>
-            <Stage3D />
-          </Suspense>
-        </StageBoundary>
-      ) : (
-        <FlatStage />
-      )}
-      <GoalMoment />
+    <div className="relative h-[52svh] min-h-[300px] overflow-hidden bg-turf-deep lg:h-auto lg:min-h-0 lg:flex-1">
+      <StageView />
+      <Scoreboard className="absolute left-3 top-3 z-20" />
+      {!story && <GoalMoment />}
       <LowerThird />
       <div className="absolute right-3 top-3 z-20 flex gap-2">
         {webgl && !reduced && (
           <button
             type="button"
             onClick={() => useUi.getState().setView(view === "3d" ? "2d" : "3d")}
-            className="rc-press min-h-[36px] rounded-full bg-turf-deep/85 px-3 text-[12px] font-semibold text-chalk-dim ring-1 ring-turf-edge transition-colors duration-150 hover:text-chalk"
+            className="rc-press min-h-[38px] rounded-full bg-turf-deep/85 px-3 text-[12px] font-semibold text-chalk-dim ring-1 ring-turf-edge transition-colors duration-150 hover:text-chalk"
             aria-label={view === "3d" ? "Switch to flat pitch" : "Switch to 3D pitch"}
           >
             {view === "3d" ? "2D" : "3D"}
           </button>
         )}
       </div>
+      {story && <GoalFlash />}
     </div>
   );
 }
 
-/** If WebGL or the 3D chunk fails, the flat pitch takes over; the match never stops. */
-class StageBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch(error: unknown) {
-    console.warn("3D stage unavailable, using the flat pitch", error);
-  }
-  render() {
-    return this.state.failed ? <FlatStage /> : this.props.children;
-  }
-}
-
-function FlatStage() {
+/** In the story the narrator explains; the pitch only flashes the word. */
+function GoalFlash() {
+  const { t } = useTranslation();
+  const phase = useTrace((s) => s.phase);
   return (
-    <div className="absolute inset-0 grid place-items-center p-3 sm:p-6">
-      <div className="aspect-[111/74] max-h-full w-full max-w-full">
-        <Pitch />
-      </div>
-    </div>
+    <AnimatePresence>
+      {phase === "goal" && (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-turf-deep/40"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.35 } }}
+        >
+          <motion.div
+            className="font-display text-[clamp(80px,14vw,200px)] font-extrabold uppercase leading-none text-chalk"
+            initial={{ clipPath: "inset(0 100% 0 0)" }}
+            animate={{ clipPath: "inset(0 0% 0 0)" }}
+            transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
+          >
+            {t("goal.word")}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -245,9 +231,17 @@ function Panel() {
     scroller.current?.scrollTo({ top: 0 });
   }, [active]);
 
+  const meta = useMatch((s) => s.meta);
+  const scorer = ev ? playerInfo(meta, ev.goal.player_id) : null;
   return (
-    <aside className="flex min-h-0 flex-col bg-turf" aria-label={t("panel.label")}>
-      <div role="tablist" aria-label={t("panel.label")} className="flex gap-1 overflow-x-auto border-b border-turf-edge/70 px-3 pt-2 [scrollbar-width:none]">
+    <aside className="flex min-h-0 flex-col" aria-labelledby="panel-h">
+      <div className="px-5 pt-5 sm:px-6">
+        <h2 id="panel-h" className="font-display text-[34px] font-extrabold uppercase leading-[0.95] text-chalk">
+          {ev && scorer ? t("panel.goalTitle", { club: scorer.club?.short_name ?? "", time: clock(ev.goal.second) }) : t("panel.label")}
+        </h2>
+        <p className="mt-1.5 text-[15px] leading-snug text-chalk-dim">{t(`panel.hint.${active}`)}</p>
+      </div>
+      <div role="tablist" aria-label={t("panel.label")} className="mt-3 flex gap-1 overflow-x-auto border-b border-turf-edge px-3 [scrollbar-width:none] sm:px-4">
         {(ev ? tabs : (["live"] as Tab[])).map((k) => (
           <button
             key={k}
@@ -255,14 +249,14 @@ function Panel() {
             type="button"
             aria-selected={active === k}
             onClick={() => useUi.getState().setTab(k)}
-            className={`rc-press relative min-h-[44px] shrink-0 px-3 text-[14px] font-semibold transition-colors duration-150 ${active === k ? "text-chalk" : "text-chalk-dim hover:text-chalk"}`}
+            className={`rc-press relative min-h-[46px] shrink-0 px-2.5 text-[15px] font-semibold transition-colors duration-150 ${active === k ? "text-chalk" : "text-chalk-dim hover:text-chalk"}`}
           >
             {t(`tab.${k}`)}
-            {active === k && <motion.span layoutId="tab-ink" className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-chalk" transition={{ type: "spring", duration: 0.35, bounce: 0.1 }} />}
+            {active === k && <motion.span layoutId="tab-ink" className="absolute inset-x-2 bottom-0 h-[3px] rounded-full bg-chalk" transition={{ type: "spring", duration: 0.35, bounce: 0.1 }} />}
           </button>
         ))}
       </div>
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-5" role="tabpanel">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6" role="tabpanel">
         {phase === "tracing" && active === "live" && <p className="mb-4 text-[14px] text-chalk-dim">{t("tracing.panel")}</p>}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

@@ -8,6 +8,7 @@ import {
   MathUtils,
   Mesh,
   MeshBasicMaterial,
+  PerspectiveCamera,
   TubeGeometry,
   Vector3,
 } from "three";
@@ -19,8 +20,9 @@ import { useMatch } from "../store/matchStore";
 import { useSelectedEvidence } from "../store/selectors";
 import { playhead, useTrace } from "../store/traceStore";
 import { makePitchTexture } from "./pitchTexture";
+import { useUi } from "../store/uiStore";
 // a local font: troika would otherwise fetch one from a CDN at runtime
-import numberFont from "@fontsource/archivo/files/archivo-latin-800-normal.woff?url";
+import numberFont from "@fontsource/big-shoulders-display/files/big-shoulders-display-latin-800-normal.woff?url";
 
 const FLARE = new Color("#ff8a3d");
 const CHALK = new Color("#eef0e6");
@@ -122,9 +124,14 @@ function CameraRig() {
   useFrame((_, dt) => {
     const tr = useTrace.getState();
     const m = useMatch.getState();
-    const aspect = size.width / size.height;
-    const portrait = aspect < 0.9;
-    const vfov = MathUtils.degToRad((camera as { fov?: number }).fov ?? 32);
+    const portrait = size.width / size.height < 0.9;
+    // copy overlaid on the left (home hero): shift the projection so the scene centres in the rest
+    const inset = portrait ? 0 : useUi.getState().stageInset;
+    const cam = camera as PerspectiveCamera;
+    if (inset > 0) cam.setViewOffset(size.width, size.height, (-inset * size.width) / 2, 0, size.width, size.height);
+    else if (cam.view?.enabled) cam.clearViewOffset();
+    const aspect = (size.width * (1 - inset)) / size.height;
+    const vfov = MathUtils.degToRad(cam.fov ?? 32);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
     /** distance that fits `across` metres horizontally and `deep` metres of ground in view */
     const fit = (across: number, deep: number, elev: number) => {

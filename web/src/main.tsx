@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
-import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource-variable/big-shoulders-display";
 import "@fontsource-variable/schibsted-grotesk/index.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 import "@fontsource/noto-sans-devanagari/400.css";
