@@ -14,10 +14,14 @@ export function Wordmark() {
   return (
     <a href="#/" onClick={(e) => (e.preventDefault(), go("home"))} className="flex items-center gap-2" aria-label="Root Cause, home" translate="no">
       <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-        <circle cx="11" cy="11" r="9.5" fill="none" stroke="rgb(var(--chalk))" strokeWidth="1" />
-        <circle cx="11" cy="11" r="3" fill="rgb(var(--flare))" />
+        <g fill="none" stroke="rgb(var(--chalk))" strokeWidth="1.6" strokeLinejoin="round">
+          <path d="M3 15l8 4 8-4" />
+          <path d="M3 11l8 4 8-4" opacity=".6" />
+          <path d="M3 7l8 4 8-4-8-4z" opacity=".35" />
+        </g>
+        <circle cx="11" cy="19" r="2" fill="rgb(var(--flare))" />
       </svg>
-      <span className="text-[15px] font-semibold tracking-[0.01em] text-chalk">Root Cause</span>
+      <span className="font-display text-[15px] tracking-[0.02em] text-chalk [font-variation-settings:'wdth'_130]">Root Cause</span>
     </a>
   );
 }

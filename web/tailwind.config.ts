@@ -15,8 +15,8 @@ export default {
         ink: v("ink"),
       },
       fontFamily: {
-        display: ["'Instrument Serif'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
-        body: ["'Inter Tight Variable'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
+        display: ["'Anybody Variable'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
+        body: ["'Hanken Grotesk Variable'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
         trace: ["'JetBrains Mono Variable'", "ui-monospace", "monospace"],
       },
       transitionTimingFunction: {

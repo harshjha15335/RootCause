@@ -4,9 +4,10 @@ import { expect, test } from "@playwright/test";
 test("a first-time visitor can follow the story from home to the match report", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Every goal has a bug." })).toBeVisible();
-  await expect(page.getByText("The orange line traces the goal back to Lucan Weyre")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: "Weyre stepped up late." })).toBeAttached({ timeout: 15_000 });
+  await expect(page.getByText("at Weyre, stepped up late")).toBeAttached();
 
-  await page.getByRole("button", { name: "Watch the 2-minute story" }).click();
+  await page.getByRole("button", { name: "Watch the 2-minute story" }).first().click();
   await expect(page.getByRole("heading", { name: "Kick-off" })).toBeVisible();
   await page.getByRole("button", { name: "Skip to the goal" }).click();
   await expect(page.getByRole("heading", { name: "Tracing back" })).toBeVisible({ timeout: 25_000 });

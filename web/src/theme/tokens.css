@@ -1,23 +1,23 @@
 /*
- * Root Cause design tokens: Nocturne. A match at night, set like an editorial.
- *   turf   the dark: page, chrome and wells (names kept from the pitch they started as)
+ * Root Cause design tokens: Timestack. Floodlit broadcast cobalt, with the VAR line for the bug.
+ *   turf   the blues: page, panels and wells (names kept from the pitch they started as)
  *   chalk  floodlight white; text, lines, anything neutral or "fixed"
- *   paper  bone card stock for the verdict (see .paper, which re-inks the tokens)
- *   flare  the bug. Only ever marks a mistake, the causal thread, or the root cause.
+ *   paper  white card stock for the verdict (see .paper, which re-inks the tokens)
+ *   flare  VAR-line yellow: only ever a mistake, the causal thread, or the root cause.
  * Stored as "r g b" so Tailwind can apply alpha.
  */
 :root {
-  --turf-deep: 11 12 10;     /* #0b0c0a night */
-  --turf: 17 19 16;          /* #111310 panels */
-  --turf-raised: 26 29 25;   /* #1a1d19 hover, wells */
-  --turf-edge: 44 48 43;     /* #2c302b hairlines */
-  --chalk: 233 236 230;      /* #e9ece6 */
-  --chalk-dim: 185 190 182;  /* #b9beb6 secondary, 11:1 */
-  --chalk-faint: 138 145 136;/* #8a9188 tertiary, 6:1 */
-  --flare: 255 107 44;       /* #ff6b2c the bug */
-  --flare-ink: 26 8 0;       /* text on flare */
-  --paper: 233 236 230;      /* #e9ece6 bone */
-  --ink: 11 12 10;
+  --turf-deep: 21 48 214;    /* #1530d6 cobalt page */
+  --turf: 14 34 166;         /* #0e22a6 panels, for long reading */
+  --turf-raised: 33 61 224;  /* #213de0 hover, wells */
+  --turf-edge: 86 110 236;   /* #566eec hairlines */
+  --chalk: 243 245 255;      /* #f3f5ff */
+  --chalk-dim: 214 220 255;  /* #d6dcff secondary */
+  --chalk-faint: 174 187 255;/* #aebbff tertiary */
+  --flare: 255 214 10;       /* #ffd60a the bug */
+  --flare-ink: 20 18 58;     /* text on flare */
+  --paper: 243 245 255;
+  --ink: 10 16 72;
 
   --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -27,17 +27,17 @@
   color-scheme: dark;
 }
 
-/* Bone cards: the same components, printed. Every token flips. */
+/* White cards: the same components, printed. Every token flips. */
 .paper {
-  --turf-deep: 218 222 213;
-  --turf: 233 236 230;
-  --turf-raised: 222 226 217;
-  --turf-edge: 196 201 191;
-  --chalk: 11 12 10;
-  --chalk-dim: 61 66 60;     /* #3d423c 9:1 */
-  --chalk-faint: 90 96 89;   /* #5a6059 5.6:1 */
-  --flare: 191 64 10;        /* #bf400a the bug, printed: 5:1 */
-  --flare-ink: 255 247 240;
+  --turf-deep: 226 231 255;
+  --turf: 243 245 255;
+  --turf-raised: 231 235 255;
+  --turf-edge: 196 205 250;
+  --chalk: 10 16 72;
+  --chalk-dim: 46 56 128;    /* #2e3880 */
+  --chalk-faint: 78 90 160;  /* #4e5aa0 */
+  --flare: 21 48 214;        /* printed, the bug takes the cobalt */
+  --flare-ink: 243 245 255;
   color-scheme: light;
   background: rgb(var(--turf));
   color: rgb(var(--chalk));

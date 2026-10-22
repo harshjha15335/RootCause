@@ -37,12 +37,37 @@
 }
 
 @layer components {
-  /* Instrument Serif has one weight: emphasis is size and italic, never bold or capitals */
+  /* Anybody, heavy and wide: the width axis is part of the voice (it squeezes on scroll) */
   .font-display {
-    font-weight: 400 !important;
-    text-transform: none !important;
-    letter-spacing: -0.02em;
-    font-feature-settings: "lnum";
+    font-weight: 820 !important;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    font-variation-settings: "wdth" 112;
+  }
+  .rc-tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 5px 7px;
+    border-radius: 3px;
+    border: 1px solid rgb(var(--turf-edge));
+    background: rgb(var(--turf) / 0.8);
+    color: rgb(var(--chalk));
+    font: 600 11px/1 "JetBrains Mono Variable", ui-monospace, monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .rc-tag-bug {
+    background: rgb(var(--flare));
+    border-color: rgb(var(--flare));
+    color: rgb(var(--flare-ink));
+  }
+  .rc-drip {
+    transform-origin: top;
+    animation: rc-drip 1.8s ease-in-out infinite;
   }
   .rc-eyebrow {
     display: flex;
@@ -107,6 +132,11 @@
   to { transform: translateX(-50%); }
 }
 
+@keyframes rc-drip {
+  0% { transform: scaleY(0); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(1); opacity: 0; }
+}
 @keyframes rc-spin {
   to { rotate: 360deg; }
 }
@@ -132,6 +162,8 @@
 /* Devanagari has no serif here; it needs room for its matras above and below */
 :lang(hi) .font-display {
   font-family: "Noto Sans Devanagari", sans-serif;
+  text-transform: none;
+  font-variation-settings: normal !important;
   font-weight: 600 !important;
   line-height: 1.2 !important;
 }
