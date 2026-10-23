@@ -511,6 +511,7 @@ const hi: Dict = {
     open: { story: "Watch the story", explore: "Explore", analysis: "Match analysis" },
   },
   app: {
+    screenFailed: "यह पेज लोड नहीं हुआ। रीलोड करने से आमतौर पर ठीक हो जाता है।",
     recording: "रिकॉर्ड किया गया इंजन मैच p-1008, लाइव संदेश फ़ॉर्मेट में दोहराया गया।",
     failed: "मैच की फ़ीड रुक गई",
     retry: "फिर कोशिश करें",

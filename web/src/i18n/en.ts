@@ -510,6 +510,7 @@ const en = {
     open: { story: "Watch the story", explore: "Explore", analysis: "Match analysis" },
   },
   app: {
+    screenFailed: "This page didn't load. Reloading usually fixes it.",
     recording: "Recorded engine match p-1008, replayed through the live message format.",
     failed: "The match feed stopped",
     retry: "Try again",

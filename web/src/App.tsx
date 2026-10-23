@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { lazy, Suspense, useEffect } from "react";
+import { Component, Suspense, useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
+import { chunkReloadDone, lazyPage } from "./lib/lazyPage";
 import { chainBounds, jumpTo } from "./store/broadcast";
 import { useBroadcast } from "./store/broadcast";
 import { useMatch } from "./store/matchStore";
@@ -11,8 +12,8 @@ import { MatchScreen } from "./screens/MatchScreen";
 import { Home } from "./screens/Home";
 import { chronological, rootLink } from "./lib/geometry";
 
-const Analysis = lazy(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
-const BugReport = lazy(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
+const Analysis = lazyPage(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
+const BugReport = lazyPage(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
 
 export default function App() {
   useBroadcast();
@@ -20,6 +21,10 @@ export default function App() {
   const screen = useUi((s) => s.screen);
   const failure = useMatch((s) => s.failure);
   const { t } = useTranslation();
+  useEffect(() => {
+    const id = setTimeout(chunkReloadDone, 10_000);
+    return () => clearTimeout(id);
+  }, []);
 
   return (
     <div className="min-h-[100dvh] bg-turf-deep font-body text-chalk">
@@ -33,6 +38,7 @@ export default function App() {
         </div>
       )}
       <main id="main">
+        <ScreenBoundary key={screen} message={t("app.screenFailed")} retry={t("app.retry")}>
         {screen === "report" ? (
           <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
             <BugReport />
@@ -46,6 +52,7 @@ export default function App() {
         ) : (
           <MatchScreen story={screen === "story"} />
         )}
+        </ScreenBoundary>
       </main>
       <Shortcuts />
     </div>
@@ -207,4 +214,23 @@ function Shortcuts() {
       )}
     </AnimatePresence>
   );
+}
+
+/** A screen that throws shows a way out instead of an empty page. */
+class ScreenBoundary extends Component<{ children: ReactNode; message: string; retry: string }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div role="alert" className="mx-auto max-w-[1200px] px-5 py-20 sm:px-8">
+        <p className="text-[18px] text-chalk">{this.props.message}</p>
+        <button type="button" onClick={() => location.reload()} className="rc-press mt-6 inline-flex h-[48px] items-center rounded-full bg-chalk px-6 text-[15px] font-semibold text-turf">
+          {this.props.retry}
+        </button>
+      </div>
+    );
+  }
 }

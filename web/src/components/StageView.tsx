@@ -1,8 +1,9 @@
-import { Component, lazy, Suspense, useState, type ReactNode } from "react";
+import { lazyPage } from "../lib/lazyPage";
+import { Component, Suspense, useState, type ReactNode } from "react";
 import { useUi } from "../store/uiStore";
 import { Pitch } from "./Pitch";
 
-const Stage3D = lazy(() => import("../three/Stage"));
+const Stage3D = lazyPage(() => import("../three/Stage"));
 
 function canRun3D() {
   try {

@@ -511,6 +511,7 @@ const es: Dict = {
     open: { story: "Watch the story", explore: "Explore", analysis: "Match analysis" },
   },
   app: {
+    screenFailed: "Esta página no se cargó. Recargar suele arreglarlo.",
     recording: "Partido grabado del motor p-1008, reproducido con el formato de mensajes en directo.",
     failed: "Se detuvo la señal del partido",
     retry: "Reintentar",
