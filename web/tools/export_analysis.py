@@ -132,14 +132,18 @@ def xt_at(grid: np.ndarray, x: float, y: float) -> float:
 
 
 class Analysis:
-    def __init__(self, match_id: str, train: int):
+    def __init__(self, match_id: str, train: int, xt_cache: Path | None = None):
         self.match = plugin.load_match(match_id)
         self.ctx = self.match.ctx
         self.meta = self.match.meta().model_dump()
         self.ev = self.match.events
         self.hist = self.match.history
-        self.xt_model = fit_xt(train, self.ctx.seed if hasattr(self.ctx, "seed") else -1)
-        self.grid = np.asarray(self.xt_model.xT)
+        if xt_cache and xt_cache.exists():
+            self.grid = np.asarray(json.loads(xt_cache.read_text()))
+        else:
+            self.grid = np.asarray(fit_xt(train, getattr(self.ctx, "seed", -1)).xT)
+            if xt_cache:
+                xt_cache.write_text(json.dumps(self.grid.tolist()))
         self.w = self.ctx.w
         self.pos_name = {}
         for side in ("home", "away"):
@@ -679,8 +683,9 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--match", default="p-1008")
     ap.add_argument("--train", type=int, default=200, help="simulated matches to fit xT on")
+    ap.add_argument("--xt-cache", type=Path, help="reuse (or save) the fitted xT grid across matches")
     args = ap.parse_args()
-    data = Analysis(args.match, args.train).run()
+    data = Analysis(args.match, args.train, args.xt_cache).run()
     out = ROOT / "web/public/showcase" / args.match / "analysis.json"
     out.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size // 1024} KB)")

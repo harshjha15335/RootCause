@@ -52,7 +52,10 @@ async function json<T>(url: string, init?: RequestInit): Promise<T> {
   return r.json() as Promise<T>;
 }
 
-export const SHOWCASE_MATCH = "p-1008";
+/** Engine-generated demo matches, all exported offline (web/tools). The first is the default. */
+export const DEMO_MATCHES = ["p-1008", "p-1009", "p-1014", "p-1017"] as const;
+const asked = new URLSearchParams(location.search).get("demo");
+export const SHOWCASE_MATCH: string = DEMO_MATCHES.find((m) => m === asked) ?? DEMO_MATCHES[0];
 
 export function showcaseSource(matchId = SHOWCASE_MATCH): Source & { extras(): Promise<ShowcaseExtras> } {
   const base = `${import.meta.env.BASE_URL}showcase/${matchId}`;

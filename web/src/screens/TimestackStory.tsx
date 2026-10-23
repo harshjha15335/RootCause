@@ -12,7 +12,7 @@ import { LAYER, Timestack, stackPoint, type StackData, type StackLabel, type Sta
 const WINDOW = 20; // seconds of build-up stacked under the goal
 
 /** The goal as layers of seconds, read from the match track and the recorded counterfactual. */
-function useStackData(ev: Evidence | null): StackData | null {
+export function useStackData(ev: Evidence | null): StackData | null {
   const track = useMatch((s) => s.track);
   const version = useMatch((s) => s.trackVersion);
   const replays = useMatch((s) => s.replays);

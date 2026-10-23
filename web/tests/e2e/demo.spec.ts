@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-// The first-visit flow: home explains the product, the story traces the goal, explore and report hold up.
+// The first-visit flow: home explains the product, a demo match's story traces the goal, explore and report hold up.
 test("a first-time visitor can follow the story from home to the match report", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Every goal has a bug." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Weyre stepped up late." })).toBeAttached({ timeout: 15_000 });
-  await expect(page.getByText("at Weyre, stepped up late")).toBeAttached();
+  await expect(page.getByRole("heading", { name: "What it does" })).toBeAttached();
+  await expect(page.getByText("HTN 2–1 NGR")).toBeAttached({ timeout: 15_000 });
 
-  await page.getByRole("button", { name: "Watch the 2-minute story" }).first().click();
+  await page.getByRole("link", { name: "Watch the story" }).first().click();
   await expect(page.getByRole("heading", { name: "Kick-off" })).toBeVisible();
   await page.getByRole("button", { name: "Skip to the goal" }).click();
   await expect(page.getByRole("heading", { name: "Tracing back" })).toBeVisible({ timeout: 25_000 });

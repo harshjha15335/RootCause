@@ -967,7 +967,7 @@ function Moments({ a }: { a: Data }) {
             <div className="mt-1 text-[17px] font-semibold text-chalk">
               {n.full(m.player_id)} · <BugName code={m.bug} />
             </div>
-            <p className="mt-2 text-[14px] leading-snug text-chalk-dim">{t("analysis.bugBody", { time: clock(m.goal_second), m: m.params.metres_behind_line ?? "" })}</p>
+            <p className="mt-2 text-[14px] leading-snug text-chalk-dim">{t("analysis.bugBody", { time: clock(m.goal_second) })}{m.params.metres_behind_line !== undefined && ` ${t("analysis.bugBodyLine", { m: m.params.metres_behind_line })}`}</p>
             <a href="#/report" onClick={(e) => (e.preventDefault(), go("report"))} className="rc-press mt-4 inline-flex min-h-[40px] items-center rounded-full bg-flare px-4 text-[14px] font-semibold text-flare-ink">
               {t("analysis.readReport")}
             </a>
