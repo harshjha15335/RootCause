@@ -1,153 +1,161 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { Evidence } from "../api/types";
-import { BlameBar, BugName, PlayerChip } from "../components/bits";
-import { clock, pct, playerInfo } from "../lib/format";
-import { chronological, rootLink } from "../lib/geometry";
 import { go } from "../lib/nav";
-import { breakdown } from "../lib/sample";
-import { begin, chainBounds, jumpTo, skipAhead } from "../store/broadcast";
-import { useMatch } from "../store/matchStore";
-import { useExplanation, useLatestGoal, useSelectedEvidence } from "../store/selectors";
-import { useTrace } from "../store/traceStore";
+import { BASE_GOALS, BLAME, FuturesStage, MISTAKES, TRIALS } from "../story/futures";
 import { useUi } from "../store/uiStore";
-import { ReplayGrid } from "./Counterfactual";
-import { RiseLines } from "../lib/motion";
-import { Sentences } from "./RootCause";
 
-const CHAPTERS = 6;
-/** How long a chapter holds before the story moves on by itself (ms). The first three follow the match. */
-const HOLD_MS = [0, 0, 8000, 11000, 13000, 0];
+const BEATS = 5;
+const FIX_BEAT = 3;
 
 /**
- * The guided story: the same broadcast as Explore, with a narrator. The first three chapters
- * follow the match (build-up, goal, trace); the rest move the replay to make one point each.
+ * How Root Cause thinks, on one made-up attack: the goal, the rewind, 200 replays, fix one
+ * mistake. It explains the engine only; real goals belong to the Lab, which this hands off to.
  */
-export function StoryPanel() {
+export function Story() {
   const { t } = useTranslation();
-  const phase = useTrace((s) => s.phase);
-  const ev = useSelectedEvidence();
-  const [chapter, setChapter] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const reduced = useUi((s) => s.reducedMotion);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const stage = useRef<FuturesStage | null>(null);
+  const [beat, setBeat] = useState(0);
+  const [fixed, setFixed] = useState(-1);
+  const [goals, setGoals] = useState(0);
 
-  // the match drives the opening chapters
+  const labels = useMemo(
+    () => ({
+      goal: t("story.tagGoal"),
+      start: t("story.tagStart"),
+      fixed: t("story.tagFixed"),
+      mistakes: MISTAKES.map((_, i) => t(`story.m${i + 1}`)),
+    }),
+    [t],
+  );
+
   useEffect(() => {
-    if (phase === "live") setChapter(0);
-    else if (phase === "goal") setChapter(1);
-    else if (phase === "tracing") setChapter(2);
-    else if (phase === "traced") setChapter((c) => Math.max(c, 2));
-  }, [phase]);
+    const s = new FuturesStage(canvas.current!, labels, setGoals, reduced);
+    stage.current = s;
+    return () => s.dispose();
+    // labels are pushed separately below; the stage lives as long as the page
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced]);
+  useEffect(() => stage.current?.setLabels(labels), [labels]);
 
-  // each later chapter stages its own moment on the pitch
+  const fix = (i: number) => {
+    setFixed(i);
+    stage.current?.setFix(i);
+  };
+  const show = (b: number) => {
+    const next = Math.max(0, Math.min(BEATS - 1, b));
+    setBeat(next);
+    stage.current?.setBeat(next);
+    if (next === 2) setFixed(-1);
+    if (next === BEATS - 1 && fixed < 0) fix(0);
+  };
+
+  // on the fix step, fix the biggest mistake for people who don't tap
   useEffect(() => {
-    if (!ev) return;
-    const tr = useTrace.getState();
-    const root = rootLink(ev)!;
-    const b = chainBounds(ev.goal_id)!;
-    if (chapter === 3) {
-      tr.setMorph(0, root.evidence_id);
-      tr.pin(null, null);
-      tr.pin(root.evidence_id, root.player_id);
-      tr.setWindow(b);
-      jumpTo(root.second - 2, { play: true });
-      tr.setSpeed(0.5);
-    } else if (chapter === 4) {
-      tr.pin(null, null);
-      tr.setMorph(1, root.evidence_id);
-      tr.setWindow(b);
-      jumpTo(Math.max(b[0], root.second - 2), { play: true });
-      tr.setSpeed(0.5);
-    } else if (chapter === 5) {
-      tr.setMorph(0);
-      tr.pin(null, null);
-      tr.setWindow(b);
-      tr.setPhase("traced");
-      tr.setPlaying(true);
-    }
-  }, [chapter, ev]);
+    if (beat !== FIX_BEAT || fixed >= 0) return;
+    const id = setTimeout(() => fix(0), 2600);
+    return () => clearTimeout(id);
+  }, [beat, fixed]);
 
-  const hold = HOLD_MS[chapter];
-  const canNext = chapter === 0 || (chapter >= 2 && chapter < CHAPTERS - 1 && phase !== "tracing" && Boolean(ev));
-  const next = () => {
-    if (chapter === 0) skipAhead();
-    else if (canNext) setChapter((c) => c + 1);
-  };
-  const back = () => {
-    if (chapter <= 2) {
-      begin("buildup");
-      setChapter(0);
-    } else setChapter((c) => c - 1);
-  };
+  const names = Array.from({ length: BEATS }, (_, i) => t(`story.b${i + 1}`));
 
   return (
-    <section
-      aria-labelledby="story-h"
-      className="flex min-h-0 flex-1 flex-col"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-    >
-      <div className="px-5 pt-5 sm:px-7">
-        <div className="flex items-center justify-between gap-4">
-          <h2 id="story-h" className="text-[14px] font-semibold text-chalk-dim">
-            {t("story.label")}
-          </h2>
-          <button type="button" onClick={() => go("explore")} className="rc-press min-h-[36px] text-[14px] font-semibold text-chalk-dim underline decoration-1 underline-offset-4 hover:text-chalk">
-            {t("story.skip")}
-          </button>
-        </div>
-        <Rail chapter={chapter} hold={hold && canNext && !paused ? hold : 0} onDone={next} />
+    <section aria-labelledby="story-h" className="mx-auto max-w-[1280px] px-5 pb-16 pt-8 sm:px-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk-faint">{t("story.eyebrow")}</p>
+        <p className="text-[13px] text-chalk-faint">{t("story.invented")}</p>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 pt-6 sm:px-7" aria-live="polite">
+      <ol className="mt-4 grid grid-cols-5 gap-1.5" aria-label={t("story.steps")}>
+        {names.map((n, i) => (
+          <li key={i}>
+            <button
+              type="button"
+              onClick={() => show(i)}
+              aria-current={i === beat ? "step" : undefined}
+              className={`rc-press grid w-full gap-1.5 text-left text-[12px] font-semibold ${i === beat ? "text-chalk" : "text-chalk-faint hover:text-chalk"}`}
+            >
+              <span className="relative block h-[3px] overflow-hidden rounded-full bg-turf-edge">
+                <span className={`absolute inset-0 origin-left bg-chalk transition-transform duration-500 ease-out ${i <= beat ? "scale-x-100" : "scale-x-0"}`} />
+              </span>
+              <span className="hidden truncate sm:block">{n}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-6 min-h-[168px]" aria-live="polite">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={chapter}
+            key={beat}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
           >
-            <div className="text-[13px] font-semibold text-chalk-faint tabular-nums">{t("story.chapter", { n: chapter + 1, total: CHAPTERS })}</div>
-            <Chapter chapter={chapter} ev={ev} />
+            <h1 id="story-h" className="font-display text-[clamp(36px,5.4vw,72px)] leading-[0.95] text-chalk [text-wrap:balance]">
+              {t(`story.t${beat + 1}`)}
+            </h1>
+            <p className="mt-3 max-w-[56ch] text-[17px] leading-[1.55] text-chalk-dim sm:text-[18px]">{t(`story.l${beat + 1}`)}</p>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="flex items-center gap-3 border-t border-turf-edge px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-7">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <div className="relative aspect-[4/3.4] min-w-0 overflow-hidden rounded-[24px] bg-[radial-gradient(120%_90%_at_50%_0%,#2a48ec_0%,#1027b8_55%,#0a1a8c_100%)] sm:aspect-[16/10]">
+          <canvas ref={canvas} className="block h-full w-full" role="img" aria-label={t("story.canvasLabel")} />
+          <div className="absolute bottom-3 left-3.5 flex flex-wrap gap-3.5 text-[12px] font-semibold text-chalk-dim" aria-hidden="true">
+            <Key color="#f3f5ff">{t("story.keyAttack")}</Key>
+            <Key color="#7f93ff">{t("story.keyDefence")}</Key>
+            <Key color="#ffd60a">{t("story.keyMistake")}</Key>
+          </div>
+        </div>
+
+        <div className={`flex min-w-0 flex-col gap-3 transition-opacity duration-300 ${beat < 2 ? "invisible opacity-0" : "opacity-100"}`}>
+          <Tally goals={goals} fixed={fixed >= 0 && beat >= FIX_BEAT} />
+          {beat >= FIX_BEAT && (
+            <div className="grid gap-2">
+              {MISTAKES.map((m, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-pressed={fixed === i}
+                  onClick={() => fix(fixed === i ? -1 : i)}
+                  className={`rc-press grid gap-1.5 rounded-2xl bg-turf px-3.5 py-3 text-left ring-inset hover:bg-turf-raised/60 ${fixed === i ? "ring-2 ring-flare" : "ring-1 ring-turf-edge"}`}
+                >
+                  <span className="flex justify-between gap-2 text-[14px] font-semibold text-chalk">
+                    {t(`story.m${i + 1}`)}
+                    <span className="font-trace text-[13px] text-flare tabular-nums">{Math.round(BLAME[i] * 100)}%</span>
+                  </span>
+                  <span className="block h-1.5 overflow-hidden rounded-full bg-turf-raised">
+                    <span className="block h-full bg-flare transition-[width] duration-700 ease-out" style={{ width: fixed === i ? `${BLAME[i] * 100}%` : 0 }} />
+                  </span>
+                  <span className="text-[12px] text-chalk-faint">{t("story.fixedLine", { who: t(`story.who${i + 1}`), goals: m.fixedGoals, trials: TRIALS })}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={back}
-          disabled={chapter === 0}
-          className="rc-press min-h-[46px] rounded-full px-4 text-[15px] font-semibold text-chalk ring-1 ring-turf-edge transition-colors duration-150 hover:bg-turf-raised disabled:opacity-40"
+          onClick={() => show(beat - 1)}
+          disabled={beat === 0}
+          className="rc-press min-h-[46px] rounded-full px-5 text-[15px] font-semibold text-chalk ring-1 ring-turf-edge hover:bg-turf-raised disabled:opacity-40"
         >
           {t("story.back")}
         </button>
-        {chapter === CHAPTERS - 1 ? (
-          <button
-            type="button"
-            onClick={() => {
-              begin("buildup");
-              setChapter(0);
-            }}
-            className="rc-press ml-auto min-h-[46px] rounded-full px-4 text-[15px] font-semibold text-chalk ring-1 ring-turf-edge hover:bg-turf-raised"
-          >
-            {t("story.restart")}
+        {beat === BEATS - 1 ? (
+          <button type="button" onClick={() => go("lab")} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
+            {t("story.labCta")}
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={next}
-            disabled={!canNext}
-            className="rc-press ml-auto inline-flex min-h-[48px] items-center gap-2 rounded-full bg-chalk px-6 text-[15px] font-semibold text-turf transition-[opacity,background-color] duration-150 disabled:opacity-40"
-          >
-            {chapter === 0 ? t("story.skipAhead") : phase === "goal" || phase === "tracing" ? t("story.working") : t("story.next")}
-            {canNext && (
-              <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M3 8h9m-4-4 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
+          <button type="button" onClick={() => show(beat + 1)} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
+            {t("story.next")}
           </button>
         )}
       </div>
@@ -155,208 +163,28 @@ export function StoryPanel() {
   );
 }
 
-/** Six segments: the current one fills while it holds, so people know the story will move on. */
-function Rail({ chapter, hold, onDone }: { chapter: number; hold: number; onDone: () => void }) {
-  const { t } = useTranslation();
-  const names = [t("story.c1"), t("story.c2"), t("story.c3"), t("story.c4"), t("story.c5"), t("story.c6")];
-  const done = useRef(onDone);
-  done.current = onDone;
-  useEffect(() => {
-    if (!hold) return;
-    const id = setTimeout(() => done.current(), hold);
-    return () => clearTimeout(id);
-  }, [hold, chapter]);
+function Key({ color, children }: { color: string; children: string }) {
   return (
-    <ol className="mt-3 grid grid-cols-6 gap-1.5" aria-label={t("story.label")}>
-      {names.map((n, i) => (
-        <li key={i} aria-current={i === chapter ? "step" : undefined}>
-          <span className="relative block h-[3px] overflow-hidden rounded-full bg-turf-edge">
-            {i < chapter && <span className="absolute inset-0 bg-chalk" />}
-            {i === chapter && (
-              <motion.span
-                key={`${chapter}-${hold}`}
-                className="absolute inset-0 origin-left bg-chalk"
-                initial={{ scaleX: hold ? 0 : 1 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: hold ? hold / 1000 : 0, ease: "linear" }}
-              />
-            )}
-          </span>
-          <span className={`mt-1.5 hidden truncate text-[12px] font-semibold sm:block ${i === chapter ? "text-chalk" : "text-chalk-faint"}`}>{n}</span>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function Title({ children }: { children: ReactNode }) {
-  return (
-    <h3 className="mt-2 font-display text-[clamp(48px,5vw,72px)] leading-[0.95] text-chalk">
-      <RiseLines lines={[children]} delay={0.05} />
-    </h3>
-  );
-}
-
-function Body({ children }: { children: ReactNode }) {
-  return (
-    <p className="rc-fade-in mt-5 max-w-[48ch] text-[17px] leading-[1.65] text-chalk-dim sm:text-[18px]" style={{ animationDelay: "0.25s" }}>
+    <span className="inline-flex items-center gap-1.5">
+      <i className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: color }} />
       {children}
-    </p>
+    </span>
   );
 }
 
-function Chapter({ chapter, ev }: { chapter: number; ev: Evidence | null }) {
+/** One dot per replay: white goes in, yellow is a goal the fix took away. */
+function Tally({ goals, fixed }: { goals: number; fixed: boolean }) {
   const { t } = useTranslation();
-  const meta = useMatch((s) => s.meta);
-  const goal = useLatestGoal();
-  const phase = useTrace((s) => s.phase);
-  const steps = useMatch((s) => (goal?.goalId ? s.steps[goal.goalId]?.length ?? 0 : 0));
-  const lower = (s: string) => (useUi.getState().lang === "hi" ? s : s.charAt(0).toLowerCase() + s.slice(1));
-
-  if (chapter === 0) {
-    return (
-      <>
-        <Title>{t("story.c1")}</Title>
-        <Body>{t("story.c1Body", { home: meta?.home.name ?? "", away: meta?.away.name ?? "" })}</Body>
-      </>
-    );
-  }
-  if (chapter === 1 || (chapter === 2 && !ev)) {
-    const scorer = goal ? playerInfo(meta, goal.playerId) : null;
-    const stages = [
-      { label: t("tracing.walk"), done: Boolean(goal?.goalId) },
-      { label: t("tracing.replay"), done: Boolean(goal?.goalId) },
-      { label: t("tracing.explain"), done: steps > 0 },
-    ];
-    const current = stages.findIndex((s) => !s.done);
-    return (
-      <>
-        <Title>{chapter === 1 ? t("story.c2") : t("story.c3")}</Title>
-        <Body>{t("story.c2Body", { scorer: scorer?.name ?? "", time: clock(goal?.second ?? 0) })}</Body>
-        {phase === "tracing" && (
-          <ol className="mt-5 space-y-2 text-[15px]" role="status">
-            {stages.map((s, i) => (
-              <li key={i} className={`flex items-center gap-3 ${s.done || i === current ? "text-chalk" : "text-chalk-faint"}`}>
-                <span className="grid h-4 w-4 place-items-center" aria-hidden="true">
-                  {s.done ? (
-                    <svg width="14" height="14" viewBox="0 0 14 14">
-                      <path d="m3 7.3 2.6 2.6L11 4.4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : i === current ? (
-                    <span className="h-3 w-3 rounded-full border-2 border-chalk border-t-transparent rc-spin" />
-                  ) : (
-                    <span className="h-1.5 w-1.5 rounded-full bg-chalk-faint" />
-                  )}
-                </span>
-                {s.label}
-              </li>
-            ))}
-          </ol>
-        )}
-      </>
-    );
-  }
-  if (!ev) return null;
-  const root = rootLink(ev)!;
-  const culprit = playerInfo(meta, root.player_id);
-
-  if (chapter === 2) {
-    const links = [...chronological(ev)].reverse();
-    return (
-      <>
-        <Title>{t("story.c3")}</Title>
-        <Body>{ev.links.length === 1 ? t("story.c3BodyOne") : t("story.c3Body", { count: ev.links.length })}</Body>
-        <ol className="mt-5 divide-y divide-turf-edge border-y border-turf-edge">
-          {links.map((l, i) => (
-            <motion.li
-              key={l.evidence_id}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15 + i * 0.25, duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              className="py-3"
-            >
-              <div className="flex items-baseline justify-between gap-3 text-[15px]">
-                <span className={l.evidence_id === ev.root_cause_evidence_id ? "font-semibold text-flare" : "text-chalk"}>
-                  <BugName code={l.bug_type} />
-                </span>
-                <span className="text-[13px] text-chalk-dim tabular-nums">{clock(l.second)}</span>
-              </div>
-              <div className="mt-1 text-[15px]">
-                <PlayerChip id={l.player_id} evidenceId={l.evidence_id} full />
-              </div>
-              <div className="mt-2">
-                <BlameBar link={l} root={l.evidence_id === ev.root_cause_evidence_id} delay={300 + i * 250} />
-              </div>
-            </motion.li>
-          ))}
-        </ol>
-        <p className="mt-3 text-[13px] leading-relaxed text-chalk-dim">{t("term.blameDef")}</p>
-      </>
-    );
-  }
-  if (chapter === 3) {
-    return (
-      <>
-        <Title>{t("story.c4")}</Title>
-        <Body>
-          {t("story.c4Body", {
-            name: culprit.name,
-            bug: lower(t(`bug.${root.bug_type}`, { defaultValue: root.bug_type })),
-            time: clock(root.second),
-            blame: pct(root.blame_percent),
-          })}
-        </Body>
-        <PlainWords ev={ev} />
-      </>
-    );
-  }
-  if (chapter === 4) {
-    const brk = breakdown(root.evidence_id);
-    return (
-      <>
-        <Title>{t("story.c5")}</Title>
-        <Body>
-          {t("story.c5Body", {
-            name: culprit.name,
-            fix: t(`fix.${root.bug_type}`, { defaultValue: t("fix.generic") }),
-            note: brk ? t(`note.${brk.note}`, { time: clock(brk.second) }) : t("note.attack_changed", { time: clock(root.second) }),
-            before: root.baseline_goals,
-            after: root.fixed_goals,
-          })}
-        </Body>
-        <div className="mt-5 max-w-[380px]">
-          <ReplayGrid trials={root.trials} lit={root.fixed_goals} compact />
-          <p className="mt-2 text-[13px] text-chalk-dim">{t("whatif.gridCaption", { trials: root.trials, goals: root.fixed_goals })}</p>
-        </div>
-      </>
-    );
-  }
   return (
-    <>
-      <Title>{t("story.c6")}</Title>
-      <Body>{t("story.c6Body")}</Body>
-      <div className="mt-6 flex flex-wrap gap-3">
-        <button type="button" onClick={() => go("explore")} className="rc-press min-h-[48px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
-          {t("story.exploreCta")}
-        </button>
-        <button type="button" onClick={() => go("report")} className="rc-press min-h-[48px] rounded-full px-6 text-[15px] font-semibold text-chalk ring-1 ring-turf-edge hover:bg-turf-raised">
-          {t("story.reportCta")}
-        </button>
-      </div>
-    </>
-  );
-}
-
-/** The agents' own words for the root cause, in the chosen mode and language. */
-function PlainWords({ ev }: { ev: Evidence }) {
-  const { t } = useTranslation();
-  const q = useExplanation(ev.goal_id, true);
-  if (!q.data) return null;
-  return (
-    <div className="mt-6 border-l-2 border-turf-edge pl-4">
-      <div className="text-[13px] font-semibold text-chalk-dim">{t(`explain.title.${useUi.getState().mode}`)}</div>
-      <div className="mt-1">
-        <Sentences sentences={q.data.sentences.slice(0, 3)} ev={ev} lang={q.data.lang} />
+    <div className="rounded-[20px] bg-turf p-4">
+      <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk-faint">{t("story.tally", { trials: TRIALS })}</p>
+      <p className="mt-2 font-display text-[44px] leading-none text-chalk tabular-nums">
+        {goals} <span className="text-[18px] text-chalk-faint">/ {TRIALS}</span>
+      </p>
+      <div className="mt-3 grid grid-cols-[repeat(20,minmax(0,1fr))] gap-[3px]" aria-hidden="true">
+        {Array.from({ length: TRIALS }, (_, i) => (
+          <i key={i} className={`aspect-square rounded-full transition-colors duration-200 ${i < goals ? "bg-chalk" : fixed && i < BASE_GOALS ? "bg-flare" : "bg-turf-raised"}`} />
+        ))}
       </div>
     </div>
   );

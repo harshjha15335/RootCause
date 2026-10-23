@@ -169,6 +169,16 @@ function HowItWorks() {
             </li>
           ))}
         </ol>
+        <a
+          href="#/story"
+          onClick={(e) => (e.preventDefault(), go("story"))}
+          className="rc-press mt-8 inline-flex min-h-[48px] items-center gap-2 rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90"
+        >
+          {t("product.howCta")}
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 8h9m-4-4 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </div>
     </section>
   );
@@ -208,7 +218,7 @@ function DemoPicker() {
                 {d.traced !== null && ` · ${t("product.demoTraced", { count: d.goals, traced: d.traced })}`}
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {(["story", "lab", "explore", "analysis"] as const).map((s, i) => (
+                {(["lab", "explore", "analysis"] as const).map((s, i) => (
                   <a
                     key={s}
                     href={demoHref(d.id, s)}

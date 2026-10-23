@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { BugName } from "../components/bits";
 import { Scoreboard } from "../components/Header";
 import { StageView, useStageMode } from "../components/StageView";
-import { StoryPanel } from "./Story";
 import { ReplayBar } from "../components/ReplayBar";
 import { clock, pct, playerInfo } from "../lib/format";
 import { rootLink } from "../lib/geometry";
@@ -18,29 +17,27 @@ import { RootCause } from "./RootCause";
 import { StackTrace } from "./StackTrace";
 import { StudioScript } from "./StudioScript";
 
-export function MatchScreen({ story = false }: { story?: boolean }) {
+export function MatchScreen() {
   return (
     <div className="mx-auto grid max-w-[1600px] lg:h-[calc(100dvh-var(--header-h))] lg:grid-cols-[minmax(0,1fr)_460px] xl:grid-cols-[minmax(0,1fr)_520px]">
       <div className="flex min-h-0 flex-col">
-        <StageArea story={story} />
-        {!story && (
-          <div className="sticky bottom-0 z-30 lg:static">
-            <ReplayBar />
-          </div>
-        )}
+        <StageArea />
+        <div className="sticky bottom-0 z-30 lg:static">
+          <ReplayBar />
+        </div>
       </div>
-      <div className="flex min-h-0 flex-col border-l border-turf-edge/70 bg-turf">{story ? <StoryPanel /> : <Panel />}</div>
+      <div className="flex min-h-0 flex-col border-l border-turf-edge/70 bg-turf"><Panel /></div>
     </div>
   );
 }
 
-function StageArea({ story }: { story: boolean }) {
+function StageArea() {
   const { webgl, reduced, view } = useStageMode();
   return (
     <div className="relative h-[52svh] min-h-[300px] overflow-hidden bg-turf-deep lg:h-auto lg:min-h-0 lg:flex-1">
       <StageView />
       <Scoreboard className="absolute left-3 top-3 z-20" />
-      {!story && <GoalMoment />}
+      <GoalMoment />
       <LowerThird />
       <div className="absolute right-3 top-3 z-20 flex gap-2">
         {webgl && !reduced && (
@@ -54,35 +51,7 @@ function StageArea({ story }: { story: boolean }) {
           </button>
         )}
       </div>
-      {story && <GoalFlash />}
     </div>
-  );
-}
-
-/** In the story the narrator explains; the pitch only flashes the word. */
-function GoalFlash() {
-  const { t } = useTranslation();
-  const phase = useTrace((s) => s.phase);
-  return (
-    <AnimatePresence>
-      {phase === "goal" && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-turf-deep/40"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.35 } }}
-        >
-          <motion.div
-            className="font-display text-[clamp(80px,14vw,200px)] font-extrabold uppercase leading-none text-chalk"
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
-            animate={{ clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
-          >
-            {t("goal.word")}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
 

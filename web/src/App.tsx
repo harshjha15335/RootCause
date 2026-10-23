@@ -14,6 +14,7 @@ import { chronological, rootLink } from "./lib/geometry";
 
 const Analysis = lazyPage(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
 const Lab = lazyPage(() => import("./screens/Lab").then((m) => ({ default: m.Lab })));
+const Story = lazyPage(() => import("./screens/Story").then((m) => ({ default: m.Story })));
 const BugReport = lazyPage(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
 
 export default function App() {
@@ -52,10 +53,14 @@ export default function App() {
           <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("analysis.loading")}</p>}>
             <Analysis />
           </Suspense>
+        ) : screen === "story" ? (
+          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
+            <Story />
+          </Suspense>
         ) : screen === "home" ? (
           <Home />
         ) : (
-          <MatchScreen story={screen === "story"} />
+          <MatchScreen />
         )}
         </ScreenBoundary>
       </main>
@@ -70,7 +75,7 @@ function useKeyboard() {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (el.closest("input, textarea, select, [contenteditable]") || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (!["story", "explore"].includes(useUi.getState().screen) && !["?", "Escape", "1", "2", "3"].includes(e.key)) return;
+      if (useUi.getState().screen !== "explore" && !["?", "Escape", "1", "2", "3"].includes(e.key)) return;
       const tr = useTrace.getState();
       const m = useMatch.getState();
       const ev = tr.selectedGoalId ? m.evidence[tr.selectedGoalId] : null;

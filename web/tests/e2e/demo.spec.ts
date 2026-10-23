@@ -1,24 +1,27 @@
 import { expect, test } from "@playwright/test";
 
-// The first-visit flow: home explains the product, a demo match's story traces the goal, explore and report hold up.
+// The first-visit flow: home explains the product, the story explains the engine, explore and report hold up.
 test("a first-time visitor can follow the story from home to the match report", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Every goal has a bug." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "What it does" })).toBeAttached();
   await expect(page.getByRole("link", { name: /HTN 2–1 NGR/ })).toBeVisible({ timeout: 15_000 });
 
-  await page.getByRole("link", { name: "Watch the story" }).first().click();
-  await expect(page.getByRole("heading", { name: "Kick-off" })).toBeVisible();
-  await page.getByRole("button", { name: "Skip to the goal" }).click();
-  await expect(page.getByRole("heading", { name: "Tracing back" })).toBeVisible({ timeout: 25_000 });
-  await expect(page.getByRole("button", { name: "Next" })).toBeEnabled({ timeout: 15_000 });
+  await page.getByRole("link", { name: "See the engine in motion" }).click();
+  await expect(page.getByRole("heading", { name: "A goal goes in." })).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByRole("heading", { name: "The root cause" })).toBeVisible();
-  await expect(page.getByText("89%").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Rewind the move." })).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText("the pass at 62:29 is offside")).toBeVisible();
+  await expect(page.getByText("146")).toBeVisible({ timeout: 10_000 });
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: /Lost the runner/ }).click();
+  await expect(page.getByRole("button", { name: /Lost the runner/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("118")).toBeVisible({ timeout: 10_000 });
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Open the Tactics Lab" }).click();
+  await expect(page.getByRole("img", { name: "Interactive 3D view of the goal move" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Skip the story" }).click();
+  await page.goto("/#/explore");
   await page.getByRole("tab", { name: "What if?" }).click();
   await page.getByRole("button", { name: "Mistake fixed" }).click();
   await expect(page.getByText("0 / 200")).toBeVisible();
