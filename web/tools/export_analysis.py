@@ -42,6 +42,7 @@ from engine.simulate import Match
 L, W = 16, 12  # xT grid
 BUCKET_S = 300  # momentum and line-height buckets (5 minutes)
 HEAT_X, HEAT_Y = 12, 8
+TERR_X, TERR_Y, TERR_S = 21, 14, 60  # territory grid (5 m cells) and slice length
 UNIT = {
     "GK": "gk",
     "RB": "def",
@@ -420,6 +421,53 @@ class Analysis:
             ]
             out[self.team_name(team)] = {"nodes": nodes, "edges": edges}
         return out
+
+    def territory(self) -> dict:
+        """Who controls each 5 m cell, minute by minute, with HOME always attacking x = 105.
+
+        Control is each team's summed Gaussian influence (8 m) of its players' positions,
+        sampled every 2 s, as (home - away) / (home + away) scaled to -100..100. Ball
+        positions every 5 s and per-minute xT added per side come with it.
+        """
+        cx = (np.arange(TERR_X) + 0.5) * pitch.PITCH_X / TERR_X
+        cy = (np.arange(TERR_Y) + 0.5) * pitch.PITCH_Y / TERR_Y
+        gx, gy = np.meshgrid(cx, cy)
+        n = math.ceil(pitch.FULL_S / TERR_S)
+        acc = np.zeros((n, TERR_Y, TERR_X))
+        cnt = np.zeros(n)
+        ball = []
+        for st in self.hist[1:]:
+            s = int(st.clock_s)
+            d = self.d(pitch.HOME, st.period)
+            if s % 5 == 0:
+                bx, by = fwd(st.ball, d)
+                ball.append([r2(bx), r2(by), int(st.possession)])
+            if s % 2:
+                continue
+            k = min(s // TERR_S, n - 1)
+            inf = [np.zeros_like(gx), np.zeros_like(gx)]
+            for i in range(22):
+                x, y = fwd(st.pos[i], d)
+                inf[pitch.team_of(i)] += np.exp(-((gx - x) ** 2 + (gy - y) ** 2) / (2 * 8.0**2))
+            acc[k] += (inf[0] - inf[1]) / (inf[0] + inf[1] + 1e-6)
+            cnt[k] += 1
+        xt = {"home": [0.0] * n, "away": [0.0] * n}
+        for e in self.ev:
+            if e.player is not None:
+                xt[self.team_name(e.team)][min(int(e.clock_s // TERR_S), n - 1)] += max(
+                    self.xt_gain(e), 0
+                )
+        return {
+            "slice_s": TERR_S,
+            "nx": TERR_X,
+            "ny": TERR_Y,
+            "control": [
+                [round(float(v) * 100) for v in (acc[k] / max(cnt[k], 1)).ravel()] for k in range(n)
+            ],
+            "ball": ball,
+            "home_xt": [r3(v) for v in xt["home"]],
+            "away_xt": [r3(v) for v in xt["away"]],
+        }
 
     def players(self) -> list[dict]:
         stats = {i: Counter() for i in range(22)}
@@ -868,6 +916,7 @@ class Analysis:
             "shapes": shapes,
             "lines": lines,
             "networks": self.networks(),
+            "territory": self.territory(),
             "players": players,
             "chances": chances,
             "turnovers": turnovers,

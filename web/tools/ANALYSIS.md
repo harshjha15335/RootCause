@@ -27,3 +27,11 @@ Units are metres on a 105 x 68 pitch and seconds of match clock.
 
 Reason codes: `better_pass`, `better_assist`, `earlier`, `crowded`, `long_range`, `tight_angle`,
 `pressured`, `big_chance`.
+
+## territory
+
+`territory` drives the 3D tactics view. HOME always attacks x = 105 in it.
+
+- `control`: one array per 60-second slice of `nx` × `ny` (21 × 14, 5 m) cells, row-major from y = 0. -100 means the away side owns the cell and 100 means the home side does. It is each team's summed Gaussian influence (8 m) of player positions, sampled every 2 s.
+- `ball`: `[x, y, possession_team]` every 5 s.
+- `home_xt` / `away_xt`: xT added per minute.
