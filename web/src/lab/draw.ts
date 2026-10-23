@@ -31,6 +31,8 @@ export type Scene = {
   hover: number | null;
   probe: [number, number] | null;
   faults: { s: number; player: number }[];
+  /** players and ball are 3D objects; draw only their rings and tags */
+  solid?: boolean;
 };
 
 export function drawScene(g: CanvasRenderingContext2D, k: number, sc: Scene) {
@@ -447,6 +449,10 @@ function drawPlayers(g: CanvasRenderingContext2D, k: number, sc: Scene) {
       g.arc(x, y, R + 1.8, 0, Math.PI * 2);
       g.stroke();
     }
+    if (sc.solid) {
+      g.globalAlpha = 1;
+      continue;
+    }
     g.fillStyle = INK.dark(0.4);
     g.beginPath();
     g.ellipse(x + 0.25, y + 0.45, R, R * 0.9, 0, 0, Math.PI * 2);
@@ -465,6 +471,7 @@ function drawPlayers(g: CanvasRenderingContext2D, k: number, sc: Scene) {
     g.fillText(String(lab.numbers[i]), x, y + 0.08);
     g.globalAlpha = 1;
   }
+  if (sc.solid) return;
   let [bx, by] = f.ball;
   // keep the ball off the carrier's shirt number: at their feet, toward the goal they attack
   if (f.carrier >= 0 && f.carrier < 22 && Math.hypot(f.pos[f.carrier][0] - bx, f.pos[f.carrier][1] - by) < 1.2) {

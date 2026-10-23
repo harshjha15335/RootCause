@@ -167,3 +167,8 @@
   font-weight: 600 !important;
   line-height: 1.2 !important;
 }
+
+/* Tactics Lab: each coach line rises in, so a new idea reads as new */
+.lab-caption { animation: lab-caption-in 420ms var(--ease-out) both; }
+@keyframes lab-caption-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .lab-caption { animation: none; } }

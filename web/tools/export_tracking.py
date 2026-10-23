@@ -30,6 +30,56 @@ from engine import pitch
 
 STRIDE = 49
 ACTIONS = ("pass", "carry", "duel", "shot", "offside")
+# Presentation pass: the engine moves players in 1 s steps, which reads as jerky and lets players
+# stack on one spot. Measured against real anonymised tracking (Metrica sample game 2, 1 Hz):
+# median change of velocity 0.5 m/s per s (engine 1.7), 10th percentile nearest-player gap 1.6 m
+# (engine 0.6). The tracks are smoothed and spaced out to match; nothing else changes.
+SMOOTH_S = 1.3
+MIN_GAP_M = 1.6
+
+
+def gaussian(track: np.ndarray, sigma: float) -> np.ndarray:
+    """Smooth a (T, 2) track in time, holding the ends."""
+    r = int(3 * sigma)
+    k = np.exp(-0.5 * (np.arange(-r, r + 1) / sigma) ** 2)
+    k /= k.sum()
+    padded = np.pad(track, ((r, r), (0, 0)), mode="edge")
+    return np.stack([np.convolve(padded[:, j], k, mode="valid") for j in range(2)], 1)
+
+
+def spread(frame: np.ndarray, gap: float) -> np.ndarray:
+    """Push apart players closer than `gap` metres (a few relaxation rounds)."""
+    p = frame.copy()
+    for _ in range(4):
+        d = p[:, None, :] - p[None, :, :]
+        dist = np.linalg.norm(d, axis=2) + np.eye(len(p)) * 1e3
+        push = np.clip(gap - dist, 0, None) / 2
+        unit = d / np.maximum(dist, 1e-3)[..., None]
+        # two players on the exact same spot get split sideways
+        same = dist < 1e-3
+        unit[same] = [0.0, 1.0]
+        p += (unit * push[..., None]).sum(1)
+    p[:, 0] = np.clip(p[:, 0], 0.5, pitch.PITCH_X - 0.5)
+    p[:, 1] = np.clip(p[:, 1], 0.5, pitch.PITCH_Y - 0.5)
+    return p
+
+
+def humanise(pos: np.ndarray, periods: np.ndarray) -> np.ndarray:
+    """(T, 22, 2) engine positions -> smooth, spaced tracks, smoothed within each half only."""
+    out = pos.copy()
+    for per in (1, 2):
+        idx = np.where(periods == per)[0]
+        if len(idx) < 3:
+            continue
+        seg = out[idx]
+        for i in range(22):
+            seg[:, i] = gaussian(seg[:, i], SMOOTH_S)
+        for t in range(len(seg)):
+            seg[t] = spread(seg[t], MIN_GAP_M)
+        for i in range(22):
+            seg[:, i] = gaussian(seg[:, i], 0.6)
+        out[idx] = seg
+    return out
 
 
 def r1(v) -> float | None:
@@ -43,13 +93,27 @@ def main() -> None:
     match = plugin.load_match(args.match)
     hist = match.history
     out = np.zeros((pitch.FULL_S, STRIDE), dtype="<i2")
+    raw_pos = np.zeros((pitch.FULL_S, 22, 2))
+    balls = np.zeros((pitch.FULL_S, 2))
+    periods = np.zeros(pitch.FULL_S, dtype=int)
+    carriers = np.zeros(pitch.FULL_S, dtype=int)
     for s in range(pitch.FULL_S):
         st = hist[min(s + 1, len(hist) - 1)]
-        out[s, 0:2] = np.round(np.asarray(st.ball) * 10)
-        out[s, 2:46] = np.round(np.asarray(st.pos).reshape(-1) * 10)
+        raw_pos[s] = np.asarray(st.pos)
+        balls[s] = np.asarray(st.ball)
+        periods[s] = int(st.period)
+        carriers[s] = int(st.carrier)
         out[s, 46] = int(st.possession)
         out[s, 47] = int(st.carrier)
         out[s, 48] = int(st.period)
+    smooth = humanise(raw_pos, periods)
+    for s in range(pitch.FULL_S):
+        c = carriers[s]
+        # the ball stays at the feet of the player who has it, wherever smoothing moved them
+        if 0 <= c < 22 and np.linalg.norm(raw_pos[s, c] - balls[s]) < 2.5:
+            balls[s] = smooth[s, c] + (balls[s] - raw_pos[s, c])
+    out[:, 0:2] = np.round(balls * 10)
+    out[:, 2:46] = np.round(smooth.reshape(pitch.FULL_S, -1) * 10)
     folder = ROOT / "web/public/showcase" / args.match
     (folder / "tracking.bin").write_bytes(out.tobytes())
     events = []

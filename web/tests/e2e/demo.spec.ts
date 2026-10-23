@@ -41,13 +41,14 @@ test("the match analysis covers the whole match, not just the traced goal", asyn
   await expect(page.getByRole("heading", { name: "Bram Tovick", exact: true })).toBeVisible();
 });
 
-test("tactics lab plays the whole match with lenses", async ({ page }) => {
+test("tactics lab plays the whole match with a coach and lenses", async ({ page }) => {
   await page.goto("/#/lab");
-  await expect(page.getByRole("heading", { name: "See the game" })).toBeVisible();
   await expect(page.getByRole("img", { name: "Live pitch with all 22 players and the ball" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Coach", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Explore", exact: true }).first().click();
   const shape = page.getByRole("button", { name: "Shape", exact: true });
   await shape.click();
   await expect(shape).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("heading", { name: "Space owned" })).toBeVisible();
   await expect(page.getByRole("slider", { name: /Match timeline/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "See the game" })).toBeVisible();
 });

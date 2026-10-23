@@ -63,29 +63,32 @@ export type Frame = {
 
 export function frameAt(lab: Lab, t: number): Frame {
   const s0 = Math.min(Math.max(Math.floor(t), 0), SECONDS - 1);
-  const s1 = Math.min(s0 + 1, SECONDS - 1);
   const f = Math.min(Math.max(t - s0, 0), 1);
   const r = lab.raw;
   const p0 = r[s0 * STRIDE + 48] || 1;
-  const p1 = r[s1 * STRIDE + 48] || 1;
-  // at half-time the frame flips; never interpolate across it
-  const b = p0 === p1 ? s1 : s0;
-  const pt = (k: number): [number, number] => {
-    const x0 = flipX(r[s0 * STRIDE + k] / 10, p0), y0 = flipY(r[s0 * STRIDE + k + 1] / 10, p0);
-    const x1 = flipX(r[b * STRIDE + k] / 10, p0), y1 = flipY(r[b * STRIDE + k + 1] / 10, p0);
-    return [x0 + (x1 - x0) * f, y0 + (y1 - y0) * f];
+  // neighbouring seconds in the same half (the frame flips at half-time; never blend across it)
+  const same = (s: number) => {
+    const c = Math.min(Math.max(s, 0), SECONDS - 1);
+    return (r[c * STRIDE + 48] || 1) === p0 ? c : s0;
   };
-  const vel = (k: number): [number, number] => {
-    if (b === s0) return [0, 0];
-    return [flipX(r[b * STRIDE + k] / 10, p0) - flipX(r[s0 * STRIDE + k] / 10, p0), flipY(r[b * STRIDE + k + 1] / 10, p0) - flipY(r[s0 * STRIDE + k + 1] / 10, p0)];
-  };
+  const sm = same(s0 - 1), s1 = same(s0 + 1), s2 = same(s0 + 2);
+  const X = (s: number, k: number) => flipX(r[s * STRIDE + k] / 10, p0);
+  const Y = (s: number, k: number) => flipY(r[s * STRIDE + k + 1] / 10, p0);
+  // Catmull-Rom through the 1 Hz samples: smooth paths and continuous speed
+  const cr = (a: number, b: number, c: number, d: number) =>
+    0.5 * (2 * b + (-a + c) * f + (2 * a - 5 * b + 4 * c - d) * f * f + (-a + 3 * b - 3 * c + d) * f * f * f);
+  const dcr = (a: number, b: number, c: number, d: number) =>
+    0.5 * ((-a + c) + 2 * (2 * a - 5 * b + 4 * c - d) * f + 3 * (-a + 3 * b - 3 * c + d) * f * f);
   const pos: [number, number][] = [];
-  const v: [number, number][] = [];
+  const vel: [number, number][] = [];
   for (let i = 0; i < 22; i++) {
-    pos.push(pt(2 + i * 2));
-    v.push(vel(2 + i * 2));
+    const k = 2 + i * 2;
+    pos.push([cr(X(sm, k), X(s0, k), X(s1, k), X(s2, k)), cr(Y(sm, k), Y(s0, k), Y(s1, k), Y(s2, k))]);
+    vel.push([dcr(X(sm, k), X(s0, k), X(s1, k), X(s2, k)), dcr(Y(sm, k), Y(s0, k), Y(s1, k), Y(s2, k))]);
   }
-  return { ball: pt(0), pos, vel: v, team: r[s0 * STRIDE + 46] as 0 | 1, carrier: r[s0 * STRIDE + 47] };
+  // the ball travels in straight lines between touches
+  const ball: [number, number] = [X(s0, 0) + (X(s1, 0) - X(s0, 0)) * f, Y(s0, 0) + (Y(s1, 0) - Y(s0, 0)) * f];
+  return { ball, pos, vel, team: r[s0 * STRIDE + 46] as 0 | 1, carrier: r[s0 * STRIDE + 47] };
 }
 
 /** A player's position at whole second s (home-attacks-right frame). */

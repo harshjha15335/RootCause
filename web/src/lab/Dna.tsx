@@ -37,11 +37,11 @@ export function Dna({ lab, t, markers, onSeek }: { lab: Lab; t: number; markers:
     const g = c.getContext("2d")!;
     g.scale(dpr, dpr);
     // each strand is a wave: its height is the side's share of the ball over the surrounding
-    // 40 seconds, its brightness the phase it spent most of that time in
+    // 90 seconds, its brightness the phase it spent most of that time in
     const mid = H / 2, amp = H / 2 - 9;
     for (let px = 0; px < w; px++) {
       const c = ((px + 0.5) / w) * SECONDS;
-      const s0 = Math.max(Math.floor(c - 20), 0), s1 = Math.min(Math.ceil(c + 20), SECONDS);
+      const s0 = Math.max(Math.floor(c - 45), 0), s1 = Math.min(Math.ceil(c + 45), SECONDS);
       const tally = [new Array(4).fill(0), new Array(4).fill(0)];
       for (let s = s0; s < s1; s++) tally[lab.poss[s]][lab.phase[s]]++;
       for (const team of [0, 1]) {
