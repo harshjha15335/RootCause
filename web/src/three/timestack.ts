@@ -1,3 +1,4 @@
+import { Delaunay } from "d3-delaunay";
 import * as THREE from "three";
 
 /**
@@ -13,6 +14,12 @@ export type StackData = {
   culprit: string;
   faultSecond: number;
   fix: { second: number; culprit: [number, number]; ball: [number, number] }[];
+  /** The culprit's back-line teammates; their deepest man sets the line the culprit should hold. */
+  lineIds: string[];
+  /** The player the space matters for (the scorer), outlined in the nearest-player cells. */
+  scorer: string;
+  /** Which goal the defending side protects: true when it is the one at x = 0. */
+  defendsLeft: boolean;
 };
 
 export type StackState = {
@@ -22,6 +29,7 @@ export type StackState = {
   focus: number; // dim everything but the culprit and the ball
   fault: number; // offside line and layer flash
   patch: number; // the fix ribbon drawn, the goal above it fading
+  line: number; // the back line through time, and nearest-player space on the fault layer
   cx: number; cy: number; cz: number; tx: number; ty: number; tz: number;
 };
 
@@ -71,6 +79,8 @@ export class Timestack {
   private fixBall!: THREE.Mesh;
   private offside!: THREE.Mesh;
   private faultPlane!: THREE.Mesh;
+  private lineWall!: THREE.Mesh;
+  private lineEdges!: THREE.LineSegments;
   private layerMats: THREE.LineBasicMaterial[] = [];
   private dots = new Map<string, THREE.Mesh>();
   private ballDot!: THREE.Mesh;
@@ -130,10 +140,35 @@ export class Timestack {
     const at = d.pos[Math.max(0, this.iFault)][cj];
     this.offside = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 68), new THREE.MeshBasicMaterial({ color: VAR, transparent: true, opacity: 0 }));
     this.offside.position.set(X(at[0]), this.iFault * LAYER, 0);
-    this.faultPlane = new THREE.Mesh(plane, new THREE.MeshBasicMaterial({ color: VAR, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+    const cells = spaceTexture(d, this.iFault);
+    this.disposables.push(cells);
+    this.faultPlane = new THREE.Mesh(plane, new THREE.MeshBasicMaterial({ map: cells, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
     this.faultPlane.rotation.x = -Math.PI / 2;
     this.faultPlane.position.y = this.iFault * LAYER;
     this.stack.add(this.offside, this.faultPlane);
+
+    // the back line: on each layer, the deepest of the culprit's back-line teammates, joined
+    // into a thin wall through time; the culprit's ribbon dropping behind it is the bug
+    const lj = d.lineIds.map((id) => d.ids.indexOf(id)).filter((j) => j >= 0);
+    const lineX = d.pos.map((row) => (lj.length ? (d.defendsLeft ? Math.min : Math.max)(...lj.map((j) => row[j][0])) : 52.5));
+    const wall = new THREE.BufferGeometry();
+    const verts: number[] = [];
+    const seg: number[] = [];
+    for (let i = 0; i < N; i++) {
+      const x = X(lineX[i]), y = i * LAYER;
+      seg.push(x, y, -34, x, y, 34);
+      if (i < N - 1) {
+        const x2 = X(lineX[i + 1]), y2 = (i + 1) * LAYER;
+        verts.push(x, y, -34, x, y, 34, x2, y2, 34, x, y, -34, x2, y2, 34, x2, y2, -34);
+      }
+    }
+    wall.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
+    const segs = new THREE.BufferGeometry();
+    segs.setAttribute("position", new THREE.Float32BufferAttribute(seg, 3));
+    this.disposables.push(wall, segs);
+    this.lineWall = new THREE.Mesh(wall, new THREE.MeshBasicMaterial({ color: PAPER, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+    this.lineEdges = new THREE.LineSegments(segs, new THREE.LineBasicMaterial({ color: PAPER, transparent: true, opacity: 0 }));
+    this.stack.add(this.lineWall, this.lineEdges);
 
     const sheet = new THREE.Mesh(plane, new THREE.MeshBasicMaterial({ color: PAPER, transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false }));
     sheet.rotation.x = -Math.PI / 2;
@@ -207,7 +242,9 @@ export class Timestack {
     this.drawn(this.fixBall, S.patch);
     this.fixRibbon.visible = this.fixBall.visible = S.patch > 0.001;
     (this.offside.material as THREE.MeshBasicMaterial).opacity = S.fault;
-    (this.faultPlane.material as THREE.MeshBasicMaterial).opacity = S.fault * 0.16;
+    (this.faultPlane.material as THREE.MeshBasicMaterial).opacity = Math.min(S.fault, S.line) * 0.95;
+    (this.lineWall.material as THREE.MeshBasicMaterial).opacity = S.line * 0.1 * goalFade;
+    (this.lineEdges.material as THREE.LineBasicMaterial).opacity = S.line * 0.55 * goalFade;
     this.layerMats.forEach((m, i) => {
       m.opacity = (0.1 + (i === this.iFault ? S.fault * 0.6 : 0)) * (i > this.iFixEnd ? goalFade : 1);
     });
@@ -271,3 +308,38 @@ export class Timestack {
 
 /** World position (before the stack's height scale) of a pitch point at a layer. */
 export const stackPoint = (x: number, y: number, layer: number, height: number): [number, number, number] => [X(x), layer * LAYER * height, Z(y)];
+
+/** Nearest-player cells (a Voronoi diagram) for one layer: who is closest to each patch of grass.
+ * Deliberately labelled as nearest player, not pitch control: it ignores speed and direction. */
+function spaceTexture(d: StackData, layer: number) {
+  const c = document.createElement("canvas");
+  c.width = 1050;
+  c.height = 680;
+  const g = c.getContext("2d")!;
+  const row = d.pos[Math.max(0, layer)];
+  const pts = row.map(([x, y]) => [x * 10, y * 10] as [number, number]);
+  const v = Delaunay.from(pts).voronoi([0, 0, 1050, 680]);
+  d.ids.forEach((id, j) => {
+    const home = id.startsWith("H") === d.scorer.startsWith("H");
+    g.beginPath();
+    v.renderCell(j, g);
+    g.fillStyle = id === d.scorer ? "rgba(243,245,255,.6)" : home ? "rgba(243,245,255,.16)" : "rgba(8,20,110,.75)";
+    g.fill();
+  });
+  g.beginPath();
+  v.render(g);
+  g.strokeStyle = "rgba(243,245,255,.55)";
+  g.lineWidth = 2;
+  g.stroke();
+  const j = d.ids.indexOf(d.scorer);
+  if (j >= 0) {
+    g.beginPath();
+    v.renderCell(j, g);
+    g.strokeStyle = "rgba(243,245,255,1)";
+    g.lineWidth = 5;
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}

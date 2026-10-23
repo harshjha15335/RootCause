@@ -16,6 +16,7 @@ function useStackData(ev: Evidence | null): StackData | null {
   const track = useMatch((s) => s.track);
   const version = useMatch((s) => s.trackVersion);
   const replays = useMatch((s) => s.replays);
+  const meta = useMatch((s) => s.meta);
   return useMemo(() => {
     if (!ev) return null;
     const root = rootLink(ev);
@@ -37,9 +38,23 @@ function useStackData(ev: Evidence | null): StackData | null {
         const p = f.players.find((x) => x.id === root.player_id);
         return { second: f.clock_s, culprit: (p ? [p.x, p.y] : [0, 0]) as [number, number], ball: f.ball };
       });
-    return { seconds, ids, pos, ball, culprit: root.player_id, faultSecond: Math.max(seconds[0], Math.min(end, root.second)), fix };
+    const side = playerInfo(meta, root.player_id).side;
+    // back line from the squad sheet: full-backs and centre-backs (positions ending in B)
+    const lineIds = (meta?.[side].players ?? []).filter((p) => /B$/.test(p.position) && p.id !== root.player_id).map((p) => p.id);
+    return {
+      seconds,
+      ids,
+      pos,
+      ball,
+      culprit: root.player_id,
+      faultSecond: Math.max(seconds[0], Math.min(end, root.second)),
+      fix,
+      lineIds,
+      scorer: ev.goal.player_id,
+      defendsLeft: ball[ball.length - 1][0] < 52.5,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ev, version, replays]);
+  }, [ev, version, replays, meta]);
 }
 
 export function TimestackStory({ ev }: { ev: Evidence | null }) {
@@ -91,8 +106,8 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
       { cx: 96, cy: 96, cz: 116, tx: -10, ty: 28, tz: 0 },
     ];
     const state: StackState = reduced
-      ? { ...K[1], height: 1, draw: 1, scan: iFault, focus: 0.3, fault: 1, patch: 1 }
-      : { ...K[0], height: 0, draw: 0, scan: N - 1, focus: 0, fault: 0, patch: 0 };
+      ? { ...K[1], height: 1, draw: 1, scan: iFault, focus: 0.3, fault: 1, patch: 1, line: 1 }
+      : { ...K[0], height: 0, draw: 0, scan: N - 1, focus: 0, fault: 0, patch: 0, line: 0 };
     const last = data.fix[data.fix.length - 1];
     const defs: StackLabel[] = [
       { text: t("stack.tagGoal", { time: clock(ev.goal.second), name: surname(scorer!.name) }), at: (s) => stackPoint(data.ball[N - 1][0], data.ball[N - 1][1], N - 1, s.height), show: (s) => s.height > 0.6 && s.patch < 0.5 },
@@ -138,8 +153,8 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
             .to(state, { draw: 1, duration: 0.8, ease: "none" }, 0.25)
             .to(state, { ...K[2], duration: 1 })
             .to(state, { scan: iFault, duration: 1, ease: "none" }, "<")
-            .to(state, { ...K[3], focus: 1, fault: 1, duration: 1 })
-            .to(state, { ...K[4], patch: 1, focus: 0.55, duration: 1 })
+            .to(state, { ...K[3], focus: 1, fault: 1, line: 1, duration: 1 })
+            .to(state, { ...K[4], patch: 1, focus: 0.55, line: 0.35, duration: 1 })
             .to(state, { ...K[5], focus: 0, scan: N - 1, duration: 1 });
           gsap.to("[data-squeeze]", { fontVariationSettings: '"wdth" 62', ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "15% top", scrub: 0.6 } });
         }, el);
@@ -213,11 +228,12 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
           <H2>
             {surname(culprit.name)} <span className="text-flare">{t(`bug.${root.bug_type}`).toLowerCase()}.</span>
           </H2>
-          <P>{t("stack.ch3Body", { time: clock(root.second), name: culprit.name })}</P>
+          <P>{t("stack.ch3Body", { time: clock(root.second), name: culprit.name, club: culprit.club?.name ?? "" })}</P>
           <div className="mt-5 font-display text-[clamp(84px,11vw,168px)] leading-[0.8] text-flare tabular-nums [font-variation-settings:'wdth'_62]">{pct(root.blame_percent)}</div>
           <P>
             {t("stack.ch3Rest")} {other && t("stack.ch3Other", { name: playerInfo(meta, other.player_id).name, time: clock(other.second), blame: pct(other.blame_percent) })}
           </P>
+          <P>{t("stack.ch3Space", { scorer: surname(scorer.name) })}</P>
         </Chapter>
         <Chapter i={4}>
           <Eyebrow>{t("stack.ch4Eyebrow")}</Eyebrow>
