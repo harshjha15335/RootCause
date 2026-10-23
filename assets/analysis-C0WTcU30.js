@@ -1,0 +1,1 @@
+import{S as e,i as t}from"./index-BoRO-Bh_.js";function o(r=e){return t({queryKey:["analysis",r],queryFn:async()=>{const n=`./showcase/${r}/analysis.json`,s=await fetch(n);if(!s.ok)throw new Error(`${n} returned ${s.status}`);return s.json()},staleTime:1/0})}export{o as u};
