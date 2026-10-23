@@ -27,17 +27,21 @@ export function useStackData(ev: Evidence | null): StackData | null {
     for (let s = end - WINDOW; s <= end; s++) if (track.frame(s)) seconds.push(s);
     if (seconds.length < 6 || seconds[seconds.length - 1] - seconds[0] !== seconds.length - 1) return null;
     const ids = track.order;
+    // The camera always frames the x=0 goal, so goals at the far end are turned 180° on the pitch.
+    // Read the ball a second before the goal: at the goal second it is already back on the centre spot.
+    const flip = track.frame(seconds[seconds.length - 2])!.ball[0] > 52.5;
+    const P = (x: number, y: number): [number, number] => (flip ? [105 - x, 68 - y] : [x, y]);
     const pos = seconds.map((s) => {
       const f = track.frame(s)!;
-      return ids.map((_, i) => [f.pos[i * 2], f.pos[i * 2 + 1]] as [number, number]);
+      return ids.map((_, i) => P(f.pos[i * 2], f.pos[i * 2 + 1]));
     });
-    const ball = seconds.map((s) => track.frame(s)!.ball);
+    const ball = seconds.map((s) => P(...track.frame(s)!.ball));
     const rep = replays[ev.goal_id]?.[root.evidence_id];
     const fix = (rep?.frames ?? [])
       .filter((f) => f.clock_s >= seconds[0] && f.clock_s <= end)
       .map((f) => {
         const p = f.players.find((x) => x.id === root.player_id);
-        return { second: f.clock_s, culprit: (p ? [p.x, p.y] : [0, 0]) as [number, number], ball: f.ball };
+        return { second: f.clock_s, culprit: p ? P(p.x, p.y) : P(0, 0), ball: P(...f.ball) };
       });
     const side = playerInfo(meta, root.player_id).side;
     // back line from the squad sheet: full-backs and centre-backs (positions ending in B)
@@ -52,7 +56,7 @@ export function useStackData(ev: Evidence | null): StackData | null {
       fix,
       lineIds,
       scorer: ev.goal.player_id,
-      defendsLeft: ball[ball.length - 1][0] < 52.5,
+      defendsLeft: true,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ev, version, replays, meta]);
@@ -78,12 +82,14 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
     const N = data.seconds.length;
     const iFault = data.seconds.indexOf(data.faultSecond);
     const cj = data.ids.indexOf(data.culprit);
+    // the fault and fix shots were framed for a mistake six layers up; follow it when it sits higher or lower
+    const lift = (iFault - 6) * LAYER;
     const K = [
       { cx: -6, cy: 165, cz: 0.1, tx: -6, ty: 0, tz: 0 },
       { cx: 92, cy: 92, cz: 112, tx: -8, ty: 30, tz: 0 },
       { cx: 56, cy: 70, cz: 96, tx: -22, ty: 26, tz: 2 },
-      { cx: 22, cy: 30, cz: 52, tx: -40, ty: iFault * LAYER, tz: 2 },
-      { cx: 58, cy: 52, cz: 84, tx: -26, ty: 18, tz: 0 },
+      { cx: 22, cy: 30 + lift, cz: 52, tx: -40, ty: iFault * LAYER, tz: 2 },
+      { cx: 58, cy: 52 + lift, cz: 84, tx: -26, ty: 18 + lift, tz: 0 },
       { cx: 96, cy: 96, cz: 116, tx: -10, ty: 28, tz: 0 },
     ];
     const state: StackState = reduced

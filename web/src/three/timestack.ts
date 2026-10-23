@@ -277,7 +277,10 @@ export class Timestack {
       const on = !!p && l.show(S);
       if (p) {
         this.v.set(p[0], p[1], p[2]).project(this.camera);
-        el.style.transform = `translate(${(this.v.x * 0.5 + 0.5) * w}px, ${(-this.v.y * 0.5 + 0.5) * h}px) translate(-50%, -140%)`;
+        // keep the tag on screen when its point sits near the edge (phones)
+        const half = el.offsetWidth / 2 + 8;
+        const x = Math.min(Math.max((this.v.x * 0.5 + 0.5) * w, half), w - half);
+        el.style.transform = `translate(${x}px, ${(-this.v.y * 0.5 + 0.5) * h}px) translate(-50%, -140%)`;
       }
       el.style.opacity = on && this.v.z < 1 ? "1" : "0";
     }
