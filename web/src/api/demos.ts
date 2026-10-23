@@ -7,7 +7,7 @@ import type { Screen } from "../store/uiStore";
 export function demoHref(id: string, screen: Screen): string {
   const q = new URLSearchParams(location.search);
   q.set("demo", id);
-  return `?${q.toString()}#/${screen}`;
+  return `?${q.toString()}#/${screen === "home" ? "" : screen}`;
 }
 
 type Manifest = { goals: string[]; traced: string[] };

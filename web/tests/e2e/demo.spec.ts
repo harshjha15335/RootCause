@@ -5,7 +5,7 @@ test("a first-time visitor can follow the story from home to the match report", 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Every goal has a bug." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "What it does" })).toBeAttached();
-  await expect(page.getByText("HTN 2–1 NGR")).toBeAttached({ timeout: 15_000 });
+  await expect(page.getByRole("link", { name: /HTN 2–1 NGR/ })).toBeVisible({ timeout: 15_000 });
 
   await page.getByRole("link", { name: "Watch the story" }).first().click();
   await expect(page.getByRole("heading", { name: "Kick-off" })).toBeVisible();

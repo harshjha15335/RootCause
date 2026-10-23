@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { Evidence } from "../api/types";
-import { clock, pct, playerInfo, surname } from "../lib/format";
-import { chronological, rootLink } from "../lib/geometry";
+import { clock, playerInfo } from "../lib/format";
+import { rootLink } from "../lib/geometry";
 import { loadGsap } from "../lib/motion";
 import { go } from "../lib/nav";
 import { useMatch } from "../store/matchStore";
+import { demoHref, useDemos } from "../api/demos";
 import { useUi } from "../store/uiStore";
 import { LAYER, Timestack, stackPoint, type StackData, type StackLabel, type StackState } from "../three/timestack";
 
@@ -68,29 +69,9 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
   const [second, setSecond] = useState<number | null>(null);
   const [chapter, setChapter] = useState(0);
   const root = ev ? rootLink(ev) : null;
-  const links = ev ? chronological(ev) : [];
   const culprit = root ? playerInfo(meta, root.player_id) : null;
   const scorer = ev ? playerInfo(meta, ev.goal.player_id) : null;
-  const other = links.filter((l) => l.evidence_id !== root?.evidence_id).sort((a, b) => b.blame_percent - a.blame_percent)[0];
-  const fixEnd = data?.fix.length ? data.fix[data.fix.length - 1].second : null;
 
-  // The touches in the window, newest first: the goal read back like a stack trace.
-  const trace = useMemo(() => {
-    if (!data || !ev) return [];
-    const track = useMatch.getState().track;
-    const rows: { text: string; second: number; bug?: boolean }[] = [];
-    const name = (id: string | null) => (id ? surname(playerInfo(meta, id).name) : "");
-    for (let i = data.seconds.length - 2; i >= 0; i--) {
-      const f = track.frame(data.seconds[i]);
-      if (f?.kind !== "pass") continue;
-      const to = data.seconds.slice(i + 1).map((s) => track.frame(s)?.carrier).find((c) => c && c !== f.carrier) ?? null;
-      rows.push({ text: t("stack.tracePass", { from: name(f.carrier), to: name(to) }), second: f.second });
-    }
-    for (const l of links) rows.push({ text: t("stack.traceBug", { bug: t(`bug.${l.bug_type}`).toLowerCase(), name: name(l.player_id) }), second: l.second, bug: l.evidence_id === root?.evidence_id });
-    rows.sort((a, b) => b.second - a.second);
-    return [{ text: t("stack.traceGoal", { name: name(ev.goal.player_id) }), second: ev.goal.second }, ...rows].slice(0, 8);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, ev, meta, t]);
 
   useEffect(() => {
     if (!data || !canvas.current || !labels.current || !section.current || !culprit || !root || !ev) return;
@@ -110,11 +91,10 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
       : { ...K[0], height: 0, draw: 0, scan: N - 1, focus: 0, fault: 0, patch: 0, line: 0 };
     const last = data.fix[data.fix.length - 1];
     const defs: StackLabel[] = [
-      { text: t("stack.tagGoal", { time: clock(ev.goal.second), name: surname(scorer!.name) }), at: (s) => stackPoint(data.ball[N - 1][0], data.ball[N - 1][1], N - 1, s.height), show: (s) => s.height > 0.6 && s.patch < 0.5 },
-      { text: t("stack.tagFault", { time: clock(data.faultSecond), name: surname(culprit.name), bug: t(`bug.${root.bug_type}`) }), bug: true, at: (s) => stackPoint(data.pos[iFault][cj][0], data.pos[iFault][cj][1], iFault, s.height), show: (s) => s.fault > 0.4 },
-      ...(last ? [{ text: t("stack.tagFix", { time: clock(last.second) }), bug: true, at: (s: StackState) => stackPoint(last.ball[0], last.ball[1], last.second - data.seconds[0], s.height), show: (s: StackState) => s.patch > 0.7 }] : []),
-      { text: clock(data.seconds[0]), at: () => [52.5, 0, -34], show: (s) => s.height > 0.6 && s.focus < 0.5 },
-    ];
+      { text: t("stackp.tagGoal"), at: (s) => stackPoint(data.ball[N - 1][0], data.ball[N - 1][1], N - 1, s.height), show: (s) => s.height > 0.6 && s.patch < 0.5 },
+      { text: t("stackp.tagFault"), bug: true, at: (s) => stackPoint(data.pos[iFault][cj][0], data.pos[iFault][cj][1], iFault, s.height), show: (s) => s.fault > 0.4 },
+      ...(last ? [{ text: t("stackp.tagFix"), bug: true, at: (s: StackState) => stackPoint(last.ball[0], last.ball[1], last.second - data.seconds[0], s.height), show: (s: StackState) => s.patch > 0.7 }] : []),
+          ];
     const engine = new Timestack(canvas.current, labels.current, data, state, defs);
     let lastSecond = -1;
     engine.onSecond = (s) => {
@@ -181,7 +161,6 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
   }, [data, reduced]);
 
   if (!ev || !root || !culprit || !scorer) return <Hero second={null} />;
-  const trials = root.trials;
 
   return (
     <section ref={section} aria-label={t("stack.aria")} className="relative">
@@ -189,9 +168,6 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
         <canvas ref={canvas} className="block h-full w-full cursor-grab touch-pan-y active:cursor-grabbing" role="img" aria-label={t("stack.canvas", { from: data ? clock(data.seconds[0]) : "", to: clock(ev.goal.second) })} />
         <div ref={labels} className="pointer-events-none absolute inset-0" aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_70%_45%,transparent_40%,rgb(var(--turf-deep)/0.7)_100%)]" />
-        <div className="absolute right-5 top-5 rounded-full border border-turf-edge bg-turf/70 px-3 py-1.5 font-trace text-[12px] tabular-nums text-chalk sm:right-8">
-          <span className="text-flare">{clock(second ?? ev.goal.second)}</span>
-        </div>
         <nav className="absolute right-6 top-1/2 hidden -translate-y-1/2 gap-2.5 md:grid" aria-hidden="true">
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <span key={i} className={`block h-[2px] transition-all duration-300 ${chapter === i ? "w-8 bg-flare" : "w-[18px] bg-turf-edge"}`} />
@@ -205,56 +181,38 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
           <Hero second={second} />
         </Chapter>
         <Chapter i={1}>
-          <Eyebrow>{t("stack.ch1Eyebrow")}</Eyebrow>
+          <Eyebrow>{t("stackp.ch1Eyebrow")}</Eyebrow>
           <H2>
-            {t("stack.ch1Title", { seconds: data ? data.seconds.length : WINDOW + 1 })} <span className="text-flare">{t("stack.ch1TitleY")}</span>
+            {t("stackp.ch1Title")} <span className="text-flare">{t("stackp.ch1TitleY")}</span>
           </H2>
-          <P>{t("stack.ch1Body", { from: data ? clock(data.seconds[0]) : "", to: clock(ev.goal.second), home: meta?.home.name ?? "", away: meta?.away.name ?? "" })}</P>
+          <P>{t("stackp.ch1Body")}</P>
         </Chapter>
         <Chapter i={2}>
-          <Eyebrow>{t("stack.ch2Eyebrow")}</Eyebrow>
-          <H2>{t("stack.ch2Title")}</H2>
-          <P>{t("stack.ch2Body")}</P>
+          <Eyebrow>{t("stackp.ch2Eyebrow")}</Eyebrow>
+          <H2>{t("stackp.ch2Title")}</H2>
+          <P>{t("stackp.ch2Body")}</P>
           <ol className="mt-6 space-y-1 border-l border-turf-edge pl-4 font-trace text-[13px] leading-[1.8] text-chalk-dim" aria-label={t("stack.traceLabel")}>
-            {trace.map((r, i) => (
-              <li key={i} className={r.bug ? "font-semibold text-flare" : ""}>
-                {r.text} <span className={r.bug ? "" : "text-chalk-faint"}>{clock(r.second)}</span>
+            {(["goal", "shot", "pass", "run", "bug", "pass2"] as const).map((k) => (
+              <li key={k} className={k === "bug" ? "font-semibold text-flare" : ""}>
+                {t(`stackp.trace.${k}`)}
               </li>
             ))}
           </ol>
         </Chapter>
         <Chapter i={3}>
-          <Eyebrow>{t("stack.ch3Eyebrow")}</Eyebrow>
+          <Eyebrow>{t("stackp.ch3Eyebrow")}</Eyebrow>
           <H2>
-            {surname(culprit.name)} <span className="text-flare">{t(`bug.${root.bug_type}`).toLowerCase()}.</span>
+            {t("stackp.ch3Title")} <span className="text-flare">{t("stackp.ch3TitleY")}</span>
           </H2>
-          <P>{t("stack.ch3Body", { time: clock(root.second), name: culprit.name, club: culprit.club?.name ?? "" })}</P>
-          <div className="mt-5 font-display text-[clamp(84px,11vw,168px)] leading-[0.8] text-flare tabular-nums [font-variation-settings:'wdth'_62]">{pct(root.blame_percent)}</div>
-          <P>
-            {t("stack.ch3Rest")} {other && t("stack.ch3Other", { name: playerInfo(meta, other.player_id).name, time: clock(other.second), blame: pct(other.blame_percent) })}
-          </P>
-          <P>{t("stack.ch3Space", { scorer: surname(scorer.name) })}</P>
+          <P>{t("stackp.ch3Body")}</P>
+          <P>{t("stackp.ch3Space")}</P>
         </Chapter>
         <Chapter i={4}>
-          <Eyebrow>{t("stack.ch4Eyebrow")}</Eyebrow>
+          <Eyebrow>{t("stackp.ch4Eyebrow")}</Eyebrow>
           <H2>
             {t("stack.ch4Title")} <span className="text-flare">{t("stack.ch4TitleY")}</span>
           </H2>
-          <P>{t("stack.ch4Body", { name: culprit.name, trials, before: root.baseline_goals, after: root.fixed_goals, time: fixEnd ? clock(fixEnd) : "" })}</P>
-          <div className="mt-6 grid grid-cols-2 gap-px border border-turf-edge bg-turf-edge">
-            <div className="bg-turf-deep px-4 py-3.5">
-              <div className="font-trace text-[11px] uppercase tracking-[0.1em] text-chalk-faint">{t("home.asPlayed")}</div>
-              <div className="mt-2 font-display text-[40px] leading-none tabular-nums [font-variation-settings:'wdth'_80]">
-                {root.baseline_goals}/{trials}
-              </div>
-            </div>
-            <div className="bg-turf-deep px-4 py-3.5">
-              <div className="font-trace text-[11px] uppercase tracking-[0.1em] text-chalk-faint">{t("home.withFix", { name: surname(culprit.name) })}</div>
-              <div className="mt-2 font-display text-[40px] leading-none text-flare tabular-nums [font-variation-settings:'wdth'_80]">
-                {root.fixed_goals}/{trials}
-              </div>
-            </div>
-          </div>
+          <P>{t("stackp.ch4Body")}</P>
         </Chapter>
         <Chapter i={5}>
           <Eyebrow>{t("stack.ch5Eyebrow")}</Eyebrow>
@@ -269,28 +227,48 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
 
 function Hero({ second }: { second: number | null }) {
   const { t } = useTranslation();
-  const meta = useMatch((s) => s.meta);
-  const goals = useMatch((s) => s.goals);
   void second;
   return (
     <>
-      {meta && (
-        <Eyebrow>
-          {t("home.eyebrow", { home: meta.home.name, away: meta.away.name, h: goals.filter((g) => g.team === "home").length, a: goals.filter((g) => g.team === "away").length })}
-        </Eyebrow>
-      )}
+      <Eyebrow>{t("product.eyebrow")}</Eyebrow>
       <h1 id="hero-h" data-squeeze className="rc-fade-in mt-6 max-w-[9ch] font-display text-[clamp(46px,6.2vw,104px)] leading-[0.86] text-chalk [font-variation-settings:'wdth'_150]">
         {t("home.titleA")} {t("home.titleB")} <span className="text-flare">{t("home.titleBug")}</span>
       </h1>
       <p className="rc-fade-in mt-7 max-w-[40ch] text-[clamp(17px,1.5vw,20px)] leading-[1.55] text-chalk" style={{ animationDelay: "0.3s" }}>
         {t("home.lede")}
       </p>
+      <DemoSwitch />
       <Ctas />
       <div className="mt-8 flex items-center gap-3 font-trace text-[12px] uppercase tracking-[0.12em] text-chalk-faint">
         <i className="rc-drip block h-8 w-px bg-chalk-faint" aria-hidden="true" />
         {t("stack.scroll")}
       </div>
     </>
+  );
+}
+
+/** The four demo matches, right in the hero: picking one rebuilds the stack from its goal. */
+function DemoSwitch() {
+  const { t } = useTranslation();
+  const demos = useDemos();
+  return (
+    <div className="mt-6">
+      <div className="text-[13px] text-chalk-dim">{t("product.switchLabel")}</div>
+      <ul className="mt-2.5 flex flex-wrap gap-2">
+        {demos.map((d) => (
+          <li key={d.id}>
+            <a
+              href={demoHref(d.id, "home")}
+              aria-current={d.current ? "true" : undefined}
+              className={`rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full px-3.5 text-[13px] font-semibold tabular-nums ring-1 ring-inset ${d.current ? "bg-chalk text-turf ring-chalk" : "text-chalk ring-turf-edge hover:ring-chalk-faint"}`}
+            >
+              <span className="opacity-60">{d.n}</span>
+              {d.meta && d.score ? `${d.meta.home.short_name} ${d.score[0]}–${d.score[1]} ${d.meta.away.short_name}` : t("product.demoLabel", { n: d.n })}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
