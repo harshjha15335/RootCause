@@ -130,6 +130,8 @@ export type Analysis = {
   turnovers: Turnover[];
   mistakes: { goal_id: string; second: number; goal_second: number; player_id: string; bug: string; params: Record<string, number> }[];
   insights: Insight[];
+  /** per-minute pitch control (21 x 14 cells, -100 away .. 100 home, home attacks x = 105) */
+  territory?: { slice_s: number; nx: number; ny: number; control: number[][]; ball: [number, number, number][]; home_xt: number[]; away_xt: number[] };
 };
 
 export function useAnalysis(matchId = SHOWCASE_MATCH) {

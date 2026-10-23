@@ -7,6 +7,7 @@ import { Dna, type Marker } from "../lab/Dna";
 import { drawScene, pick, type LensId } from "../lab/draw";
 import { race, shape, teamOf, type Unit } from "../lab/model";
 import { LabStage, type View } from "../lab/Stage";
+import { SurfaceView } from "../lab/SurfaceView";
 import { useUi } from "../store/uiStore";
 
 const LENSES: LensId[] = ["space", "options", "shape", "pressure", "runs", "chain"];
@@ -29,7 +30,14 @@ export function Lab() {
         <p className="absolute left-6 top-6 text-[15px] text-chalk-dim">{t("lab.loading")}</p>
       </div>
     );
-  return <LabView lab={lab.data} an={an.data} />;
+  return <Scenes lab={lab.data} an={an.data} />;
+}
+
+/** The surface first; clicking it steps onto the pitch at that moment, and back again. */
+function Scenes({ lab, an }: { lab: LabData; an: NonNullable<ReturnType<typeof useAnalysis>["data"]> }) {
+  const [scene, setScene] = useState<{ kind: "surface" | "pitch"; t: number }>({ kind: an.territory ? "surface" : "pitch", t: 0 });
+  if (scene.kind === "surface") return <SurfaceView lab={lab} an={an} start={scene.t} onDive={(t) => setScene({ kind: "pitch", t })} />;
+  return <LabView lab={lab} an={an} start={scene.t} onBack={an.territory ? (t) => setScene({ kind: "surface", t }) : undefined} />;
 }
 
 type Live = {
@@ -46,7 +54,7 @@ type Live = {
   since: number;
 };
 
-function LabView({ lab, an }: { lab: LabData; an: NonNullable<ReturnType<typeof useAnalysis>["data"]> }) {
+function LabView({ lab, an, start, onBack }: { lab: LabData; an: NonNullable<ReturnType<typeof useAnalysis>["data"]>; start: number; onBack?: (t: number) => void }) {
   const { t: tr } = useTranslation();
   const reduced = useUi((s) => s.reducedMotion);
   const unitOf = useMemo(() => {
@@ -75,7 +83,7 @@ function LabView({ lab, an }: { lab: LabData; an: NonNullable<ReturnType<typeof 
   );
 
   const firstGoal = moments.goal[0] ?? 600;
-  const time = useRef(Math.max((faults[0]?.s ?? firstGoal) - 14, 0));
+  const time = useRef(start > 0 ? Math.max(start - 4, 0) : Math.max((faults[0]?.s ?? firstGoal) - 14, 0));
   const [playing, setPlaying] = useState(!reduced);
   const [speed, setSpeed] = useState(1);
   const [coach, setCoach] = useState(true);
@@ -248,6 +256,11 @@ function LabView({ lab, an }: { lab: LabData; an: NonNullable<ReturnType<typeof 
 
         {/* modes */}
         <div className="absolute right-4 top-4 flex flex-col items-end gap-2 sm:right-6 sm:top-5">
+          {onBack && (
+            <button type="button" onClick={() => onBack(time.current)} className="rc-press min-h-[40px] rounded-full bg-chalk px-4 text-[13px] font-bold text-ink">
+              {tr("lab.backToSurface")}
+            </button>
+          )}
           <Seg
             label={tr("lab.modeLabel")}
             value={coach ? "coach" : "explore"}

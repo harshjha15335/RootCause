@@ -172,3 +172,5 @@
 .lab-caption { animation: lab-caption-in 420ms var(--ease-out) both; }
 @keyframes lab-caption-in { from { opacity: 0; transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) { .lab-caption { animation: none; } }
+.lab-intro { animation: lab-intro-out 2600ms ease both; }
+@keyframes lab-intro-out { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }

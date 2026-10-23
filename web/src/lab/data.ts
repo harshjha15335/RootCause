@@ -43,6 +43,7 @@ export type Lab = {
   names: string[];
   numbers: number[];
   short: [string, string];
+  clubs: [MatchMeta["home"], MatchMeta["away"]];
 };
 
 const flipX = (x: number, period: number) => (period === 1 ? x : PX - x);
@@ -148,6 +149,7 @@ export function useLab(matchId = SHOWCASE_MATCH) {
         names: ids.map((id) => byId.get(id)?.name ?? id),
         numbers: ids.map((id) => byId.get(id)?.number ?? 0),
         short: [meta.home.short_name, meta.away.short_name] as [string, string],
+        clubs: [meta.home, meta.away] as [MatchMeta["home"], MatchMeta["away"]],
       };
       rawLab.actions = ev.map((e) => {
         const s = e[0] as number;
