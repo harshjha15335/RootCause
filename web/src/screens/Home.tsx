@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { demoHref, useDemos } from "../api/demos";
 import type { Mode } from "../api/types";
@@ -7,80 +6,20 @@ import { Reveal, useSmoothScroll } from "../lib/motion";
 import { go } from "../lib/nav";
 import { useSelectedEvidence } from "../store/selectors";
 import { useUi } from "../store/uiStore";
-import { Timestack, type StackState } from "../three/timestack";
-import { useStackData } from "./TimestackStory";
+import { TimestackStory } from "./TimestackStory";
 
 export function Home() {
   useSmoothScroll();
+  const ev = useSelectedEvidence();
   return (
     <>
-      <ProductHero />
+      <TimestackStory ev={ev} />
       <Features />
       <HowItWorks />
       <DemoPicker />
       <Modes />
       <Footer />
     </>
-  );
-}
-
-/** The product first: what Root Cause does, over a slowly turning Timestack of a demo goal. */
-function ProductHero() {
-  const { t } = useTranslation();
-  const ev = useSelectedEvidence();
-  const data = useStackData(ev);
-  const reduced = useUi((s) => s.reducedMotion);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const labels = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!data || !canvas.current || !labels.current) return;
-    const iFault = Math.max(0, data.seconds.indexOf(data.faultSecond));
-    const state: StackState = { cx: 92, cy: 92, cz: 112, tx: -8, ty: 30, tz: 0, height: 1, draw: 1, scan: iFault, focus: 0.15, fault: 1, patch: 0, line: 0.6 };
-    const engine = new Timestack(canvas.current, labels.current, data, state, []);
-    const onResize = () => engine.resize();
-    addEventListener("resize", onResize);
-    let raf = 0;
-    const spin = () => {
-      engine.yawTarget += 0.0018;
-      raf = requestAnimationFrame(spin);
-    };
-    if (!reduced) raf = requestAnimationFrame(spin);
-    return () => {
-      cancelAnimationFrame(raf);
-      removeEventListener("resize", onResize);
-      engine.dispose();
-    };
-  }, [data, reduced]);
-  const toDemos = () => document.getElementById("demos")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
-  return (
-    <section aria-labelledby="hero-h" className="relative overflow-hidden">
-      <div className="absolute inset-0" aria-hidden="true">
-        <canvas ref={canvas} className="block h-full w-full" />
-        <div ref={labels} className="pointer-events-none absolute inset-0" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(var(--turf-deep))_18%,rgb(var(--turf-deep)/0.55)_48%,transparent_75%)] max-md:bg-[linear-gradient(180deg,rgb(var(--turf-deep)/0.2)_0%,rgb(var(--turf-deep)/0.92)_55%)]" />
-      </div>
-      <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-h))] max-w-[1440px] flex-col justify-end px-5 pb-16 pt-[38svh] sm:px-10 md:justify-center md:pt-16">
-        <div className="max-w-[44rem]">
-          <div className="text-[14px] font-medium text-chalk-dim">{t("product.eyebrow")}</div>
-          <h1 id="hero-h" className="mt-5 font-display text-[clamp(56px,8.6vw,138px)] leading-[0.88] text-chalk">
-            <span aria-hidden="true">
-              {t("home.titleA")} {t("home.titleB")} <span className="text-flare">{t("home.titleBug")}</span>
-            </span>
-            <span className="sr-only">{t("home.title")}</span>
-          </h1>
-          <p className="mt-7 max-w-[36rem] text-[clamp(17px,1.5vw,20px)] leading-relaxed text-chalk-dim">{t("product.lede")}</p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <button type="button" onClick={toDemos} className="rc-press inline-flex h-[52px] items-center rounded-full bg-chalk px-7 text-[15px] font-semibold text-turf">
-              {t("product.tryDemo")}
-            </button>
-            <a href="#features" onClick={(e) => (e.preventDefault(), document.getElementById("features")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }))} className="rc-press inline-flex h-[52px] items-center rounded-full px-7 text-[15px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge">
-              {t("product.whatItDoes")}
-            </a>
-          </div>
-        </div>
-        <p className="mt-10 max-w-[30rem] text-[13px] leading-relaxed text-chalk-faint">{t("product.heroCaption")}</p>
-      </div>
-    </section>
   );
 }
 
