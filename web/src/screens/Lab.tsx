@@ -1,384 +1,281 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import * as THREE from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import type { Analysis } from "../api/analysis";
+import { DEMO_MATCHES } from "../api/rest";
+import type { Evidence, RecordedReplay } from "../api/types";
 import { useLab, type Lab as LabData } from "../lab/data";
-import { buildCase, type GoalCase } from "../lab/goal";
-import { forks } from "../lab/views/forks";
-import { clock, surname, type Ctx, type LabView } from "../lab/views/kit";
-import { theirEyes } from "../lab/views/theirEyes";
-import { timeColumn } from "../lab/views/timeColumn";
+import { buildCase } from "../lab/goal";
+import { buildJourney, type Journey } from "../lab/journey/model";
+import { CHAPTERS, createStage, type Stage } from "../lab/journey/stage";
 import { useFullTime } from "../store/selectors";
 import { useUi } from "../store/uiStore";
 
-const VIEWS = [
-  { id: "column", make: timeColumn },
-  { id: "forks", make: forks },
-  { id: "eyes", make: theirEyes },
-] as const;
-const SPEEDS = [1, 0.5, 2];
+const clock = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, "0")}`;
+const surname = (lab: LabData, i: number) => lab.names[i].split(" ").slice(-1)[0];
+const getJson = async <T,>(url: string): Promise<T> => {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url} returned ${r.status}`);
+  return r.json();
+};
 
 /**
- * Tactics Lab: the goal Root Cause traced, three ways. Time Column (the move through time),
- * Forks (every choice it had) and Their Eyes (what a player saw). Each one shows the mistake and,
- * with Show the fix, what should have happened instead.
+ * Tactics Lab: one traced goal, told as a guided journey in a floodlit 3D stadium. The two
+ * teams' plans, the move, every suspect the engine flagged and its recorded fixed replay, the
+ * 200 replays behind each verdict, the blame, and what should have happened.
  */
 export function Lab() {
   const { t } = useTranslation();
   const lab = useLab();
   const full = useFullTime();
-  const cases = useMemo(
-    () =>
-      lab.data
-        ? full.traces
-            .map((e) => buildCase(lab.data!, e))
-            .filter((c): c is GoalCase => c !== null)
-            .sort((a, b) => a.goalS - b.goalS)
-        : [],
-    [lab.data, full.traces],
-  );
+  const id = lab.data?.id;
+  const replays = useQuery({
+    queryKey: ["replays", id],
+    enabled: !!id,
+    staleTime: Infinity,
+    queryFn: () => getJson<Record<string, Record<string, RecordedReplay>>>(`${import.meta.env.BASE_URL}showcase/${id}/replays.json`),
+  });
+  // every demo match's analysis: this match's plans against the same sides' other matches
+  const analyses = useQueries({
+    queries: DEMO_MATCHES.map((m) => ({
+      queryKey: ["analysis", m],
+      staleTime: Infinity,
+      queryFn: () => getJson<Analysis>(`${import.meta.env.BASE_URL}showcase/${m}/analysis.json`),
+    })),
+  });
+  const ready = !!lab.data && !!replays.data && analyses.every((q) => q.data) && !full.loading;
+  const journeys = useMemo(() => {
+    if (!ready) return [];
+    const all = Object.fromEntries(DEMO_MATCHES.map((m, k) => [m, analyses[k].data!]));
+    return full.traces
+      .map((ev: Evidence) => {
+        const c = buildCase(lab.data!, ev);
+        return c ? buildJourney(lab.data!, c, ev, replays.data![ev.goal_id] ?? {}, all) : null;
+      })
+      .filter((x): x is Journey => x !== null)
+      .sort((a, b) => a.c.goalS - b.c.goalS);
+  }, [ready, full.traces, lab.data, replays.data]);
   const [pick, setPick] = useState(0);
-  const c = cases[Math.min(pick, cases.length - 1)];
+  const j = journeys[Math.min(pick, journeys.length - 1)];
+  const failed = lab.error || replays.error || analyses.some((q) => q.error);
 
   return (
-    <section className="mx-auto w-full max-w-[1320px] px-4 pb-16 pt-8 sm:px-8">
+    <section className="mx-auto w-full max-w-[1440px] px-4 pb-16 pt-8 sm:px-8">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-        <div className="max-w-[640px]">
+        <div className="max-w-[680px]">
           <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-flare">{t("lab.eyebrow")}</p>
           <h1 className="mt-1 text-balance font-display text-[34px] font-black leading-[0.95] tracking-display [font-stretch:125%] sm:text-[48px]">{t("lab.title")}</h1>
           <p className="mt-3 text-[16px] text-chalk-dim">{t("lab.lede")}</p>
         </div>
-        {lab.data && cases.length > 1 && (
+        {journeys.length > 1 && (
           <div role="group" aria-label={t("lab.goalsLabel")} className="flex flex-wrap gap-2">
-            {cases.map((g, i) => (
+            {journeys.map((g, i) => (
               <button
-                key={g.id}
+                key={g.c.id}
                 type="button"
-                aria-pressed={g === c}
+                aria-pressed={g === j}
                 onClick={() => setPick(i)}
                 className="rc-press rounded-full border border-turf-edge px-4 py-2 text-[14px] font-semibold text-chalk-dim aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-ink"
               >
-                {t("lab.goalChip", { clock: clock(g.goalS), name: surname(lab.data!, g.scorer) })}
+                {t("lab.goalChip", { clock: clock(g.c.goalS), name: surname(g.lab, g.c.scorer) })}
               </button>
             ))}
           </div>
         )}
       </div>
-      {lab.error ? (
+      {failed ? (
         <p className="rounded-panel bg-turf px-6 py-16 text-center text-[17px] text-chalk-dim">{t("lab.failed")}</p>
-      ) : !lab.data || full.loading ? (
-        <div className="relative h-[min(76vh,720px)] min-h-[460px] animate-pulse rounded-panel bg-[#0a1240]">
+      ) : !ready ? (
+        <div className="relative h-[min(84vh,860px)] min-h-[560px] animate-pulse rounded-panel bg-[#070a1d]">
           <p className="absolute left-6 top-6 text-[15px] text-chalk-dim">{t("lab.loading")}</p>
         </div>
-      ) : !c ? (
+      ) : !j ? (
         <p className="rounded-panel bg-turf px-6 py-16 text-center text-[17px] text-chalk-dim">{t("lab.noTrace")}</p>
       ) : (
-        <Theatre key={c.id} lab={lab.data} c={c} />
+        <JourneyStage key={j.c.id} j={j} />
       )}
+      <p className="mt-3 text-[13px] text-chalk-faint">{t("lab.foot", { home: lab.data?.clubs[0].name ?? "", away: lab.data?.clubs[1].name ?? "" })}</p>
     </section>
   );
 }
 
-function Theatre({ lab, c }: { lab: LabData; c: GoalCase }) {
+function JourneyStage({ j }: { j: Journey }) {
   const { t } = useTranslation();
   const reduced = useUi((s) => s.reducedMotion);
-  const [view, setView] = useState(() => {
-    try {
-      return Math.min(Number(localStorage.getItem("rc.labView") ?? 0) || 0, 2);
-    } catch {
-      return 0;
-    }
-  });
-  const [, bump] = useReducer((x: number) => x + 1, 0);
-  const [playing, setPlaying] = useState(!reduced);
-  const [speed, setSpeed] = useState(1);
-  const [fix, setFix] = useState(false);
-  const [glFailed, setGlFailed] = useState(false);
-  const state = useRef({ t: c.t0, fix: false, playing: !reduced, speed: 1 });
+  const setScreen = useUi((s) => s.setScreen);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const miniRef = useRef<HTMLCanvasElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
-  const calloutRef = useRef<HTMLDivElement>(null);
-  const clockRef = useRef<HTMLSpanElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
-  const knobRef = useRef<HTMLDivElement>(null);
-  const scrubRef = useRef<HTMLInputElement>(null);
-  const gl = useRef<{ renderer: THREE.WebGLRenderer; composer: EffectComposer | null; view: LabView | null } | null>(null);
+  const stage = useRef<Stage | null>(null);
+  const [ch, setCh] = useState(() => (import.meta.env.DEV ? Number(new URLSearchParams(location.search).get("ch") ?? 0) : 0));
+  const [glFailed, setGlFailed] = useState(false);
 
-  state.current.playing = playing;
-  state.current.speed = speed;
-  state.current.fix = fix;
-
-  // one renderer for the life of the Lab; the views swap their scenes into it
   useEffect(() => {
-    const canvas = canvasRef.current!, stage = stageRef.current!;
-    let renderer: THREE.WebGLRenderer;
+    const canvas = canvasRef.current!, box = stageRef.current!;
+    let s: Stage;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+      const q = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
+      s = createStage(canvas, j, (k, v) => t(`lab.s.${k}`, v), {
+        reduced,
+        hold: q?.has("hold") ? Number(q.get("hold")) : undefined,
+        onTag: (html, x, y) => {
+          const el = tagRef.current;
+          if (!el) return;
+          el.hidden = !html;
+          if (!html) return;
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+          el.innerHTML = html;
+        },
+      });
     } catch {
       setGlFailed(true);
       return;
     }
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    gl.current = { renderer, composer: null, view: null };
+    stage.current = s;
     const size = () => {
-      const r = stage.getBoundingClientRect();
-      renderer.setSize(r.width, r.height, false);
-      const g = gl.current;
-      if (g?.view) {
-        g.view.camera.aspect = r.width / Math.max(r.height, 1);
-        g.view.camera.updateProjectionMatrix();
-      }
-      g?.composer?.setSize(r.width, r.height);
+      const r = box.getBoundingClientRect();
+      s.resize(r.width, r.height);
     };
+    size();
     const ro = new ResizeObserver(size);
-    ro.observe(stage);
-    let raf = 0, last = performance.now(), key = "";
-    const tick = (now: number) => {
-      raf = requestAnimationFrame(tick);
-      const g = gl.current;
-      const dt = Math.min((now - last) / 1000, 0.1);
-      last = now;
-      if (!g?.view || !g.composer) return;
-      const s = state.current;
-      if (s.playing) {
-        s.t += dt * s.speed;
-        if (s.t > c.t1) s.t = g.view.start;
-      }
-      const call = g.view.frame(s.t, dt);
-      g.view.controls?.update();
-      g.composer.render();
-      const k = call.kind + call.k + call.html;
-      if (k !== key && calloutRef.current) {
-        key = k;
-        calloutRef.current.dataset.kind = call.kind;
-        calloutRef.current.innerHTML = `<span class="lab-k">${call.k}</span>${call.html}`;
-      }
-      const u = (s.t - c.t0) / (c.t1 - c.t0);
-      if (fillRef.current) fillRef.current.style.width = `${u * 100}%`;
-      if (knobRef.current) knobRef.current.style.left = `${u * 100}%`;
-      if (scrubRef.current && document.activeElement !== scrubRef.current) scrubRef.current.value = String(s.t);
-      if (clockRef.current) clockRef.current.textContent = clock(s.t);
-    };
-    raf = requestAnimationFrame(tick);
+    ro.observe(box);
+    s.go(ch);
     return () => {
-      cancelAnimationFrame(raf);
       ro.disconnect();
-      renderer.dispose();
-      gl.current = null;
+      s.dispose();
+      stage.current = null;
     };
-  }, [c]);
+  }, [j, t, reduced]);
 
-  // build the chosen view and hand it the renderer
+  const go = useCallback((i: number) => {
+    const n = Math.max(0, Math.min(CHAPTERS.length - 1, i));
+    setCh(n);
+    stage.current?.go(n);
+  }, []);
   useEffect(() => {
-    const g = gl.current;
-    if (!g) return;
-    const ctx: Ctx = {
-      lab, c, canvas: canvasRef.current!, mini: miniRef.current!, t, state: state.current,
-      tag: (x, y, html) => {
-        const el = tagRef.current;
-        if (!el) return;
-        el.hidden = false;
-        el.style.left = `${x}px`;
-        el.style.top = `${y}px`;
-        el.innerHTML = html;
-      },
-      untag: () => {
-        if (tagRef.current) tagRef.current.hidden = true;
-      },
-      seek: (to) => {
-        state.current.t = Math.min(Math.max(to, c.t0), c.t1);
-        setPlaying(false);
-      },
-      refresh: bump,
+    const key = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      if (el.closest("input, textarea, select")) return;
+      if (e.key === "ArrowRight") go(ch + 1);
+      if (e.key === "ArrowLeft") go(ch - 1);
     };
-    const v = VIEWS[view].make(ctx);
-    const r = stageRef.current!.getBoundingClientRect();
-    v.camera.aspect = r.width / Math.max(r.height, 1);
-    v.camera.updateProjectionMatrix();
-    const composer = new EffectComposer(g.renderer);
-    composer.addPass(new RenderPass(v.scene, v.camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(r.width, r.height), ...v.bloom));
-    composer.addPass(new OutputPass());
-    composer.setSize(r.width, r.height);
-    state.current.t = v.start;
-    g.view = v;
-    g.composer = composer;
-    v.on();
-    bump();
-    try {
-      localStorage.setItem("rc.labView", String(view));
-    } catch {
-      /* private mode: the Lab simply opens on the first view next time */
-    }
-    return () => {
-      v.off();
-      v.dispose();
-      composer.dispose();
-      if (gl.current) {
-        gl.current.view = null;
-        gl.current.composer = null;
-      }
-      if (tagRef.current) tagRef.current.hidden = true;
-    };
-  }, [view, c, lab, t]);
+    addEventListener("keydown", key);
+    return () => removeEventListener("keydown", key);
+  }, [ch, go]);
 
-  const tools = gl.current?.view?.tools() ?? [];
-  const pivot = c.decisions[c.pivot];
-  const pct = (s: number) => `${((s - c.t0) / (c.t1 - c.t0)) * 100}%`;
-  const marks = [
-    { s: c.dropS, cls: "text-flare", text: t("lab.marks.drop", { name: surname(lab, c.culprit) }) },
-    ...(pivot ? [{ s: pivot.s, cls: "text-flare", text: t("lab.marks.pass") }] : []),
-    { s: c.goalS, cls: "text-chalk", text: t("lab.marks.goal") },
+  const { lab, c, culprit } = j;
+  const [A, B] = j.shown;
+  const att = lab.clubs[j.att].name, def = lab.clubs[j.def].name;
+  const prevented = (x: { base: number; fixed: number }) => Math.max(0, x.base - x.fixed);
+  const total = j.suspects.reduce((n, x) => n + prevented(x), 0);
+  const names = j.suspects.map((x) => surname(lab, x.player));
+  const list = names.length > 1 ? t("lab.and", { a: names.slice(0, -1).join(", "), b: names[names.length - 1] }) : names[0];
+  const off = A.offside;
+  const fmt = (v: number | null, d = 1) => (v == null ? "—" : v.toFixed(d));
+  const chips: [string, string, string, boolean][] = [
+    [t("lab.chip.line", { team: def }), `${fmt(j.cmp.line.now)} m`, fmt(j.cmp.line.usual), true],
+    [t("lab.chip.width", { team: def }), `${fmt(j.cmp.width.now)} m`, fmt(j.cmp.width.usual), false],
+    [t("lab.chip.poss", { team: att }), `${fmt(j.cmp.poss.now, 0)}%`, `${fmt(j.cmp.poss.usual, 0)}%`, false],
+    [t("lab.chip.ppda", { team: att }), fmt(j.cmp.ppda.now, 2), fmt(j.cmp.ppda.usual, 2), false],
   ];
-  const id = VIEWS[view].id;
-  const p = {
-    name: surname(lab, c.culprit),
-    receiver: surname(lab, c.receiver),
-    team: lab.clubs[c.culprit < 11 ? 0 : 1].name,
-    at: clock(c.dropS),
-    pass: pivot ? clock(pivot.s) : clock(c.goalS),
-    m: (pivot ? c.gapAtPass : c.maxGap).toFixed(1),
+  const lineDiff = j.cmp.line.usual == null ? 0 : j.cmp.line.now - j.cmp.line.usual;
+  const v = {
+    clock: clock(c.goalS), scorer: surname(lab, c.scorer), score: j.score.join("–"), s: Math.round(c.goalS - culprit.second),
+    att, def, fa: lab.clubs[j.att].formation, fd: lab.clubs[j.def].formation, line: fmt(j.cmp.line.now),
+    d: Math.abs(lineDiff).toFixed(1), n: j.suspects.length, list,
+    trials: culprit.trials, base: culprit.base, a: surname(lab, A.player), fa2: A.fixed, b: B ? surname(lab, B.player) : "", fb: B?.fixed ?? 0,
+    name: surname(lab, culprit.player), p: Math.round(culprit.blame), mine: prevented(culprit), total,
+    at: clock(A.end), receiver: off ? surname(lab, off.player) : "", m: off ? off.by.toFixed(1) : "", fixed: A.fixed,
   };
-  const open = pivot ? "" : "Open";
+  const body: Record<(typeof CHAPTERS)[number], string> = {
+    goal: t("lab.c.goal.body", v),
+    plans: `${t("lab.c.plans.body", v)} ${j.samePlan ? t("lab.c.plans.same", v) : t(lineDiff < 0 ? "lab.c.plans.deeper" : "lab.c.plans.higher", v)}`,
+    move: t("lab.c.move.body", v),
+    suspects: `${t("lab.c.suspects.body", v)}${j.suspects.length > 2 ? ` ${t("lab.c.suspects.more")}` : ""}`,
+    replays: t(B ? "lab.c.replays.body" : "lab.c.replays.bodyOne", v),
+    verdict: t("lab.c.verdict.body", v),
+    fix: t(off ? "lab.c.fix.body" : "lab.c.fix.bodyOpen", v),
+  };
+  const id = CHAPTERS[ch];
+  const heading = id === "suspects" ? t(j.suspects.length === 2 ? "lab.c.suspects.titleTwo" : "lab.c.suspects.title", v) : t(`lab.c.${id}.title`, v);
 
   return (
-    <div className="grid gap-4">
-      <div role="tablist" aria-label={t("lab.viewsLabel")} className="flex flex-wrap gap-2">
-        {VIEWS.map((v, i) => (
-          <button
-            key={v.id}
-            role="tab"
-            type="button"
-            aria-selected={i === view}
-            onClick={() => setView(i)}
-            className="rc-press flex items-center gap-2 rounded-full border border-turf-edge px-4 py-2.5 text-[15px] font-semibold text-chalk-dim aria-selected:border-[#060918] aria-selected:bg-[#060918] aria-selected:text-chalk"
-          >
-            <span className={`font-display text-[12px] font-black [font-stretch:140%] ${i === view ? "text-flare" : "text-chalk-faint"}`}>{"ABC"[i]}</span>
-            {t(`lab.views.${v.id}`)}
-          </button>
-        ))}
+    <div
+      ref={stageRef}
+      className="relative h-[min(84vh,860px)] min-h-[600px] touch-none select-none overflow-hidden rounded-panel border border-[#1d2347] bg-[#04060f]"
+    >
+      <canvas ref={canvasRef} role="img" aria-label={t("lab.stageLabel")} className="absolute inset-0 block h-full w-full cursor-grab active:cursor-grabbing" />
+      {glFailed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{t("lab.noGl")}</p>}
+      <div className="pointer-events-none absolute left-4 right-[150px] top-[18px] truncate text-[11px] font-semibold uppercase tracking-[0.18em] text-[#c9b27a] sm:left-6 sm:top-6">
+        {t("lab.matchLine", { home: lab.clubs[0].name, away: lab.clubs[1].name, clock: clock(c.goalS) })}
       </div>
-
-      <div
-        ref={stageRef}
-        className="relative h-[min(76vh,720px)] min-h-[520px] touch-none select-none overflow-hidden rounded-panel border border-[#222b5c] bg-[radial-gradient(120%_90%_at_50%_0%,#10194a_0%,#060918_62%)]"
+      <button
+        type="button"
+        onClick={() => stage.current?.again()}
+        className="rc-press absolute right-3 top-3 rounded-full border border-[#2a3160] bg-[#070a1d]/75 px-3.5 py-2 text-[13px] font-semibold text-chalk backdrop-blur sm:right-4 sm:top-4"
       >
-        <canvas ref={canvasRef} role="img" aria-label={t("lab.stageLabel")} className="absolute inset-0 block h-full w-full cursor-grab active:cursor-grabbing" />
-        {glFailed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{t("lab.noGl")}</p>}
-        <div className="pointer-events-none absolute left-4 top-4 grid max-w-[min(440px,60%)] gap-1 sm:left-5">
-          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-flare">{t(`lab.kicker.${id}`)}</span>
-          <h2 className="font-display text-[30px] font-black leading-[0.92] tracking-display [font-stretch:135%] sm:text-[48px]">{t(`lab.views.${id}`)}</h2>
-          <p className="mt-1 hidden max-w-[34ch] text-[14px] text-[#8f97c8] sm:block">{t(`lab.viewLine.${id}`)}</p>
-        </div>
-        <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5 sm:right-4 sm:top-4">
-          <button
-            type="button"
-            aria-pressed={fix}
-            onClick={() => setFix(!fix)}
-            className="rc-press rounded-full border border-flare/60 bg-[#0d1330]/80 px-3.5 py-2 text-[13px] font-semibold text-flare backdrop-blur aria-pressed:border-flare aria-pressed:bg-flare aria-pressed:text-flare-ink"
-          >
-            {t("lab.showFix")}
-          </button>
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              type="button"
-              aria-pressed={tool.pressed}
-              onClick={() => {
-                tool.on();
-                bump();
-              }}
-              className="rc-press rounded-full border border-[#222b5c] bg-[#0d1330]/80 px-3.5 py-2 text-[13px] font-semibold text-chalk backdrop-blur aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-ink"
-            >
-              {tool.label}
-            </button>
-          ))}
-        </div>
-        <div
-          ref={calloutRef}
-          aria-live="polite"
-          className="lab-callout pointer-events-none absolute bottom-[74px] left-4 max-w-[min(460px,calc(100%-32px))] rounded-[10px] border border-l-[3px] border-[#222b5c] bg-[#060918]/85 px-3.5 py-2.5 text-[14.5px] backdrop-blur sm:left-5"
-        />
-        <canvas
-          ref={miniRef}
-          width={420}
-          height={272}
-          hidden
-          aria-label={t("lab.miniLabel")}
-          className="absolute bottom-[172px] right-3 h-[91px] w-[140px] cursor-pointer rounded-lg border border-[#222b5c] bg-[#060918]/85 sm:bottom-[74px] sm:right-4 sm:h-[136px] sm:w-[210px]"
-        />
-        <div ref={tagRef} hidden className="lab-tag pointer-events-none absolute translate-x-3 -translate-y-1/2 whitespace-nowrap rounded-lg bg-chalk px-2.5 py-1.5 text-[13px] font-semibold leading-snug text-ink" />
-        <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-b from-transparent to-[#060918]/95 px-4 pb-3.5 pt-3">
-          <button
-            type="button"
-            onClick={() => setPlaying(!playing)}
-            aria-label={playing ? t("lab.pause") : t("lab.play")}
-            className="rc-press grid h-9 w-9 shrink-0 place-items-center rounded-full bg-chalk text-ink"
-          >
-            {playing ? (
-              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-                <rect x="1.5" y="1" width="3" height="10" fill="currentColor" />
-                <rect x="7.5" y="1" width="3" height="10" fill="currentColor" />
-              </svg>
-            ) : (
-              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-                <path d="M2.5 1 L11 6 L2.5 11 Z" fill="currentColor" />
-              </svg>
-            )}
-          </button>
-          <span ref={clockRef} className="min-w-[54px] font-display text-[18px] font-extrabold tabular-nums [font-stretch:120%]">
-            {clock(c.t0)}
-          </span>
-          <div className="relative h-9 min-w-0 flex-1">
-            <div className="pointer-events-none absolute inset-x-0 top-[17px] h-[3px] rounded bg-[#222b5c]" />
-            <div ref={fillRef} className="pointer-events-none absolute left-0 top-[17px] h-[3px] rounded bg-chalk" />
-            <div ref={knobRef} className="pointer-events-none absolute top-[11px] -ml-[7px] h-[15px] w-[15px] rounded-full bg-chalk shadow-[0_0_0_4px_rgba(233,236,255,.15)]" />
-            {marks.map((m) => (
-              <div key={m.text} className={`pointer-events-none absolute top-0 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.08em] ${m.cls}`} style={{ left: pct(m.s) }}>
-                <span className="hidden sm:inline">{m.text}</span>
-                <i className="absolute left-1/2 top-[13px] -ml-px h-[11px] w-[2px] bg-current" />
-              </div>
-            ))}
-            <input
-              ref={scrubRef}
-              type="range"
-              min={c.t0}
-              max={c.t1}
-              step={0.05}
-              defaultValue={c.t0}
-              aria-label={t("lab.time")}
-              onChange={(e) => {
-                state.current.t = +e.target.value;
-              }}
-              className="absolute inset-0 m-0 w-full cursor-pointer opacity-0"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length])}
-            aria-label={t("lab.speed")}
-            className="rc-press h-9 min-w-9 shrink-0 rounded-full border border-[#222b5c] px-3 text-[13px] font-bold text-chalk"
-          >
-            {speed}×
-          </button>
-        </div>
-      </div>
+        {t("lab.again")}
+      </button>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        {(["see", "mistake", "fix"] as const).map((k) => (
-          <div key={k} className="min-w-0 rounded-panel border border-[#222b5c] bg-[#0d1330] px-4 py-3.5">
-            <h3 className={`text-[11px] font-bold uppercase tracking-[0.14em] ${k === "mistake" ? "text-flare" : "text-[#8f97c8]"}`}>{t(`lab.notesHead.${k}`)}</h3>
-            <p className="mt-1 text-[15px]">{t(`lab.notes.${id}.${k}${k === "see" ? "" : open}`, p)}</p>
+      <article
+        key={ch}
+        aria-live="polite"
+        className="lab-card absolute bottom-[84px] left-3 right-3 max-h-[46%] overflow-y-auto rounded-[16px] border border-[#2a3160] bg-[#05070f]/80 px-4 pb-4 pt-3.5 backdrop-blur-md sm:bottom-[96px] sm:left-6 sm:right-auto sm:w-[440px] sm:max-h-none sm:px-5 sm:pb-5 sm:pt-4"
+      >
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#e9c46a]">{t("lab.chapterOf", { n: ch + 1, of: CHAPTERS.length, name: t(`lab.c.${id}.k`) })}</p>
+        <h2 className="mt-2 text-balance font-display text-[24px] font-black leading-[1.02] tracking-display [font-stretch:118%] sm:text-[32px]">{heading}</h2>
+        <p className="mt-2 text-[14.5px] leading-[1.5] text-[#d9ddf2] sm:text-[15.5px]" dangerouslySetInnerHTML={{ __html: body[id] }} />
+        {id === "plans" && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {chips.map(([k, now, usual, hot]) => (
+              <span key={k} className={`rounded-full border px-2.5 py-1.5 text-[12.5px] font-semibold ${hot ? "border-[#ffd60a]/50 text-[#ffd60a]" : "border-[#2a3160] text-[#9aa3d6]"}`}>
+                {k} <b className={hot ? "" : "text-chalk"}>{now}</b> · {t("lab.usual", { v: usual })}
+              </span>
+            ))}
           </div>
-        ))}
-      </div>
-      <p className="text-[13px] text-chalk-faint">{t("lab.foot", { home: lab.clubs[0].name, away: lab.clubs[1].name })}</p>
+        )}
+        {id === "suspects" && (
+          <button type="button" onClick={() => setScreen("story")} className="mt-2 text-[14px] font-semibold text-[#e9c46a] underline underline-offset-4">
+            {t("lab.howEngine")}
+          </button>
+        )}
+      </article>
+
+      <nav aria-label={t("lab.chapters")} className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-b from-transparent to-[#04060f]/95 px-3 pb-3.5 pt-6 sm:px-6">
+        <button
+          type="button"
+          onClick={() => go(ch - 1)}
+          disabled={ch === 0}
+          className="rc-press h-11 shrink-0 rounded-full border border-[#2a3160] bg-white/5 px-4 text-[14px] font-bold text-chalk disabled:opacity-35"
+        >
+          {t("lab.back")}
+        </button>
+        <ol className="flex min-w-0 flex-1 gap-1.5">
+          {CHAPTERS.map((k, i) => (
+            <li key={k} className="min-w-0 flex-1">
+              <button
+                type="button"
+                onClick={() => go(i)}
+                aria-current={i === ch ? "step" : undefined}
+                aria-label={t("lab.chapterOf", { n: i + 1, of: CHAPTERS.length, name: t(`lab.c.${k}.k`) })}
+                className={`grid h-11 w-full content-center gap-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.08em] ${i === ch ? "text-chalk" : "text-[#7d86b8]"}`}
+              >
+                <i className={`block h-[3px] rounded ${i <= ch ? (i === ch ? "bg-[#e9c46a]" : "bg-chalk") : "bg-[#2a3160]"}`} />
+                <span className="hidden truncate md:block">{t(`lab.c.${k}.k`)}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <button
+          type="button"
+          onClick={() => go(ch === CHAPTERS.length - 1 ? 0 : ch + 1)}
+          className="rc-press h-11 shrink-0 rounded-full bg-[#e9c46a] px-5 text-[14px] font-bold text-[#1b1600]"
+        >
+          {ch === CHAPTERS.length - 1 ? t("lab.restart") : t("lab.next")}
+        </button>
+      </nav>
+      <div ref={tagRef} hidden className="lab-tag pointer-events-none absolute translate-x-3 -translate-y-1/2 whitespace-nowrap rounded-lg bg-chalk px-2.5 py-1.5 text-[13px] font-semibold leading-snug text-ink" />
     </div>
   );
 }

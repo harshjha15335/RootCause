@@ -169,11 +169,8 @@
 }
 
 /* Tactics Lab: the callout under the 3D stage and the hover tag */
-.lab-callout:empty { display: none; }
-.lab-callout[data-kind=""] { border-left-color: #8f97c8; }
-.lab-callout[data-kind="bug"] { border-left-color: rgb(var(--flare)); }
-.lab-callout[data-kind="goal"] { border-left-color: rgb(var(--chalk)); }
-.lab-callout .lab-k { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #8f97c8; }
-.lab-callout[data-kind="bug"] .lab-k { color: rgb(var(--flare)); }
-.lab-callout b { font-weight: 700; }
+.lab-card { animation: lab-card-in 0.6s cubic-bezier(0.19, 1, 0.22, 1) both; }
+.lab-card b { color: rgb(var(--chalk)); font-weight: 700; }
+@keyframes lab-card-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .lab-card { animation: none; } }
 .lab-tag small { display: block; font-weight: 500; opacity: 0.7; }

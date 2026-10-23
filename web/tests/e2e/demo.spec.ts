@@ -44,19 +44,21 @@ test("the match analysis covers the whole match, not just the traced goal", asyn
   await expect(page.getByRole("heading", { name: "Bram Tovick", exact: true })).toBeVisible();
 });
 
-test("tactics lab shows the traced mistake three ways, with the fix", async ({ page }) => {
+test("tactics lab walks a traced goal from the plans to the verdict and the fix", async ({ page }) => {
   await page.goto("/#/lab");
-  await expect(page.getByRole("img", { name: "Interactive 3D view of the goal move" })).toBeVisible();
-  await expect(page.getByRole("slider", { name: "Match time" })).toBeVisible();
-  const fix = page.getByRole("button", { name: "Show the fix" });
-  await fix.click();
-  await expect(fix).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("tab", { name: /Forks/ }).click();
-  await expect(page.getByRole("tab", { name: /Forks/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("button", { name: "Next touch" })).toBeVisible();
-  await page.getByRole("tab", { name: /Their Eyes/ }).click();
-  const be = page.getByRole("button", { name: /^Be Weyre/ });
-  await expect(be).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Follow the ball" }).click();
-  await expect(page.getByRole("button", { name: "Follow the ball" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("img", { name: "3D stadium: the goal, the suspects and the verdict" })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: "62:36. Tovick makes it 3–1." })).toBeVisible();
+  const next = page.getByRole("button", { name: "Next" });
+  await next.click();
+  await expect(page.getByRole("heading", { name: "Did anyone change their plan?" })).toBeVisible();
+  await expect(page.getByText("Northgate Rovers line 28.8 m")).toBeVisible();
+  await page.getByRole("button", { name: /Chapter 6 of 7/ }).click();
+  await expect(page.getByRole("heading", { name: "Weyre: 89% to blame." })).toBeVisible();
+  await expect(page.getByText("144 ÷ 162 = 89%")).toBeVisible();
+  await next.click();
+  await expect(page.getByRole("heading", { name: "What should have happened." })).toBeVisible();
+  await expect(page.getByText(/0 of 200/)).toBeVisible();
+  await page.getByRole("button", { name: "Start again" }).click();
+  await expect(page.getByRole("button", { name: /Chapter 1 of 7/ })).toHaveAttribute("aria-current", "step");
 });
+
