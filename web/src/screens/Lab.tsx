@@ -1,453 +1,384 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAnalysis } from "../api/analysis";
-import { coachLine, type Line } from "../lab/coach";
-import { PHASES, PX, PY, SECONDS, frameAt, useLab, type Frame, type Lab as LabData } from "../lab/data";
-import { Dna, type Marker } from "../lab/Dna";
-import { drawScene, pick, type LensId } from "../lab/draw";
-import { race, shape, teamOf, type Unit } from "../lab/model";
-import { LabStage, type View } from "../lab/Stage";
-import { SurfaceView } from "../lab/SurfaceView";
+import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { useLab, type Lab as LabData } from "../lab/data";
+import { buildCase, type GoalCase } from "../lab/goal";
+import { forks } from "../lab/views/forks";
+import { clock, surname, type Ctx, type LabView } from "../lab/views/kit";
+import { theirEyes } from "../lab/views/theirEyes";
+import { timeColumn } from "../lab/views/timeColumn";
+import { useFullTime } from "../store/selectors";
 import { useUi } from "../store/uiStore";
 
-const LENSES: LensId[] = ["space", "options", "shape", "pressure", "runs", "chain"];
-const SPEEDS = [0.5, 1, 3];
-type MomentKind = "goal" | "shot" | "fault" | "turnover";
-const clock = (t: number) => `${Math.floor(t / 60)}'`;
+const VIEWS = [
+  { id: "column", make: timeColumn },
+  { id: "forks", make: forks },
+  { id: "eyes", make: theirEyes },
+] as const;
+const SPEEDS = [1, 0.5, 2];
 
 /**
- * Tactics Lab: the whole match on a floodlit 3D pitch. In Coach mode it watches the game with
- * you and points at one thing at a time; in Explore mode every lens is yours to switch.
+ * Tactics Lab: the goal Root Cause traced, three ways. Time Column (the move through time),
+ * Forks (every choice it had) and Their Eyes (what a player saw). Each one shows the mistake and,
+ * with Show the fix, what should have happened instead.
  */
 export function Lab() {
   const { t } = useTranslation();
   const lab = useLab();
-  const an = useAnalysis();
-  if (lab.error || an.error) return <p className="mx-auto max-w-[1200px] px-6 py-20 text-[17px] text-chalk-dim">{t("lab.failed")}</p>;
-  if (!lab.data || !an.data)
-    return (
-      <div className="relative h-[min(80vh,880px)] min-h-[460px] w-full animate-pulse bg-[#0a2a1a]">
-        <p className="absolute left-6 top-6 text-[15px] text-chalk-dim">{t("lab.loading")}</p>
+  const full = useFullTime();
+  const cases = useMemo(
+    () =>
+      lab.data
+        ? full.traces
+            .map((e) => buildCase(lab.data!, e))
+            .filter((c): c is GoalCase => c !== null)
+            .sort((a, b) => a.goalS - b.goalS)
+        : [],
+    [lab.data, full.traces],
+  );
+  const [pick, setPick] = useState(0);
+  const c = cases[Math.min(pick, cases.length - 1)];
+
+  return (
+    <section className="mx-auto w-full max-w-[1320px] px-4 pb-16 pt-8 sm:px-8">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <div className="max-w-[640px]">
+          <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-flare">{t("lab.eyebrow")}</p>
+          <h1 className="mt-1 text-balance font-display text-[34px] font-black leading-[0.95] tracking-display [font-stretch:125%] sm:text-[48px]">{t("lab.title")}</h1>
+          <p className="mt-3 text-[16px] text-chalk-dim">{t("lab.lede")}</p>
+        </div>
+        {lab.data && cases.length > 1 && (
+          <div role="group" aria-label={t("lab.goalsLabel")} className="flex flex-wrap gap-2">
+            {cases.map((g, i) => (
+              <button
+                key={g.id}
+                type="button"
+                aria-pressed={g === c}
+                onClick={() => setPick(i)}
+                className="rc-press rounded-full border border-turf-edge px-4 py-2 text-[14px] font-semibold text-chalk-dim aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-ink"
+              >
+                {t("lab.goalChip", { clock: clock(g.goalS), name: surname(lab.data!, g.scorer) })}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-    );
-  return <Scenes lab={lab.data} an={an.data} />;
+      {lab.error ? (
+        <p className="rounded-panel bg-turf px-6 py-16 text-center text-[17px] text-chalk-dim">{t("lab.failed")}</p>
+      ) : !lab.data || full.loading ? (
+        <div className="relative h-[min(76vh,720px)] min-h-[460px] animate-pulse rounded-panel bg-[#0a1240]">
+          <p className="absolute left-6 top-6 text-[15px] text-chalk-dim">{t("lab.loading")}</p>
+        </div>
+      ) : !c ? (
+        <p className="rounded-panel bg-turf px-6 py-16 text-center text-[17px] text-chalk-dim">{t("lab.noTrace")}</p>
+      ) : (
+        <Theatre key={c.id} lab={lab.data} c={c} />
+      )}
+    </section>
+  );
 }
 
-/** The surface first; clicking it steps onto the pitch at that moment, and back again. */
-function Scenes({ lab, an }: { lab: LabData; an: NonNullable<ReturnType<typeof useAnalysis>["data"]> }) {
-  const [scene, setScene] = useState<{ kind: "surface" | "pitch"; t: number }>({ kind: an.territory ? "surface" : "pitch", t: 0 });
-  if (scene.kind === "surface") return <SurfaceView lab={lab} an={an} start={scene.t} onDive={(t) => setScene({ kind: "pitch", t })} />;
-  return <LabView lab={lab} an={an} start={scene.t} onBack={an.territory ? (t) => setScene({ kind: "surface", t }) : undefined} />;
-}
-
-type Live = {
-  playing: boolean;
-  speed: number;
-  coach: boolean;
-  lenses: Set<LensId>;
-  focus: number | null;
-  probe: [number, number] | null;
-  hover: number | null;
-  view: View;
-  line: Line | null;
-  lineAt: number;
-  since: number;
-};
-
-function LabView({ lab, an, start, onBack }: { lab: LabData; an: NonNullable<ReturnType<typeof useAnalysis>["data"]>; start: number; onBack?: (t: number) => void }) {
-  const { t: tr } = useTranslation();
+function Theatre({ lab, c }: { lab: LabData; c: GoalCase }) {
+  const { t } = useTranslation();
   const reduced = useUi((s) => s.reducedMotion);
-  const unitOf = useMemo(() => {
-    const m = new Map(an.players.map((p) => [p.id, p.unit as Unit]));
-    return (i: number) => m.get(i < 11 ? `H${i + 1}` : `A${i - 10}`) ?? "mid";
-  }, [an]);
-  const faults = useMemo(
-    () => an.mistakes.map((m) => ({ s: m.second, player: m.player_id[0] === "H" ? Number(m.player_id.slice(1)) - 1 : 10 + Number(m.player_id.slice(1)), bug: m.bug })),
-    [an],
-  );
-  const moments = useMemo(() => {
-    const shots = lab.actions.filter((a) => a.type === "shot");
-    return {
-      goal: shots.filter((a) => a.outcome === "goal").map((a) => a.s),
-      fault: faults.map((f) => f.s),
-      shot: shots.map((a) => a.s),
-      turnover: an.turnovers.map((x) => x.second),
-    } satisfies Record<MomentKind, number[]>;
-  }, [lab, an, faults]);
-  const markers = useMemo<Marker[]>(
-    () => [
-      ...lab.actions.filter((a) => a.type === "shot").map((a) => ({ s: a.s, kind: a.outcome === "goal" ? ("goal" as const) : ("shot" as const), team: a.team, size: a.xg ?? 0 })),
-      ...faults.map((f) => ({ s: f.s, kind: "fault" as const, team: teamOf(f.player) })),
-    ],
-    [lab, faults],
-  );
-
-  const firstGoal = moments.goal[0] ?? 600;
-  const time = useRef(start > 0 ? Math.max(start - 4, 0) : Math.max((faults[0]?.s ?? firstGoal) - 14, 0));
+  const [view, setView] = useState(() => {
+    try {
+      return Math.min(Number(localStorage.getItem("rc.labView") ?? 0) || 0, 2);
+    } catch {
+      return 0;
+    }
+  });
+  const [, bump] = useReducer((x: number) => x + 1, 0);
   const [playing, setPlaying] = useState(!reduced);
   const [speed, setSpeed] = useState(1);
-  const [coach, setCoach] = useState(true);
-  const [view, setView] = useState<View>("broadcast");
-  const [lenses, setLenses] = useState<Set<LensId>>(new Set(["space", "options"]));
-  const [focus, setFocus] = useState<number | null>(null);
-  const [probe, setProbe] = useState<[number, number] | null>(null);
-  const [hover, setHover] = useState<number | null>(null);
-  const [kind, setKind] = useState<MomentKind>("goal");
-  const [line, setLine] = useState<Line | null>(null);
-  const [now, setNow] = useState<{ t: number; f: Frame } | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [fix, setFix] = useState(false);
+  const [glFailed, setGlFailed] = useState(false);
+  const state = useRef({ t: c.t0, fix: false, playing: !reduced, speed: 1 });
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const miniRef = useRef<HTMLCanvasElement>(null);
+  const tagRef = useRef<HTMLDivElement>(null);
+  const calloutRef = useRef<HTMLDivElement>(null);
+  const clockRef = useRef<HTMLSpanElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const knobRef = useRef<HTMLDivElement>(null);
+  const scrubRef = useRef<HTMLInputElement>(null);
+  const gl = useRef<{ renderer: THREE.WebGLRenderer; composer: EffectComposer | null; view: LabView | null } | null>(null);
 
-  const host = useRef<HTMLDivElement>(null);
-  const stage = useRef<LabStage | null>(null);
-  const live = useRef<Live>({ playing, speed, coach, lenses, focus, probe, hover, view, line: null, lineAt: 0, since: 0 });
-  Object.assign(live.current, { playing, speed, coach, lenses, focus, probe, hover, view });
+  state.current.playing = playing;
+  state.current.speed = speed;
+  state.current.fix = fix;
 
+  // one renderer for the life of the Lab; the views swap their scenes into it
   useEffect(() => {
-    let st: LabStage;
+    const canvas = canvasRef.current!, stage = stageRef.current!;
+    let renderer: THREE.WebGLRenderer;
     try {
-      st = new LabStage(host.current!, lab.numbers, tr("lab.pitchLabel"));
-    } catch (e) {
-      console.warn("3D pitch unavailable", e);
-      setFailed(true);
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+    } catch {
+      setGlFailed(true);
       return;
     }
-    stage.current = st;
-    const ro = new ResizeObserver(() => st.resize());
-    ro.observe(host.current!);
-    let raf = 0, last = performance.now(), lastUi = 0;
-    const loop = (ms: number) => {
-      const L = live.current;
-      const dt = Math.min(ms - last, 100) / 1000;
-      last = ms;
-      st.view = L.view;
-      // the coach slows the clock while it shows something worth reading
-      const slow = L.coach && L.line && L.line.rank >= 5 ? 0.55 : 1;
-      if (L.playing) {
-        time.current += dt * L.speed * slow;
-        if (time.current >= SECONDS - 1) time.current = 0;
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    gl.current = { renderer, composer: null, view: null };
+    const size = () => {
+      const r = stage.getBoundingClientRect();
+      renderer.setSize(r.width, r.height, false);
+      const g = gl.current;
+      if (g?.view) {
+        g.view.camera.aspect = r.width / Math.max(r.height, 1);
+        g.view.camera.updateProjectionMatrix();
       }
-      const t = time.current;
-      const f = frameAt(lab, t);
-      // pick the coach's line twice a second, and hold each one long enough to read
-      if (ms - L.lineAt > 500) {
-        const next = coachLine(lab, t, f, { unitOf, grid: an.xt_grid, faults });
-        const held = L.line && ms - L.since < 3800;
-        if (!L.line || !held || next.rank > L.line.rank) {
-          if (!L.line || next.key !== L.line.key || next.at !== L.line.at) L.since = ms;
-          L.line = next;
-        }
-        L.lineAt = ms;
-      }
-      const shown = L.coach ? new Set<LensId>(L.line ? [L.line.lens] : []) : L.lenses;
-      const g = st.overlay.getContext("2d")!;
-      g.setTransform(1, 0, 0, 1, 0, 0);
-      g.clearRect(0, 0, st.overlay.width, st.overlay.height);
-      // lines and labels are sized for half the canvas resolution, so they read at broadcast distance
-      g.scale(2, 2);
-      drawScene(g, st.overlayPx / 2, {
-        lab,
-        t,
-        f,
-        lenses: new Set([...shown].filter((l) => l !== "space")),
-        unitOf,
-        grid: an.xt_grid,
-        focus: L.focus ?? (L.coach ? (L.line?.at ?? null) : null),
-        hover: L.hover,
-        probe: L.probe,
-        faults,
-        solid: true,
-      });
-      const spaceOn = L.coach || L.lenses.has("space");
-      st.render(f, { strength: spaceOn ? (L.coach && L.line?.lens !== "space" ? 0.16 : 0.42) : 0, focus: L.focus, dt, follow: L.focus });
-      if (ms - lastUi > 120) {
-        lastUi = ms;
-        setNow({ t, f });
-        setLine(L.line);
-      }
-      raf = requestAnimationFrame(loop);
+      g?.composer?.setSize(r.width, r.height);
     };
-    raf = requestAnimationFrame(loop);
+    const ro = new ResizeObserver(size);
+    ro.observe(stage);
+    let raf = 0, last = performance.now(), key = "";
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      const g = gl.current;
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      if (!g?.view || !g.composer) return;
+      const s = state.current;
+      if (s.playing) {
+        s.t += dt * s.speed;
+        if (s.t > c.t1) s.t = g.view.start;
+      }
+      const call = g.view.frame(s.t, dt);
+      g.view.controls?.update();
+      g.composer.render();
+      const k = call.kind + call.k + call.html;
+      if (k !== key && calloutRef.current) {
+        key = k;
+        calloutRef.current.dataset.kind = call.kind;
+        calloutRef.current.innerHTML = `<span class="lab-k">${call.k}</span>${call.html}`;
+      }
+      const u = (s.t - c.t0) / (c.t1 - c.t0);
+      if (fillRef.current) fillRef.current.style.width = `${u * 100}%`;
+      if (knobRef.current) knobRef.current.style.left = `${u * 100}%`;
+      if (scrubRef.current && document.activeElement !== scrubRef.current) scrubRef.current.value = String(s.t);
+      if (clockRef.current) clockRef.current.textContent = clock(s.t);
+    };
+    raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      st.dispose();
-      stage.current = null;
+      renderer.dispose();
+      gl.current = null;
     };
-  }, [lab, an, unitOf, faults, tr]);
+  }, [c]);
 
-  const seek = (s: number) => {
-    time.current = Math.min(Math.max(s, 0), SECONDS - 1);
-    live.current.line = null;
-  };
-  const jump = (dir: 1 | -1) => {
-    const list = moments[kind];
-    const cur = time.current + 10;
-    const target = dir > 0 ? list.find((s) => s > cur + 1) : [...list].reverse().find((s) => s < cur - 2);
-    if (target != null) {
-      seek(target - 10);
-      setPlaying(true);
+  // build the chosen view and hand it the renderer
+  useEffect(() => {
+    const g = gl.current;
+    if (!g) return;
+    const ctx: Ctx = {
+      lab, c, canvas: canvasRef.current!, mini: miniRef.current!, t, state: state.current,
+      tag: (x, y, html) => {
+        const el = tagRef.current;
+        if (!el) return;
+        el.hidden = false;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.innerHTML = html;
+      },
+      untag: () => {
+        if (tagRef.current) tagRef.current.hidden = true;
+      },
+      seek: (to) => {
+        state.current.t = Math.min(Math.max(to, c.t0), c.t1);
+        setPlaying(false);
+      },
+      refresh: bump,
+    };
+    const v = VIEWS[view].make(ctx);
+    const r = stageRef.current!.getBoundingClientRect();
+    v.camera.aspect = r.width / Math.max(r.height, 1);
+    v.camera.updateProjectionMatrix();
+    const composer = new EffectComposer(g.renderer);
+    composer.addPass(new RenderPass(v.scene, v.camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(r.width, r.height), ...v.bloom));
+    composer.addPass(new OutputPass());
+    composer.setSize(r.width, r.height);
+    state.current.t = v.start;
+    g.view = v;
+    g.composer = composer;
+    v.on();
+    bump();
+    try {
+      localStorage.setItem("rc.labView", String(view));
+    } catch {
+      /* private mode: the Lab simply opens on the first view next time */
     }
+    return () => {
+      v.off();
+      v.dispose();
+      composer.dispose();
+      if (gl.current) {
+        gl.current.view = null;
+        gl.current.composer = null;
+      }
+      if (tagRef.current) tagRef.current.hidden = true;
+    };
+  }, [view, c, lab, t]);
+
+  const tools = gl.current?.view?.tools() ?? [];
+  const pivot = c.decisions[c.pivot];
+  const pct = (s: number) => `${((s - c.t0) / (c.t1 - c.t0)) * 100}%`;
+  const marks = [
+    { s: c.dropS, cls: "text-flare", text: t("lab.marks.drop", { name: surname(lab, c.culprit) }) },
+    ...(pivot ? [{ s: pivot.s, cls: "text-flare", text: t("lab.marks.pass") }] : []),
+    { s: c.goalS, cls: "text-chalk", text: t("lab.marks.goal") },
+  ];
+  const id = VIEWS[view].id;
+  const p = {
+    name: surname(lab, c.culprit),
+    receiver: surname(lab, c.receiver),
+    team: lab.clubs[c.culprit < 11 ? 0 : 1].name,
+    at: clock(c.dropS),
+    pass: pivot ? clock(pivot.s) : clock(c.goalS),
+    m: (pivot ? c.gapAtPass : c.maxGap).toFixed(1),
   };
-  const toggle = (l: LensId) =>
-    setLenses((cur) => {
-      const n = new Set(cur);
-      if (n.has(l)) n.delete(l);
-      else n.add(l);
-      return n;
-    });
-
-  const at = (e: React.MouseEvent) => stage.current?.pitchAt(e.clientX, e.clientY) ?? null;
-  const s = now ? Math.min(Math.floor(now.t), SECONDS - 1) : 0;
-  const team = lab.poss[s];
-  const score = lab.actions.filter((a) => a.type === "shot" && a.outcome === "goal" && a.s <= (now?.t ?? 0));
-  const goals = [score.filter((a) => a.team === 0).length, score.filter((a) => a.team === 1).length];
-  const block = now ? shape(now.f, 1 - team, unitOf).block : "mid";
-  const raced = probe && now ? race(now.f, probe[0], probe[1]) : null;
-  const lineText = line
-    ? tr(`lab.coach.${line.key}`, {
-        ...line.params,
-        bug: line.params.bug ? tr(`bug.${line.params.bug}`).toLowerCase() : "",
-        block: line.params.block ? tr(`lab.block.${line.params.block}`).toLowerCase() : "",
-      })
-    : "";
-  const warn = line && (line.key === "fault" || line.key === "better");
+  const open = pivot ? "" : "Open";
 
   return (
-    <div className="pb-14">
-      {/* the stage: full bleed, everything else floats on it */}
+    <div className="grid gap-4">
+      <div role="tablist" aria-label={t("lab.viewsLabel")} className="flex flex-wrap gap-2">
+        {VIEWS.map((v, i) => (
+          <button
+            key={v.id}
+            role="tab"
+            type="button"
+            aria-selected={i === view}
+            onClick={() => setView(i)}
+            className="rc-press flex items-center gap-2 rounded-full border border-turf-edge px-4 py-2.5 text-[15px] font-semibold text-chalk-dim aria-selected:border-[#060918] aria-selected:bg-[#060918] aria-selected:text-chalk"
+          >
+            <span className={`font-display text-[12px] font-black [font-stretch:140%] ${i === view ? "text-flare" : "text-chalk-faint"}`}>{"ABC"[i]}</span>
+            {t(`lab.views.${v.id}`)}
+          </button>
+        ))}
+      </div>
+
       <div
-        ref={host}
-        className="relative h-[min(80vh,880px)] min-h-[480px] w-full touch-pan-y overflow-hidden bg-[radial-gradient(120%_80%_at_50%_0%,#0b1a8a_0%,#050d4a_70%)]"
-        onPointerMove={(e) => {
-          if (!now) return;
-          const p = at(e);
-          setHover(p ? pick(now.f, p[0], p[1], 2.4) : null);
-        }}
-        onPointerLeave={() => setHover(null)}
-        onClick={(e) => {
-          if (!now || (e.target as HTMLElement).closest("button, select, [role=slider]")) return;
-          const p = at(e);
-          if (!p) return;
-          const i = pick(now.f, p[0], p[1], 2.4);
-          if (i != null) {
-            setFocus(focus === i ? null : i);
-            setProbe(null);
-          } else if (p[0] >= 0 && p[0] <= PX && p[1] >= 0 && p[1] <= PY) {
-            setProbe([p[0], p[1]]);
-            setCoach(false);
-          }
-        }}
-        style={{ cursor: hover != null ? "pointer" : "crosshair" }}
+        ref={stageRef}
+        className="relative h-[min(76vh,720px)] min-h-[520px] touch-none select-none overflow-hidden rounded-panel border border-[#222b5c] bg-[radial-gradient(120%_90%_at_50%_0%,#10194a_0%,#060918_62%)]"
       >
-        {failed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{tr("lab.noGl")}</p>}
-
-        {/* score and the moment */}
-        <div className="pointer-events-none absolute left-4 top-4 flex flex-wrap items-center gap-2 sm:left-6 sm:top-5">
-          <span className="rounded-full bg-[#050d4a]/75 px-4 py-2 font-display text-[20px] font-black tabular-nums backdrop-blur [font-stretch:120%] sm:text-[24px]">
-            {lab.short[0]} {goals[0]}–{goals[1]} <span className="text-[#8fa4ff]">{lab.short[1]}</span>
-            <span className="ml-3 text-[15px] font-bold text-chalk-dim">{now ? clock(now.t) : ""}</span>
-          </span>
-          {now && (
-            <span className="hidden rounded-full bg-[#050d4a]/75 px-3 py-2 text-[13px] font-semibold text-chalk-dim backdrop-blur md:inline">
-              {lab.short[team]} · {tr(`lab.phase.${PHASES[lab.phase[s]]}`)} <span className="mx-1 text-chalk-faint">/</span> {lab.short[1 - team]} · {tr(`lab.block.${block}`)}
-            </span>
-          )}
+        <canvas ref={canvasRef} role="img" aria-label={t("lab.stageLabel")} className="absolute inset-0 block h-full w-full cursor-grab active:cursor-grabbing" />
+        {glFailed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{t("lab.noGl")}</p>}
+        <div className="pointer-events-none absolute left-4 top-4 grid max-w-[min(440px,60%)] gap-1 sm:left-5">
+          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-flare">{t(`lab.kicker.${id}`)}</span>
+          <h2 className="font-display text-[30px] font-black leading-[0.92] tracking-display [font-stretch:135%] sm:text-[48px]">{t(`lab.views.${id}`)}</h2>
+          <p className="mt-1 hidden max-w-[34ch] text-[14px] text-[#8f97c8] sm:block">{t(`lab.viewLine.${id}`)}</p>
         </div>
-
-        {/* modes */}
-        <div className="absolute right-4 top-4 flex flex-col items-end gap-2 sm:right-6 sm:top-5">
-          {onBack && (
-            <button type="button" onClick={() => onBack(time.current)} className="rc-press min-h-[40px] rounded-full bg-chalk px-4 text-[13px] font-bold text-ink">
-              {tr("lab.backToSurface")}
+        <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5 sm:right-4 sm:top-4">
+          <button
+            type="button"
+            aria-pressed={fix}
+            onClick={() => setFix(!fix)}
+            className="rc-press rounded-full border border-flare/60 bg-[#0d1330]/80 px-3.5 py-2 text-[13px] font-semibold text-flare backdrop-blur aria-pressed:border-flare aria-pressed:bg-flare aria-pressed:text-flare-ink"
+          >
+            {t("lab.showFix")}
+          </button>
+          {tools.map((tool) => (
+            <button
+              key={tool.id}
+              type="button"
+              aria-pressed={tool.pressed}
+              onClick={() => {
+                tool.on();
+                bump();
+              }}
+              className="rc-press rounded-full border border-[#222b5c] bg-[#0d1330]/80 px-3.5 py-2 text-[13px] font-semibold text-chalk backdrop-blur aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-ink"
+            >
+              {tool.label}
             </button>
-          )}
-          <Seg
-            label={tr("lab.modeLabel")}
-            value={coach ? "coach" : "explore"}
-            options={[
-              ["coach", tr("lab.coachMode")],
-              ["explore", tr("lab.exploreMode")],
-            ]}
-            onChange={(v) => {
-              setCoach(v === "coach");
-              if (v === "coach") setProbe(null);
-            }}
-          />
-          <Seg
-            label={tr("lab.viewLabel")}
-            value={view}
-            options={[
-              ["broadcast", tr("lab.broadcast")],
-              ["tactical", tr("lab.tactical")],
-            ]}
-            onChange={(v) => setView(v as View)}
-          />
-        </div>
-
-        {/* the one line: what to look at right now */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[128px] flex justify-center px-4" aria-live="polite">
-          {coach && line ? (
-            <div key={line.key + line.at} className="lab-caption flex max-w-[780px] items-start gap-3 rounded-2xl bg-[#050d4a]/80 px-5 py-4 shadow-2xl backdrop-blur-md">
-              <span className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full ${warn ? "bg-flare text-flare-ink" : "bg-chalk text-ink"}`}>
-                <LensIcon l={line.lens} />
-              </span>
-              <p className="text-[16px] font-semibold leading-snug text-chalk sm:text-[20px]">
-                <span className={`mr-2 text-[12px] font-bold uppercase tracking-[0.14em] ${warn ? "text-flare" : "text-chalk-faint"}`}>{tr(`lab.lens.${line.lens}`)}</span>
-                {lineText}
-              </p>
-            </div>
-          ) : raced ? (
-            <div className="max-w-[640px] rounded-2xl bg-[#050d4a]/80 px-5 py-4 text-[17px] font-semibold text-chalk shadow-2xl backdrop-blur-md">
-              {tr("lab.g.probeWin", { name: lab.names[raced.first.i], s: raced.first.t.toFixed(1), team: lab.short[teamOf(raced.first.i)] })}
-            </div>
-          ) : focus != null ? (
-            <div className="rounded-2xl bg-[#050d4a]/80 px-5 py-3 text-[16px] font-semibold text-chalk shadow-2xl backdrop-blur-md">{tr("lab.g.focus", { name: lab.names[focus] })}</div>
-          ) : null}
-        </div>
-
-        {hover != null && now && <Tag lab={lab} i={hover} stage={stage.current} f={now.f} unit={unitOf(hover)} />}
-
-        {/* transport */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050d4a] via-[#050d4a]/85 to-transparent px-4 pb-3 pt-8 sm:px-6">
-          {!coach && (
-            <div className="mb-3 flex flex-wrap gap-1.5" role="group" aria-label={tr("lab.lensesLabel")}>
-              {LENSES.map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  aria-pressed={lenses.has(l)}
-                  onClick={() => toggle(l)}
-                  title={tr(`lab.how.${l}`)}
-                  className={`rc-press flex min-h-[40px] items-center gap-2 rounded-full px-3.5 text-[13px] font-semibold backdrop-blur ${lenses.has(l) ? "bg-chalk text-ink" : "bg-[#050d4a]/60 text-chalk-dim ring-1 ring-inset ring-turf-edge hover:text-chalk"}`}
-                >
-                  <LensIcon l={l} />
-                  {tr(`lab.lens.${l}`)}
-                </button>
-              ))}
-            </div>
-          )}
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => setPlaying(!playing)} aria-label={playing ? tr("lab.pause") : tr("lab.play")} className="rc-press grid h-11 w-11 shrink-0 place-items-center rounded-full bg-chalk text-ink">
-              {playing ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1" width="3.5" height="12" rx="1" fill="currentColor" /><rect x="8.5" y="1" width="3.5" height="12" rx="1" fill="currentColor" /></svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.6v10.8a.8.8 0 0 0 1.2.7l8.6-5.4a.8.8 0 0 0 0-1.4L4.2.9A.8.8 0 0 0 3 1.6z" fill="currentColor" /></svg>
-              )}
-            </button>
-            <div className="min-w-0 flex-1">
-              <Dna lab={lab} t={now?.t ?? 0} markers={markers} onSeek={seek} />
-            </div>
-            <div className="hidden shrink-0 items-center gap-1 sm:flex" role="group" aria-label={tr("lab.speed")}>
-              {SPEEDS.map((v) => (
-                <button key={v} type="button" aria-pressed={speed === v} onClick={() => setSpeed(v)} className={`min-h-[34px] rounded-full px-2.5 text-[12px] font-semibold tabular-nums ${speed === v ? "bg-turf-raised text-chalk" : "text-chalk-dim"}`}>
-                  {v}×
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="mt-1.5 flex items-center justify-between gap-2 text-[12px] text-chalk-faint">
-            <span className="hidden sm:inline">{tr("lab.attacks", { home: lab.short[0] })}</span>
-            <div className="ml-auto flex items-center gap-1">
-              <button type="button" onClick={() => jump(-1)} aria-label={tr("lab.prev")} className="grid h-8 w-8 place-items-center rounded-full text-chalk hover:bg-turf-raised">
-                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2 3.5 6l4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-              <select value={kind} onChange={(e) => setKind(e.target.value as MomentKind)} aria-label={tr("lab.jumpTo")} className="min-h-[32px] rounded-full bg-transparent px-1 text-[13px] font-semibold text-chalk">
-                {(["goal", "fault", "shot", "turnover"] as MomentKind[]).filter((k) => moments[k].length).map((k) => (
-                  <option key={k} value={k} className="bg-ink">
-                    {tr(`lab.moment.${k}`)} ({moments[k].length})
-                  </option>
-                ))}
-              </select>
-              <button type="button" onClick={() => jump(1)} aria-label={tr("lab.next")} className="grid h-8 w-8 place-items-center rounded-full text-chalk hover:bg-turf-raised">
-                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* a short key, then the idea behind each lens for anyone who wants it */}
-      <div className="mx-auto mt-10 grid max-w-[1400px] gap-x-12 gap-y-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)]">
-        <div>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{tr("lab.eyebrow")}</p>
-          <h1 className="mt-1 font-display text-[clamp(30px,4vw,52px)] font-black uppercase leading-[0.92] [font-stretch:135%]">{tr("lab.title")}</h1>
-          <p className="mt-3 max-w-[44ch] text-[15px] leading-relaxed text-chalk-dim">{tr("lab.lede")}</p>
-          <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-chalk-dim">
-            <li className="flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-chalk" />{lab.short[0]}</li>
-            <li className="flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-[#3654ff] ring-1 ring-chalk" />{lab.short[1]}</li>
-            <li className="flex items-center gap-2"><i className="h-3 w-3 rotate-45 bg-flare" />{tr("lab.keyFault")}</li>
-          </ul>
-        </div>
-        <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2 xl:grid-cols-3">
-          {LENSES.map((l) => (
-            <div key={l} className="min-w-0">
-              <dt className="flex items-center gap-2 font-display text-[16px] font-extrabold uppercase [font-stretch:115%]">
-                <LensIcon l={l} />
-                {tr(`lab.lens.${l}`)}
-              </dt>
-              <dd className="mt-1 text-[14px] leading-snug text-chalk-dim">{tr(`lab.how.${l}`)}</dd>
-            </div>
           ))}
-        </dl>
+        </div>
+        <div
+          ref={calloutRef}
+          aria-live="polite"
+          className="lab-callout pointer-events-none absolute bottom-[74px] left-4 max-w-[min(460px,calc(100%-32px))] rounded-[10px] border border-l-[3px] border-[#222b5c] bg-[#060918]/85 px-3.5 py-2.5 text-[14.5px] backdrop-blur sm:left-5"
+        />
+        <canvas
+          ref={miniRef}
+          width={420}
+          height={272}
+          hidden
+          aria-label={t("lab.miniLabel")}
+          className="absolute bottom-[172px] right-3 h-[91px] w-[140px] cursor-pointer rounded-lg border border-[#222b5c] bg-[#060918]/85 sm:bottom-[74px] sm:right-4 sm:h-[136px] sm:w-[210px]"
+        />
+        <div ref={tagRef} hidden className="lab-tag pointer-events-none absolute translate-x-3 -translate-y-1/2 whitespace-nowrap rounded-lg bg-chalk px-2.5 py-1.5 text-[13px] font-semibold leading-snug text-ink" />
+        <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-b from-transparent to-[#060918]/95 px-4 pb-3.5 pt-3">
+          <button
+            type="button"
+            onClick={() => setPlaying(!playing)}
+            aria-label={playing ? t("lab.pause") : t("lab.play")}
+            className="rc-press grid h-9 w-9 shrink-0 place-items-center rounded-full bg-chalk text-ink"
+          >
+            {playing ? (
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                <rect x="1.5" y="1" width="3" height="10" fill="currentColor" />
+                <rect x="7.5" y="1" width="3" height="10" fill="currentColor" />
+              </svg>
+            ) : (
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M2.5 1 L11 6 L2.5 11 Z" fill="currentColor" />
+              </svg>
+            )}
+          </button>
+          <span ref={clockRef} className="min-w-[54px] font-display text-[18px] font-extrabold tabular-nums [font-stretch:120%]">
+            {clock(c.t0)}
+          </span>
+          <div className="relative h-9 min-w-0 flex-1">
+            <div className="pointer-events-none absolute inset-x-0 top-[17px] h-[3px] rounded bg-[#222b5c]" />
+            <div ref={fillRef} className="pointer-events-none absolute left-0 top-[17px] h-[3px] rounded bg-chalk" />
+            <div ref={knobRef} className="pointer-events-none absolute top-[11px] -ml-[7px] h-[15px] w-[15px] rounded-full bg-chalk shadow-[0_0_0_4px_rgba(233,236,255,.15)]" />
+            {marks.map((m) => (
+              <div key={m.text} className={`pointer-events-none absolute top-0 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.08em] ${m.cls}`} style={{ left: pct(m.s) }}>
+                <span className="hidden sm:inline">{m.text}</span>
+                <i className="absolute left-1/2 top-[13px] -ml-px h-[11px] w-[2px] bg-current" />
+              </div>
+            ))}
+            <input
+              ref={scrubRef}
+              type="range"
+              min={c.t0}
+              max={c.t1}
+              step={0.05}
+              defaultValue={c.t0}
+              aria-label={t("lab.time")}
+              onChange={(e) => {
+                state.current.t = +e.target.value;
+              }}
+              className="absolute inset-0 m-0 w-full cursor-pointer opacity-0"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length])}
+            aria-label={t("lab.speed")}
+            className="rc-press h-9 min-w-9 shrink-0 rounded-full border border-[#222b5c] px-3 text-[13px] font-bold text-chalk"
+          >
+            {speed}×
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
 
-function Seg({ label, value, options, onChange }: { label: string; value: string; options: [string, string][]; onChange(v: string): void }) {
-  return (
-    <div className="flex rounded-full bg-[#050d4a]/75 p-1 backdrop-blur" role="group" aria-label={label}>
-      {options.map(([v, text]) => (
-        <button key={v} type="button" aria-pressed={value === v} onClick={() => onChange(v)} className={`min-h-[36px] rounded-full px-3.5 text-[13px] font-semibold ${value === v ? "bg-chalk text-ink" : "text-chalk-dim hover:text-chalk"}`}>
-          {text}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Tag({ lab, i, stage, f, unit }: { lab: LabData; i: number; stage: LabStage | null; f: Frame; unit: Unit }) {
-  const { t } = useTranslation();
-  if (!stage) return null;
-  const [x, y] = stage.toScreen(f.pos[i][0], f.pos[i][1], 3.8);
-  const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
-  return (
-    <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-[#050d4a]/90 px-3 py-2 text-[13px] shadow-xl backdrop-blur" style={{ left: x, top: y - 8 }}>
-      <div className="whitespace-nowrap font-semibold">
-        #{lab.numbers[i]} {lab.names[i]}
+      <div className="grid gap-3 md:grid-cols-3">
+        {(["see", "mistake", "fix"] as const).map((k) => (
+          <div key={k} className="min-w-0 rounded-panel border border-[#222b5c] bg-[#0d1330] px-4 py-3.5">
+            <h3 className={`text-[11px] font-bold uppercase tracking-[0.14em] ${k === "mistake" ? "text-flare" : "text-[#8f97c8]"}`}>{t(`lab.notesHead.${k}`)}</h3>
+            <p className="mt-1 text-[15px]">{t(`lab.notes.${id}.${k}${k === "see" ? "" : open}`, p)}</p>
+          </div>
+        ))}
       </div>
-      <div className="whitespace-nowrap text-chalk-dim">
-        {lab.short[teamOf(i)]} · {t(`lab.unit.${unit}`)} · {sp.toFixed(1)} m/s
-      </div>
+      <p className="text-[13px] text-chalk-faint">{t("lab.foot", { home: lab.clubs[0].name, away: lab.clubs[1].name })}</p>
     </div>
-  );
-}
-
-function LensIcon({ l }: { l: LensId }) {
-  const p = { fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-      {l === "space" && (
-        <>
-          <rect x="2" y="3" width="14" height="12" rx="1.5" {...p} />
-          <path d="M8 3c2 3-1 6 1 12" {...p} />
-        </>
-      )}
-      {l === "options" && (
-        <>
-          <circle cx="4" cy="9" r="1.8" {...p} />
-          <path d="M6 8 14 3.5M6 9h8.5M6 10l8 4.5" {...p} />
-        </>
-      )}
-      {l === "shape" && <path d="M3 4.5h3.5M3 9h12M3 13.5h3.5M10 4.5h5M10 13.5h5" {...p} />}
-      {l === "pressure" && (
-        <>
-          <circle cx="9" cy="9" r="2" {...p} />
-          <circle cx="9" cy="9" r="6" {...p} strokeDasharray="2 2" />
-        </>
-      )}
-      {l === "runs" && <path d="M3 13c3 0 4-8 9-8m0 0-2.5-1.8M12 5l-1.6 2.6" {...p} />}
-      {l === "chain" && <path d="M3 14c2-6 4-6 6-3s4 2 6-6" {...p} />}
-    </svg>
   );
 }

@@ -168,9 +168,12 @@
   line-height: 1.2 !important;
 }
 
-/* Tactics Lab: each coach line rises in, so a new idea reads as new */
-.lab-caption { animation: lab-caption-in 420ms var(--ease-out) both; }
-@keyframes lab-caption-in { from { opacity: 0; transform: translateY(10px); } }
-@media (prefers-reduced-motion: reduce) { .lab-caption { animation: none; } }
-.lab-intro { animation: lab-intro-out 2600ms ease both; }
-@keyframes lab-intro-out { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+/* Tactics Lab: the callout under the 3D stage and the hover tag */
+.lab-callout:empty { display: none; }
+.lab-callout[data-kind=""] { border-left-color: #8f97c8; }
+.lab-callout[data-kind="bug"] { border-left-color: rgb(var(--flare)); }
+.lab-callout[data-kind="goal"] { border-left-color: rgb(var(--chalk)); }
+.lab-callout .lab-k { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #8f97c8; }
+.lab-callout[data-kind="bug"] .lab-k { color: rgb(var(--flare)); }
+.lab-callout b { font-weight: 700; }
+.lab-tag small { display: block; font-weight: 500; opacity: 0.7; }

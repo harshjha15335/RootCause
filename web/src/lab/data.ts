@@ -42,6 +42,8 @@ export type Lab = {
   possStart: Uint32Array;
   names: string[];
   numbers: number[];
+  /** formation role per player (GK, RB, LCB, ST, ...) */
+  roles: string[];
   short: [string, string];
   clubs: [MatchMeta["home"], MatchMeta["away"]];
 };
@@ -122,52 +124,55 @@ function classify(lab: Omit<Lab, "poss" | "phase" | "possStart">) {
   return { poss, phase, possStart };
 }
 
+/** Fetches and decodes one match's Lab data (tracking.bin, events.json, meta.json). */
+export async function loadLab(matchId: string, base = `${import.meta.env.BASE_URL}showcase/${matchId}/`, fetcher: typeof fetch = fetch): Promise<Lab> {
+  const get = async (f: string) => {
+    const r = await fetcher(base + f);
+    if (!r.ok) throw new Error(`${base + f} returned ${r.status}`);
+    return r;
+  };
+  const [bin, ev, meta] = await Promise.all([
+    get("tracking.bin").then((r) => r.arrayBuffer()),
+    get("events.json").then((r) => r.json() as Promise<(string | number | null)[][]>),
+    get("meta.json").then((r) => r.json() as Promise<MatchMeta>),
+  ]);
+  const raw = new Int16Array(bin);
+  // tracking index i is H1..H11 then A1..A11
+  const ids = Array.from({ length: 22 }, (_, i) => (i < 11 ? `H${i + 1}` : `A${i - 10}`));
+  const byId = new Map([...meta.home.players, ...meta.away.players].map((p) => [p.id, p]));
+  const rawLab = {
+    id: matchId,
+    raw,
+    actions: [] as Action[],
+    names: ids.map((id) => byId.get(id)?.name ?? id),
+    numbers: ids.map((id) => byId.get(id)?.number ?? 0),
+    roles: ids.map((id) => byId.get(id)?.position ?? ""),
+    short: [meta.home.short_name, meta.away.short_name] as [string, string],
+    clubs: [meta.home, meta.away] as [MatchMeta["home"], MatchMeta["away"]],
+  };
+  rawLab.actions = ev.map((e) => {
+    const s = e[0] as number;
+    const p = (raw[Math.min(s, SECONDS - 1) * STRIDE + 48] || 1) as number;
+    return {
+      s,
+      type: e[1] as ActionType,
+      team: e[2] as 0 | 1,
+      player: e[3] as number,
+      receiver: e[4] as number | null,
+      from: [flipX(e[5] as number, p), flipY(e[6] as number, p)],
+      to: [flipX(e[7] as number, p), flipY(e[8] as number, p)],
+      outcome: e[9] as string | null,
+      xg: e[10] as number | null,
+      pressure: e[11] as number | null,
+    };
+  });
+  return { ...rawLab, ...classify(rawLab) };
+}
+
 export function useLab(matchId = SHOWCASE_MATCH) {
   return useQuery<Lab, Error>({
     queryKey: ["lab", matchId],
     staleTime: Infinity,
-    queryFn: async () => {
-      const base = `${import.meta.env.BASE_URL}showcase/${matchId}/`;
-      const get = async (f: string) => {
-        const r = await fetch(base + f);
-        if (!r.ok) throw new Error(`${base + f} returned ${r.status}`);
-        return r;
-      };
-      const [bin, ev, meta] = await Promise.all([
-        get("tracking.bin").then((r) => r.arrayBuffer()),
-        get("events.json").then((r) => r.json() as Promise<(string | number | null)[][]>),
-        get("meta.json").then((r) => r.json() as Promise<MatchMeta>),
-      ]);
-      const raw = new Int16Array(bin);
-      // tracking index i is H1..H11 then A1..A11
-      const ids = Array.from({ length: 22 }, (_, i) => (i < 11 ? `H${i + 1}` : `A${i - 10}`));
-      const byId = new Map([...meta.home.players, ...meta.away.players].map((p) => [p.id, p]));
-      const rawLab = {
-        id: matchId,
-        raw,
-        actions: [] as Action[],
-        names: ids.map((id) => byId.get(id)?.name ?? id),
-        numbers: ids.map((id) => byId.get(id)?.number ?? 0),
-        short: [meta.home.short_name, meta.away.short_name] as [string, string],
-        clubs: [meta.home, meta.away] as [MatchMeta["home"], MatchMeta["away"]],
-      };
-      rawLab.actions = ev.map((e) => {
-        const s = e[0] as number;
-        const p = (raw[Math.min(s, SECONDS - 1) * STRIDE + 48] || 1) as number;
-        return {
-          s,
-          type: e[1] as ActionType,
-          team: e[2] as 0 | 1,
-          player: e[3] as number,
-          receiver: e[4] as number | null,
-          from: [flipX(e[5] as number, p), flipY(e[6] as number, p)],
-          to: [flipX(e[7] as number, p), flipY(e[8] as number, p)],
-          outcome: e[9] as string | null,
-          xg: e[10] as number | null,
-          pressure: e[11] as number | null,
-        };
-      });
-      return { ...rawLab, ...classify(rawLab) };
-    },
+    queryFn: () => loadLab(matchId),
   });
 }

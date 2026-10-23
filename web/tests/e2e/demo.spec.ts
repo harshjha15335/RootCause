@@ -41,19 +41,19 @@ test("the match analysis covers the whole match, not just the traced goal", asyn
   await expect(page.getByRole("heading", { name: "Bram Tovick", exact: true })).toBeVisible();
 });
 
-test("tactics lab opens on the match surface and steps onto the pitch", async ({ page }) => {
+test("tactics lab shows the traced mistake three ways, with the fix", async ({ page }) => {
   await page.goto("/#/lab");
-  const surface = page.getByRole("img", { name: /The match as a surface/ });
-  await expect(surface).toBeVisible();
-  await expect(page.getByRole("slider", { name: /Match timeline/ })).toBeVisible();
-  const box = (await surface.boundingBox())!;
-  await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.45);
-  await expect(page.getByRole("img", { name: "Live pitch with all 22 players and the ball" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Coach", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Explore", exact: true }).first().click();
-  const shape = page.getByRole("button", { name: "Shape", exact: true });
-  await shape.click();
-  await expect(shape).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Back to the surface" }).click();
-  await expect(surface).toBeVisible();
+  await expect(page.getByRole("img", { name: "Interactive 3D view of the goal move" })).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Match time" })).toBeVisible();
+  const fix = page.getByRole("button", { name: "Show the fix" });
+  await fix.click();
+  await expect(fix).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("tab", { name: /Forks/ }).click();
+  await expect(page.getByRole("tab", { name: /Forks/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("button", { name: "Next touch" })).toBeVisible();
+  await page.getByRole("tab", { name: /Their Eyes/ }).click();
+  const be = page.getByRole("button", { name: /^Be Weyre/ });
+  await expect(be).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Follow the ball" }).click();
+  await expect(page.getByRole("button", { name: "Follow the ball" })).toHaveAttribute("aria-pressed", "true");
 });
