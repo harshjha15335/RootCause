@@ -208,7 +208,7 @@ function DemoPicker() {
                 {d.traced !== null && ` · ${t("product.demoTraced", { count: d.goals, traced: d.traced })}`}
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {(["story", "explore", "analysis"] as const).map((s, i) => (
+                {(["story", "lab", "explore", "analysis"] as const).map((s, i) => (
                   <a
                     key={s}
                     href={demoHref(d.id, s)}

@@ -78,7 +78,7 @@ function Flip({ value }: { value: number }) {
   );
 }
 
-const NAV: Screen[] = ["home", "story", "explore", "analysis", "report"];
+const NAV: Screen[] = ["home", "story", "explore", "lab", "analysis", "report"];
 
 function NavLinks() {
   const { t } = useTranslation();
