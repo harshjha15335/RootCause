@@ -11,6 +11,7 @@ import { MatchScreen } from "./screens/MatchScreen";
 import { Home } from "./screens/Home";
 import { chronological, rootLink } from "./lib/geometry";
 
+const Analysis = lazy(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
 const BugReport = lazy(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
 
 export default function App() {
@@ -35,6 +36,10 @@ export default function App() {
         {screen === "report" ? (
           <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
             <BugReport />
+          </Suspense>
+        ) : screen === "analysis" ? (
+          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("analysis.loading")}</p>}>
+            <Analysis />
           </Suspense>
         ) : screen === "home" ? (
           <Home />

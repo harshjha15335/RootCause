@@ -2,9 +2,9 @@ import { create } from "zustand";
 import type { Lang, Mode } from "../api/types";
 
 export type Tab = "live" | "trace" | "whatif" | "cause" | "script";
-export type Screen = "home" | "story" | "explore" | "report";
-const SCREENS: Screen[] = ["home", "story", "explore", "report"];
-/** #/story, #/explore, #/report; anything else is the home page. */
+export type Screen = "home" | "story" | "explore" | "analysis" | "report";
+const SCREENS: Screen[] = ["home", "story", "explore", "analysis", "report"];
+/** #/story, #/explore, #/analysis, #/report; anything else is the home page. */
 export const screenFromHash = (): Screen => {
   const s = location.hash.replace(/^#\/?/, "") as Screen;
   return SCREENS.includes(s) ? s : "home";

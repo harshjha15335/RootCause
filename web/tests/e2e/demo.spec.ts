@@ -27,3 +27,16 @@ test("a first-time visitor can follow the story from home to the match report", 
   await expect(page.getByRole("heading", { name: "Bug Report" })).toBeVisible();
   await expect(page.getByText("Not yet measured")).toBeVisible();
 });
+
+// The full-match analysis: overview, tactics, every chance with its breakdown, player cards.
+test("the match analysis covers the whole match, not just the traced goal", async ({ page }) => {
+  await page.goto("/#/analysis");
+  await expect(page.getByRole("heading", { name: "Match analysis" })).toBeAttached();
+  await expect(page.getByRole("heading", { name: "Every chance" })).toBeAttached({ timeout: 15_000 });
+  await page.getByRole("radio", { name: "Goals" }).click();
+  await page.getByRole("button", { name: /Bram Tovick/ }).first().click();
+  await expect(page.getByRole("heading", { name: "What would have been better" })).toBeVisible();
+  await page.getByRole("radio", { name: "Pass network" }).click();
+  await expect(page.getByRole("img", { name: /pass network/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Bram Tovick", exact: true })).toBeVisible();
+});
