@@ -54,7 +54,16 @@ async function json<T>(url: string, init?: RequestInit): Promise<T> {
 
 /** Engine-generated demo matches, all exported offline (web/tools). The first is the default. */
 export const DEMO_MATCHES = ["p-1008", "p-1009", "p-1014", "p-1017"] as const;
-const asked = new URLSearchParams(location.search).get("demo");
+/** ?demo= wins; otherwise the match picked last time, so every page stays on the same match. */
+const asked = (() => {
+  const fromUrl = new URLSearchParams(location.search).get("demo");
+  try {
+    if (fromUrl) localStorage.setItem("rc.demo", fromUrl);
+    return fromUrl ?? localStorage.getItem("rc.demo");
+  } catch {
+    return fromUrl;
+  }
+})();
 export const SHOWCASE_MATCH: string = DEMO_MATCHES.find((m) => m === asked) ?? DEMO_MATCHES[0];
 
 export function showcaseSource(matchId = SHOWCASE_MATCH): Source & { extras(): Promise<ShowcaseExtras> } {

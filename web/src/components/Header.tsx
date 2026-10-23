@@ -9,6 +9,7 @@ import { useUi, type Screen } from "../store/uiStore";
 import { Badge } from "./bits";
 import { LanguageSelect, ModeSwitch, VoiceButton } from "./Controls";
 import { go } from "../lib/nav";
+import { demoHref, useDemos } from "../api/demos";
 
 export function Wordmark() {
   return (
@@ -105,6 +106,30 @@ function NavLinks() {
   );
 }
 
+/** Which demo match every page is showing, and a way to switch it from anywhere. */
+function DemoSelect() {
+  const { t } = useTranslation();
+  const demos = useDemos();
+  const screen = useUi((s) => s.screen);
+  const current = demos.find((d) => d.current);
+  return (
+    <label className="flex min-w-0 items-center gap-2 text-[13px] text-chalk-dim">
+            <select
+        aria-label={t("product.demoPick")}
+        value={current?.id}
+        onChange={(e) => location.assign(demoHref(e.target.value, screen))}
+        className="min-h-[38px] max-w-[11.5rem] truncate rounded-full bg-turf py-1 pl-3 pr-7 text-[13px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge"
+      >
+        {demos.map((d) => (
+          <option key={d.id} value={d.id}>
+            {d.meta && d.score ? `${d.n} · ${d.meta.home.short_name} ${d.score[0]}–${d.score[1]} ${d.meta.away.short_name}` : t("product.demoLabel", { n: d.n })}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export function Header() {
   const { t } = useTranslation();
   const mode = useUi((s) => s.mode);
@@ -124,7 +149,10 @@ export function Header() {
         <div className="ml-4 hidden md:block">
           <NavLinks />
         </div>
-        <div className="ml-auto hidden items-center gap-2 xl:flex">
+        <div className="ml-auto">
+          <DemoSelect />
+        </div>
+        <div className="hidden items-center gap-2 xl:flex">
           <span className="text-[13px] text-chalk-faint">{t("controls.mode")}</span>
           <ModeSwitch />
           <LanguageSelect />
@@ -136,7 +164,7 @@ export function Header() {
           aria-expanded={open}
           aria-controls="view-options"
           onClick={() => setOpen((o) => !o)}
-          className="rc-press ml-auto flex min-h-[42px] items-center gap-2 rounded-full px-4 text-[13px] font-medium text-chalk ring-1 ring-inset ring-turf-edge xl:hidden"
+          className="rc-press flex min-h-[42px] items-center gap-2 rounded-full px-4 text-[13px] font-medium text-chalk ring-1 ring-inset ring-turf-edge xl:hidden"
         >
           <span>{t(`mode.${mode}`)}</span>
           <span className="text-chalk-faint" aria-hidden="true">/</span>

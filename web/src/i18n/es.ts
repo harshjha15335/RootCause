@@ -471,6 +471,7 @@ const es: Dict = {
     method: "Cómo se mide: la amenaza esperada (xT) es el modelo Expected Threat de socceraction, ajustado con 200 partidos simulados por el motor y usado para valorar cada pase y conducción. El xG y la probabilidad de pase salen de los propios modelos del motor, los mismos que deciden el partido. El tiempo para cerrar es la distancia entre la velocidad máxima de presión del motor. La nota es una suma ponderada de estos números, centrada en 6,0. Todos los clubes y jugadores son inventados.",
   },
   product: {
+    demoPick: "Partido de demostración",
     switchLabel: "Cuatro partidos de demostración. Elige uno y la pila se rehace con su gol:",
     eyebrow: "Root Cause · a debugger for football",
     lede: "When a goal goes in, Root Cause rewinds the attack second by second, finds the defensive mistake that let it happen, and proves it by replaying the move 200 times with that mistake fixed. Then it reads the rest of the match too: tactics, every chance, every player.",

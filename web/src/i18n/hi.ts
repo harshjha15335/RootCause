@@ -471,6 +471,7 @@ const hi: Dict = {
     method: "कैसे मापा गया: अपेक्षित ख़तरा (xT) socceraction का Expected Threat मॉडल है, इंजन के 200 सिम्युलेटेड मैचों पर फ़िट करके हर पास और कैरी की क़ीमत लगाई गई। xG और पास की संभावना इंजन के अपने मॉडल से आती है, वही जो मैच तय करते हैं। पहुंचने का समय दूरी भाग इंजन की सबसे तेज़ प्रेसिंग स्पीड है। रेटिंग इन आंकड़ों का भारित जोड़ है, 6.0 के आसपास। सभी क्लब और खिलाड़ी काल्पनिक हैं।",
   },
   product: {
+    demoPick: "डेमो मैच",
     switchLabel: "चार डेमो मैच। कोई एक चुनें, स्टैक उसके गोल से दोबारा बनेगा:",
     eyebrow: "Root Cause · a debugger for football",
     lede: "When a goal goes in, Root Cause rewinds the attack second by second, finds the defensive mistake that let it happen, and proves it by replaying the move 200 times with that mistake fixed. Then it reads the rest of the match too: tactics, every chance, every player.",

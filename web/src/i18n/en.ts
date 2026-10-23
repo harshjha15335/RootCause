@@ -470,6 +470,7 @@ const en = {
     method: "How it's measured: expected threat (xT) is socceraction's Expected Threat model, fitted on 200 engine-simulated matches and used to value every pass and carry. xG and the pass odds come from the engine's own models, the same ones that decide the match. Time to close is distance over the engine's top pressing speed. The rating is a weighted sum of these numbers, centred on 6.0. Every club and player is invented.",
   },
   product: {
+    demoPick: "Demo match",
     switchLabel: "Four demo matches. Pick one and the stack rebuilds from its goal:",
     eyebrow: "Root Cause · a debugger for football",
     lede: "When a goal goes in, Root Cause rewinds the attack second by second, finds the defensive mistake that let it happen, and proves it by replaying the move 200 times with that mistake fixed. Then it reads the rest of the match too: tactics, every chance, every player.",
