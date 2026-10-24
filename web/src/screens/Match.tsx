@@ -6,12 +6,15 @@ import { SHOWCASE_MATCH } from "../api/rest";
 import type { MatchMeta } from "../api/types";
 import { Badge } from "../components/bits";
 import { surname } from "../lib/format";
-import { useUi } from "../store/uiStore";
+import { DepthSwitch } from "../components/DepthSwitch";
+import { mistakeWords } from "../i18n/words";
+import { quality, useNearViewport } from "../lib/device";
+import { pageHref } from "../lib/nav";
+import { useUi, type Depth } from "../store/uiStore";
 import type { ChanceStack } from "./match/chanceStack";
-import { useDepth, type Depth } from "./match/depth";
 import type { Phase, ShapeStack } from "./match/shapeStack";
 import { webglOk } from "./match/stage";
-import { mistakeWords } from "./match/strings";
+import "./match/strings";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
@@ -26,7 +29,7 @@ export function Match() {
   const demos = useDemos();
   const demo = demos.find((d) => d.id === SHOWCASE_MATCH);
   const meta = demo?.meta ?? null;
-  const depth = useDepth((s) => s.depth);
+  const depth = useUi((u) => u.depth);
   const [player, setPlayer] = useState<string | null>(null);
   const [chance, setChance] = useState<number | null>(null);
   const chanceRef = useRef<HTMLElement>(null);
@@ -90,8 +93,9 @@ function useNames(s: Stacks) {
   );
 }
 
+/** "Harbour Town", "Northgate Rovers": the club's name without the FC. */
 function clubName(meta: MatchMeta | null, side: Side) {
-  return meta?.[side].short_name ?? (side === "home" ? "Home" : "Away");
+  return meta?.[side].name.replace(/\s+(FC|AFC|CF)$/i, "") ?? (side === "home" ? "Home" : "Away");
 }
 
 function Section({ id, title, sub, children, innerRef }: { id: string; title: string; sub?: string; children: ReactNode; innerRef?: React.Ref<HTMLElement> }) {
@@ -125,48 +129,15 @@ function Seg<T extends string>({ value, options, onChange, label }: { value: T; 
   );
 }
 
-function DepthSwitch() {
-  const { t } = useTranslation();
-  const { depth, setDepth } = useDepth();
-  return (
-    <Seg<Depth>
-      label={t("match.depth.label")}
-      value={depth}
-      onChange={setDepth}
-      options={[
-        { v: "simple", label: t("match.depth.simple") },
-        { v: "expert", label: t("match.depth.expert") },
-      ]}
-    />
-  );
-}
-
-/** Mount heavy 3D only when its frame is near the viewport, and only where WebGL and motion are welcome. */
-function useNear(ref: React.RefObject<HTMLElement>) {
-  const [near, setNear] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || near) return;
-    const io = new IntersectionObserver((es) => es[0].isIntersecting && setNear(true), { rootMargin: "600px 0px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, near]);
-  return near;
-}
+const useNear = (ref: React.RefObject<HTMLElement>) => useNearViewport(ref, "600px");
 
 function use3d() {
-  const reduced = useUi((s) => s.reducedMotion);
+  const reduced = useUi((s) => s.reducedMotion) || quality.reducedMotion;
   const [gl] = useState(() => webglOk());
   return { on: gl && !reduced, reduced };
 }
 
-function autopsyHref(goalId: string) {
-  const q = new URLSearchParams(location.search);
-  q.set("demo", SHOWCASE_MATCH);
-  q.set("goal", goalId);
-  // #/lab is the Autopsy's alias in the new shell, so this link works before and after it lands
-  return `?${q.toString()}#/lab`;
-}
+const autopsyHref = (goal: string) => pageHref("autopsy", { demo: SHOWCASE_MATCH, goal });
 
 // ----------------------------------------------------------------------------------------- top
 
@@ -183,9 +154,9 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
         <DepthSwitch />
       </div>
       <p className="mt-10 text-[14px] font-semibold uppercase tracking-[0.16em] text-chalk-faint">{s.meeting ? t("match.meeting", { n: s.meeting }) : null}</p>
-      <h1 className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-display text-[clamp(40px,8vw,104px)] font-black leading-[0.9] tracking-display text-chalk">
+      <h1 className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-display text-[clamp(34px,6.4vw,92px)] font-black leading-[0.92] tracking-display text-chalk">
         <span className="inline-flex items-center gap-4">
-          <Badge club={meta?.home ?? null} size={48} />
+          <Badge club={meta?.home ?? null} size={44} />
           {clubName(meta, "home")}
         </span>
         <span className="tabular-nums">
@@ -193,7 +164,7 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
         </span>
         <span className="inline-flex items-center gap-4">
           {clubName(meta, "away")}
-          <Badge club={meta?.away ?? null} size={48} />
+          <Badge club={meta?.away ?? null} size={44} />
         </span>
       </h1>
       {/* the match strip: each goal at its minute, home above the line, away below */}
@@ -216,9 +187,9 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
                 style={{ left }}
               >
                 <span className={`whitespace-nowrap rounded-md px-1.5 py-0.5 text-[12px] font-semibold tabular-nums ${g.traced ? "bg-flare text-flare-ink" : "bg-chalk/12 text-chalk"}`}>
-                  {minute(g.s)}′ {n.short(g.scorer)}
+                  {minute(g.s)}′<span className="hidden sm:inline"> {n.short(g.scorer)}</span>
                 </span>
-                <span className={`h-3 w-3 rounded-full ${up ? "bg-chalk" : "bg-[#9fb0ff]"} ring-4 ring-turf-deep`} />
+                <span className={`h-3 w-3 rounded-full ${up ? "bg-chalk" : "bg-[#8fa6ff]"} ring-4 ring-turf-deep`} />
               </a>
             );
           })}
@@ -262,7 +233,7 @@ function GoalCard({ g, s, meta, depth }: { g: GoalRow; s: Stacks; meta: MatchMet
       </header>
       {v ? (
         <>
-          <p className="mt-5 font-display text-[22px] font-extrabold leading-[1.1] text-chalk">{t("match.goals.culprit", { name: n.full(v.culprit), what: mistakeWords(t, v.bug) })}</p>
+          <p className="mt-5 font-display text-[22px] font-extrabold leading-[1.1] text-chalk">{t("match.goals.culprit", { name: n.full(v.culprit), what: mistakeWords(v.bug, { lower: true }) })}</p>
           <p className="mt-1 text-[15px] font-semibold text-flare">{t("match.goals.blame", { pct: v.blame_pct })}</p>
           <Replays v={v} depth={depth} />
           {depth === "expert" && v.suspects.length > 1 && (
@@ -392,7 +363,7 @@ function ShapeSection({ s, meta, depth }: { s: Stacks; meta: MatchMeta | null; d
         <Seg<Phase> label="Phase" value={phase} onChange={setPhase} options={[{ v: "out", label: t("match.shape.out") }, { v: "in", label: t("match.shape.in") }]} />
       </div>
       <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#0b1a8a_70%,#06104f_100%)]">
-        <div ref={host} className={`relative ${g3.on ? "aspect-[4/5] sm:aspect-[16/9]" : ""}`}>
+        <div ref={host} className={`relative ${g3.on ? "h-[min(68svh,120vw)] sm:h-[min(76svh,640px)]" : ""}`}>
           {!g3.on && <LineChart s={s} side={side} focus={focus} />}
         </div>
         <aside className="border-t border-turf-edge/60 p-4 sm:absolute sm:right-4 sm:top-4 sm:w-[300px] sm:rounded-2xl sm:border-0 sm:bg-[#06104f]/80 sm:ring-1 sm:ring-inset sm:ring-chalk/10 sm:backdrop-blur-md">
@@ -554,7 +525,7 @@ function ChanceSection({ s, meta, depth, sel, onSel, player }: { s: Stacks; meta
         <p className="text-[14px] text-chalk-dim">{t("match.chance.count", { n: list.length, b: better })}</p>
       </div>
       <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#0b1a8a_70%,#06104f_100%)]">
-        <div ref={host} className={`relative ${g3.on ? "aspect-[4/5] sm:aspect-[16/9]" : ""}`}>
+        <div ref={host} className={`relative ${g3.on ? "h-[min(68svh,120vw)] sm:h-[min(76svh,640px)]" : ""}`}>
           {!g3.on && <ShotMap s={s} c={c} lit={lit} onPick={onSel} />}
           {g3.on && !c && <p className="pointer-events-none absolute bottom-4 left-4 text-[13px] text-chalk-faint">{t("match.chance.drag")}</p>}
         </div>
@@ -637,7 +608,7 @@ function ShotMap({ s, c, lit, onPick }: { s: Stacks; c: StackChance | null; lit(
         ? c.frame.pos.map((p, i) => {
             const [x, y] = sv(p);
             const id = i < 11 ? `H${i + 1}` : `A${i - 10}`;
-            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? "#f3f5ff" : "#9fb0ff"} />;
+            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? "#f4f6ff" : "#8fa6ff"} />;
           })
         : null}
       {c?.best && (
@@ -650,7 +621,7 @@ function ShotMap({ s, c, lit, onPick }: { s: Stacks; c: StackChance | null; lit(
         s.chances.map((x) => {
           const [cx, cy] = sv(x.frame.ball);
           const r = 0.7 + Math.sqrt(x.xg) * 2.2;
-          const col = x.side === "home" ? "#f3f5ff" : "#9fb0ff";
+          const col = x.side === "home" ? "#f4f6ff" : "#8fa6ff";
           return (
             <circle
               key={x.seq}
@@ -695,7 +666,7 @@ function Players({ s, meta, depth, player, onPlayer, onShow }: { s: Stacks; meta
                     onClick={() => onPlayer(player === id ? null : id)}
                     className={`rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full pl-1.5 pr-3.5 text-[14px] ring-1 ring-inset transition-colors ${player === id ? "bg-chalk text-turf-deep ring-chalk" : "bg-turf text-chalk ring-turf-edge hover:ring-chalk/40"} ${count(id) ? "" : "opacity-60"}`}
                   >
-                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-[#9fb0ff] text-turf-deep"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
+                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-[#8fa6ff] text-turf-deep"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
                     {n.short(id)}
                     {count(id) > 0 && <span className={`text-[12px] tabular-nums ${player === id ? "text-turf-deep/70" : "text-chalk-faint"}`}>{count(id)}</span>}
                   </button>
@@ -757,7 +728,7 @@ function MomentRow({ m, s, onShow }: { m: Moment; s: Stacks; onShow(seq: number)
       line = t("match.players.big_miss", { xg: f2(m.xg) });
       break;
     case "mistake":
-      line = t("match.players.mistake", { what: cap(mistakeWords(t, m.bug)), min: minute(m.goal_s), pct: m.blame_pct });
+      line = t("match.players.mistake", { what: mistakeWords(m.bug), min: minute(m.goal_s), pct: m.blame_pct });
       fix = t("match.players.mistakeFix", { fixed: m.fixed_goals, n: m.trials });
       yellow = true;
       break;
@@ -784,8 +755,6 @@ function MomentRow({ m, s, onShow }: { m: Moment; s: Stacks; onShow(seq: number)
     </li>
   );
 }
-
-const cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
 
 // ------------------------------------------------------------------------------------ numbers
 
@@ -822,7 +791,7 @@ function Numbers({ meta }: { meta: MatchMeta | null }) {
               {k}
               <span className="mx-auto mt-1.5 flex h-1.5 max-w-[220px] overflow-hidden rounded-full bg-chalk/10" aria-hidden>
                 <span className="bg-chalk" style={{ width: `${(av / (av + bv || 1)) * 100}%` }} />
-                <span className="bg-[#9fb0ff]" style={{ width: `${(bv / (av + bv || 1)) * 100}%` }} />
+                <span className="bg-[#8fa6ff]" style={{ width: `${(bv / (av + bv || 1)) * 100}%` }} />
               </span>
             </td>
             <td className="py-3 text-right font-semibold tabular-nums text-chalk">{b1}</td>

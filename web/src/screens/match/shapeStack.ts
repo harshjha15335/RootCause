@@ -25,7 +25,7 @@ export class ShapeStack {
   readonly layerY: number[];
 
   constructor(host: HTMLElement, private data: Stacks, private reduced: boolean, private labels: { minute: (m: number) => string; bend: (side: Side, i: number) => string }) {
-    this.stage = new Stage(host, { az: -Math.PI / 2 - 0.5, el: 0.38, fov: 28, reduced });
+    this.stage = new Stage(host, { az: Math.PI / 2 + 0.24, el: 0.3, fov: 28, reduced });
     const W = data.shape_stack.windows;
     const half = W.findIndex((w) => w.from_s >= 2700);
     this.layerY = W.map((_, k) => k * GAP + (half > 0 && k >= half ? HALF_GAP : 0));
@@ -61,7 +61,30 @@ export class ShapeStack {
     };
     for (let i = 1; i < 11; i++) {
       const pts = W.map((_, k) => at(k, i)).filter((p): p is THREE.Vector3 => !!p);
-      if (pts.length > 1) this.group.add(ribbon(pts, col, un[i] === "def" ? 0.32 : 0.2, un[i] === "def" ? 0.95 : 0.5));
+      if (pts.length > 1) this.group.add(ribbon(pts, col, un[i] === "def" ? 0.3 : 0.18, un[i] === "def" ? 0.95 : 0.32));
+    }
+    // the back line as a curtain through time: where it leans, the line dropped or pushed up
+    const defs = un.map((u, i) => (u === "def" ? i : -1)).filter((i) => i >= 0);
+    const lineX = W.map((w) => {
+      const xs = defs.map((i) => w[key][i]?.[0]).filter((x): x is number => x !== undefined);
+      return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+    });
+    const pos: number[] = [];
+    const tri: number[] = [];
+    let n = 0;
+    lineX.forEach((x, k) => {
+      if (x === null) return;
+      pos.push(X(x), this.layerY[k], Z(4), X(x), this.layerY[k], Z(64));
+      if (n > 0) tri.push(2 * n - 2, 2 * n - 1, 2 * n, 2 * n - 1, 2 * n + 1, 2 * n);
+      n++;
+    });
+    const cg = new THREE.BufferGeometry();
+    cg.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    cg.setIndex(tri);
+    this.group.add(new THREE.Mesh(cg, new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false })));
+    for (const z of [4, 64]) {
+      const edge = lineX.map((x, k) => (x === null ? null : new THREE.Vector3(X(x), this.layerY[k], Z(z)))).filter((p): p is THREE.Vector3 => !!p);
+      this.group.add(polyline(edge, col, 0.5));
     }
     W.forEach((_, k) => {
       for (const u of ["def", "mid", "att"] as const) {
@@ -83,13 +106,13 @@ export class ShapeStack {
     });
     bends.forEach((b, i) => {
       const y = this.layerY[b.w];
-      st.tag(this.labels.bend(side, i), () => new THREE.Vector3(X(105), y, Z(-1)), "rc-stack-tag--var");
+      st.tag(this.labels.bend(side, i), () => new THREE.Vector3(X(105), y, Z(69)), "rc-stack-tag--var");
     });
     const first = 0, last = W.length - 1;
-    st.tag(this.labels.minute(0), () => new THREE.Vector3(X(0), this.layerY[first], Z(-1)));
-    st.tag(this.labels.minute(Math.round(W[last].to_s / 60)), () => new THREE.Vector3(X(0), this.layerY[last], Z(-1)));
+    st.tag(this.labels.minute(0), () => new THREE.Vector3(X(0), this.layerY[first], Z(69)));
+    st.tag(this.labels.minute(Math.round(W[last].to_s / 60)), () => new THREE.Vector3(X(0), this.layerY[last], Z(69)));
     const half = W.findIndex((w) => w.from_s >= 2700);
-    if (half > 0) st.tag(this.labels.minute(45), () => new THREE.Vector3(X(0), this.layerY[half] - HALF_GAP / 2, Z(-1)), "rc-stack-tag--quiet");
+    if (half > 0) st.tag(this.labels.minute(45), () => new THREE.Vector3(X(0), this.layerY[half] - HALF_GAP / 2, Z(69)), "rc-stack-tag--quiet");
     this.focusBend(null, true);
   }
 
@@ -107,7 +130,7 @@ export class ShapeStack {
     }
     const y = this.layerY[bends[i].w];
     const b = new THREE.Box3(new THREE.Vector3(-52.5, y - GAP * 2, -34), new THREE.Vector3(52.5, y + GAP * 2, 34));
-    this.stage.fitTo(b, { az: -Math.PI / 2 - 0.35, el: 0.62, padRight: this.padRight(), margin: 1.04 });
+    this.stage.fitTo(b, { az: Math.PI / 2 + 0.18, el: 0.62, padRight: this.padRight(), margin: 1.04 });
   }
 
   get focused() {

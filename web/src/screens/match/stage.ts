@@ -1,5 +1,7 @@
 import { gsap } from "gsap";
 import * as THREE from "three";
+import { quality } from "../../lib/device";
+import { palette } from "../../theme/palette";
 
 /**
  * A small Timestack stage for the Match page: one renderer, a calm orbit rig fitted to whatever
@@ -7,10 +9,10 @@ import * as THREE from "three";
  * when something changed and only while on screen. Plain three.js, like three/timestack.ts.
  */
 
-export const C = { cobalt: 0x1530d6, deep: 0x0b1a8a, chalk: 0xf3f5ff, sky: 0x9fb0ff, var: 0xffd60a, plate: 0x2f4dff };
+export const C = palette;
 export const X = (x: number) => x - 52.5;
 export const Z = (y: number) => y - 34;
-export const PHONE = typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches;
+export const PHONE = quality.phone;
 
 export type Rig = { az: number; el: number; dist: number; tx: number; ty: number; tz: number };
 export type FitOpts = { az?: number; el?: number; margin?: number; padRight?: number; padTop?: number; padBottom?: number; duration?: number; instant?: boolean };
@@ -53,14 +55,15 @@ export class Stage {
   private ray = new THREE.Raycaster();
   private reduced: boolean;
   private drag: { x: number; y: number; az: number; el: number; moved: boolean } | null = null;
+  private lastFit: { box: THREE.Box3; o: FitOpts } | null = null;
 
   constructor(private host: HTMLElement, opts: { az?: number; el?: number; fov?: number; reduced?: boolean } = {}) {
     this.reduced = !!opts.reduced;
     this.canvas = document.createElement("canvas");
     this.canvas.className = "block h-full w-full cursor-grab touch-pan-y";
     host.prepend(this.canvas);
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: !PHONE, alpha: true, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, PHONE ? 1.5 : 2));
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: quality.antialias, alpha: true, powerPreference: "high-performance" });
+    this.renderer.setPixelRatio(quality.dpr);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene.add(new THREE.HemisphereLight(0xdfe6ff, 0x0b1a8a, 1.6));
     const key = new THREE.DirectionalLight(0xffffff, 1.1);
@@ -131,6 +134,8 @@ export class Stage {
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    // keep whatever was framed in frame when the box changes size (rotation, panels, fonts)
+    if (this.lastFit) this.fitTo(this.lastFit.box, { ...this.lastFit.o, instant: true });
     this.poke();
   }
 
@@ -148,6 +153,7 @@ export class Stage {
    * kept clear for panels and copy).
    */
   fitTo(box: THREE.Box3, o: FitOpts = {}) {
+    this.lastFit = { box, o };
     const corners: THREE.Vector3[] = [];
     for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(x, y, z));
     const save = { ...this.rig };

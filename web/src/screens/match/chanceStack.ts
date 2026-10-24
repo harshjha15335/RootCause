@@ -25,7 +25,7 @@ export class ChanceStack {
   onPick: ((seq: number | null) => void) | null = null;
 
   constructor(host: HTMLElement, data: Stacks, reduced: boolean, private labels: { name: (id: string) => string; gain: (c: StackChance) => string }) {
-    this.stage = new Stage(host, { az: -Math.PI / 2 - 0.6, el: 0.42, fov: 28, reduced });
+    this.stage = new Stage(host, { az: Math.PI / 2 + 0.3, el: 0.36, fov: 28, reduced });
     const st = this.stage;
     data.chances.forEach((c, k) => {
       const y = k * GAP;
@@ -34,7 +34,7 @@ export class ChanceStack {
       this.box.expandByObject(p);
       const b = c.frame.ball;
       const at = new THREE.Vector3(X(b[0]), y + 0.08, Z(b[1]));
-      const r = 0.9 + Math.sqrt(c.xg) * 3.0;
+      const r = 1.6 + Math.sqrt(c.xg) * 3.2;
       const col = c.side === "home" ? C.chalk : C.sky;
       const goal = c.outcome === "goal";
       const mat = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 1, side: THREE.DoubleSide, depthWrite: false });
@@ -90,8 +90,9 @@ export class ChanceStack {
     for (const l of this.layers) {
       const chosen = this.sel === l.c.seq;
       const on = this.sel !== null ? chosen : !this.lit || this.lit(l.c);
-      l.mat.opacity = on ? 1 : 0.14;
-      if (l.halo) (l.halo.material as THREE.SpriteMaterial).opacity = on ? 0.75 : 0.06;
+      const off = this.sel !== null ? 0.05 : 0.14;
+      l.mat.opacity = on ? 1 : off;
+      if (l.halo) (l.halo.material as THREE.SpriteMaterial).opacity = on ? 0.75 : this.sel !== null ? 0 : 0.06;
       (l.line.material as THREE.LineBasicMaterial).opacity = chosen ? 0.8 : on ? 0.22 : 0.04;
       (l.plate.userData.edge.material as THREE.LineBasicMaterial).opacity = chosen ? 0.75 : on ? 0.12 : 0.03;
       (l.plate.userData.fill.material as THREE.MeshBasicMaterial).opacity = chosen ? 0.14 : on ? 0.03 : 0.006;
@@ -147,7 +148,7 @@ export class ChanceStack {
     }
     st.pickables = [...this.layers.map((x) => x.mark), ...figs];
     box.expandByScalar(4);
-    st.fitTo(box, { az: c.dir > 0 ? -Math.PI / 2 - 0.25 : -Math.PI / 2 + 0.25, el: 0.72, padRight: this.pad(), margin: 1.02 });
+    st.fitTo(box, { az: c.dir > 0 ? Math.PI / 2 + 0.3 : Math.PI / 2 - 0.3, el: 0.72, padRight: this.pad(), margin: 1.02 });
   }
 
   dispose() {

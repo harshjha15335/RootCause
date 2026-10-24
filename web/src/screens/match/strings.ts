@@ -9,7 +9,6 @@ const en = {
   failed: "This match didn't load. Reload the page to try again.",
   meeting: "Meeting {{n}} of 4",
   library: "All matches",
-  depth: { label: "Detail", simple: "Simple", expert: "Expert" },
   strip: "The match, minute by minute. Tap a goal.",
   goals: {
     title: "Every goal, judged.",
@@ -106,14 +105,6 @@ const en = {
     tilt: "Share of final-third play",
     line: "Back line from own goal",
   },
-  bug: {
-    LATE_STEP_UP: "stepped up late",
-    PRESS_MISSED: "missed the press",
-    MARKING_LOST: "lost the runner",
-    BLOCK_MISSED: "didn't block the shot",
-    COVER_MISSED: "left the cover",
-    other: "made the mistake",
-  },
 };
 
 type Strings = typeof en;
@@ -123,7 +114,6 @@ const hi: Strings = {
   failed: "यह मैच लोड नहीं हुआ। पेज दोबारा लोड करें।",
   meeting: "मुक़ाबला {{n}} / 4",
   library: "सभी मैच",
-  depth: { label: "विवरण", simple: "सरल", expert: "विशेषज्ञ" },
   strip: "मिनट-दर-मिनट मैच। किसी गोल पर टैप करें।",
   goals: {
     title: "हर गोल का फ़ैसला।",
@@ -220,14 +210,6 @@ const hi: Strings = {
     tilt: "फ़ाइनल थर्ड में हिस्सा",
     line: "अपने गोल से बैक लाइन",
   },
-  bug: {
-    LATE_STEP_UP: "देर से आगे आए",
-    PRESS_MISSED: "प्रेस चूके",
-    MARKING_LOST: "अपना धावक छोड़ा",
-    BLOCK_MISSED: "शॉट नहीं रोका",
-    COVER_MISSED: "कवर छोड़ा",
-    other: "ग़लती की",
-  },
 };
 
 const es: Strings = {
@@ -235,7 +217,6 @@ const es: Strings = {
   failed: "Este partido no cargó. Recarga la página para intentarlo de nuevo.",
   meeting: "Duelo {{n}} de 4",
   library: "Todos los partidos",
-  depth: { label: "Detalle", simple: "Sencillo", expert: "Experto" },
   strip: "El partido, minuto a minuto. Toca un gol.",
   goals: {
     title: "Cada gol, juzgado.",
@@ -332,19 +313,7 @@ const es: Strings = {
     tilt: "Cuota del juego en el último tercio",
     line: "Línea defensiva desde su portería",
   },
-  bug: {
-    LATE_STEP_UP: "salió tarde",
-    PRESS_MISSED: "no presionó",
-    MARKING_LOST: "perdió a su marca",
-    BLOCK_MISSED: "no bloqueó el tiro",
-    COVER_MISSED: "dejó la cobertura",
-    other: "cometió el error",
-  },
 };
 
 for (const [lng, match] of [["en", en], ["hi", hi], ["es", es]] as const) i18n.addResourceBundle(lng, "translation", { match }, true, false);
 
-/** A Debugger code in words, never the raw code ("stepped up late"). */
-export function mistakeWords(t: (k: string, o?: Record<string, unknown>) => string, code: string): string {
-  return t(`match.bug.${code}`, { defaultValue: t("match.bug.other") });
-}
