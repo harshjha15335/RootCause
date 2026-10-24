@@ -21,6 +21,7 @@ const en = {
     autopsy: "Autopsy",
     matches: "Matches",
     lab: "Tactics Lab",
+    labShort: "Lab",
     bugReport: "Match report",
     backToMatch: "Back to match",
     home: "Home",

@@ -9,6 +9,7 @@ const en = {
   failed: "This match didn't load. Reload the page to try again.",
   meeting: "Meeting {{n}} of 4",
   library: "All matches",
+  toLab: "Replay it in the Tactics Lab",
   strip: "The match, minute by minute. Tap a goal.",
   goals: {
     title: "Every goal, judged.",
@@ -113,6 +114,7 @@ const hi: Strings = {
   failed: "यह मैच लोड नहीं हुआ। पेज दोबारा लोड करें।",
   meeting: "मुक़ाबला {{n}} / 4",
   library: "सभी मैच",
+  toLab: "टैक्टिक्स लैब में दोबारा देखें",
   strip: "मिनट-दर-मिनट मैच। किसी गोल पर टैप करें।",
   goals: {
     title: "हर गोल का फ़ैसला।",
@@ -215,6 +217,7 @@ const es: Strings = {
   failed: "Este partido no cargó. Recarga la página para intentarlo de nuevo.",
   meeting: "Duelo {{n}} de 4",
   library: "Todos los partidos",
+  toLab: "Revívelo en el Laboratorio táctico",
   strip: "El partido, minuto a minuto. Toca un gol.",
   goals: {
     title: "Cada gol, juzgado.",

@@ -98,11 +98,18 @@ function NavLinks() {
             href={key === "home" ? "#/" : `#/${key}`}
             aria-current={screen === key ? "page" : on ? "true" : undefined}
             onClick={(e) => (e.preventDefault(), go(key))}
-            className={`rc-press relative flex min-h-[44px] shrink-0 items-center px-2.5 text-[14px] transition-colors duration-300 sm:px-3 ${
+            className={`rc-press relative flex min-h-[44px] shrink-0 items-center px-[7px] text-[14px] transition-colors duration-300 sm:px-3 ${
               on ? "text-chalk" : "text-chalk-faint hover:text-chalk"
             }`}
           >
-            {t(`nav.${key}`)}
+            {key === "lab" ? (
+              <>
+                <span className="sm:hidden">{t("nav.labShort")}</span>
+                <span className="hidden sm:inline">{t("nav.lab")}</span>
+              </>
+            ) : (
+              t(`nav.${key}`)
+            )}
             {on && <motion.span layoutId="nav-ink" className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-flare" transition={{ type: "spring", duration: 0.4, bounce: 0.1 }} />}
           </a>
         );
@@ -151,7 +158,7 @@ function LanguageMenu() {
         onClick={() => setOpen((o) => !o)}
         className="rc-press flex min-h-[40px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised/60"
       >
-        <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.3">
+        <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.3" className="hidden sm:block">
           <circle cx="8" cy="8" r="6.3" />
           <path d="M1.8 8h12.4M8 1.7c-2.2 2.4-2.2 10.2 0 12.6M8 1.7c2.2 2.4 2.2 10.2 0 12.6" />
         </svg>

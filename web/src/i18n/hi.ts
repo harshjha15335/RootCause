@@ -22,6 +22,7 @@ const hi: Dict = {
     autopsy: "ऑटोप्सी",
     matches: "मैच",
     lab: "टैक्टिक्स लैब",
+    labShort: "लैब",
     bugReport: "मैच रिपोर्ट",
     backToMatch: "मैच पर लौटें",
     home: "होम",

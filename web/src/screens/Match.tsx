@@ -138,7 +138,12 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
         <a href="#/matches" className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full px-3 text-[14px] font-semibold text-chalk-dim ring-1 ring-inset ring-turf-edge hover:text-chalk">
           <span aria-hidden>←</span> {t("match.library")}
         </a>
-        <DepthSwitch />
+        <div className="flex flex-wrap items-center gap-3">
+          <a href={pageHref("lab", { demo: SHOWCASE_MATCH })} className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full bg-chalk px-4 text-[14px] font-semibold text-turf-deep hover:opacity-90">
+            {t("match.toLab")} <span aria-hidden>→</span>
+          </a>
+          <DepthSwitch />
+        </div>
       </div>
       <p className="mt-10 text-[14px] font-semibold uppercase tracking-[0.16em] text-chalk-faint">{s.meeting ? t("match.meeting", { n: s.meeting }) : null}</p>
       <h1 className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-display text-[clamp(34px,6.4vw,92px)] font-black leading-[0.92] tracking-display text-chalk">

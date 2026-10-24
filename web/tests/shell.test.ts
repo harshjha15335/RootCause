@@ -26,7 +26,7 @@ describe("raw codes become words", () => {
 
 describe("routes", () => {
   it("sends old links to the new pages", () => {
-    for (const [hash, screen] of [["#/lab", "autopsy"], ["#/analysis", "match"], ["#/report", "match"], ["#/matches", "matches"], ["#/nope", "home"], ["", "home"]]) {
+    for (const [hash, screen] of [["#/lab", "lab"], ["#/analysis", "match"], ["#/report", "match"], ["#/matches", "matches"], ["#/nope", "home"], ["", "home"]]) {
       history.replaceState(null, "", `/${hash}`);
       expect(screenFromHash()).toBe(screen);
     }
@@ -35,6 +35,6 @@ describe("routes", () => {
     history.replaceState(null, "", "/?demo=p-1008#/match");
     expect(pageHref("autopsy", { goal: "p-1008-g4" })).toBe("?demo=p-1008&goal=p-1008-g4#/autopsy");
     expect(pageHref("match", { demo: "p-1017" })).toBe("?demo=p-1017#/match");
-    expect(pageHref("lab")).toBe("?demo=p-1008#/autopsy");
+    expect(pageHref("lab")).toBe("?demo=p-1008#/lab");
   });
 });

@@ -121,7 +121,7 @@ const bundles = {
     "goals": "Goals",
     "coachOn": "Coach",
     "explore": "Explore",
-    "drag": "Drag to turn the land",
+    "drag": "Drag to turn the pitch · tap a player to follow him",
     "what": "What you're seeing",
     "spaceLine": "{{team}} control {{p}}% of the pitch. The high ground is theirs.",
     "spaceHow": "The land rises under the side that would reach a ball there first: blue for {{h}}, amber for {{a}}. Valleys are where it's a coin toss."
@@ -244,7 +244,7 @@ const bundles = {
     "goals": "Goles",
     "coachOn": "Entrenador",
     "explore": "Explorar",
-    "drag": "Arrastra para girar el terreno",
+    "drag": "Arrastra para girar el campo · toca un jugador para seguirlo",
     "what": "Lo que estás viendo",
     "spaceLine": "{{team}} controla el {{p}}% del campo. El terreno alto es suyo.",
     "spaceHow": "El terreno se eleva bajo el equipo que llegaría antes al balón: azul para {{h}}, ámbar para {{a}}. Los valles son terreno disputado."
@@ -367,7 +367,7 @@ const bundles = {
     "goals": "गोल",
     "coachOn": "कोच",
     "explore": "खोजें",
-    "drag": "ज़मीन घुमाने के लिए खींचें",
+    "drag": "मैदान घुमाने के लिए खींचें · किसी खिलाड़ी को फ़ॉलो करने के लिए टैप करें",
     "what": "आप क्या देख रहे हैं",
     "spaceLine": "{{team}} के पास {{p}}% मैदान है। ऊँची ज़मीन उनकी है।",
     "spaceHow": "ज़मीन उस टीम के नीचे उठती है जो वहाँ गेंद तक पहले पहुँचती: नीली {{h}} के लिए, नारंगी {{a}} के लिए। घाटियों में बराबरी है।"

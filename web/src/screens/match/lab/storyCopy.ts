@@ -5,7 +5,7 @@ const en = {
   story: {
     eyebrow: "The match, chapter by chapter",
     title: "What happened, and why.",
-    sub: "The 90 minutes split at every goal and at half-time. Each chapter shows who had the ball, where the game was played, who made chances and how. Tap Watch it to see that spell on the land.",
+    sub: "The 90 minutes split at every goal and at half-time. Each chapter shows who had the ball, where the game was played, who made chances and how. Tap Watch it to play that spell on the pitch above.",
     overall: "The whole match in numbers",
     overallSub: "Every number with what it means. The longer bar had more of it.",
     watch: "Watch it",
@@ -78,7 +78,7 @@ const hi: Copy = {
   story: {
     eyebrow: "मैच, अध्याय दर अध्याय",
     title: "क्या हुआ, और क्यों।",
-    sub: "90 मिनट हर गोल और हाफ़-टाइम पर बँटे हैं। हर अध्याय दिखाता है कि गेंद किसके पास थी, खेल कहाँ हुआ, मौके किसने और कैसे बनाए। उस दौर को ज़मीन पर देखने के लिए 'देखें' दबाएँ।",
+    sub: "90 मिनट हर गोल और हाफ़-टाइम पर बँटे हैं। हर अध्याय दिखाता है कि गेंद किसके पास थी, खेल कहाँ हुआ, मौके किसने और कैसे बनाए। उस दौर को ऊपर के मैदान पर चलाने के लिए 'देखें' दबाएँ।",
     overall: "पूरा मैच, आँकड़ों में",
     overallSub: "हर आँकड़ा और उसका मतलब। लंबी पट्टी वाले के पास ज़्यादा था।",
     watch: "देखें",
@@ -150,7 +150,7 @@ const es: Copy = {
   story: {
     eyebrow: "El partido, capítulo a capítulo",
     title: "Qué pasó y por qué.",
-    sub: "Los 90 minutos divididos en cada gol y en el descanso. Cada capítulo muestra quién tuvo el balón, dónde se jugó y quién creó ocasiones y cómo. Toca Verlo para ver ese tramo sobre el terreno.",
+    sub: "Los 90 minutos divididos en cada gol y en el descanso. Cada capítulo muestra quién tuvo el balón, dónde se jugó y quién creó ocasiones y cómo. Toca Verlo para reproducir ese tramo en el campo de arriba.",
     overall: "El partido entero en números",
     overallSub: "Cada número con lo que significa. La barra más larga tuvo más.",
     watch: "Verlo",

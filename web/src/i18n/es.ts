@@ -22,6 +22,7 @@ const es: Dict = {
     autopsy: "Autopsia",
     matches: "Partidos",
     lab: "Laboratorio táctico",
+    labShort: "Lab",
     bugReport: "Informe del partido",
     backToMatch: "Volver al partido",
     home: "Inicio",
