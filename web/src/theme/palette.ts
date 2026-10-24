@@ -1,6 +1,6 @@
 /**
  * The Timestack palette as numbers, for three.js and canvas. Same values as tokens.css.
- * Yellow (var) means one thing only: the mistake, the culprit and the fix.
+ * Volt Lime (var) means one thing only: the mistake, the culprit and the fix.
  */
 export const palette = {
   cobalt: 0x1530d6, // page ground
@@ -9,7 +9,7 @@ export const palette = {
   plate: 0x2f4dff, // Timestack layer fill
   chalk: 0xf4f6ff, // ribbons, lines, text; also "fixed"
   sky: 0x8fa6ff, // the other side
-  var: 0xffd60a, // the mistake, the culprit, the fix
+  var: 0xc6ff4d, // the mistake, the culprit, the fix
 } as const;
 
 export const css = {
@@ -19,7 +19,7 @@ export const css = {
   plate: "#2f4dff",
   chalk: "#f4f6ff",
   sky: "#8fa6ff",
-  var: "#ffd60a",
+  var: "#c6ff4d",
 } as const;
 
 /** Camera and UI timing: few, slow, deliberate moves. */

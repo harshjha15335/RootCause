@@ -283,7 +283,7 @@ const es: Dict = {
       verdict: {
         k: "El veredicto",
         title: "{{name}}: {{p}}% de la culpa.",
-        body: "La culpa es la parte de los goles evitados que aporta cada corrección. La de {{name}} evita <b>{{mine}}</b> goles, y todas juntas evitan <b>{{total}}</b>: <span class=\"text-[#ffd60a] font-bold\">{{mine}} ÷ {{total}} = {{p}}%</span>.",
+        body: "La culpa es la parte de los goles evitados que aporta cada corrección. La de {{name}} evita <b>{{mine}}</b> goles, y todas juntas evitan <b>{{total}}</b>: <span class=\"text-[#c6ff4d] font-bold\">{{mine}} ÷ {{total}} = {{p}}%</span>.",
       },
       fix: {
         k: "La corrección",

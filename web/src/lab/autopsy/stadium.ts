@@ -44,7 +44,7 @@ export type AutopsyStage = {
 };
 
 const GOLD = new THREE.Color("#e9c46a");
-const BUG = new THREE.Color("#ffd60a");
+const BUG = new THREE.Color("#c6ff4d");
 const ease = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
 const clamp01 = (u: number) => Math.min(Math.max(u, 0), 1);
 export const clock = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, "0")}`;
@@ -217,7 +217,7 @@ function setLine(l: Line2, pts: number[], cols: number[]) {
   l.geometry = g;
   if (l.material.dashed) l.computeLineDistances();
 }
-const yellowLine = (x: number, h = 0.3) => [[x, h, -34, x, h, 34], [1, 0.84, 0.04, 1, 0.84, 0.04]] as const;
+const yellowLine = (x: number, h = 0.3) => [[x, h, -34, x, h, 34], [0.776, 1, 0.302, 0.776, 1, 0.302]] as const;
 
 
 // ---------- the stage ----------
@@ -430,7 +430,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const marks = suspects.map((x) => {
     const r = ring(BUG);
     real.pieces[x.player].t.add(r);
-    const tag = label(say("behind", { num: lab.numbers[x.player], name: sur(x.player), m: x.behind.toFixed(1) }), { color: "#1b1600", bg: "#ffd60a", size: 32, h: 2.4 });
+    const tag = label(say("behind", { num: lab.numbers[x.player], name: sur(x.player), m: x.behind.toFixed(1) }), { color: "#0b1028", bg: "#c6ff4d", size: 32, h: 2.4 });
     tag.position.y = 5;
     real.pieces[x.player].t.add(tag);
     return { x, r, tag };
@@ -447,7 +447,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       vertexShader: "uniform float o; uniform float h; varying float vY; void main(){ vY = position.y / h; vec3 p = position; p.y *= o; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.); }",
       fragmentShader: "uniform vec3 c; uniform float o; varying float vY; void main(){ gl_FragColor = vec4(c * (0.2 + 0.8 * vY) * o, 1.); }",
     }));
-    const tag = label(say("blame", { p: Math.round(x.blame), name: sur(x.player) }), { color: "#1b1600", bg: top ? "#ffd60a" : "#f2a093", size: 34, h: 2.8 });
+    const tag = label(say("blame", { p: Math.round(x.blame), name: sur(x.player) }), { color: "#0b1028", bg: top ? "#c6ff4d" : "#f2a093", size: 34, h: 2.8 });
     const g = new THREE.Group();
     g.add(m, tag);
     real.g.add(g);
@@ -480,12 +480,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     real.g.add(m);
     return m;
   });
-  const planTag = label(say("planLine", { team: lab.clubs[a.def].name, m: (PX - defLine).toFixed(1) }), { color: "#1b1600", bg: "#ffd60a", size: 32, h: 2.4 });
+  const planTag = label(say("planLine", { team: lab.clubs[a.def].name, m: (PX - defLine).toFixed(1) }), { color: "#0b1028", bg: "#c6ff4d", size: 32, h: 2.4 });
   real.g.add(planTag);
 
   // each mistake: a ghost where he should have been, an arrow to it, and the grass he left to an attacker
   const mGhost = new THREE.Mesh(disc, new THREE.MeshBasicMaterial({ color: BUG, transparent: true, opacity: 0, depthWrite: false }));
-  const mGhostTag = label(" ", { color: "#1b1600", bg: "#ffd60a", size: 30, h: 2.2 });
+  const mGhostTag = label(" ", { color: "#0b1028", bg: "#c6ff4d", size: 30, h: 2.2 });
   const mArrow = fat(3, { dashed: true, order: 6 });
   const maxCells = Math.max(1, ...(tr ? tr.mistakes.map((m) => m.cells.length) : [1]));
   const cells = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.36, 1.36).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: BUG, transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending }), maxCells);
@@ -495,7 +495,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   cells.renderOrder = 5;
   mGhostTag.center.set(1.08, 0.5);
   mGhostTag.renderOrder = 40;
-  const spaceTag = label(say("space"), { color: "#ffd60a", bg: "rgba(6,8,18,.82)", size: 28, h: 2 });
+  const spaceTag = label(say("space"), { color: "#c6ff4d", bg: "rgba(6,8,18,.82)", size: 28, h: 2 });
   real.g.add(mGhost, mGhostTag, mArrow, cells, spaceTag);
 
   // 200 replays each, falling into Goal and No goal
@@ -548,13 +548,13 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   }
 
   // the fix: the culprit's universe, with a ghost where he really was and the offside line
-  const offFlag = label(" ", { color: "#1b1600", bg: "#ffd60a", size: 36, h: 3 });
+  const offFlag = label(" ", { color: "#0b1028", bg: "#c6ff4d", size: 36, h: 3 });
   const offLine = fat(3, { dashed: true, order: 6 });
   const ghost = new THREE.Mesh(disc, new THREE.MeshBasicMaterial({ color: kit(a.def), transparent: true, opacity: 0.3, depthWrite: false }));
   const ghostTag = label(S1 ? say("ghost", { name: sur(S1.player) }) : " ", { color: "#f4f1e8", bg: "rgba(150,40,40,.92)", size: 30, h: 2.2 });
   ghostTag.center.set(-0.08, 0.5);
   ghostTag.renderOrder = 40;
-  const fixTag = label(S1 ? say("onLine", { name: sur(S1.player) }) : " ", { color: "#1b1600", bg: "#ffd60a", size: 30, h: 2.2 });
+  const fixTag = label(S1 ? say("onLine", { name: sur(S1.player) }) : " ", { color: "#0b1028", bg: "#c6ff4d", size: 30, h: 2.2 });
   fixTag.center.set(1.08, 0.5);
   fixTag.renderOrder = 40;
   uA?.g.add(offFlag, offLine, ghost, ghostTag, fixTag);
@@ -780,11 +780,11 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       mGhost.visible = mGhostTag.visible = mArrow.visible = u > 0.01;
       (mGhost.material as THREE.MeshBasicMaterial).opacity = 0.5 * u;
       mGhost.position.set(gx - 52.5, 0, gy - 34);
-      relabel(mGhostTag, say("onLine", { name: sur(who) }), { color: "#1b1600", bg: "#ffd60a", size: 30, h: 2.2 });
+      relabel(mGhostTag, say("onLine", { name: sur(who) }), { color: "#0b1028", bg: "#c6ff4d", size: 30, h: 2.2 });
       mGhostTag.position.set(gx - 53.5, 1.6, gy - 34);
       mGhostTag.material.opacity = u;
       const yy = 0.5;
-      setLine(mArrow, [rx - 52.5, yy, ry - 34, rx + (gx - rx) * u - 52.5, yy, ry - 34], [1, 0.84, 0.04, 1, 0.84, 0.04]);
+      setLine(mArrow, [rx - 52.5, yy, ry - 34, rx + (gx - rx) * u - 52.5, yy, ry - 34], [0.776, 1, 0.302, 0.776, 1, 0.302]);
       // the space he left: cells an attacker reaches first as played, that he would reach first if fixed
       const cu = clamp01((sx - MISTAKE.lead - 1.2) / 1.6);
       if (cu > 0 && m.cells.length) {
@@ -812,7 +812,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
           if (!done) continue;
           const note = x ? x.note : "goal";
           const txt = note === "offside" ? say("runOffside") : note === "goal" ? (x ? say("runGoalAnyway") : say("runGoal")) : say("runNoGoal");
-          relabel(u.verdict, txt, { color: "#0a0c16", bg: note === "goal" ? "#f4f1e8" : "#ffd60a", size: 44, h: 6 });
+          relabel(u.verdict, txt, { color: "#0b1028", bg: note === "goal" ? "#f4f1e8" : "#c6ff4d", size: 44, h: 6 });
           u.verdict.visible = true;
         }
       } else {
@@ -844,7 +844,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         setLine(offLine, [...p], [...cl]);
         offLine.visible = true;
         const o = S1.offside;
-        relabel(offFlag, o ? say("offsideBy", { name: sur(o.player), m: o.by.toFixed(1) }) : say("runOffside"), { color: "#1b1600", bg: "#ffd60a", size: 36, h: 3 });
+        relabel(offFlag, o ? say("offsideBy", { name: sur(o.player), m: o.by.toFixed(1) }) : say("runOffside"), { color: "#0b1028", bg: "#c6ff4d", size: 36, h: 3 });
         offFlag.visible = true;
         const at = o ? f.pos[o.player] : f.ball;
         offFlag.position.set(at[0] - 52.5, 6, at[1] - 34);

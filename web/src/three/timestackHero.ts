@@ -39,7 +39,7 @@ const COBALT = 0x1530d6;
 const DEEP = 0x0c1d97;
 const PAPER = 0xf3f5ff;
 const AWAY = 0x9fb0ff;
-const VAR = 0xffd60a;
+const VAR = 0xc6ff4d;
 export const LAYER = 2.7;
 const X = (x: number) => x - 52.5;
 const Z = (y: number) => y - 34;

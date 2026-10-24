@@ -24,7 +24,7 @@ import { useUi } from "../store/uiStore";
 // a local font: troika would otherwise fetch one from a CDN at runtime
 import numberFont from "@fontsource/anybody/files/anybody-latin-800-normal.woff?url";
 
-const FLARE = new Color("#ffd60a");
+const FLARE = new Color("#c6ff4d");
 const CHALK = new Color("#f3f5ff");
 const HX = PITCH_L / 2;
 const HZ = PITCH_W / 2;
@@ -252,7 +252,7 @@ function Players() {
               <Ring color={isCulprit ? FLARE : CHALK} pulse={id === root} radius={isFocus ? 2.3 : 1.8} />
             )}
             <Billboard position-y={PLAYER_SCALE * 2.25}>
-              <Text font={numberFont} fontSize={isFocus ? 1.5 : 1.05} color={isCulprit ? "#ffd60a" : "#f3f5ff"} outlineWidth={0.06} outlineColor="#0c1d97" anchorY="bottom">
+              <Text font={numberFont} fontSize={isFocus ? 1.5 : 1.05} color={isCulprit ? "#c6ff4d" : "#f3f5ff"} outlineWidth={0.06} outlineColor="#0c1d97" anchorY="bottom">
                 {String(info.number ?? "")}
               </Text>
             </Billboard>

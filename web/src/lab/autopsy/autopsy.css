@@ -1,4 +1,4 @@
-/* Goal Autopsy: tags over the 3D stage, the copy card, the trial's dot fields. Cobalt, chalk, VAR yellow. */
+/* Goal Autopsy: tags over the 3D stage, the copy card, the trial's dot fields. Cobalt, chalk, VAR Volt Lime. */
 .autopsy-tag {
   position: absolute;
   left: 0;
@@ -15,8 +15,8 @@
   transition: opacity 0.35s ease;
   will-change: transform;
 }
-.autopsy-tag.is-bug { background: #ffd60a; color: #14123a; border-color: transparent; }
-.autopsy-tag.is-dim { background: rgba(6, 16, 79, 0.6); color: #ffe46b; border-color: rgba(255, 214, 10, 0.35); }
+.autopsy-tag.is-bug { background: #c6ff4d; color: #0b1028; border-color: transparent; }
+.autopsy-tag.is-dim { background: rgba(6, 16, 79, 0.6); color: #d6ff7a; border-color: rgba(198, 255, 77, 0.35); }
 .autopsy-hover { position: absolute; pointer-events: none; transform: translate(14px, -50%); white-space: nowrap; border-radius: 10px; background: #f4f6ff; color: #0a1048; padding: 6px 10px; font: 600 13px/1.3 "Hanken Grotesk Variable", system-ui, sans-serif; }
 .autopsy-hover small { display: block; font-weight: 500; opacity: 0.7; }
 .autopsy-card { animation: autopsy-in 0.7s cubic-bezier(0.19, 1, 0.22, 1) both; }

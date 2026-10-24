@@ -3,7 +3,7 @@
  *   turf   the blues: page, panels and wells (names kept from the pitch they started as)
  *   chalk  floodlight white; text, lines, anything neutral or "fixed"
  *   paper  white card stock for the verdict (see .paper, which re-inks the tokens)
- *   flare  VAR-line yellow: only ever a mistake, the causal thread, or the root cause.
+ *   flare  VAR-line Volt Lime: only ever a mistake, the causal thread, or the root cause.
  * Stored as "r g b" so Tailwind can apply alpha.
  */
 :root {
@@ -14,8 +14,8 @@
   --chalk: 243 245 255;      /* #f3f5ff */
   --chalk-dim: 214 220 255;  /* #d6dcff secondary */
   --chalk-faint: 174 187 255;/* #aebbff tertiary */
-  --flare: 255 214 10;       /* #ffd60a the bug */
-  --flare-ink: 20 18 58;     /* text on flare */
+  --flare: 198 255 77;       /* #c6ff4d the bug */
+  --flare-ink: 11 16 40;     /* #0b1028 text on flare */
   --paper: 243 245 255;
   --ink: 10 16 72;
 

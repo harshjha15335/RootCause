@@ -13,7 +13,7 @@ export const INK = {
   away: "#ffb547",
   awayInk: "#1a1206",
   night: "#050d4a",
-  flare: "#ffd60a",
+  flare: "#c6ff4d",
   chalk: (a: number) => `rgba(243,245,255,${a})`,
   blue: (a: number) => `rgba(255,181,71,${a})`,
   dark: (a: number) => `rgba(8,9,14,${a})`,

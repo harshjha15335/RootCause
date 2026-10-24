@@ -122,10 +122,10 @@ export function Pitch({
             y={backLine.cy + M - 1.5}
             width={Math.abs(backLine.lx - backLine.cx)}
             height="3"
-            fill="rgb(255 214 10 / 0.35)"
+            fill="rgb(198 255 77 / 0.35)"
           />
           <line x1={backLine.lx + M} y1={M} x2={backLine.lx + M} y2={M + PITCH_W} stroke="#f3f5ff" strokeWidth="0.35" strokeDasharray="1.2 0.8" />
-          <text x={(backLine.lx + backLine.cx) / 2 + M} y={backLine.cy + M - 2.6} textAnchor="middle" fontSize="2.6" fill="#ffd60a" fontWeight="600" className="tabular-nums">
+          <text x={(backLine.lx + backLine.cx) / 2 + M} y={backLine.cy + M - 2.6} textAnchor="middle" fontSize="2.6" fill="#c6ff4d" fontWeight="600" className="tabular-nums">
             {backLine.d.toFixed(1)} m
           </text>
         </g>
@@ -133,9 +133,9 @@ export function Pitch({
 
       {thread && (
         <g>
-          <path d={thread.d} fill="none" stroke="#ffd60a" strokeWidth="0.6" strokeLinecap="round" className="rc-draw" pathLength={1} />
+          <path d={thread.d} fill="none" stroke="#c6ff4d" strokeWidth="0.6" strokeLinecap="round" className="rc-draw" pathLength={1} />
           {thread.root && (
-            <circle cx={thread.root[0] + M} cy={thread.root[1] + M} r="3.2" fill="rgb(255 214 10 / 0.16)" stroke="#ffd60a" strokeWidth="0.45" />
+            <circle cx={thread.root[0] + M} cy={thread.root[1] + M} r="3.2" fill="rgb(198 255 77 / 0.16)" stroke="#c6ff4d" strokeWidth="0.45" />
           )}
         </g>
       )}
@@ -154,7 +154,7 @@ export function Pitch({
             onPointerLeave={at === undefined ? () => useTrace.getState().hover(null, null) : undefined}
             onClick={at === undefined ? () => useTrace.getState().pin(ev?.links.find((l) => l.player_id === id)?.evidence_id ?? null, id) : undefined}
           >
-            {(hot || isFocus) && <circle r={isFocus ? 2.9 : 2.4} fill="none" stroke={hot ? "#ffd60a" : "#f3f5ff"} strokeWidth="0.45" />}
+            {(hot || isFocus) && <circle r={isFocus ? 2.9 : 2.4} fill="none" stroke={hot ? "#c6ff4d" : "#f3f5ff"} strokeWidth="0.45" />}
             <circle r="1.55" fill={kit} stroke={trim} strokeWidth="0.35" />
             <text y="0.62" textAnchor="middle" fontSize="1.65" fontWeight="700" fill={trim} className="pointer-events-none select-none tabular-nums">
               {info.number}

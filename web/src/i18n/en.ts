@@ -282,7 +282,7 @@ const en = {
       verdict: {
         k: "The verdict",
         title: "{{name}}: {{p}}% to blame.",
-        body: "Blame is each fix's share of the goals the fixes prevent. {{name}}'s fix prevents <b>{{mine}}</b> goals, and all of them together prevent <b>{{total}}</b>: <span class=\"text-[#ffd60a] font-bold\">{{mine}} ÷ {{total}} = {{p}}%</span>.",
+        body: "Blame is each fix's share of the goals the fixes prevent. {{name}}'s fix prevents <b>{{mine}}</b> goals, and all of them together prevent <b>{{total}}</b>: <span class=\"text-[#c6ff4d] font-bold\">{{mine}} ÷ {{total}} = {{p}}%</span>.",
       },
       fix: {
         k: "The fix",

@@ -69,7 +69,7 @@ function Beats() {
 
 const CHALK = "rgb(var(--chalk))";
 const FAINT = "rgb(var(--chalk) / 0.3)";
-const VAR = "#ffd60a";
+const VAR = "#c6ff4d";
 
 /** Trace: a small Timestack; a scan sheet walks down from the goal and stops on the mistake layer. */
 function TraceArt() {
@@ -88,7 +88,7 @@ function TraceArt() {
         <motion.path
           key={i}
           d={layer(i)}
-          fill={i === hit ? "rgb(255 214 10 / 0.14)" : "rgb(243 245 255 / 0.03)"}
+          fill={i === hit ? "rgb(198 255 77 / 0.14)" : "rgb(243 245 255 / 0.03)"}
           stroke={i === hit ? VAR : FAINT}
           strokeWidth={i === hit ? 1.6 : 1}
           initial={false}
@@ -114,7 +114,7 @@ function TraceArt() {
       />
       <motion.g initial={false} animate={{ opacity: run ? 1 : 0 }} transition={{ delay: reduced ? 0 : 1.9, duration: 0.5 }}>
         <rect x="214" y={176 - hit * gap - 9} width="62" height="18" rx="4" fill={VAR} />
-        <text x="245" y={176 - hit * gap + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#06104f">
+        <text x="245" y={176 - hit * gap + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#0b1028">
           {t("landing.traceMistake")}
         </text>
       </motion.g>
