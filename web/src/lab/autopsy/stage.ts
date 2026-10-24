@@ -28,6 +28,8 @@ export type StageOpts = {
   overlay: HTMLElement;
   say: (key: string, vars?: Record<string, string | number>) => string;
   onHover: (html: string | null, x: number, y: number) => void;
+  /** screenshots: draw a few frames of the held moment, then stop the loop */
+  still?: boolean;
 };
 export type AutopsyStage = {
   show(step: number, t?: number): void;
@@ -51,7 +53,7 @@ const ease = gsap.parseEase("power2.inOut") as (u: number) => number;
 const easeOut = gsap.parseEase("power3.out") as (u: number) => number;
 const seg = (t: number, a: number, b: number) => clamp01((t - a) / (b - a));
 const clock = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, "0")}`;
-const FIG = 1.55; // figures are drawn a little larger than life so they read on a phone
+const FIG = 1.6; // figures are drawn larger than life, and grow with the camera's distance, so they always read
 
 // ---------- the timeline ----------
 const GOAL = { lead: 14, slow: 4, fast: 1.3, slowRate: 0.4, hold: 2.6 };
@@ -62,6 +64,8 @@ export function goalClock(a: Autopsy, t: number) {
   if (t < ta) return s0 + t * GOAL.fast;
   return Math.min(a.goalS + 0.6, sl + (t - ta) * GOAL.slowRate);
 }
+/** seconds into the goal beat when slow motion starts */
+export const slowAt = (a: Autopsy) => (a.goalS - GOAL.slow - goalStart(a)) / GOAL.fast;
 const goalDur = (a: Autopsy) => (a.goalS - GOAL.slow - goalStart(a)) / GOAL.fast + (GOAL.slow + 0.6) / GOAL.slowRate + GOAL.hold;
 const FIX_AT = 7;
 const fixRate = 0.9;
@@ -139,6 +143,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const teamCol = (i: number) => (i < 11 ? CHALK : SKY);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance", preserveDrawingBuffer: true });
+  renderer.localClippingEnabled = true;
+  // walking down the stack peels away every layer above the scan: one plane, shared by the stack
+  const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1e4);
   renderer.setPixelRatio(opts.dpr);
   renderer.toneMapping = THREE.NoToneMapping;
   const scene = new THREE.Scene();
@@ -158,8 +165,8 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const camera = new THREE.PerspectiveCamera(opts.phone ? 50 : 34, 1, 0.5, 1200);
 
   // soft light: a cool sky, a warm-white key from the main stand, no hard shadows
-  scene.add(new THREE.HemisphereLight(0xc8d2ff, 0x0b1a8a, 1.6));
-  const key = new THREE.DirectionalLight(0xfff6e6, 1.5);
+  scene.add(new THREE.HemisphereLight(0xf0f3ff, 0x1530d6, 2.2));
+  const key = new THREE.DirectionalLight(0xfff6e6, 1.9);
   key.position.set(-30, 80, 60);
   scene.add(key);
   const spot = new THREE.SpotLight(0xfff3c4, 0, 0, 0.16, 0.7, 0); // no decay: intensity is a plain multiplier
@@ -174,7 +181,20 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const linesTex = linesTexture();
   const pitch = new THREE.Group();
   const plateGeo = new THREE.PlaneGeometry(105, 68).rotateX(-Math.PI / 2);
-  const fill = new THREE.Mesh(new THREE.PlaneGeometry(117, 80).rotateX(-Math.PI / 2), basic(DEEP, 0.92));
+  // a pool of light on the glass: brighter at the centre spot, fading into the night past the touchlines
+  const pool = (() => {
+    const c = document.createElement("canvas");
+    c.width = 512;
+    c.height = 360;
+    const g = c.getContext("2d")!, r = g.createRadialGradient(256, 180, 20, 256, 180, 300);
+    r.addColorStop(0, "rgba(40,70,235,1)");
+    r.addColorStop(0.55, "rgba(24,50,205,.95)");
+    r.addColorStop(1, "rgba(11,26,138,0)");
+    g.fillStyle = r;
+    g.fillRect(0, 0, 512, 360);
+    return canvasTex(c);
+  })();
+  const fill = new THREE.Mesh(new THREE.PlaneGeometry(150, 105).rotateX(-Math.PI / 2), basic(0xffffff, 1, { map: pool }));
   fill.position.y = -0.05;
   const lines = new THREE.Mesh(plateGeo, basic(0xffffff, 0.75, { map: linesTex }));
   lines.position.y = 0.02;
@@ -183,19 +203,21 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
 
   // ---------- 22 figures and the ball ----------
   const blobTex = blobTexture();
-  const bodyGeo = new THREE.CapsuleGeometry(0.34, 0.9, 6, 14).translate(0, 0.79, 0);
-  const headGeo = new THREE.SphereGeometry(0.24, 18, 12).translate(0, 1.66, 0);
+  const bodyGeo = new THREE.CapsuleGeometry(0.3, 0.98, 6, 16).translate(0, 0.79, 0);
+  const headGeo = new THREE.SphereGeometry(0.22, 20, 14).translate(0, 1.7, 0);
   const ringGeo = new THREE.RingGeometry(0.62, 0.82, 40).rotateX(-Math.PI / 2);
   const blobGeo = new THREE.PlaneGeometry(1.8, 1.8).rotateX(-Math.PI / 2);
   const figure = (col: THREE.Color): Figure => {
     const g = new THREE.Group();
-    const body = new THREE.Mesh(bodyGeo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.55, metalness: 0.05, transparent: true }));
-    const head = new THREE.Mesh(headGeo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.45, transparent: true }));
+    const body = new THREE.Mesh(bodyGeo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.38, metalness: 0.08, transparent: true }));
+    const head = new THREE.Mesh(headGeo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.32, transparent: true }));
     const ring = new THREE.Mesh(ringGeo, basic(VAR, 0));
     ring.position.y = 0.04;
     const blob = new THREE.Mesh(blobGeo, basic(0xffffff, 1, { map: blobTex }));
     blob.position.y = 0.03;
     g.add(blob, ring, body, head);
+    blob.renderOrder = ring.renderOrder = 4;
+    body.renderOrder = head.renderOrder = 5;
     g.scale.setScalar(FIG);
     return { g, body, head, ring, blob, base: col.clone() };
   };
@@ -244,6 +266,14 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     });
     ball.visible = o > 0.01;
   }
+  /** yellow without the glow: a suspect on his mistake layer (the glow is the verdict's) */
+  const tint = (i: number, k: number) => {
+    const f = figs[i];
+    f.body.material.color.copy(f.base).lerp(VAR, k);
+    f.head.material.color.copy(f.base).lerp(VAR, k);
+    f.ring.material.color.copy(VAR);
+    f.ring.material.opacity = k;
+  };
   const glowFig = (i: number, k: number) => {
     const f = figs[i];
     f.body.material.color.copy(f.base).lerp(VAR, k);
@@ -275,18 +305,19 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const layerGeo = rect(105, 68);
   const layers: THREE.LineLoop<THREE.BufferGeometry, THREE.LineBasicMaterial>[] = [];
   for (let s = s0; s <= s1; s++) {
-    const l = new THREE.LineLoop(layerGeo, new THREE.LineBasicMaterial({ color: CHALK, transparent: true, opacity: 0.16 }));
+    const l = new THREE.LineLoop(layerGeo, new THREE.LineBasicMaterial({ color: CHALK, transparent: true, opacity: 0.16, clippingPlanes: [clip] }));
     l.position.y = yOf(s);
     stack.add(l);
     layers.push(l);
   }
-  const top = new THREE.Mesh(plateGeo, basic(0xffffff, 0, { map: linesTex }));
+  const top = new THREE.Mesh(plateGeo, basic(0xffffff, 0, { map: linesTex, clippingPlanes: [clip] }));
   top.position.y = yOf(s1) + 0.02;
   stack.add(top);
   type Ribbon = THREE.Mesh<THREE.TubeGeometry, THREE.MeshBasicMaterial>;
   const tube = (pts: THREE.Vector3[], r: number, col: THREE.Color, o: number): Ribbon => {
     const geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.length > 1 ? pts : [pts[0], pts[0].clone().add(new THREE.Vector3(0, 0.01, 0))], false, "centripetal"), Math.max(8, pts.length * 3), r, 8, false);
-    const m = new THREE.Mesh(geo, basic(col, o));
+    const m = new THREE.Mesh(geo, basic(col, o, { clippingPlanes: [clip] }));
+    m.renderOrder = 1; // under the lit layer's glass, which is drawn after it and dims it
     m.userData.total = geo.index!.count;
     return m;
   };
@@ -315,37 +346,42 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   scan.add(new THREE.Mesh(plateGeo, basic(CHALK, 0.06, { side: THREE.DoubleSide })), new THREE.LineLoop(layerGeo, new THREE.LineBasicMaterial({ color: CHALK, transparent: true, opacity: 0.9 })));
   stack.add(scan);
 
-  // one lit layer per mistake: the layer, the line he should have held, his ghost, the space he left
-  type Lit = { m: Mistake; g: THREE.Group; plate: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>; edge: THREE.LineLoop<THREE.BufferGeometry, THREE.LineBasicMaterial>; line: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>; cells: THREE.InstancedMesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>; ghost: Figure; link: THREE.Line; dots: THREE.InstancedMesh; real: Figure };
-  const cellGeo = new THREE.PlaneGeometry(1.4, 1.4).rotateX(-Math.PI / 2);
-  const dotGeo = new THREE.CircleGeometry(0.75, 20).rotateX(-Math.PI / 2);
+  // one lit layer per mistake: a dark glass under it (the stack below shows through, dimmed),
+  // a yellow edge, the line he should have held, his ghost on it, and the space he left
+  type Lit = {
+    m: Mistake; g: THREE.Group;
+    under: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
+    edge: THREE.LineLoop<THREE.BufferGeometry, THREE.LineBasicMaterial>;
+    line: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
+    cells: THREE.InstancedMesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
+    ghost: Figure; link: THREE.Line<THREE.BufferGeometry, THREE.LineDashedMaterial>;
+  };
+  const cellGeo = new THREE.PlaneGeometry(1.12, 1.12).rotateX(-Math.PI / 2);
   const lit: Lit[] = (traced?.mistakes ?? []).map((m) => {
     const g = new THREE.Group();
     g.position.y = yOf(m.x.second);
-    const plate = new THREE.Mesh(plateGeo, basic(VAR, 0, { side: THREE.DoubleSide }));
+    const under = new THREE.Mesh(new THREE.PlaneGeometry(109, 72).rotateX(-Math.PI / 2), basic(DEEP, 0, { side: THREE.DoubleSide }));
+    under.position.y = -0.08;
+    under.renderOrder = 2;
+    const lines2 = new THREE.Mesh(plateGeo, basic(0xffffff, 0, { map: linesTex }));
+    lines2.position.y = 0.01;
+    under.userData.lines = lines2;
     const edge = new THREE.LineLoop(layerGeo, new THREE.LineBasicMaterial({ color: VAR, transparent: true, opacity: 0 }));
-    const line = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 68), basic(VAR, 0));
-    line.position.set(X(m.ghost[0]), 0.06, 0);
-    const cells = new THREE.InstancedMesh(cellGeo, basic(VAR, 0, { blending: THREE.AdditiveBlending, side: THREE.DoubleSide }), Math.max(1, m.cells.length));
+    const line = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 68), basic(VAR, 0));
+    line.position.set(X(m.ghost[0]), 0.05, 0);
+    const cells = new THREE.InstancedMesh(cellGeo, basic(VAR, 0, { side: THREE.DoubleSide }), Math.max(1, m.cells.length));
     const mtx = new THREE.Matrix4();
-    m.cells.forEach(([x, y], k) => cells.setMatrixAt(k, mtx.makeTranslation(X(x), 0.04, Z(y))));
+    m.cells.forEach(([x, y], k) => cells.setMatrixAt(k, mtx.makeTranslation(X(x), 0.03, Z(y))));
     cells.count = m.cells.length;
-    // everyone on that layer, as discs, so the layer reads as a frozen pitch
-    const f = a.frame(m.x.second);
-    const dots = new THREE.InstancedMesh(dotGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }), 22);
-    f.pos.forEach(([x, y], i) => {
-      dots.setMatrixAt(i, mtx.makeTranslation(X(x), 0.08, Z(y)));
-      dots.setColorAt(i, i === m.x.player ? VAR : teamCol(i));
-    });
     const ghost = figure(VAR);
     ghost.g.position.set(X(m.ghost[0]), 0, Z(m.ghost[1]));
-    const real = figure(VAR);
-    real.g.position.set(X(m.real[0]), 0, Z(m.real[1]));
-    const link = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(X(m.real[0]), 0.1, Z(m.real[1])), new THREE.Vector3(X(m.ghost[0]), 0.1, Z(m.ghost[1]))]), new THREE.LineDashedMaterial({ color: VAR, dashSize: 0.6, gapSize: 0.4, transparent: true, opacity: 0 }));
+    ghost.blob.visible = false;
+    const link = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(X(m.real[0]), 0.1, Z(m.real[1])), new THREE.Vector3(X(m.ghost[0]), 0.1, Z(m.ghost[1]))]), new THREE.LineDashedMaterial({ color: VAR, dashSize: 0.5, gapSize: 0.35, transparent: true, opacity: 0 }));
     link.computeLineDistances();
-    g.add(plate, edge, cells, line, dots, link, ghost.g, real.g);
+    for (const o of [lines2, edge, cells, line, link]) o.renderOrder = 3;
+    g.add(under, lines2, edge, cells, line, link, ghost.g);
     stack.add(g);
-    return { m, g, plate, edge, line, cells, ghost, link, dots, real };
+    return { m, g, under, edge, line, cells, ghost, link };
   });
 
   // the trial: each suspect's fixed run drawn beside the real one, through the same layers
@@ -362,17 +398,18 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
 
   // ---------- the verdict: a spotlight cone and the offside line of the fix ----------
   const cone = (() => {
-    const geo = new THREE.CylinderGeometry(0.5, 4.2, 46, 48, 1, true).translate(0, 23, 0);
+    const geo = new THREE.CylinderGeometry(0.35, 3.1, 46, 48, 1, true).translate(0, 23, 0);
     const m = new THREE.Mesh(geo, new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, uniforms: { o: { value: 0 } },
       vertexShader: "varying float vY; void main(){ vY = position.y; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }",
-      fragmentShader: "uniform float o; varying float vY; void main(){ float a = 1. - smoothstep(0., 46., vY); gl_FragColor = vec4(vec3(1., .93, .6) * a * a * .32 * o, 1.); }",
+      fragmentShader: "uniform float o; varying float vY; void main(){ float a = 1. - smoothstep(0., 46., vY); gl_FragColor = vec4(vec3(1., .93, .6) * a * a * .2 * o, 1.); }",
     }));
     scene.add(m);
     return m;
   })();
-  const offLine = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, 68), basic(VAR, 0));
-  offLine.position.y = 0.08;
+  const offLine = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 68), basic(VAR, 0, { depthTest: false }));
+  offLine.position.y = 0.1;
+  offLine.renderOrder = 3;
   scene.add(offLine);
   const asPlayed = figure(SKY);
   scene.add(asPlayed.g);
@@ -405,10 +442,10 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const x = (v3.x * 0.5 + 0.5) * W, y = (-v3.y * 0.5 + 0.5) * Hh;
       const out = v3.z > 1 || x < 8 || x > W - 8 || y < 8 || y > Hh - 8;
       l.el.style.opacity = out ? "0" : "1";
-      l.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      l.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) ${l.tag.side === "below" ? "translate(-50%, 45%)" : "translate(-50%, -125%)"}`;
     }
   };
-  const headOf = (i: number, lift = 3.6) => () => figs[i].g.visible ? figs[i].g.position.clone().setY(lift) : null;
+  const headOf = (i: number, lift = 2.3) => () => (figs[i].g.visible ? figs[i].g.position.clone().setY(players.position.y + lift * figScale) : null);
 
   // ---------- camera: every shot is fitted to what it must show, around the copy ----------
   type Shot = { pos: THREE.Vector3; at: THREE.Vector3 };
@@ -484,7 +521,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   };
 
   // ---------- one frame of one step ----------
-  let step = 0, t = 0, playing = true;
+  let step = 0, t = 0, playing = true, figScale = FIG;
   const say = opts.say;
   const culpritOf = () => traced!.j.culprit;
   const fixAt = (s: number) => traced!.j.replay(culpritOf(), s);
@@ -495,13 +532,15 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     // defaults: the flat pitch, everyone visible, the stack folded away
     pitch.visible = true;
     stack.visible = false;
+    players.position.y = 0;
+    clip.constant = 1e4;
     unitLines.children.forEach((l) => ((l as THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>).material.opacity = 0));
     trail.visible = false;
     cone.visible = false;
     spot.intensity = 0;
     offLine.material.opacity = 0;
     asPlayed.g.visible = false;
-    key.intensity = 1.5;
+    key.intensity = 1.9;
     focusOn(null, 0);
     look(1);
 
@@ -515,7 +554,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       });
       ball.visible = false;
       unitLines.children.forEach((l) => ((l as THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>).material.opacity = 0.75 * seg(t, 2, 3.2)));
-      const team = (k: 0 | 1) => say("pre.shape", { team: lab.clubs[k].name, f: a.plan.formation[k] });
+      const team = (k: 0 | 1) => say("pre.shape", { team: W < 640 ? lab.clubs[k].short_name : lab.clubs[k].name, f: a.plan.formation[k] });
       // the scoring side attacks right: its tag sits on the left half
       if (seg(t, 2.4, 3) > 0) {
         tags.push({ text: team(att), at: () => new THREE.Vector3(X(30), 0, Z(-6)), tone: "plain" });
@@ -532,92 +571,97 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const b = a.frame(s).ball;
       // broadcast: the main-stand camera follows the ball, a little ahead of it, and pushes in for the finish
       const want = new THREE.Vector3(X(Math.min(b[0] + 6, 96)), 0, Z(34 + (b[1] - 34) * 0.45));
-      if (!follow.ok || t < 0.05) { follow.at.copy(want); follow.ok = true; }
+      if (!follow.ok || t < 0.05 || opts.still) { follow.at.copy(want); follow.ok = true; }
       follow.at.lerp(want, 0.06);
       const slow = seg(s, a.goalS - GOAL.slow, a.goalS);
-      const half = 30 - 10 * ease(slow);
+      const half = 34 - 12 * ease(slow);
       const box = new THREE.Box3(new THREE.Vector3(follow.at.x - half, 0, follow.at.z - half * 0.62), new THREE.Vector3(follow.at.x + half, 3, follow.at.z + half * 0.62));
       cam(opts.reduced ? overhead(boxOf(a.frame(a.goalS - 1).pos.slice(0, 22), 0, 2, 4, 4)) : fitShot(box, -0.18 - 0.22 * ease(slow), 0.38 - 0.08 * ease(slow)), t, 2.2);
       tags.push({ text: sur(a.scorer), at: headOf(a.scorer), tone: "plain" });
-      if (slow > 0 && s < a.goalS + 0.5 && !opts.reduced) tags.push({ text: say("goal.slow"), at: () => new THREE.Vector3(X(b[0]), 0, Z(b[1]) + 6), tone: "dim", side: "below" });
     }
 
     if (st.beat === "mistake" && traced) {
       const L = lit[st.k], m = L.m, y = yOf(m.x.second);
-      const lift = st.k === 0 ? (opts.reduced ? 1 : ease(seg(t, 0, 2.8))) : 1;
-      const t0 = st.k === 0 ? 3 : 0; // the walk down starts once the stack has risen
-      const flat = opts.reduced; // reduced motion: the layer is shown flat, as a 2D pitch
+      // reduced motion: the lit layer is shown flat, as a 2D pitch seen from above
+      const flat = opts.reduced;
+      const first = st.k === 0 && !flat;
+      const lift = first ? ease(seg(t, 0, 2.8)) : 1;
+      const t0 = first ? 3 : 0; // the walk down starts once the stack has risen
       stack.visible = true;
       stack.scale.y = flat ? 0.0001 : Math.max(0.0001, lift);
-      // the real figures sink into the stack as it rises
-      if (st.k === 0 && !flat) {
-        pose(a.frame(a.goalS));
-        look(1 - lift);
-      } else look(0);
-      const draw = flat ? 1 : st.k === 0 ? seg(t, 0.3, 3) : 1;
+      const draw = flat ? 1 : first ? seg(t, 0.3, 3) : 1;
       ribbons.forEach((r) => drawn(r, draw));
       drawn(ballRibbon, draw);
       fixedRibbons.forEach((f) => (f.r.visible = f.b.visible = false));
       top.material.opacity = 0.5 * lift;
-      // the scan sheet walks down from the layer above (the goal, or the last mistake)
-      const startY = st.k === 0 ? yOf(s1) : yOf(lit[st.k - 1].m.x.second);
-      const walk = flat ? 1 : ease(seg(t, t0, t0 + 2));
-      scan.visible = !flat && walk < 1;
-      scan.position.y = startY + (y - startY) * walk;
-      const on = flat ? 1 : seg(t, t0 + 2, t0 + 2.7);
-      const focus = flat ? 1 : ease(seg(t, t0 + 2, t0 + 4.4));
-      layers.forEach((l) => (l.material.opacity = 0.16 * (1 - 0.75 * focus) * (flat ? 0 : 1)));
-      ribbons.forEach((r, i) => (r.material.opacity = (i === m.x.player ? 0.95 : 0.7 * (1 - 0.7 * focus)) * (flat ? 0 : 1)));
-      ribbons[m.x.player].material.color.copy(focus > 0.3 ? VAR : teamCol(m.x.player));
-      ballRibbon.material.opacity = (0.95 - 0.6 * focus) * (flat ? 0 : 1);
-      lit.forEach((o, k) => {
-        const mine = k === st.k, was = k < st.k;
-        o.g.visible = mine || (was && !flat);
-        const v = mine ? on : was ? 0.35 : 0;
-        o.plate.material.opacity = 0.1 * v;
-        o.edge.material.opacity = 0.95 * v;
-        o.line.material.opacity = 0.9 * (mine ? seg(t, t0 + 2.6, t0 + 3.4) : was ? 0.3 : 0);
-        o.cells.material.opacity = 0.42 * (mine ? seg(t, t0 + 3.6, t0 + 4.6) : 0);
-        (o.dots.material as THREE.MeshBasicMaterial).opacity = mine ? on : 0;
-        (o.link.material as THREE.LineDashedMaterial).opacity = mine ? seg(t, t0 + 3, t0 + 3.6) : 0;
-        const gk = mine ? seg(t, t0 + 3, t0 + 4) : 0;
-        o.ghost.g.visible = gk > 0.01;
-        o.ghost.body.material.opacity = o.ghost.head.material.opacity = 0.42 * gk;
-        o.ghost.ring.material.opacity = 0.9 * gk;
-        o.ghost.g.position.y = 0.6 * (1 - gk);
-        o.real.g.visible = mine && on > 0.5;
-        o.real.body.material.color.copy(VAR);
-        o.real.body.material.emissive.copy(VAR).multiplyScalar(0.3);
-        o.real.ring.material.opacity = 0;
-        o.real.blob.visible = false;
-        o.ghost.blob.visible = false;
+      // the scan sheet walks down from the goal (or the last mistake); everything above it is peeled away
+      const startY = st.k === 0 ? yOf(s1) + H : yOf(lit[st.k - 1].m.x.second);
+      const walk = flat ? 1 : ease(seg(t, t0, t0 + 2.2));
+      const sy = startY + (y - startY) * walk;
+      scan.visible = !flat && walk > 0 && walk < 1;
+      scan.position.y = sy;
+      clip.constant = flat || (first && t < t0) ? 1e4 : (sy + 0.12) * stack.scale.y;
+      const on = flat ? 1 : seg(t, t0 + 2, t0 + 2.8);
+      layers.forEach((l) => (l.material.opacity = flat ? 0 : 0.16));
+      ribbons.forEach((r, i) => {
+        r.material.opacity = flat ? 0 : i === m.x.player ? 0.95 : 0.6;
+        r.material.color.copy(i === m.x.player && on > 0.2 ? VAR : teamCol(i));
       });
-      // in a flat (reduced) view, the layer sits on the pitch
-      L.g.position.y = flat ? 0.05 : y;
+      ballRibbon.material.opacity = flat ? 0 : 0.9;
+      // the real figures: they sink as the stack rises, then stand on the lit layer, frozen
+      if (first && t < t0) {
+        pose(a.frame(a.goalS));
+        look(1 - lift);
+      } else {
+        pose(a.frame(m.x.second));
+        players.position.y = (flat ? 0 : y) * stack.scale.y + 0.02;
+        look(on);
+        tint(m.x.player, on);
+      }
+      lit.forEach((o, k) => {
+        const mine = k === st.k;
+        o.g.visible = mine;
+        if (!mine) return;
+        o.g.position.y = flat ? 0.04 : y;
+        o.under.material.opacity = (flat ? 0 : 0.86) * on;
+        (o.under.userData.lines as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>).material.opacity = (flat ? 0 : 0.55) * on;
+        o.edge.material.opacity = 0.95 * on;
+        o.line.material.opacity = 0.9 * seg(t, t0 + 2.6, t0 + 3.4);
+        o.cells.material.opacity = 0.62 * seg(t, t0 + 3.6, t0 + 4.6);
+        o.link.material.opacity = seg(t, t0 + 3, t0 + 3.6);
+        const gk = seg(t, t0 + 3, t0 + 4);
+        o.ghost.g.visible = gk > 0.01;
+        o.ghost.body.material.opacity = o.ghost.head.material.opacity = 0.45 * gk;
+        o.ghost.ring.material.color.copy(VAR);
+        o.ghost.ring.material.opacity = 0.9 * gk;
+        o.ghost.g.position.y = 0.8 * (1 - gk);
+      });
       if (on > 0.3) {
-        const wy = flat ? 0 : y;
-        const at = (p: Pt, lift2: number) => () => new THREE.Vector3(X(p[0]), wy * stack.scale.y + lift2, Z(p[1]));
+        const wy = () => (flat ? 0 : y) * stack.scale.y;
+        const at = (p: Pt, up: number) => () => new THREE.Vector3(X(p[0]), wy() + up, Z(p[1]));
         tags.push({ text: say("mistake.real", { name: sur(m.x.player), m: m.x.behind.toFixed(1) }), at: at(m.real, 0), tone: "bug", side: "below" });
-        if (seg(t, t0 + 3.2, t0 + 4) > 0) tags.push({ text: say("mistake.ghost"), at: at(m.ghost, 3.4), tone: "bug" });
-        if (m.cells.length && seg(t, t0 + 4.2, t0 + 5) > 0) {
+        if (seg(t, t0 + 3.2, t0 + 4) > 0) tags.push({ text: say("mistake.ghost"), at: at(m.ghost, 3.6 * figScale), tone: "bug" });
+        if (m.cells.length && W >= 640 && seg(t, t0 + 4.2, t0 + 5) > 0) {
           const c = m.cells.reduce((p, q) => [p[0] + q[0] / m.cells.length, p[1] + q[1] / m.cells.length], [0, 0]) as Pt;
-          tags.push({ text: say("mistake.space"), at: at([c[0], c[1] + 4], 0), tone: "dim", side: "below" });
+          tags.push({ text: say("mistake.space"), at: at(c, 0.2), tone: "dim", side: "below" });
         }
       }
-      // camera: the stack side-on and upright, then close in over the lit layer
+      // camera: the stack side-on and upright while walking down, then close in over the lit layer
+      const f = a.frame(m.x.second);
+      const ly = flat ? 0 : y;
+      const near = boxOf([m.real, m.ghost, f.ball, f.pos[a.scorer], ...m.cells], ly - 1, ly + 3, 10, 8);
       const side = fitShot(stackBox(), -0.08, 0.14);
-      const near = boxOf([m.real, m.ghost, ...m.cells], (flat ? 0 : y) - 1, (flat ? 0 : y) + 2.5, 12, 10);
-      const close = flat ? overhead(near) : fitShot(near, 0.3, 0.72);
+      const close = flat ? overhead(near) : fitShot(near, 0.26, 0.62);
       if (flat) cam(close, t);
-      else if (t < t0 + 2) cam(side, t, st.k === 0 ? 2.8 : 1.6);
+      else if (t < t0 + 2) cam(side, t, first ? 2.8 : 1.6);
       else {
-        // ease from wherever the side shot left the camera into the close-up
-        if (!camera.userData.closeFrom || camera.userData.closeStep !== step) { camera.userData.closeFrom = camNow(); camera.userData.closeStep = step; }
+        // ease from wherever the walk left the camera into the close-up
+        if (!camera.userData.closeFrom || camera.userData.closeStep !== step) { camera.userData.closeFrom = camera.userData.at ? camNow() : side; camera.userData.closeStep = step; }
         const u = ease(seg(t, t0 + 2, t0 + 4.4));
         const f0 = camera.userData.closeFrom as Shot;
         aim({ pos: f0.pos.clone().lerp(close.pos, u), at: f0.at.clone().lerp(close.at, u) });
       }
-      focusOn(close.at, seg(t, t0 + 4.4, t0 + 5.2));
+      focusOn(figs[m.x.player].g.position.clone().setY(players.position.y), seg(t, t0 + 4.4, t0 + 5.2));
     }
 
     if (st.beat === "trial" && traced) {
@@ -627,7 +671,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       look(0);
       top.material.opacity = flat ? 0 : 0.35;
       scan.visible = false;
-      layers.forEach((l) => (l.material.opacity = flat ? 0 : 0.1));
+      layers.forEach((l) => (l.material.opacity = flat ? 0 : 0.14));
       lit.forEach((o) => (o.g.visible = false));
       const sus = new Set(trialRows(traced).map((x) => x.player));
       ribbons.forEach((r, i) => {
@@ -646,7 +690,11 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
           tags.push({ text: say("trial.fixed", { name: sur(f.x.player) }), at: () => new THREE.Vector3(X(end[0]), yOf(Math.min(f.x.end, s1)) * stack.scale.y + 2, Z(end[1])), tone: k === 0 ? "bug" : "dim" });
         }
       });
-      cam(flat ? overhead(pitchBox) : fitShot(stackBox(), -0.62, 0.3), t, 2.4);
+      // frame the suspects' part of the stack, not the whole pitch
+      const pts: Pt[] = [];
+      for (const f of fixedRibbons) for (let q = Math.max(s0, f.x.start); q <= Math.min(s1, f.x.end); q += 1) pts.push(a.frame(q).pos[f.x.player], traced.j.replay(f.x, q).pos[f.x.player], traced.j.replay(f.x, q).ball);
+      const box = boxOf(pts, 0, flat ? 1 : yOf(s1) + 1, 6, 6);
+      cam(flat ? overhead(box) : fitShot(box, -0.55, 0.26), t, 2.4);
     }
 
     if (st.beat === "verdict" && traced) {
@@ -674,7 +722,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       spot.position.set(cp.x, 60, cp.z);
       spot.target.position.copy(cp);
       spot.intensity = 5 * spotOn;
-      key.intensity = 1.5 * (1 - 0.6 * spotOn);
+      key.intensity = 1.9 * (1 - 0.6 * spotOn);
       if (fixT > 0) {
         trail.visible = true;
         setTrail(fixAt, s, x.start, 2.5);
@@ -688,9 +736,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
           const line = traced.j.offsideLine(snap);
           offLine.position.x = X(line);
           offLine.material.opacity = 0.95;
-          if (x.offside) tags.push({ text: say("verdict.fix", { receiver: sur(x.offside.player), m: x.offside.by.toFixed(1) }), at: headOf(x.offside.player), tone: "bug" });
+          if (x.offside) tags.push({ text: say("verdict.fix", { receiver: sur(x.offside.player), by: x.offside.by.toFixed(1) }), at: headOf(x.offside.player), tone: "bug" });
         }
-      } else tags.push({ text: say("verdict.tag", { name: sur(c), p: Math.round(x.blame) }), at: headOf(c, 4), tone: "bug" });
+      } else tags.push({ text: say("verdict.tag", { name: sur(c), p: Math.round(x.blame) }), at: headOf(c, 2.6), tone: "bug" });
       const ends = x.frames.length ? [fixAt(x.start).pos[c], fixAt(x.end).pos[c], fixAt(x.end).ball, ...(x.offside ? [fixAt(x.end).pos[x.offside.player]] : [])] : [];
       const close = boxOf([a.frame(x.second).pos[c]], 0, 3, 14, 11);
       const play = boxOf([a.frame(x.second).pos[c], ...ends], 0, 3, 8, 7);
@@ -699,7 +747,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         cam(fitShot(close, -0.32, 0.5), t, 2.2);
         focusOn(cp, seg(t, 2.2, 3));
       } else {
-        if (camera.userData.playStep !== step) { camera.userData.playFrom = camNow(); camera.userData.playStep = step; }
+        if (camera.userData.playStep !== step) { camera.userData.playFrom = camera.userData.at ? camNow() : fitShot(close, -0.32, 0.5); camera.userData.playStep = step; }
         const u = ease(seg(fixT, 0, 2.2)), f0 = camera.userData.playFrom as Shot, to = fitShot(play, -0.2, 0.62);
         aim({ pos: f0.pos.clone().lerp(to.pos, u), at: f0.at.clone().lerp(to.at, u) });
       }
@@ -721,6 +769,10 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       if (a.chance) tags.push({ text: `${a.chance.xg.toFixed(2)} xG · ${a.chance.distance_m.toFixed(1)} m`, at: headOf(a.scorer), tone: "plain" });
     }
     setTags(tags);
+    // figures grow with distance so a wide shot never shows pins
+    const d = camera.position.distanceTo((camera.userData.at as THREE.Vector3) ?? new THREE.Vector3());
+    figScale = Math.min(2.3, Math.max(1.2, d / 44));
+    for (const f of [...figs, asPlayed, ...lit.map((o) => o.ghost)]) f.g.scale.setScalar(figScale);
   }
 
   // ---------- hover: who is this? ----------
@@ -741,9 +793,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   canvas.addEventListener("pointermove", onMove);
   canvas.addEventListener("pointerleave", onLeave);
 
-  let raf = 0, last = performance.now();
+  let raf = 0, last = performance.now(), drawnFrames = 0;
   const tick = (now: number) => {
-    raf = requestAnimationFrame(tick);
+    raf = opts.still && ++drawnFrames > 3 ? 0 : requestAnimationFrame(tick);
     const dt = Math.min((now - last) / 1000, 0.1);
     last = now;
     if (playing) t = Math.min(t + dt, steps[step].dur);

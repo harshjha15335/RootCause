@@ -116,6 +116,27 @@ export function dossierOf(lab: Lab, analyses: Record<string, Analysis>): Dossier
   return { meeting, prev, facts };
 }
 
+/** The Match page's export (stacks.json → dossier), when it is there: the same facts on both pages. */
+export type StacksDossier = Record<Side, { line_m: number; notes: { key: string; params: Record<string, string | number> }[] }>;
+const NOTE: Record<string, string> = {
+  line_higher: "higher", line_deeper: "deeper", wider: "wider", narrower: "narrower",
+  press_higher: "pressHigher", press_lower: "pressLower", more_ball: "moreBall", less_ball: "lessBall", as_usual: "same",
+};
+export function dossierFromStacks(d: StacksDossier, fallback: Dossier): Dossier {
+  const facts = SIDES.map((side) => {
+    const out: Fact[] = [];
+    for (const n of d[side]?.notes ?? []) {
+      const key = NOTE[n.key];
+      if (!key) continue;
+      const p = n.params;
+      const num = (v: unknown) => (typeof v === "number" ? v.toFixed(1) : String(v ?? ""));
+      out.push({ key, params: { m: num(p.by), now: num(p.now), usual: num(p.usual), pts: num(p.by), line: d[side].line_m.toFixed(1) } });
+    }
+    return out.length ? out : fallback.facts[side === "home" ? 0 : 1];
+  }) as [Fact[], Fact[]];
+  return { ...fallback, facts };
+}
+
 /** Cells (1.5 m) where an attacker is the nearest outfield player as played but the fixed defender would be. */
 export function spaceLeft(pos: Pt[], who: number, ghost: Pt, att: 0 | 1): Pt[] {
   const fixed = pos.slice();
@@ -147,13 +168,15 @@ export function buildAutopsy(
   ev: Evidence | null,
   replays: Record<string, RecordedReplay>,
   analyses: Record<string, Analysis>,
+  stacks?: StacksDossier | null,
 ): Autopsy | null {
   const here = analyses[lab.id];
   const att = goal.team, def = (1 - att) as 0 | 1;
   const chance = here.chances.find((c) => c.outcome === "goal" && Math.abs(c.second - goal.s) <= 1 && c.side === SIDES[att]) ?? null;
   const score: [number, number] = [0, 0];
   for (const a of lab.actions) if (a.type === "shot" && a.outcome === "goal" && a.s <= goal.s) score[a.team]++;
-  const dossier = dossierOf(lab, analyses);
+  const own = dossierOf(lab, analyses);
+  const dossier = stacks ? dossierFromStacks(stacks, own) : own;
   const plan = planOf(lab, here, att);
 
   if (ev) {
