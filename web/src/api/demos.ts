@@ -1,13 +1,11 @@
 import { useQueries } from "@tanstack/react-query";
 import { DEMO_MATCHES, SHOWCASE_MATCH } from "./rest";
 import type { MatchMeta, MatchRecord } from "./types";
-import type { Screen } from "../store/uiStore";
+import { pageHref } from "../lib/nav";
 
-/** A link that reloads the app on another demo match, keeping the rest of the query string. */
-export function demoHref(id: string, screen: Screen): string {
-  const q = new URLSearchParams(location.search);
-  q.set("demo", id);
-  return `?${q.toString()}#/${screen === "home" ? "" : screen}`;
+/** A link that reloads the app on another demo match. Prefer pageHref(screen, { demo }) in new code. */
+export function demoHref(id: string, screen: Parameters<typeof pageHref>[0]): string {
+  return pageHref(screen, { demo: id });
 }
 
 type Manifest = { goals: string[]; traced: string[] };

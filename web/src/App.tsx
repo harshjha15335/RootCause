@@ -8,14 +8,18 @@ import { useBroadcast } from "./store/broadcast";
 import { useMatch } from "./store/matchStore";
 import { playhead, useTrace } from "./store/traceStore";
 import { useUi } from "./store/uiStore";
-import { MatchScreen } from "./screens/MatchScreen";
 import { Home } from "./screens/Home";
 import { chronological, rootLink } from "./lib/geometry";
 
-const Analysis = lazyPage(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
-const Lab = lazyPage(() => import("./screens/Lab").then((m) => ({ default: m.Lab })));
+// Match and Autopsy move to screens/Match.tsx and screens/Autopsy.tsx in their own workstreams;
+// these imports switch over when those files land.
+const Match = lazyPage(() => import("./screens/Analysis").then((m) => ({ default: m.Analysis })));
+const Autopsy = lazyPage(() => import("./screens/Lab").then((m) => ({ default: m.Lab })));
 const Story = lazyPage(() => import("./screens/Story").then((m) => ({ default: m.Story })));
-const BugReport = lazyPage(() => import("./screens/BugReport").then((m) => ({ default: m.BugReport })));
+const Matches = lazyPage(() => import("./screens/Matches").then((m) => ({ default: m.Matches })));
+const Explore = lazyPage(() => import("./screens/MatchScreen").then((m) => ({ default: m.MatchScreen })));
+
+const PAGES = { story: Story, matches: Matches, match: Match, autopsy: Autopsy, explore: Explore } as const;
 
 export default function App() {
   useBroadcast();
@@ -41,26 +45,12 @@ export default function App() {
       )}
       <main id="main">
         <ScreenBoundary key={screen} message={t("app.screenFailed")} retry={t("app.retry")}>
-        {screen === "report" ? (
-          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
-            <BugReport />
-          </Suspense>
-        ) : screen === "lab" ? (
-          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("lab.loading")}</p>}>
-            <Lab />
-          </Suspense>
-        ) : screen === "analysis" ? (
-          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("analysis.loading")}</p>}>
-            <Analysis />
-          </Suspense>
-        ) : screen === "story" ? (
-          <Suspense fallback={<p className="mx-auto max-w-[1200px] px-8 py-20 text-[17px] text-chalk-dim">{t("report.loading")}</p>}>
-            <Story />
-          </Suspense>
-        ) : screen === "home" ? (
+        {screen === "home" ? (
           <Home />
         ) : (
-          <MatchScreen />
+          <Suspense fallback={<PageLoading />}>
+            <Page screen={screen} />
+          </Suspense>
         )}
         </ScreenBoundary>
       </main>
@@ -69,13 +59,34 @@ export default function App() {
   );
 }
 
-/** Replay keyboard: space, arrows, [ ], g, r, f, 1/2/3, ?, Esc. */
+function Page({ screen }: { screen: keyof typeof PAGES }) {
+  const P = PAGES[screen];
+  return <P />;
+}
+
+/** A quiet pulse while a page's code arrives; no words to flash past on a fast connection. */
+function PageLoading() {
+  const { t } = useTranslation();
+  return (
+    <div role="status" aria-label={t("app.loading")} className="grid min-h-[60dvh] place-items-center">
+      <svg width="44" height="44" viewBox="0 0 22 22" aria-hidden="true" className="rc-loading">
+        <g fill="none" stroke="rgb(var(--chalk))" strokeWidth="1.2" strokeLinejoin="round">
+          <path d="M3 15l8 4 8-4" />
+          <path d="M3 11l8 4 8-4" opacity=".6" />
+          <path d="M3 7l8 4 8-4-8-4z" opacity=".35" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/** Replay keyboard on the explorer: space, arrows, [ ], g, r, f, ?, Esc. */
 function useKeyboard() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (el.closest("input, textarea, select, [contenteditable]") || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (useUi.getState().screen !== "explore" && !["?", "Escape", "1", "2", "3"].includes(e.key)) return;
+      if (useUi.getState().screen !== "explore") return;
       const tr = useTrace.getState();
       const m = useMatch.getState();
       const ev = tr.selectedGoalId ? m.evidence[tr.selectedGoalId] : null;
@@ -134,12 +145,6 @@ function useKeyboard() {
           if (on && b) jumpTo(Math.max(b[0], r.second - 2), { play: true });
           break;
         }
-        case "1":
-        case "2":
-        case "3":
-          handled();
-          useUi.getState().setMode((["fan", "analyst", "studio"] as const)[Number(e.key) - 1]);
-          break;
         case "?":
           handled();
           useUi.getState().setShortcuts(!useUi.getState().shortcutsOpen);
@@ -169,7 +174,6 @@ function Shortcuts() {
     [["G"], t("keys.g")],
     [["R"], t("keys.r")],
     [["F"], t("keys.f")],
-    [["1", "2", "3"], t("keys.modes")],
     [["Esc"], t("keys.esc")],
   ];
   return (

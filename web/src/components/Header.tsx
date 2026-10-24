@@ -1,19 +1,18 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { clock } from "../lib/format";
 import { source } from "../store/broadcast";
 import { useMatch } from "../store/matchStore";
 import { useTrace } from "../store/traceStore";
 import { useUi, type Screen } from "../store/uiStore";
+import type { Lang } from "../api/types";
 import { Badge } from "./bits";
-import { LanguageSelect, ModeSwitch, VoiceButton } from "./Controls";
 import { go } from "../lib/nav";
-import { demoHref, useDemos } from "../api/demos";
 
 export function Wordmark() {
   return (
-    <a href="#/" onClick={(e) => (e.preventDefault(), go("home"))} className="flex items-center gap-2" aria-label="Root Cause, home" translate="no">
+    <a href="#/" onClick={(e) => (e.preventDefault(), go("home"))} className="flex min-h-[44px] shrink-0 items-center gap-2" aria-label="Root Cause, home" translate="no">
       <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
         <g fill="none" stroke="rgb(var(--chalk))" strokeWidth="1.6" strokeLinejoin="round">
           <path d="M3 15l8 4 8-4" />
@@ -22,7 +21,7 @@ export function Wordmark() {
         </g>
         <circle cx="11" cy="19" r="2" fill="rgb(var(--flare))" />
       </svg>
-      <span className="font-display text-[15px] tracking-[0.02em] text-chalk [font-variation-settings:'wdth'_130]">Root Cause</span>
+      <span className="hidden font-display text-[15px] tracking-[0.02em] text-chalk [font-variation-settings:'wdth'_130] min-[400px]:inline">Root Cause</span>
     </a>
   );
 }
@@ -78,27 +77,31 @@ function Flip({ value }: { value: number }) {
   );
 }
 
-const NAV: Screen[] = ["home", "story", "explore", "lab", "analysis", "report"];
+const NAV: { key: Screen; also: Screen[] }[] = [
+  { key: "home", also: [] },
+  { key: "story", also: [] },
+  { key: "matches", also: ["match", "autopsy", "explore"] },
+];
 
 function NavLinks() {
   const { t } = useTranslation();
   const screen = useUi((s) => s.screen);
   return (
-    <nav aria-label={t("nav.main")} className="flex items-center gap-1">
-      {NAV.map((k) => {
-        const on = screen === k;
+    <nav aria-label={t("nav.main")} className="flex items-center">
+      {NAV.map(({ key, also }) => {
+        const on = screen === key || also.includes(screen);
         return (
           <a
-            key={k}
-            href={k === "home" ? "#/" : `#/${k}`}
-            aria-current={on ? "page" : undefined}
-            onClick={(e) => (e.preventDefault(), go(k))}
-            className={`rc-press relative flex min-h-[40px] shrink-0 items-center px-3 text-[14px] transition-colors duration-300 ${
+            key={key}
+            href={key === "home" ? "#/" : `#/${key}`}
+            aria-current={screen === key ? "page" : on ? "true" : undefined}
+            onClick={(e) => (e.preventDefault(), go(key))}
+            className={`rc-press relative flex min-h-[44px] shrink-0 items-center px-2.5 text-[14px] transition-colors duration-300 sm:px-3 ${
               on ? "text-chalk" : "text-chalk-faint hover:text-chalk"
             }`}
           >
-            {t(`nav.${k}`)}
-            {on && <motion.span layoutId="nav-ink" className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-flare" transition={{ type: "spring", duration: 0.4, bounce: 0.1 }} />}
+            {t(`nav.${key}`)}
+            {on && <motion.span layoutId="nav-ink" className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-flare" transition={{ type: "spring", duration: 0.4, bounce: 0.1 }} />}
           </a>
         );
       })}
@@ -106,102 +109,105 @@ function NavLinks() {
   );
 }
 
-/** Which demo match every page is showing, and a way to switch it from anywhere. */
-function DemoSelect() {
-  const { t } = useTranslation();
-  const demos = useDemos();
-  const screen = useUi((s) => s.screen);
-  const current = demos.find((d) => d.current);
-  return (
-    <label className="flex min-w-0 items-center gap-2 text-[13px] text-chalk-dim">
-            <select
-        aria-label={t("product.demoPick")}
-        value={current?.id}
-        onChange={(e) => location.assign(demoHref(e.target.value, screen))}
-        className="min-h-[38px] max-w-[11.5rem] truncate rounded-full bg-turf py-1 pl-3 pr-7 text-[13px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge"
-      >
-        {demos.map((d) => (
-          <option key={d.id} value={d.id}>
-            {d.meta && d.score ? `${d.n} · ${d.meta.home.short_name} ${d.score[0]}–${d.score[1]} ${d.meta.away.short_name}` : t("product.demoLabel", { n: d.n })}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
+const LANGS: { value: Lang; short: string; name: string; htmlLang: string }[] = [
+  { value: "en", short: "EN", name: "English", htmlLang: "en" },
+  { value: "hi", short: "HI", name: "हिन्दी", htmlLang: "hi" },
+  { value: "es", short: "ES", name: "Español", htmlLang: "es" },
+];
 
-export function Header() {
+/** A small menu, not a row of pills: the current language's code, the list on demand. */
+function LanguageMenu() {
   const { t } = useTranslation();
-  const mode = useUi((s) => s.mode);
   const lang = useUi((s) => s.lang);
   const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        root.current?.querySelector<HTMLButtonElement>("button")?.focus();
+      }
+    };
+    const onDown = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    root.current?.querySelector<HTMLButtonElement>('[role="menuitemradio"][aria-checked="true"]')?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
   }, [open]);
-
+  const cur = LANGS.find((l) => l.value === lang) ?? LANGS[0];
   return (
-    <header className="sticky top-0 z-40 border-b border-turf-edge/60 bg-turf-deep/85 backdrop-blur-md">
-      <div className="mx-auto flex h-[var(--header-h)] max-w-[1600px] items-center gap-4 px-5 lg:px-10">
-        <Wordmark />
-        <div className="ml-4 hidden md:block">
-          <NavLinks />
-        </div>
-        <div className="ml-auto">
-          <DemoSelect />
-        </div>
-        <div className="hidden items-center gap-2 xl:flex">
-          <span className="text-[13px] text-chalk-faint">{t("controls.mode")}</span>
-          <ModeSwitch />
-          <LanguageSelect />
-          <VoiceButton />
-        </div>
-        {/* below xl the same controls live in a sheet, labelled with their current values */}
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls="view-options"
-          onClick={() => setOpen((o) => !o)}
-          className="rc-press flex min-h-[42px] items-center gap-2 rounded-full px-4 text-[13px] font-medium text-chalk ring-1 ring-inset ring-turf-edge xl:hidden"
-        >
-          <span>{t(`mode.${mode}`)}</span>
-          <span className="text-chalk-faint" aria-hidden="true">/</span>
-          <span className="uppercase">{lang}</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
-            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span className="sr-only">{t("controls.settings")}</span>
-        </button>
-      </div>
-      <div className="overflow-x-auto border-t border-turf-edge/60 px-2 md:hidden [scrollbar-width:none]">
-        <NavLinks />
-      </div>
+    <div ref={root} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`${t("controls.language")}: ${cur.name}`}
+        onClick={() => setOpen((o) => !o)}
+        className="rc-press flex min-h-[40px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised/60"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <circle cx="8" cy="8" r="6.3" />
+          <path d="M1.8 8h12.4M8 1.7c-2.2 2.4-2.2 10.2 0 12.6M8 1.7c2.2 2.4 2.2 10.2 0 12.6" />
+        </svg>
+        {cur.short}
+      </button>
       <AnimatePresence>
         {open && (
           <motion.div
-            id="view-options"
-            className="absolute inset-x-0 top-full z-50 border-b border-turf-edge/60 bg-turf-deep px-4 pb-4 pt-3 shadow-[0_18px_40px_-12px_rgb(0_0_0/0.6)] xl:hidden"
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+            role="menu"
+            aria-label={t("controls.language")}
+            className="absolute right-0 top-[calc(100%+8px)] z-50 min-w-[160px] rounded-[12px] bg-turf p-1.5 shadow-[0_18px_40px_-12px_rgb(0_0_0/0.6)] ring-1 ring-turf-edge"
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -2 }}
+            transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+            onKeyDown={(e) => {
+              if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+              e.preventDefault();
+              const items = [...e.currentTarget.querySelectorAll<HTMLButtonElement>("button")];
+              const i = items.indexOf(document.activeElement as HTMLButtonElement);
+              items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+            }}
           >
-            <div className="mx-auto flex max-w-[1600px] flex-wrap items-end gap-x-6 gap-y-3">
-              <div>
-                <div className="mb-1.5 text-[13px] text-chalk-dim">{t("controls.mode")}</div>
-                <ModeSwitch />
-              </div>
-              <div>
-                <div className="mb-1.5 text-[13px] text-chalk-dim">{t("controls.language")}</div>
-                <LanguageSelect />
-              </div>
-              <VoiceButton />
-            </div>
+            {LANGS.map((l) => (
+              <button
+                key={l.value}
+                type="button"
+                role="menuitemradio"
+                aria-checked={l.value === lang}
+                lang={l.htmlLang}
+                onClick={() => {
+                  useUi.getState().setLang(l.value);
+                  setOpen(false);
+                }}
+                className="flex min-h-[40px] w-full items-center justify-between gap-4 rounded-[8px] px-3 text-left text-[14px] text-chalk hover:bg-turf-raised focus-visible:bg-turf-raised focus-visible:outline-none"
+              >
+                <span>{l.name}</span>
+                <span className={`text-[12px] font-semibold ${l.value === lang ? "text-flare" : "text-chalk-faint"}`}>{l.value === lang ? "●" : l.short}</span>
+              </button>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/** Home · Story · Matches, and the language. Match picking lives in the library, depth on each page. */
+export function Header() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-turf-edge/60 bg-turf-deep/85 backdrop-blur-md">
+      <div className="mx-auto flex h-[var(--header-h)] max-w-[1600px] items-center gap-2 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] sm:gap-4 lg:px-10">
+        <Wordmark />
+        <div className="ml-auto sm:ml-6 sm:mr-auto">
+          <NavLinks />
+        </div>
+        <LanguageMenu />
+      </div>
     </header>
   );
 }

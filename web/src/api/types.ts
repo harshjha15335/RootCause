@@ -211,3 +211,19 @@ export type ShowcaseManifest = {
   untraced: { event_id: string; reason: string }[];
   windows: { from_s: number; to_s: number }[];
 };
+
+// ---- match library (web/tools/library.mjs → showcase/library.json) -------------------------
+
+export type LibraryGoal = { id: string; second: number; side: TeamSide; player_id: string; traced: boolean };
+export type LibraryClub = { name: string; short_name: string; kit_primary: string; kit_secondary: string };
+export type LibraryMatch = {
+  id: string;
+  /** 1-based place in the series: "Meeting n" */
+  n: number;
+  duration_s: number;
+  home: LibraryClub;
+  away: LibraryClub;
+  score: [number, number];
+  goals: LibraryGoal[];
+  traced: number;
+};

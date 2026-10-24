@@ -49,6 +49,7 @@ fi
 
 if [[ $build == 1 ]]; then
   # relative base: the same build works at the root and under /preview/<name>/
+  node tools/library.mjs
   npx tsc -b
   npx vite build --base ./
 fi

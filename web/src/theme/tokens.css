@@ -46,3 +46,14 @@
   background: rgb(var(--ink));
   color: rgb(var(--paper));
 }
+
+@media (max-width: 640px) {
+  :root { --header-h: 60px; }
+}
+
+/* page-code loading mark: the wordmark's layers breathing */
+.rc-loading { animation: rc-breathe 1.4s var(--ease-in-out) infinite; }
+@keyframes rc-breathe { 50% { opacity: 0.35; transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) {
+  .rc-loading { animation: none; opacity: 0.6; }
+}
