@@ -11,13 +11,13 @@ import { mistakeWords } from "../i18n/words";
 import { useNearViewport } from "../lib/device";
 import { pageHref } from "../lib/nav";
 import { useUi, type Depth } from "../store/uiStore";
-import { MatchTapestry } from "./match/MatchTapestry";
+import { MatchLab } from "./match/lab/MatchLab";
 import "./match/strings";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
- * honest football answer), the Match Tapestry (the
- * whole 90 minutes woven as one cloth: who owned each strip, where the attacks got in, the press), the shot map (every shot, the better option
+ * honest football answer), the Tactics Lab on the
+ * Match Topography (every second replayed on land that rises under whoever owns it, with a coach), the shot map (every shot, the better option
  * drawn in yellow) and each player's key moments. Data: stacks.json from
  * web/tools/export_stacks.py; the Expert numbers come from analysis.json.
  */
@@ -56,8 +56,8 @@ export function Match() {
       <Section id="goals" title={t("match.goals.title")} sub={t("match.goals.sub")}>
         <Goals s={s} meta={meta} depth={depth} />
       </Section>
-      <Section id="shape" title={t("match.tap.title")} sub={t("match.tap.sub")}>
-        <ShapeSection s={s} />
+      <Section id="shape" title={t("tlab.topo.title")} sub={t("tlab.topo.sub")}>
+        <ShapeSection />
       </Section>
       <Section id="chances" title={t("match.chance.title")} sub={t("match.chance.sub")} innerRef={chanceRef}>
         <ChanceSection s={s} meta={meta} depth={depth} sel={chance} onSel={setChance} player={player} />
@@ -302,10 +302,10 @@ function XgMeter({ xg }: { xg: number }) {
   );
 }
 
-// ------------------------------------------------------------------------------- Match Tapestry
+// ------------------------------------------------------------------- Tactics Lab on the Topography
 
-function ShapeSection({ s }: { s: Stacks }) {
-  return <MatchTapestry s={s} matchId={SHOWCASE_MATCH} autopsyHref={autopsyHref} />;
+function ShapeSection() {
+  return <MatchLab matchId={SHOWCASE_MATCH} />;
 }
 
 // ------------------------------------------------------------------------------------ shot map
