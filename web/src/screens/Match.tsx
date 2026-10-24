@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useAnalysis, useStacks, type Analysis, type Bend, type GoalRow, type Moment, type Side, type StackChance, type Stacks, type XY } from "../api/analysis";
+import { useAnalysis, useStacks, type Analysis, type GoalRow, type Moment, type Side, type StackChance, type Stacks, type XY } from "../api/analysis";
 import { useDemos } from "../api/demos";
 import { SHOWCASE_MATCH } from "../api/rest";
 import type { MatchMeta } from "../api/types";
@@ -11,16 +11,14 @@ import { mistakeWords } from "../i18n/words";
 import { quality, useNearViewport } from "../lib/device";
 import { pageHref } from "../lib/nav";
 import { useUi, type Depth } from "../store/uiStore";
-import type { ChanceStack } from "./match/chanceStack";
-import type { Phase, ShapeStack } from "./match/shapeStack";
-import { webglOk } from "./match/stage";
+import { LinesChart, MomentumChart, TacticsBoard } from "./match/TacticsBoard";
 import "./match/strings";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
- * honest football answer), the Shape Stack (each side's shape per five minutes, stacked, with
- * every bend marked and judged by what happened next), the Chance Stack (every shot as a layer,
- * with the better option drawn in yellow) and each player's key moments. Data: stacks.json from
+ * honest football answer), the Tactics Board (both shapes from above, five minutes at a time, with
+ * every bend marked and judged by what happened next), the shot map (every shot, the better option
+ * drawn in yellow) and each player's key moments. Data: stacks.json from
  * web/tools/export_stacks.py; the Expert numbers come from analysis.json.
  */
 export function Match() {
@@ -67,11 +65,9 @@ export function Match() {
       <Section id="players" title={t("match.players.title")} sub={t("match.players.sub")}>
         <Players s={s} meta={meta} depth={depth} player={player} onPlayer={setPlayer} onShow={showChance} />
       </Section>
-      {depth === "expert" && (
-        <Section id="numbers" title={t("match.numbers.title")}>
-          <Numbers meta={meta} />
-        </Section>
-      )}
+      <Section id="numbers" title={t("match.numbers.title")}>
+        <Numbers meta={meta} />
+      </Section>
     </div>
   );
 }
@@ -132,11 +128,7 @@ function Seg<T extends string>({ value, options, onChange, label }: { value: T; 
 
 const useNear = (ref: React.RefObject<HTMLElement>) => useNearViewport(ref, "600px");
 
-function use3d() {
-  const reduced = useUi((s) => s.reducedMotion) || quality.reducedMotion;
-  const [gl] = useState(() => webglOk());
-  return { on: gl && !reduced, reduced };
-}
+const useReduced = () => useUi((s) => s.reducedMotion) || quality.reducedMotion;
 
 const autopsyHref = (goal: string) => pageHref("autopsy", { demo: SHOWCASE_MATCH, goal });
 
@@ -311,156 +303,25 @@ function XgMeter({ xg }: { xg: number }) {
   );
 }
 
-// --------------------------------------------------------------------------------- Shape Stack
+// ------------------------------------------------------------------------------- Tactics Board
 
 function ShapeSection({ s, meta, depth }: { s: Stacks; meta: MatchMeta | null; depth: Depth }) {
-  const { t } = useTranslation();
-  const [side, setSide] = useState<Side>("home");
-  const [phase, setPhase] = useState<Phase>("out");
-  const [focus, setFocus] = useState<number | null>(null);
-  const host = useRef<HTMLDivElement>(null);
-  const near = useNear(host);
-  const g3 = use3d();
-  const stack = useRef<ShapeStack | null>(null);
-  const lang = useUi((u) => u.lang);
-  const bends = s.shape_stack.teams[side].bends;
-
-  const bendText = (b: Bend) => t("match.shape.tag", { min: Math.round(b.from_s / 60), what: t(`match.shape.kind.${b.kind}`, { m: Math.round(b.m) }) });
-
-  useEffect(() => {
-    if (!near || !g3.on || !host.current) return;
-    let dead = false;
-    void import("./match/shapeStack").then(({ ShapeStack }) => {
-      if (dead || !host.current) return;
-      stack.current = new ShapeStack(host.current, s, g3.reduced, {
-        minute: (m) => t("match.shape.min", { m }),
-        bend: (sd, i) => bendText(s.shape_stack.teams[sd].bends[i]),
-      });
-      stack.current.build(side, phase);
-    });
-    return () => {
-      dead = true;
-      stack.current?.dispose();
-      stack.current = null;
-    };
-    // the stage is built once per match and language; team and phase rebuild its contents below
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [near, g3.on, s, lang]);
-
-  useEffect(() => {
-    setFocus(null);
-    stack.current?.build(side, phase);
-  }, [side, phase]);
-
-  const pick = (i: number | null) => {
-    setFocus(i);
-    stack.current?.focusBend(i);
-  };
-
+  const n = useNames(s);
+  const a = useAnalysis();
+  const reduced = useReduced();
+  const clubs = { home: clubName(meta, "home"), away: clubName(meta, "away") };
   return (
-    <div>
-      <div className="flex flex-wrap items-center gap-3">
-        <Seg<Side> label="Team" value={side} onChange={setSide} options={[{ v: "home", label: clubName(meta, "home") }, { v: "away", label: clubName(meta, "away") }]} />
-        <Seg<Phase> label="Phase" value={phase} onChange={setPhase} options={[{ v: "out", label: t("match.shape.out") }, { v: "in", label: t("match.shape.in") }]} />
-      </div>
-      <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#0b1a8a_70%,#06104f_100%)]">
-        <div ref={host} className={`relative ${g3.on ? "h-[min(68svh,120vw)] sm:h-[min(76svh,640px)]" : ""}`}>
-          {!g3.on && <LineChart s={s} side={side} focus={focus} />}
-        </div>
-        <aside className="border-t border-turf-edge/60 p-4 sm:absolute sm:right-4 sm:top-4 sm:w-[300px] sm:rounded-2xl sm:border-0 sm:bg-[#06104f]/80 sm:ring-1 sm:ring-inset sm:ring-chalk/10 sm:backdrop-blur-md">
-          <p className="font-display text-[17px] font-bold text-chalk">
-            {clubName(meta, side)} · {phase === "out" ? t("match.shape.out") : t("match.shape.in")}
-          </p>
-          {phase === "in" ? (
-            <p className="mt-2 text-[14px] text-chalk-dim">{t("match.shape.noneIn")}</p>
-          ) : bends.length === 0 ? (
-            <p className="mt-2 text-[14px] text-chalk-dim">{t("match.shape.none")}</p>
-          ) : (
-            <ul className="mt-3 grid gap-2">
-              {bends.map((b, i) => (
-                <li key={b.w + b.kind}>
-                  <button
-                    type="button"
-                    aria-pressed={focus === i}
-                    onClick={() => pick(focus === i ? null : i)}
-                    className={`rc-press w-full rounded-xl p-3 text-left ring-1 ring-inset transition-colors ${focus === i ? "bg-chalk/10 ring-flare" : "ring-chalk/10 hover:ring-chalk/30"}`}
-                  >
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-[14px] font-semibold text-flare">{bendText(b)}</span>
-                      <VerdictChip v={b.next.verdict} />
-                    </span>
-                    <span className="mt-1 block text-[13px] leading-snug text-chalk-dim">
-                      {t(`match.shape.why.${b.next.verdict}`, { before: f2(b.next.before.xg_against), after: f2(b.next.after.xg_against) })}
-                    </span>
-                    {depth === "expert" && (
-                      <span className="mt-2 block text-[12px] leading-snug text-chalk-faint tabular-nums">
-                        {t("match.shape.next")}: {t("match.shape.shots", { sf: b.next.after.shots_for, bsf: b.next.before.shots_for, sa: b.next.after.shots_against, bsa: b.next.before.shots_against })} ·{" "}
-                        {t("match.shape.goals", { gf: b.next.after.goals_for, ga: b.next.after.goals_against })} · {b.from.toFixed(0)} → {b.to.toFixed(0)} m
-                      </span>
-                    )}
-                  </button>
-                </li>
-              ))}
-              {focus !== null && (
-                <li>
-                  <button type="button" onClick={() => pick(null)} className="rc-press min-h-[36px] text-[13px] font-semibold text-chalk-dim underline decoration-chalk/30 underline-offset-4 hover:text-chalk">
-                    {t("match.shape.whole")}
-                  </button>
-                </li>
-              )}
-            </ul>
-          )}
-          {depth === "expert" && <p className="mt-3 text-[12px] text-chalk-faint">{t("match.shape.rule")}</p>}
-        </aside>
+    <div className="grid gap-4">
+      <TacticsBoard s={s} names={n.full} clubs={clubs} depth={depth} reduced={reduced} />
+      <div className="grid gap-4 md:grid-cols-2">
+        <LinesChart s={s} clubs={clubs} />
+        {a.data && <MomentumChart a={a.data} clubs={clubs} />}
       </div>
     </div>
   );
 }
 
-function VerdictChip({ v }: { v: Bend["next"]["verdict"] }) {
-  const { t } = useTranslation();
-  const tone = v === "worked" ? "bg-chalk text-turf-deep" : v === "level" ? "bg-chalk/12 text-chalk-dim" : "bg-transparent text-chalk ring-1 ring-inset ring-chalk/40";
-  return <span className={`shrink-0 rounded-full px-2 py-0.5 text-[12px] font-semibold ${tone}`}>{t(`match.shape.verdict.${v}`)}</span>;
-}
-
-/** Without 3D: the back line's height through the match, bends marked. */
-function LineChart({ s, side, focus }: { s: Stacks; side: Side; focus: number | null }) {
-  const { t } = useTranslation();
-  const team = s.shape_stack.teams[side];
-  const W = 600, H = 260, pl = 40, pr = 16, pt = 20, pb = 34;
-  const ms = team.metrics.map((m) => m?.line_m ?? null);
-  const vals = ms.filter((v): v is number => v !== null);
-  const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5, hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5;
-  const x = (k: number) => pl + ((k + 0.5) / ms.length) * (W - pl - pr);
-  const y = (v: number) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
-  const d = ms.map((v, k) => (v === null ? "" : `${k === 0 ? "M" : "L"}${x(k).toFixed(1)} ${y(v).toFixed(1)}`)).join(" ");
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="block w-full sm:pr-[320px]" role="img" aria-label={t("match.shape.line")}>
-      {[lo, (lo + hi) / 2, hi].map((v) => (
-        <g key={v}>
-          <line x1={pl} x2={W - pr} y1={y(v)} y2={y(v)} stroke="rgb(var(--chalk) / 0.12)" />
-          <text x={pl - 8} y={y(v) + 4} textAnchor="end" fontSize={12} fill="rgb(var(--chalk-faint))">
-            {Math.round(v)}
-          </text>
-        </g>
-      ))}
-      {team.bends.map((b, i) => (
-        <rect key={i} x={x(b.w) - 10} y={pt} width={20} height={H - pt - pb} rx={4} fill={focus === i ? "rgb(var(--flare) / 0.35)" : "rgb(var(--flare) / 0.16)"} />
-      ))}
-      <path d={d} fill="none" stroke="rgb(var(--chalk))" strokeWidth={2.5} strokeLinejoin="round" />
-      {[0, 45, 90].map((m) => (
-        <text key={m} x={pl + (m / 90) * (W - pl - pr)} y={H - 10} textAnchor="middle" fontSize={12} fill="rgb(var(--chalk-faint))">
-          {m}′
-        </text>
-      ))}
-      <text x={pl} y={12} fontSize={12} fill="rgb(var(--chalk-faint))">
-        {t("match.shape.line")}
-      </text>
-    </svg>
-  );
-}
-
-// -------------------------------------------------------------------------------- Chance Stack
+// ------------------------------------------------------------------------------------ shot map
 
 type Filter = "all" | "goals" | "better";
 
@@ -468,11 +329,6 @@ function ChanceSection({ s, meta, depth, sel, onSel, player }: { s: Stacks; meta
   const { t } = useTranslation();
   const n = useNames(s);
   const [filter, setFilter] = useState<Filter>("all");
-  const host = useRef<HTMLDivElement>(null);
-  const near = useNear(host);
-  const g3 = use3d();
-  const stack = useRef<ChanceStack | null>(null);
-  const lang = useUi((u) => u.lang);
   const list = s.chances;
   const better = list.filter((c) => c.best).length;
   const lit = useMemo(() => {
@@ -480,28 +336,6 @@ function ChanceSection({ s, meta, depth, sel, onSel, player }: { s: Stacks; meta
     return (c: StackChance) => (filter === "goals" ? c.outcome === "goal" : filter === "better" ? !!c.best : true) && (!seqs || seqs.has(c.seq));
   }, [filter, player, s]);
   const gainText = (c: StackChance) => t("match.chance.gain", { gain: f2(c.best!.gain) });
-
-  useEffect(() => {
-    if (!near || !g3.on || !host.current) return;
-    let dead = false;
-    void import("./match/chanceStack").then(({ ChanceStack }) => {
-      if (dead || !host.current) return;
-      const cs = new ChanceStack(host.current, s, g3.reduced, { name: n.full, gain: gainText });
-      cs.onPick = onSel;
-      cs.setLit(lit);
-      if (sel !== null) cs.select(sel);
-      stack.current = cs;
-    });
-    return () => {
-      dead = true;
-      stack.current?.dispose();
-      stack.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [near, g3.on, s, lang]);
-
-  useEffect(() => stack.current?.setLit(lit), [lit]);
-  useEffect(() => stack.current?.select(sel), [sel]);
 
   const k = list.findIndex((c) => c.seq === sel);
   const c = k >= 0 ? list[k] : null;
@@ -526,10 +360,7 @@ function ChanceSection({ s, meta, depth, sel, onSel, player }: { s: Stacks; meta
         <p className="text-[14px] text-chalk-dim">{t("match.chance.count", { n: list.length, b: better })}</p>
       </div>
       <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#0b1a8a_70%,#06104f_100%)]">
-        <div ref={host} className={`relative ${g3.on ? "h-[min(68svh,120vw)] sm:h-[min(76svh,640px)]" : ""}`}>
-          {!g3.on && <ShotMap s={s} c={c} lit={lit} onPick={onSel} />}
-          {g3.on && !c && <p className="pointer-events-none absolute bottom-4 left-4 text-[13px] text-chalk-faint">{t("match.chance.drag")}</p>}
-        </div>
+        <ShotMap s={s} c={c} lit={lit} onPick={onSel} name={n.short} />
         <aside aria-live="polite" className="border-t border-turf-edge/60 p-4 sm:absolute sm:right-4 sm:top-4 sm:w-[300px] sm:rounded-2xl sm:border-0 sm:bg-[#06104f]/80 sm:ring-1 sm:ring-inset sm:ring-chalk/10 sm:backdrop-blur-md">
           {c ? (
             <>
@@ -594,28 +425,49 @@ function SmallBtn({ children, onClick, disabled }: { children: ReactNode; onClic
   );
 }
 
-/** Without 3D: the pitch, every shot where it was struck; a selected shot stands its players up. */
-function ShotMap({ s, c, lit, onPick }: { s: Stacks; c: StackChance | null; lit(c: StackChance): boolean; onPick(seq: number | null): void }) {
+/** The pitch, every shot where it was struck (size is xG); a picked shot stands its 22 players up,
+ *  arrows the shot and, when there was one, the better option in yellow. */
+function ShotMap({ s, c, lit, onPick, name }: { s: Stacks; c: StackChance | null; lit(c: StackChance): boolean; onPick(seq: number | null): void; name(id: string): string }) {
   const line = { fill: "none", stroke: "rgb(var(--chalk) / 0.3)", strokeWidth: 0.35 };
   const sv = ([x, y]: XY): XY => [x, 68 - y];
+  const idOf = (i: number) => (i < 11 ? `H${i + 1}` : `A${i - 10}`);
+  const goalX = c ? (c.frame.ball[0] > 52.5 ? 105 : 0) : 105;
+  const tag = (x: number, y: number, text: string, col: string) => (
+    <text x={x} y={y - 2.4} textAnchor="middle" fontSize="2.4" fontWeight="700" fill={col} stroke="#06104f" strokeWidth="0.6" paintOrder="stroke">
+      {text}
+    </text>
+  );
   return (
     <svg viewBox="-2 -2 109 72" className="block w-full sm:pr-[320px]" role="img" aria-label="Shots">
+      <defs>
+        <marker id="shot-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">
+          <path d="M0 0 L6 3 L0 6 z" fill="#f4f6ff" />
+        </marker>
+        <marker id="best-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">
+          <path d="M0 0 L6 3 L0 6 z" fill="rgb(var(--flare))" />
+        </marker>
+      </defs>
       <rect x="0" y="0" width="105" height="68" {...line} />
       <line x1="52.5" y1="0" x2="52.5" y2="68" {...line} />
       <circle cx="52.5" cy="34" r="9.15" {...line} />
       <rect x="0" y="13.84" width="16.5" height="40.32" {...line} />
       <rect x="88.5" y="13.84" width="16.5" height="40.32" {...line} />
-      {c
-        ? c.frame.pos.map((p, i) => {
-            const [x, y] = sv(p);
-            const id = i < 11 ? `H${i + 1}` : `A${i - 10}`;
-            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? "#f4f6ff" : "#8fa6ff"} />;
-          })
-        : null}
-      {c?.best && (
+      {c && (
         <g>
-          <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={sv(c.best.at)[0]} y2={sv(c.best.at)[1]} stroke="rgb(var(--flare))" strokeWidth={0.5} strokeDasharray="1.2 0.8" />
-          <circle cx={sv(c.best.at)[0]} cy={sv(c.best.at)[1]} r={2} fill="none" stroke="rgb(var(--flare))" strokeWidth={0.5} />
+          {c.frame.pos.map((p, i) => {
+            const [x, y] = sv(p);
+            const id = idOf(i);
+            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? "#f4f6ff" : "#0b1660"} stroke={i < 11 ? "#f4f6ff" : "#8fa6ff"} strokeWidth={0.45} opacity={id === c.shooter || id === c.best?.id ? 1 : 0.75} />;
+          })}
+          <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={goalX + (goalX ? -0.6 : 0.6)} y2={34} stroke="#f4f6ff" strokeWidth={0.45} markerEnd="url(#shot-arrow)" opacity={0.85} />
+          {tag(sv(c.frame.ball)[0], sv(c.frame.ball)[1], name(c.shooter), "#f4f6ff")}
+          {c.best && (
+            <g>
+              <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={sv(c.best.at)[0]} y2={sv(c.best.at)[1]} stroke="rgb(var(--flare))" strokeWidth={0.55} strokeDasharray="1.2 0.8" markerEnd="url(#best-arrow)" />
+              <circle cx={sv(c.best.at)[0]} cy={sv(c.best.at)[1]} r={2.2} fill="none" stroke="rgb(var(--flare))" strokeWidth={0.5} />
+              {tag(sv(c.best.at)[0], sv(c.best.at)[1] - 0.4, name(c.best.id), "rgb(var(--flare))")}
+            </g>
+          )}
         </g>
       )}
       {!c &&
@@ -624,18 +476,11 @@ function ShotMap({ s, c, lit, onPick }: { s: Stacks; c: StackChance | null; lit(
           const r = 0.7 + Math.sqrt(x.xg) * 2.2;
           const col = x.side === "home" ? "#f4f6ff" : "#8fa6ff";
           return (
-            <circle
-              key={x.seq}
-              cx={cx}
-              cy={cy}
-              r={r}
-              fill={x.outcome === "goal" ? col : "none"}
-              stroke={col}
-              strokeWidth={0.4}
-              opacity={lit(x) ? 1 : 0.15}
-              className="cursor-pointer"
-              onClick={() => onPick(x.seq)}
-            />
+            <g key={x.seq} opacity={lit(x) ? 1 : 0.15} className="cursor-pointer" onClick={() => onPick(x.seq)}>
+              <circle cx={cx} cy={cy} r={Math.max(r, 2.4)} fill="transparent" />
+              <circle cx={cx} cy={cy} r={r} fill={x.outcome === "goal" ? col : "none"} stroke={col} strokeWidth={0.4} />
+              {x.best && <circle cx={cx} cy={cy} r={r + 0.9} fill="none" stroke="rgb(var(--flare))" strokeWidth={0.3} />}
+            </g>
           );
         })}
     </svg>
