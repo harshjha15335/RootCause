@@ -8,16 +8,16 @@ import { Badge } from "../components/bits";
 import { surname } from "../lib/format";
 import { DepthSwitch } from "../components/DepthSwitch";
 import { mistakeWords } from "../i18n/words";
-import { quality, useNearViewport } from "../lib/device";
+import { useNearViewport } from "../lib/device";
 import { pageHref } from "../lib/nav";
 import { useUi, type Depth } from "../store/uiStore";
-import { LinesChart, MomentumChart, TacticsBoard } from "./match/TacticsBoard";
+import { MatchTapestry } from "./match/MatchTapestry";
 import "./match/strings";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
- * honest football answer), the Tactics Board (both shapes from above, five minutes at a time, with
- * every bend marked and judged by what happened next), the shot map (every shot, the better option
+ * honest football answer), the Match Tapestry (the
+ * whole 90 minutes woven as one cloth: who owned each strip, where the attacks got in, the press), the shot map (every shot, the better option
  * drawn in yellow) and each player's key moments. Data: stacks.json from
  * web/tools/export_stacks.py; the Expert numbers come from analysis.json.
  */
@@ -56,8 +56,8 @@ export function Match() {
       <Section id="goals" title={t("match.goals.title")} sub={t("match.goals.sub")}>
         <Goals s={s} meta={meta} depth={depth} />
       </Section>
-      <Section id="shape" title={t("match.shape.title")} sub={t("match.shape.sub")}>
-        <ShapeSection s={s} meta={meta} depth={depth} />
+      <Section id="shape" title={t("match.tap.title")} sub={t("match.tap.sub")}>
+        <ShapeSection s={s} />
       </Section>
       <Section id="chances" title={t("match.chance.title")} sub={t("match.chance.sub")} innerRef={chanceRef}>
         <ChanceSection s={s} meta={meta} depth={depth} sel={chance} onSel={setChance} player={player} />
@@ -128,7 +128,6 @@ function Seg<T extends string>({ value, options, onChange, label }: { value: T; 
 
 const useNear = (ref: React.RefObject<HTMLElement>) => useNearViewport(ref, "600px");
 
-const useReduced = () => useUi((s) => s.reducedMotion) || quality.reducedMotion;
 
 const autopsyHref = (goal: string) => pageHref("autopsy", { demo: SHOWCASE_MATCH, goal });
 
@@ -303,22 +302,10 @@ function XgMeter({ xg }: { xg: number }) {
   );
 }
 
-// ------------------------------------------------------------------------------- Tactics Board
+// ------------------------------------------------------------------------------- Match Tapestry
 
-function ShapeSection({ s, meta, depth }: { s: Stacks; meta: MatchMeta | null; depth: Depth }) {
-  const n = useNames(s);
-  const a = useAnalysis();
-  const reduced = useReduced();
-  const clubs = { home: clubName(meta, "home"), away: clubName(meta, "away") };
-  return (
-    <div className="grid gap-4">
-      <TacticsBoard s={s} names={n.full} clubs={clubs} depth={depth} reduced={reduced} />
-      <div className="grid gap-4 md:grid-cols-2">
-        <LinesChart s={s} clubs={clubs} />
-        {a.data && <MomentumChart a={a.data} clubs={clubs} />}
-      </div>
-    </div>
-  );
+function ShapeSection({ s }: { s: Stacks }) {
+  return <MatchTapestry s={s} matchId={SHOWCASE_MATCH} autopsyHref={autopsyHref} />;
 }
 
 // ------------------------------------------------------------------------------------ shot map

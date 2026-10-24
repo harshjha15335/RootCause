@@ -1,0 +1,9 @@
+/* Overlays the Match Tapestry stage positions over its canvas (see tapestry.ts). */
+.tap-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.tap-overlay > span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.tap-lab { transform: translate(-100%, -50%); padding-right: 10px; font: 600 12px/1 var(--font-body, system-ui), system-ui, sans-serif; color: #8c8398; }
+.tap-tick { transform: translate(-50%, 0); font: 600 12px/1 system-ui, sans-serif; color: #7d7489; }
+.tap-tip { transform: translate(-50%, -130%); font: 700 12px/1 ui-monospace, monospace; color: #15111c; background: #f6f1e7; border-radius: 999px; padding: 5px 9px; }
+.tap-gtag { transform: translate(-50%, -100%); font: 700 12px/1 system-ui, sans-serif; color: #15111c; background: #ffd75e; border-radius: 999px; padding: 5px 9px; }
+.tap-gtag.tap-culprit { background: #f6f1e7; transform: translate(-50%, 90%); }
+@media (max-width: 699px) { .tap-lab { display: none; } }
