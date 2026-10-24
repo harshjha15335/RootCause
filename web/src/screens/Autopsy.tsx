@@ -8,7 +8,7 @@ import { DepthSwitch } from "../components/DepthSwitch";
 import { registerAutopsyWords } from "../lab/autopsy/i18n";
 import { buildAutopsy, goalsOf, prevented, type Autopsy as Data, type GoalRef, type StacksDossier, type Traced } from "../lab/autopsy/model";
 import { betterLine, broadcastScript, honestLines, verdictVars } from "../lab/autopsy/script";
-import { clock, createStage, slowAt, stepsOf, trialRows, type AutopsyStage, type Step } from "../lab/autopsy/stage";
+import { clock, createStage, slowAt, stepsOf, trialRows, type AutopsyStage, type Step } from "../lab/autopsy/stadium";
 import "../lab/autopsy/autopsy.css";
 import { useLab } from "../lab/data";
 import { quality } from "../lib/device";
@@ -26,9 +26,10 @@ const getJson = async <T,>(url: string): Promise<T> => {
 const surname = (name: string) => name.split(" ").slice(-1)[0];
 
 /**
- * Goal Autopsy: one goal, told as a short cinematic sequence in the Timestack's language. Before
- * kick-off, the goal, every mistake lit up in the stack, the trial by replay, the verdict and the
- * fix. A goal the Debugger finds no defender at fault for gets an honest football answer.
+ * Goal Autopsy: one goal, taken apart in a floodlit 3D stadium. The goal, the two plans, the move
+ * against the back line, each mistake with where he should have been, the suspects' fixed runs,
+ * 200 replays each, the verdict, the fix and how the engine decides. A goal the Debugger finds no
+ * defender at fault for gets an honest football answer.
  */
 export function Autopsy() {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ export function Autopsy() {
   };
 
   return (
-    <section className="relative h-[calc(100dvh-var(--header-h))] min-h-[560px] w-full overflow-hidden bg-[#0b1a8a]">
+    <section className="relative h-[calc(100dvh-var(--header-h))] min-h-[560px] w-full overflow-hidden bg-[#04060f]">
       {failed ? (
         <p className="grid h-full place-items-center px-6 text-center text-[17px] text-chalk-dim">{t("autopsy.failed")}</p>
       ) : !ready ? (
@@ -93,7 +94,6 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
   const expert = useUi((s) => s.depth) === "expert";
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef<HTMLDivElement>(null);
   const stage = useRef<AutopsyStage | null>(null);
   const steps = useMemo(() => stepsOf(a), [a]);
@@ -115,7 +115,6 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
         reduced,
         phone: quality.phone,
         dpr: quality.dpr,
-        overlay: overlayRef.current!,
         say,
         still: !!dev?.has("hold"),
         onHover: (html, x, y) => {
@@ -229,12 +228,11 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
   return (
     <div ref={boxRef} className="absolute inset-0 select-none">
       <canvas ref={canvasRef} role="img" aria-label={t("autopsy.stageLabel")} className={`absolute inset-0 block h-full w-full ${reduced ? "autopsy-fade" : ""}`} key={reduced ? n : "c"} />
-      <div ref={overlayRef} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden" />
       <div ref={hoverRef} hidden className="autopsy-hover" />
       {glFailed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{t("autopsy.noGl")}</p>}
 
       {/* top: which meeting and goal, the depth switch, play */}
-      <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 bg-gradient-to-b from-[#0b1a8a]/85 to-transparent px-4 pb-6 pt-3 sm:px-6 sm:pt-4">
+      <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 bg-gradient-to-b from-[#04060f]/90 to-transparent px-4 pb-6 pt-3 sm:px-6 sm:pt-4">
         <div className="min-w-0">
           <p className="truncate text-[11px] font-bold uppercase tracking-[0.18em] text-[#ffd60a]">{t("autopsy.eyebrow")}</p>
           <p className="truncate text-[13px] font-semibold text-chalk-dim">{t("autopsy.matchLine", { home, away, n: a.dossier.meeting })}</p>
@@ -246,7 +244,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
                   type="button"
                   aria-pressed={g.id === a.id}
                   onClick={() => g.id !== a.id && onGoal(g)}
-                  className="rc-press flex min-h-[34px] shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-[#06104f]/50 px-3 text-[12.5px] font-semibold text-chalk-dim backdrop-blur aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-[#0a1048]"
+                  className="rc-press flex min-h-[34px] shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-[#070a1d]/60 px-3 text-[12.5px] font-semibold text-chalk-dim backdrop-blur aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-[#070a1d]"
                 >
                   <i aria-hidden className={`block h-1.5 w-1.5 rounded-full ${g.traced ? "bg-[#ffd60a]" : "bg-current opacity-40"}`} />
                   {t("autopsy.goalChip", { clock: clock(g.s), name: surname(lab.names[g.scorer]) })}
@@ -256,11 +254,11 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
           )}
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <DepthSwitch className="hidden bg-[#06104f]/50 backdrop-blur sm:inline-flex" />
+          <DepthSwitch className="hidden bg-[#070a1d]/60 backdrop-blur sm:inline-flex" />
           <button
             type="button"
             onClick={toggle}
-            className="rc-press h-10 rounded-full bg-chalk px-4 text-[13.5px] font-bold text-[#0a1048]"
+            className="rc-press h-10 rounded-full bg-chalk px-4 text-[13.5px] font-bold text-[#070a1d]"
           >
             {done ? t("autopsy.again") : playing ? t("autopsy.pause") : t("autopsy.play")}
           </button>
@@ -271,7 +269,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
       <article
         key={`${n}-${expert}`}
         aria-live="polite"
-        className={`autopsy-card absolute overflow-y-auto rounded-[18px] border border-white/15 bg-[#06104f]/78 backdrop-blur-md ${
+        className={`autopsy-card absolute overflow-y-auto rounded-[18px] border border-[#2a3160] bg-[#05070f]/80 backdrop-blur-md ${
           wide ? "bottom-[84px] left-6 max-h-[calc(100%-200px)] w-[420px] px-6 pb-6 pt-5" : "bottom-[68px] left-3 right-3 max-h-[40%] px-4 pb-4 pt-3.5"
         }`}
       >
@@ -280,7 +278,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
       </article>
 
       {/* the rail: one segment per beat, filled as it plays */}
-      <nav aria-label={t("autopsy.beats")} className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-b from-transparent to-[#06104f]/90 px-3 pb-3 pt-5 sm:gap-3 sm:px-6">
+      <nav aria-label={t("autopsy.beats")} className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-b from-transparent to-[#04060f]/95 px-3 pb-3 pt-5 sm:gap-3 sm:px-6">
         <button type="button" onClick={() => goTo(n - 1)} disabled={n === 0} aria-label={t("autopsy.back")} className="rc-press grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/20 text-chalk disabled:opacity-30">
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
@@ -328,14 +326,14 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
   );
   const Line = ({ children, dim }: { children: React.ReactNode; dim?: boolean }) => <p className={`mt-2 text-[15px] leading-[1.45] ${dim ? "text-chalk-faint" : "text-chalk-dim"}`}>{children}</p>;
 
-  if (st.beat === "pre") {
+  if (st.beat === "plans") {
     const fact = (k: 0 | 1) => {
       const f = a.dossier.facts[k][0];
       return t(`autopsy.pre.${f.key}`, { team: lab.clubs[k].name, ...f.params });
     };
     return (
       <>
-        <Kicker>{t("autopsy.pre.k")}</Kicker>
+        <Kicker>{t("autopsy.plans.k")}</Kicker>
         <Title>{fact(a.def)}</Title>
         <Line>{fact(a.att)}</Line>
         <Line dim>{a.dossier.prev ? t("autopsy.pre.prev", { home, away, h: a.dossier.prev[0], a: a.dossier.prev[1] }) : t("autopsy.pre.first")}</Line>
@@ -362,7 +360,46 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
         </div>
         <Title>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</Title>
         <Line>{t("autopsy.goal.score", { home, away, h: a.score[0], a: a.score[1] })}</Line>
+        {a.kind === "traced" && <Line>{t("autopsy.goal.traced", { s: Math.round(a.goalS - a.j.culprit.second) })}</Line>}
         {expert && a.chance && <Line dim>{`${a.chance.xg.toFixed(2)} xG · ${a.chance.distance_m.toFixed(1)} m`}</Line>}
+      </>
+    );
+  }
+  if (st.beat === "move") {
+    const v = { att: lab.clubs[a.att].name, def: lab.clubs[a.def].name };
+    return (
+      <>
+        <Kicker>{t("autopsy.move.k")}</Kicker>
+        <Title>{t("autopsy.move.title")}</Title>
+        <Line>{t(a.kind === "traced" ? "autopsy.move.body" : "autopsy.move.bodyHonest", v)}</Line>
+      </>
+    );
+  }
+  if (st.beat === "runs" && a.kind === "traced") {
+    return (
+      <>
+        <Kicker>{t("autopsy.runs.k")}</Kicker>
+        <Title>{t("autopsy.runs.title")}</Title>
+        <Line>{t("autopsy.runs.body")}</Line>
+      </>
+    );
+  }
+  if (st.beat === "fix" && a.kind === "traced") {
+    const v = verdictVars(a), c = a.j.culprit;
+    return (
+      <>
+        <Kicker>{t("autopsy.fix.k")}</Kicker>
+        <Title>{t("autopsy.fix.title")}</Title>
+        <Line>{c.offside ? t("autopsy.fix.body", { ...v, m: v.by }) : t("autopsy.fix.bodyOpen", v)}</Line>
+        <Line dim>{t("autopsy.verdict.why2Count", v)}</Line>
+      </>
+    );
+  }
+  if (st.beat === "engine" && a.kind === "traced") {
+    return (
+      <>
+        <Kicker>{t("autopsy.engine.k")}</Kicker>
+        <EngineSteps t={t} />
       </>
     );
   }
@@ -405,7 +442,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
         <Formula a={a} t={t} expert={expert} />
         <Line>{t("autopsy.verdict.why1", v)}</Line>
         <Line>{t(c.offside && c.fixed === 0 ? "autopsy.verdict.why2" : "autopsy.verdict.why2Count", v)}</Line>
-        <Actions t={t} download={download} openEngine={openEngine} show={elapsed > 2} />
+        <Actions t={t} download={download} openEngine={openEngine} show={elapsed > 2} expert={expert} />
       </>
     );
   }
@@ -416,18 +453,18 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
       <Title>{title}</Title>
       <Line>{line}</Line>
       {expert && x && <Line dim>{x}</Line>}
-      <Actions t={t} download={download} openEngine={openEngine} show />
+      <Actions t={t} download={download} openEngine={openEngine} show expert={expert} />
     </>
   );
 }
 
-function Actions({ t, download, openEngine, show }: { t: T; download: () => void; openEngine: () => void; show: boolean }) {
+function Actions({ t, download, openEngine, show, expert }: { t: T; download: () => void; openEngine: () => void; show: boolean; expert: boolean }) {
   return (
     <div className={`mt-4 flex flex-wrap gap-2 transition-opacity duration-500 ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}>
-      <button type="button" onClick={download} className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full bg-[#ffd60a] px-4 text-[13.5px] font-bold text-[#14123a]">
+      {expert && <button type="button" onClick={download} className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full bg-[#ffd60a] px-4 text-[13.5px] font-bold text-[#14123a]">
         <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden><path d="M8 2v8m0 0-3.5-3.5M8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         {t("autopsy.verdict.script")}
-      </button>
+      </button>}
       <button type="button" onClick={openEngine} className="rc-press min-h-[40px] rounded-full border border-white/25 px-4 text-[13.5px] font-semibold text-chalk">
         {t("autopsy.engine.open")}
       </button>
@@ -514,6 +551,25 @@ function Formula({ a, t, expert }: { a: Traced; t: T; expert: boolean }) {
   );
 }
 
+/** the engine's five steps, as a short list in the card */
+function EngineSteps({ t }: { t: T }) {
+  const steps = t("autopsy.engine.steps", { returnObjects: true }) as [string, string][];
+  return (
+    <>
+      <h2 className="mt-1.5 text-balance font-display text-[24px] font-black leading-[1.02] tracking-display [font-stretch:118%] sm:text-[28px]">{t("autopsy.engine.title")}</h2>
+      <ol className="mt-3 grid gap-2">
+        {steps.map(([k, line], i) => (
+          <li key={k} className="grid grid-cols-[22px_1fr] gap-2 text-[14px] leading-snug">
+            <span className="font-bold text-[#ffd60a]">{i + 1}</span>
+            <span><b className="text-chalk">{k}.</b> <span className="text-chalk-dim">{line}</span></span>
+          </li>
+        ))}
+      </ol>
+      <button type="button" onClick={() => go("story")} className="mt-3 text-[14px] font-semibold text-[#ffd60a] underline underline-offset-4">{t("autopsy.engine.story")}</button>
+    </>
+  );
+}
+
 function EngineDiagram({ t, close }: { t: T; close: () => void }) {
   const steps = t("autopsy.engine.steps", { returnObjects: true }) as [string, string][];
   const icons = [
@@ -524,15 +580,15 @@ function EngineDiagram({ t, close }: { t: T; close: () => void }) {
     <g key="4"><circle cx="24" cy="22" r="11" fill="none" stroke="currentColor" opacity=".35" strokeWidth="5" /><path d="M24 11a11 11 0 1 1-10.5 14.3" fill="none" stroke="#ffd60a" strokeWidth="5" /></g>,
   ];
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="engine-h" className="autopsy-fade absolute inset-0 z-20 grid place-items-center bg-[#06104f]/80 p-4 backdrop-blur-sm" onClick={close}>
-      <div className="w-full max-w-[880px] rounded-[20px] border border-white/15 bg-[#0b1a8a] p-5 sm:p-7" onClick={(e) => e.stopPropagation()}>
+    <div role="dialog" aria-modal="true" aria-labelledby="engine-h" className="autopsy-fade absolute inset-0 z-20 grid place-items-center bg-[#04060f]/80 p-4 backdrop-blur-sm" onClick={close}>
+      <div className="w-full max-w-[880px] rounded-[20px] border border-[#2a3160] bg-[#070a1d] p-5 sm:p-7" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between gap-4">
           <h2 id="engine-h" className="font-display text-[24px] font-black [font-stretch:118%] sm:text-[30px]">{t("autopsy.engine.title")}</h2>
           <button type="button" autoFocus onClick={close} className="rc-press min-h-[40px] rounded-full border border-white/25 px-4 text-[13.5px] font-semibold">{t("autopsy.engine.close")}</button>
         </div>
         <ol className="mt-5 grid gap-3 sm:grid-cols-5">
           {steps.map(([k, line], i) => (
-            <li key={k} className="flex gap-3 rounded-[14px] border border-white/15 bg-[#06104f]/50 p-3 sm:block">
+            <li key={k} className="flex gap-3 rounded-[14px] border border-[#2a3160] bg-[#04060f]/60 p-3 sm:block">
               <svg width="48" height="44" viewBox="0 0 48 44" aria-hidden className="shrink-0 text-chalk">{icons[i]}</svg>
               <div>
                 <p className="text-[14px] font-bold sm:mt-2">{i + 1} · {k}</p>

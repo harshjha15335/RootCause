@@ -348,6 +348,18 @@ export class Timestack {
     const i = Math.max(0, Math.min(last, Math.floor(shot)));
     const n = Math.min(last, i + 1);
     const k = Math.max(0, Math.min(1, shot - i));
+    if (!this.pinned && k > 0 && k < 1 && i !== n) {
+      // between two shots, re-solve both for the in-between angle and the stack's live height, so
+      // the tilt never swings the pitch out of frame; then blend the two solved cameras
+      const A = this.shots[i], B = this.shots[n], w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
+      const lerp = (x: number, y: number) => x + (y - x) * k;
+      const live = (sh: Shot): Shot => {
+        const grow = sh.frame === "flat" || sh.frame === "all";
+        return { ...sh, az: lerp(A.az, B.az), el: lerp(A.el, B.el), frame: grow && this.state.height > 0.01 ? "all" : sh.frame, height: grow ? this.state.height : sh.height };
+      };
+      const a = this.fit(live(A), w, h), b = this.fit(live(B), w, h);
+      return { p: a.p.lerp(b.p, k), t: a.t.lerp(b.t, k) };
+    }
     const a = this.cams[i], b = this.cams[n];
     return { p: a.p.clone().lerp(b.p, k), t: a.t.clone().lerp(b.t, k) };
   }
@@ -387,6 +399,9 @@ export class Timestack {
       add(0, 0, this.iFault);
       add(52.5, 68, this.iFault);
     }
+    // and the goal's half of the top layer, so a close-up never reads as a cut-off stack
+    add(0, 0, N - 1);
+    add(52.5, 68, N - 1);
     b.expandByVector(this.v.set(5, 2, 5));
     return b;
   }

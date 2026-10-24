@@ -182,8 +182,27 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
       <Eyebrow n={i}>{t(`landing.ch${i}Eyebrow`)}</Eyebrow>
       <H2>{t(`landing.ch${i}Title`)}</H2>
       <P>{t(`landing.ch${i}Body`)}</P>
+      {i === 2 && chapter === 2 && (
+        <ol className="mt-5 space-y-0.5 border-l border-turf-edge pl-4 font-trace text-[13px] leading-[1.8] text-chalk-dim" aria-label={t("landing.trace.label")}>
+          {(["goal", "shot", "pass", "run", "bug", "pass2"] as const).map((k, n) => (
+            <li key={k} className={`rc-fade-in ${k === "bug" ? "font-semibold text-flare" : ""}`} style={{ animationDelay: `${0.15 + n * 0.18}s` }}>
+              {t(`landing.trace.${k}`)}
+            </li>
+          ))}
+        </ol>
+      )}
     </>
   ));
+  const copy: ReactNode[] = [
+    <Hero key="hero" />,
+    ...chapters,
+    <>
+      <Eyebrow n={5}>{t("landing.ch5Eyebrow")}</Eyebrow>
+      <H2>{t("landing.ch5Title")}</H2>
+      <P>{t("landing.ch5Body")}</P>
+      <Ctas />
+    </>,
+  ];
 
   return (
     <section ref={section} aria-labelledby="hero-h" className="relative">
@@ -198,23 +217,28 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
           ))}
         </nav>
         <div className="absolute bottom-5 right-6 hidden font-trace text-[11px] uppercase tracking-[0.12em] text-chalk-faint md:block">{t("landing.drag")}</div>
+        {/* the copy stays in frame beside the stack: one chapter at a time, crossfading as you scroll */}
+        <div className="pointer-events-none absolute inset-0 grid items-end px-5 pb-6 sm:px-10 md:items-center md:pb-0">
+          {copy.map((c, i) => (
+            <div
+              key={i}
+              aria-hidden={i !== chapter}
+              {...{ inert: i !== chapter ? "" : undefined }}
+              className={`[grid-area:1/1] max-w-[480px] self-end bg-gradient-to-b from-turf-deep/0 via-turf-deep/85 to-turf-deep/85 pt-10 transition-[opacity,transform] duration-500 md:self-center md:bg-none md:pt-0 ${
+                i === chapter ? "pointer-events-auto translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+            >
+              {c}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="relative -mt-[calc(100svh-var(--header-h))]">
-        <Chapter i={0}>
-          <Hero />
-        </Chapter>
-        {chapters.map((c, i) => (
-          <Chapter key={i} i={i + 1}>
-            {c}
-          </Chapter>
+      {/* scroll room: one spacer per chapter drives the camera and picks the copy */}
+      <div className="relative -mt-[calc(100svh-var(--header-h))]" aria-hidden="true">
+        {copy.map((_, i) => (
+          <div key={i} data-ch={i} className={i === 0 ? "h-[calc(100svh-var(--header-h))]" : "h-[120svh] md:h-[105svh]"} />
         ))}
-        <Chapter i={5}>
-          <Eyebrow n={5}>{t("landing.ch5Eyebrow")}</Eyebrow>
-          <H2>{t("landing.ch5Title")}</H2>
-          <P>{t("landing.ch5Body")}</P>
-          <Ctas />
-        </Chapter>
       </div>
     </section>
   );
@@ -270,16 +294,6 @@ function Ctas() {
       <a href="#library" onClick={(e) => (e.preventDefault(), document.getElementById("library")?.scrollIntoView({ behavior: "smooth" }))} className="rc-press inline-flex h-[52px] items-center rounded-[4px] px-6 font-display text-[14px] tracking-[0.04em] text-chalk ring-1 ring-inset ring-chalk [font-variation-settings:'wdth'_120] hover:bg-chalk/10">
         {t("landing.ctaLibrary")}
       </a>
-    </div>
-  );
-}
-
-function Chapter({ i, children }: { i: number; children: ReactNode }) {
-  // on phones the copy sits under the stack; the opening chapter fits the first screen
-  const size = i === 0 ? "min-h-[calc(100svh-var(--header-h))] pb-8" : "min-h-[150svh] pb-[10svh]";
-  return (
-    <div data-ch={i} className={`pointer-events-none flex items-end px-5 sm:px-10 md:min-h-[115svh] md:items-center md:pb-0 ${size}`}>
-      <div className="pointer-events-auto max-w-[480px] bg-gradient-to-b from-turf-deep/0 via-turf-deep/85 to-turf-deep/85 pt-10 md:bg-none md:pt-0">{children}</div>
     </div>
   );
 }

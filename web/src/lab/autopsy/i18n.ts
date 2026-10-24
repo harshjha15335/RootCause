@@ -20,7 +20,18 @@ const en = {
   back: "Back",
   next: "Next",
   beats: "Autopsy steps",
-  beat: { pre: "Before kick-off", goal: "The goal", mistakes: "Mistakes", trial: "Trial", verdict: "Verdict" },
+  beat: { goal: "The goal", plans: "Two plans", move: "The move", mistakes: "Mistakes", runs: "The test", trial: "200 replays", verdict: "Verdict", fix: "The fix", engine: "The engine", honest: "Verdict" },
+  plans: { k: "Two plans" },
+  move: { k: "The move", title: "The move, and one yellow line.", body: "The yellow line is {{def}}'s back line. Watch who drops behind it as {{att}} build the attack.", bodyHonest: "The yellow line is {{def}}'s back line. Nobody drops far behind it in this move." },
+  runs: { k: "The test", title: "Fix one mistake. Replay the move.", body: "Each pitch puts one suspect level with his line. These are the engine's recorded runs, side by side." },
+  fix: { k: "The fix", title: "What should have happened.", body: "{{name}} steps up with the line. {{receiver}} is caught {{m}} m offside and the move dies.", bodyOpen: "{{name}} steps up with the line and the move breaks down." },
+  s: {
+    real: "As it happened", realSub: "the tracking", ifHeld: "If {{name}} held the line", replaySub: "the engine's recorded replay",
+    behind: "#{{num}} {{name}} · {{m}} m behind the line", blame: "{{name}} · {{p}}%", goalWord: "GOAL", planLine: "{{team}} line · {{m}} m from goal",
+    binGoal: "Goal", binNo: "No goal", count: "{{g}} goals in {{n}}", ghost: "Where {{name}} really was", onLine: "{{name}}, level with the line",
+    runOffside: "Offside · no goal", runGoal: "Goal", runGoalAnyway: "Goal anyway", runNoGoal: "No goal", offsideBy: "{{name}} offside by {{m}} m",
+    suspectTag: "suspect · {{p}}% to blame", space: "Space he left",
+  },
   pre: {
     k: "Before kick-off",
     deeper: "{{team}}'s back line sat {{m}} m deeper than in their other meetings.",
@@ -51,7 +62,7 @@ const en = {
       same: "Back line {{line}} m from goal",
     },
   },
-  goal: { k: "The goal", title: "{{clock}} · {{scorer}} scores.", score: "{{home}} {{h}}–{{a}} {{away}}", slow: "Slow motion" },
+  goal: { k: "The goal", title: "{{clock}} · {{scorer}} scores.", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause traced it to a mistake {{s}} seconds earlier.", slow: "Slow motion" },
   mistake: {
     k: "Mistake {{n}} of {{of}}",
     title: "{{name}} stood {{m}} m behind his line.",
@@ -97,6 +108,7 @@ const en = {
   },
   engine: {
     open: "How the engine decides",
+    k: "How the engine decides",
     close: "Close",
     title: "How the engine decides",
     steps: [
@@ -137,7 +149,18 @@ const hi: Dict = {
   back: "पीछे",
   next: "आगे",
   beats: "ऑटोप्सी के चरण",
-  beat: { pre: "मैच से पहले", goal: "गोल", mistakes: "गलतियाँ", trial: "परीक्षण", verdict: "फ़ैसला" },
+  beat: { goal: "गोल", plans: "दो योजनाएँ", move: "मूव", mistakes: "गलतियाँ", runs: "परीक्षण", trial: "200 रीप्ले", verdict: "फ़ैसला", fix: "सुधार", engine: "इंजन", honest: "फ़ैसला" },
+  plans: { k: "दो योजनाएँ" },
+  move: { k: "मूव", title: "मूव, और एक पीली लाइन।", body: "पीली लाइन {{def}} की बैक लाइन है। देखिए कि {{att}} के हमला बनाते समय कौन उसके पीछे छूट जाता है।", bodyHonest: "पीली लाइन {{def}} की बैक लाइन है। इस मूव में कोई उससे बहुत पीछे नहीं छूटता।" },
+  runs: { k: "परीक्षण", title: "एक गलती सुधारें। मूव दोबारा चलाएँ।", body: "हर पिच पर एक संदिग्ध लाइन के बराबर है। ये इंजन के रिकॉर्ड किए गए रन हैं, साथ-साथ।" },
+  fix: { k: "सुधार", title: "क्या होना चाहिए था।", body: "{{name}} लाइन के साथ आगे बढ़ते हैं। {{receiver}} {{m}} मीटर ऑफ़साइड पकड़े जाते हैं और मूव ख़त्म।", bodyOpen: "{{name}} लाइन के साथ आगे बढ़ते हैं और मूव टूट जाता है।" },
+  s: {
+    real: "जैसा हुआ", realSub: "ट्रैकिंग", ifHeld: "अगर {{name}} लाइन पर रहते", replaySub: "इंजन का रिकॉर्ड किया रीप्ले",
+    behind: "#{{num}} {{name}} · लाइन से {{m}} मीटर पीछे", blame: "{{name}} · {{p}}%", goalWord: "गोल", planLine: "{{team}} की लाइन · गोल से {{m}} मीटर",
+    binGoal: "गोल", binNo: "गोल नहीं", count: "{{n}} में {{g}} गोल", ghost: "{{name}} असल में यहाँ थे", onLine: "{{name}}, लाइन के बराबर",
+    runOffside: "ऑफ़साइड · गोल नहीं", runGoal: "गोल", runGoalAnyway: "फिर भी गोल", runNoGoal: "गोल नहीं", offsideBy: "{{name}} {{m}} मीटर ऑफ़साइड",
+    suspectTag: "संदिग्ध · {{p}}% ज़िम्मेदार", space: "उनकी छोड़ी जगह",
+  },
   pre: {
     k: "मैच से पहले",
     deeper: "{{team}} की बैक लाइन बाकी मुक़ाबलों से {{m}} मी पीछे रही।",
@@ -168,7 +191,7 @@ const hi: Dict = {
       same: "बैक लाइन गोल से {{line}} मी",
     },
   },
-  goal: { k: "गोल", title: "{{clock}} · {{scorer}} का गोल।", score: "{{home}} {{h}}–{{a}} {{away}}", slow: "धीमी गति" },
+  goal: { k: "गोल", title: "{{clock}} · {{scorer}} का गोल।", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause ने इसे {{s}} सेकंड पहले की एक गलती तक ट्रेस किया।", slow: "धीमी गति" },
   mistake: {
     k: "गलती {{n}} / {{of}}",
     title: "{{name}} अपनी लाइन से {{m}} मी पीछे खड़े थे।",
@@ -214,6 +237,7 @@ const hi: Dict = {
   },
   engine: {
     open: "इंजन कैसे तय करता है",
+    k: "इंजन कैसे तय करता है",
     close: "बंद करें",
     title: "इंजन कैसे तय करता है",
     steps: [
@@ -253,7 +277,18 @@ const es: Dict = {
   back: "Atrás",
   next: "Siguiente",
   beats: "Pasos de la autopsia",
-  beat: { pre: "Antes del partido", goal: "El gol", mistakes: "Errores", trial: "Juicio", verdict: "Veredicto" },
+  beat: { goal: "El gol", plans: "Dos planes", move: "La jugada", mistakes: "Errores", runs: "La prueba", trial: "200 repeticiones", verdict: "Veredicto", fix: "La corrección", engine: "El motor", honest: "Veredicto" },
+  plans: { k: "Dos planes" },
+  move: { k: "La jugada", title: "La jugada, y una línea amarilla.", body: "La línea amarilla es la defensa de {{def}}. Mira quién se queda detrás mientras {{att}} construye el ataque.", bodyHonest: "La línea amarilla es la defensa de {{def}}. Nadie se queda muy atrás en esta jugada." },
+  runs: { k: "La prueba", title: "Corrige un error. Repite la jugada.", body: "Cada campo pone a un sospechoso a la altura de su línea. Son las repeticiones grabadas del motor, una al lado de otra." },
+  fix: { k: "La corrección", title: "Lo que debió pasar.", body: "{{name}} sube con la línea. {{receiver}} queda {{m}} m en fuera de juego y la jugada muere.", bodyOpen: "{{name}} sube con la línea y la jugada se rompe." },
+  s: {
+    real: "Tal como fue", realSub: "el tracking", ifHeld: "Si {{name}} mantiene la línea", replaySub: "la repetición grabada del motor",
+    behind: "#{{num}} {{name}} · {{m}} m detrás de la línea", blame: "{{name}} · {{p}}%", goalWord: "GOL", planLine: "Línea de {{team}} · a {{m}} m de su portería",
+    binGoal: "Gol", binNo: "Sin gol", count: "{{g}} goles de {{n}}", ghost: "Donde estaba de verdad {{name}}", onLine: "{{name}}, a la altura de la línea",
+    runOffside: "Fuera de juego · sin gol", runGoal: "Gol", runGoalAnyway: "Gol igualmente", runNoGoal: "Sin gol", offsideBy: "{{name}} en fuera de juego por {{m}} m",
+    suspectTag: "sospechoso · {{p}}% de la culpa", space: "Espacio que dejó",
+  },
   pre: {
     k: "Antes del partido",
     deeper: "La defensa de {{team}} jugó {{m}} m más atrás que en sus otros partidos.",
@@ -284,7 +319,7 @@ const es: Dict = {
       same: "Línea defensiva a {{line}} m de su portería",
     },
   },
-  goal: { k: "El gol", title: "{{clock}} · marca {{scorer}}.", score: "{{home}} {{h}}–{{a}} {{away}}", slow: "Cámara lenta" },
+  goal: { k: "El gol", title: "{{clock}} · marca {{scorer}}.", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause lo rastreó hasta un error {{s}} segundos antes.", slow: "Cámara lenta" },
   mistake: {
     k: "Error {{n}} de {{of}}",
     title: "{{name}} estaba {{m}} m por detrás de su línea.",
@@ -330,6 +365,7 @@ const es: Dict = {
   },
   engine: {
     open: "Cómo decide el motor",
+    k: "Cómo decide el motor",
     close: "Cerrar",
     title: "Cómo decide el motor",
     steps: [

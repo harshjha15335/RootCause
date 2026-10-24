@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
 import { prevented, type Autopsy } from "./model";
-import { clock, stepsOf, trialRows, type Step } from "./stage";
+import { clock, stepsOf, trialRows, type Step } from "./stadium";
 
 /**
  * The "Broadcast script" export: the autopsy as timed segments a studio can read over the
@@ -24,7 +24,7 @@ export function broadcastScript(a: Autopsy, t: TFunction): string {
     at += st.dur;
   };
   for (const st of steps) {
-    if (st.beat === "pre") {
+    if (st.beat === "plans") {
       const facts = [a.def, a.att].map((k) => {
         const f = a.dossier.facts[k][0];
         return t(`autopsy.pre.${f.key}`, { team: lab.clubs[k].name, ...f.params });
@@ -55,11 +55,13 @@ export function broadcastScript(a: Autopsy, t: TFunction): string {
         t("autopsy.verdict.why1", v),
         t(c.offside ? "autopsy.verdict.why2" : "autopsy.verdict.why2Count", v),
         `${t("autopsy.verdict.formula")}: ${t("autopsy.verdict.formulaX", v)}`,
-        c.offside ? t("autopsy.verdict.fix", v) : t("autopsy.verdict.fixOpen"),
       ]);
-    } else if (st.beat === "verdict") {
+    } else if (st.beat === "fix" && a.kind === "traced") {
+      const v = verdictVars(a);
+      seg(st, "fix", [a.j.culprit.offside ? t("autopsy.verdict.fix", v) : t("autopsy.verdict.fixOpen")]);
+    } else if (st.beat === "honest") {
       seg(st, "verdict", honestLines(a, t));
-    }
+    } else at += st.dur;
   }
   return out.join("\n");
 }
