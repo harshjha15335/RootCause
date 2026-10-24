@@ -146,3 +146,106 @@ export function useAnalysis(matchId = SHOWCASE_MATCH) {
     staleTime: Infinity,
   });
 }
+
+/**
+ * The Match page's stacks, exported by web/tools/export_stacks.py from the files above (no new
+ * maths). Shape documented in web/tools/STACKS.md. Shape Stack points are in each team's own
+ * frame (attacking toward x = 105); chance frames and fixed positions are raw engine coordinates.
+ */
+export type Verdict5 = "worked" | "backfired" | "conceded" | "level";
+export type Tally = { shots_for: number; shots_against: number; xg_for: number; xg_against: number; goals_for: number; goals_against: number };
+export type Bend = { w: number; kind: "line_higher" | "line_deeper" | "wider" | "narrower"; m: number; from: number; to: number; from_s: number; next: { before: Tally; after: Tally; verdict: Verdict5 } };
+export type WindowMetrics = { line_m: number; width_m: number; depth_m: number };
+export type ShapeWindow = { from_s: number; to_s: number } & Record<`${Side}_${"in" | "out"}`, (XY | null)[]>;
+
+export type StackChance = {
+  seq: number;
+  s: number;
+  period: number;
+  side: Side;
+  dir: number;
+  shooter: string;
+  outcome: Chance["outcome"];
+  xg: number;
+  d: number;
+  angle: number;
+  blockers: number;
+  assist: string | null;
+  build_up_s: number;
+  score_before: [number, number];
+  frame: { ball: XY; pos: XY[] };
+  best: { id: string; pass_p: number; xg: number; value: number; gain: number; at: XY } | null;
+};
+
+export type Suspect = { id: string; evidence_id: string; bug: string; second: number; blame_pct: number; fixed_goals: number };
+export type GoalRow = {
+  n: number;
+  goal_id: string;
+  s: number;
+  side: Side;
+  scorer: string;
+  assist: string | null;
+  seq: number;
+  xg: number;
+  d: number;
+  build_up_s: number;
+  traced: boolean;
+  verdict?: { culprit: string; bug: string; second: number; blame_pct: number; trials: number; baseline_goals: number; fixed_goals: number; behind_m: number | null; suspects: Suspect[] };
+  honest?: { kind: "tap_in" | "close" | "long"; xg: number; d: number; build_up_s: number; assist: string | null; won_ball: { player_id: string; second: number; kind: string } | null };
+};
+
+export type Moment =
+  | { kind: "goal"; s: number; seq: number; xg: number; d: number }
+  | { kind: "assist"; s: number; seq: number; to: string }
+  | { kind: "better"; s: number; seq: number; xg: number; to: string; gain: number }
+  | { kind: "big_miss"; s: number; seq: number; xg: number; d: number; outcome: Chance["outcome"] }
+  | { kind: "mistake"; s: number; goal_id: string; goal_s: number; bug: string; blame_pct: number; fixed_goals: number; trials: number; baseline_goals: number; fixed_at: XY | null }
+  | { kind: "turnover"; s: number; seq: number | null; xg: number; goal: boolean; how: "pass" | "duel" };
+
+export type DossierNote = { key: string; params: Record<string, number | string> };
+export type Dossier = {
+  formation: string;
+  meeting: number | null;
+  out: Shape;
+  in: Shape;
+  line_m: number;
+  width_m: number;
+  depth_m: number;
+  press_m: number;
+  ppda: number;
+  possession_pct: number;
+  usual: Omit<Dossier, "formation" | "meeting" | "out" | "in" | "usual" | "notes" | "line_usual_m" | "width_usual_m"> | null;
+  line_usual_m: number | null;
+  width_usual_m: number | null;
+  notes: DossierNote[];
+};
+
+export type Stacks = {
+  match_id: string;
+  meeting: number | null;
+  score: [number, number];
+  duration_s: number;
+  names: Record<string, { name: string; number: number; position: string }>;
+  shape_stack: {
+    window_s: number;
+    windows: ShapeWindow[];
+    teams: Record<Side, { units: Unit[]; metrics: ((WindowMetrics & { w: number }) | null)[]; metrics_in: (WindowMetrics | null)[]; bends: Bend[] }>;
+  };
+  chances: StackChance[];
+  goals: GoalRow[];
+  moments: Record<string, Moment[]>;
+  dossier: Record<Side, Dossier>;
+};
+
+export function useStacks(matchId = SHOWCASE_MATCH) {
+  return useQuery<Stacks, Error>({
+    queryKey: ["stacks", matchId],
+    queryFn: async () => {
+      const url = `${import.meta.env.BASE_URL}showcase/${matchId}/stacks.json`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`${url} returned ${r.status}`);
+      return r.json();
+    },
+    staleTime: Infinity,
+  });
+}
