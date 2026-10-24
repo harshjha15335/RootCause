@@ -1,5 +1,7 @@
 import { Delaunay } from "d3-delaunay";
 import * as THREE from "three";
+import { quality } from "../lib/device";
+import { palette } from "../theme/palette";
 
 /**
  * The Timestack: one goal as a stack of seconds. Each layer is the pitch at one second, the
@@ -28,18 +30,29 @@ export type StackState = {
   scan: number; // layer index the scan sheet sits on (fractional)
   focus: number; // dim everything but the culprit and the ball
   fault: number; // offside line and layer flash
-  patch: number; // the fix ribbon drawn, the goal above it fading
+  patch: number; // the fix ribbon drawn
+  gone: number; // the real goal fading away once the fix has played
   line: number; // the back line through time, and nearest-player space on the fault layer
-  cx: number; cy: number; cz: number; tx: number; ty: number; tz: number;
+  shot: number; // camera position along the list of shots (fractional between two)
 };
+
+/**
+ * A camera shot: what to frame, from which side. The camera distance and aim are solved from the
+ * bounding box of what is framed, so every match stays in frame whatever its positions.
+ * az: compass angle around the stack (0 = +x side, PI/2 = +z side); el: angle above the pitch.
+ */
+export type Shot = { frame: "flat" | "all" | "fault" | "fix"; az: number; el: number; height: number; margin?: number; free?: FreeArea };
+/** The part of the canvas (normalised -1..1, y up) left free of copy, for a canvas of w by h px. */
+export type FreeArea = (w: number, h: number) => { x0: number; x1: number; y0: number; y1: number };
+const FULL: FreeArea = () => ({ x0: -0.92, x1: 0.92, y0: -0.88, y1: 0.88 });
 
 export type StackLabel = { text: string; bug?: boolean; at: (s: StackState) => [number, number, number] | null; show: (s: StackState) => boolean };
 
-const COBALT = 0x1530d6;
-const DEEP = 0x0c1d97;
-const PAPER = 0xf3f5ff;
-const AWAY = 0x9fb0ff;
-const VAR = 0xffd60a;
+const COBALT = palette.cobalt;
+const DEEP = palette.deep;
+const PAPER = palette.chalk;
+const AWAY = palette.sky;
+const VAR = palette.var;
 export const LAYER = 2.7;
 const X = (x: number) => x - 52.5;
 const Z = (y: number) => y - 34;
@@ -70,7 +83,10 @@ export class Timestack {
   state: StackState;
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(38, 1, 0.1, 600);
+  private camera = new THREE.PerspectiveCamera(36, 1, 0.1, 900);
+  private scratch = new THREE.PerspectiveCamera(36, 1, 0.1, 900);
+  private cams: { p: THREE.Vector3; t: THREE.Vector3 }[] = [];
+  private pinned: { p: THREE.Vector3; t: THREE.Vector3 } | null = null;
   private stack = new THREE.Group();
   private scanGroup = new THREE.Group();
   private ribbons = new Map<string, THREE.Mesh>();
@@ -94,10 +110,18 @@ export class Timestack {
   private disposables: { dispose(): void }[] = [];
   onSecond: (s: number) => void = () => {};
 
-  constructor(private canvas: HTMLCanvasElement, labels: HTMLElement, private d: StackData, state: StackState, labelDefs: StackLabel[]) {
+  constructor(
+    private canvas: HTMLCanvasElement,
+    labels: HTMLElement,
+    private d: StackData,
+    state: StackState,
+    labelDefs: StackLabel[],
+    private shots: Shot[],
+    private free: FreeArea = FULL,
+  ) {
     this.state = state;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: quality.antialias, powerPreference: "high-performance" });
+    this.renderer.setPixelRatio(quality.dpr);
     this.renderer.setClearColor(COBALT, 1);
     this.scene.fog = new THREE.Fog(COBALT, 130, 280);
     this.scene.add(this.stack);
@@ -129,7 +153,7 @@ export class Timestack {
     d.ids.forEach((id, j) => {
       const pts = d.pos.map((row, i) => new THREE.Vector3(X(row[j][0]), i * LAYER, Z(row[j][1])));
       const home = id.startsWith("H");
-      this.ribbons.set(id, this.ribbon(pts, home ? 0.32 : 0.3, home ? PAPER : AWAY, home ? 0.8 : 0.7));
+      this.ribbons.set(id, this.ribbon(pts, id === d.culprit ? 0.42 : home ? 0.32 : 0.3, home ? PAPER : AWAY, home ? 0.8 : 0.7));
     });
     this.ball = this.ribbon(d.ball.map((b, i) => new THREE.Vector3(X(b[0]), i * LAYER, Z(b[1]))), 0.62, 0xffffff, 1);
     const t0 = d.seconds[0];
@@ -227,13 +251,13 @@ export class Timestack {
     const S = this.state;
     const N = this.d.seconds.length;
     this.stack.scale.y = Math.max(0.001, S.height);
-    const goalFade = 1 - S.patch * 0.85;
+    const goalFade = 1 - S.gone * 0.85;
     for (const [id, r] of this.ribbons) {
       const culprit = id === this.d.culprit;
       this.drawn(r, S.draw);
       const base = id.startsWith("H") ? 0.8 : 0.7;
       const m = r.material as THREE.MeshBasicMaterial;
-      m.opacity = culprit ? (S.patch > 0 ? 0.35 + 0.65 * (1 - S.patch) : base) : base * (1 - S.focus * 0.8) * goalFade;
+      m.opacity = culprit ? (S.patch > 0 ? 0.35 + 0.65 * (1 - S.patch) : S.fault > 0.3 ? 1 : base) : base * (1 - S.focus * 0.8) * goalFade;
       m.color.setHex(culprit && S.fault > 0.3 ? VAR : culprit ? AWAY : m.color.getHex());
     }
     this.drawn(this.ball, S.draw);
@@ -266,9 +290,16 @@ export class Timestack {
   private frame = () => {
     const S = this.state;
     this.yaw += (this.yawTarget - this.yaw) * 0.08;
-    const dx = S.cx - S.tx, dz = S.cz - S.tz, c = Math.cos(this.yaw), s = Math.sin(this.yaw);
-    this.camera.position.set(S.tx + dx * c - dz * s, S.cy, S.tz + dx * s + dz * c);
-    this.camera.lookAt(S.tx, S.ty, S.tz);
+    const { p: cp, t: ct } = this.camAt(S.shot);
+    const tx = ct.x, ty = ct.y, tz = ct.z, px = cp.x, py = cp.y, pz = cp.z;
+    const dx = px - tx, dz = pz - tz, c = Math.cos(this.yaw), s = Math.sin(this.yaw);
+    this.camera.position.set(tx + dx * c - dz * s, py, tz + dx * s + dz * c);
+    this.camera.lookAt(tx, ty, tz);
+    // fog follows the shot, so a far camera doesn't wash the yellow out to olive
+    const fog = this.scene.fog as THREE.Fog;
+    const far = Math.hypot(px - tx, py - ty, pz - tz);
+    fog.near = far + 30;
+    fog.far = far + 190;
     this.apply();
     this.renderer.render(this.scene, this.camera);
     const w = this.canvas.clientWidth, h = this.canvas.clientHeight;
@@ -280,7 +311,8 @@ export class Timestack {
         // keep the tag on screen when its point sits near the edge (phones)
         const half = el.offsetWidth / 2 + 8;
         const x = Math.min(Math.max((this.v.x * 0.5 + 0.5) * w, half), w - half);
-        el.style.transform = `translate(${x}px, ${(-this.v.y * 0.5 + 0.5) * h}px) translate(-50%, -140%)`;
+        const y = Math.min(Math.max((-this.v.y * 0.5 + 0.5) * h, el.offsetHeight * 1.4 + 8), h - 8);
+        el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -140%)`;
       }
       el.style.opacity = on && this.v.z < 1 ? "1" : "0";
     }
@@ -291,10 +323,94 @@ export class Timestack {
     const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
-    const narrow = w < 720;
-    this.camera.setViewOffset(w, h, narrow ? 0 : -w * 0.17, narrow ? h * 0.16 : 0, w, h);
-    this.camera.fov = narrow ? 52 : 38;
+    this.camera.fov = w < 720 ? 46 : 34;
     this.camera.updateProjectionMatrix();
+    this.cams = this.shots.map((sh) => this.fit(sh, w, h));
+    if (this.pinned) this.cams.unshift(this.pinned);
+  }
+
+  /** The camera (before the drag yaw) at a fractional place in the shot list. */
+  private camAt(shot: number) {
+    const last = this.cams.length - 1;
+    const i = Math.max(0, Math.min(last, Math.floor(shot)));
+    const n = Math.min(last, i + 1);
+    const k = Math.max(0, Math.min(1, shot - i));
+    const a = this.cams[i], b = this.cams[n];
+    return { p: a.p.clone().lerp(b.p, k), t: a.t.clone().lerp(b.t, k) };
+  }
+
+  /**
+   * Glide from wherever the camera is now to one shot: the Story's steps can be picked in any
+   * order, so each move starts from the live camera. Tween `state.shot` from 0 to 1 afterwards.
+   */
+  glideTo(sh: Shot) {
+    this.pinned = this.cams.length ? this.camAt(this.state.shot) : null;
+    this.shots = [sh];
+    this.state.shot = this.pinned ? 0 : 1;
+    this.resize();
+  }
+
+  /** Points that a shot must keep in view, before the stack's height scale. */
+  private box(sh: Shot) {
+    const d = this.d, N = d.seconds.length, h = sh.height;
+    const b = new THREE.Box3();
+    const add = (x: number, y: number, i: number) => b.expandByPoint(this.v.set(X(x), i * LAYER * h, Z(y)));
+    if (sh.frame === "flat" || sh.frame === "all") {
+      add(0, 0, 0);
+      add(105, 68, sh.frame === "flat" ? 0 : N - 1);
+      return b;
+    }
+    const t0 = d.seconds[0];
+    const cj = d.ids.indexOf(d.culprit), sj = d.ids.indexOf(d.scorer);
+    const from = sh.frame === "fault" ? Math.max(0, this.iFault - 2) : 0;
+    for (let i = from; i < N; i++) {
+      if (cj >= 0) add(...d.pos[i][cj], i);
+      if (sh.frame === "fault" && sj >= 0) add(...d.pos[i][sj], i);
+      if (sh.frame === "fault" || i >= this.iFault) add(...d.ball[i], i);
+    }
+    for (const f of d.fix) add(...f.culprit, f.second - t0);
+    // the mistake layer's defending half (offside line and shaded cells) stays whole in the close-up
+    {
+      add(0, 0, this.iFault);
+      add(52.5, 68, this.iFault);
+    }
+    b.expandByVector(this.v.set(5, 2, 5));
+    return b;
+  }
+
+  /** Solve the camera distance and aim that keep a shot's box inside the free part of the canvas. */
+  private fit(sh: Shot, w: number, h: number) {
+    const box = this.box(sh);
+    const free = (sh.free ?? this.free)(w, h);
+    const cam = this.scratch;
+    cam.fov = this.camera.fov;
+    cam.aspect = w / h;
+    cam.updateProjectionMatrix();
+    const corners: THREE.Vector3[] = [];
+    for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(x, y, z));
+    const dir = new THREE.Vector3(Math.cos(sh.el) * Math.cos(sh.az), Math.sin(sh.el), Math.cos(sh.el) * Math.sin(sh.az));
+    const t = box.getCenter(new THREE.Vector3());
+    let dist = box.getSize(new THREE.Vector3()).length() * 1.2;
+    const up = new THREE.Vector3(), right = new THREE.Vector3(), p = new THREE.Vector3();
+    const tan = Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2);
+    for (let it = 0; it < 16; it++) {
+      cam.position.copy(t).addScaledVector(dir, dist);
+      cam.lookAt(t);
+      cam.updateMatrixWorld();
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const c of corners) {
+        p.copy(c).project(cam);
+        x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y);
+      }
+      const k = Math.max((x1 - x0) / (free.x1 - free.x0), (y1 - y0) / (free.y1 - free.y0)) * (sh.margin ?? 1.06);
+      up.set(0, 1, 0).applyQuaternion(cam.quaternion);
+      right.set(1, 0, 0).applyQuaternion(cam.quaternion);
+      const half = dist * tan;
+      t.addScaledVector(up, ((y0 + y1) / 2 - (free.y0 + free.y1) / 2) * half * 0.9);
+      t.addScaledVector(right, ((x0 + x1) / 2 - (free.x0 + free.x1) / 2) * half * cam.aspect * 0.9);
+      dist *= 1 + (k - 1) * 0.9;
+    }
+    return { p: t.clone().addScaledVector(dir, dist), t };
   }
 
   dispose() {
@@ -342,6 +458,14 @@ function spaceTexture(d: StackData, layer: number) {
     g.lineWidth = 5;
     g.stroke();
   }
+  // fade the cells out away from the culprit: the shot closes in, so the far side would be cut off
+  const cp = row[d.ids.indexOf(d.culprit)] ?? [52.5, 34];
+  const mask = g.createRadialGradient(cp[0] * 10, cp[1] * 10, 120, cp[0] * 10, cp[1] * 10, 460);
+  mask.addColorStop(0, "rgba(0,0,0,1)");
+  mask.addColorStop(1, "rgba(0,0,0,0)");
+  g.globalCompositeOperation = "destination-in";
+  g.fillStyle = mask;
+  g.fillRect(0, 0, 1050, 680);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
