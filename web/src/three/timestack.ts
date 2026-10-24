@@ -303,15 +303,28 @@ export class Timestack {
     this.apply();
     this.renderer.render(this.scene, this.camera);
     const w = this.canvas.clientWidth, h = this.canvas.clientHeight;
+    // place tags, then nudge any that would overlap one already placed (close-ups on phones)
+    const placed: { x: number; y: number; w: number; h: number }[] = [];
     for (const { el, l } of this.tags) {
       const p = l.at(S);
       const on = !!p && l.show(S);
       if (p) {
         this.v.set(p[0], p[1], p[2]).project(this.camera);
+        const tw = el.offsetWidth, th = el.offsetHeight;
         // keep the tag on screen when its point sits near the edge (phones)
-        const half = el.offsetWidth / 2 + 8;
+        const half = tw / 2 + 8;
         const x = Math.min(Math.max((this.v.x * 0.5 + 0.5) * w, half), w - half);
-        const y = Math.min(Math.max((-this.v.y * 0.5 + 0.5) * h, el.offsetHeight * 1.4 + 8), h - 8);
+        let y = Math.min(Math.max((-this.v.y * 0.5 + 0.5) * h, th * 1.4 + 8), h - 8);
+        if (on && this.v.z < 1) {
+          for (let k = 0; k < placed.length; k++) {
+            const o = placed[k];
+            if (Math.abs(o.x - x) < (o.w + tw) / 2 + 4 && Math.abs(o.y - y) < (o.h + th) / 2 + 4) {
+              y = o.y + (o.h + th) / 2 + 6;
+              k = -1; // re-check against every placed tag from its new spot
+            }
+          }
+          placed.push({ x, y, w: tw, h: th });
+        }
         el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -140%)`;
       }
       el.style.opacity = on && this.v.z < 1 ? "1" : "0";
