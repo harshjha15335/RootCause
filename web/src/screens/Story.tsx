@@ -1,163 +1,253 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { go } from "../lib/nav";
-import { BASE_GOALS, BLAME, FuturesStage, MISTAKES, TRIALS } from "../story/futures";
+import type { EngineMatchEvent, Evidence, MatchMeta, RecordedReplay } from "../api/types";
+import { Track } from "../lib/frames";
+import { loadGsap } from "../lib/motion";
+import { go, pageHref } from "../lib/nav";
 import { useUi } from "../store/uiStore";
+import { css } from "../theme/palette";
+import type { FreeArea, Shot, StackData, StackLabel, StackState, Timestack } from "../three/timestack";
+import "./landingCopy";
+import { buildStack } from "./TimestackStory";
 
-const BEATS = 5;
-const FIX_BEAT = 3;
+/** The example: the traced 62nd-minute goal of Meeting 1, the same goal the demo autopsy opens on. */
+const EXAMPLE = { match: "p-1008", goal: "p-1008-g4" };
+const STEPS = 5;
+
+// The camera stays level, beside the stack: time reads bottom to top, the goal at the far end.
+const SIDE = -Math.PI / 2;
+const SHOTS: Shot[] = [
+  { frame: "all", az: SIDE + 0.14, el: 0.24, height: 1 },
+  { frame: "all", az: SIDE + 0.1, el: 0.22, height: 1 },
+  { frame: "fault", az: SIDE + 0.3, el: 0.32, height: 1, margin: 1.12 },
+  { frame: "fix", az: SIDE + 0.42, el: 0.28, height: 1, margin: 1.12 },
+  { frame: "all", az: SIDE + 0.14, el: 0.24, height: 1 },
+];
+
+/** Keeps the stack clear of the step rail at the top and the caption at the bottom. */
+const storyFree: FreeArea = (w, h) => {
+  const top = w >= 720 ? 96 : 84;
+  const bottom = w >= 720 ? 230 : 290;
+  return { x0: -0.94, x1: 0.94, y0: -1 + (2 * bottom) / h, y1: 1 - (2 * top) / h };
+};
+
+async function loadExample(): Promise<StackData> {
+  const base = `${import.meta.env.BASE_URL}showcase/${EXAMPLE.match}/`;
+  const get = async <T,>(f: string): Promise<T> => {
+    const r = await fetch(base + f);
+    if (!r.ok) throw new Error(`${f} returned ${r.status}`);
+    return r.json() as Promise<T>;
+  };
+  const [meta, ticks, replays, ev] = await Promise.all([
+    get<MatchMeta>("meta.json"),
+    get<EngineMatchEvent[]>("ticks.json"),
+    get<Record<string, Record<string, RecordedReplay>>>("replays.json"),
+    get<Evidence>(`traces/${EXAMPLE.goal}.json`),
+  ]);
+  const track = new Track([...meta.home.players, ...meta.away.players].map((p) => p.id));
+  for (const e of ticks) track.addEngine(e);
+  const data = buildStack(track, ev, replays, meta);
+  if (!data) throw new Error("the example goal has no stack");
+  return data;
+}
+
+/** What each step shows. Step 1 also runs the scan sheet down the layers. */
+function stepState(i: number, N: number, iFault: number): Partial<StackState> {
+  const base = { height: 1, draw: 1 };
+  if (i === 0) return { ...base, scan: N - 1, focus: 0, fault: 0, line: 0, patch: 0, gone: 0 };
+  if (i === 1) return { ...base, focus: 0.25, fault: 0, line: 0, patch: 0, gone: 0 };
+  if (i === 2) return { ...base, scan: iFault, focus: 1, fault: 1, line: 1, patch: 0, gone: 0 };
+  if (i === 3) return { ...base, scan: iFault, focus: 0.6, fault: 1, line: 0.35, patch: 1, gone: 0 };
+  return { ...base, scan: iFault, focus: 0.2, fault: 0.6, line: 0, patch: 1, gone: 1 };
+}
 
 /**
- * How Root Cause thinks, on one made-up attack: the goal, the rewind, 200 replays, fix one
- * mistake. It explains the engine only; real goals belong to the Lab, which this hands off to.
+ * How Root Cause thinks, told with the Timestack on one real traced goal from the library:
+ * goal on top, scan down, the mistake layer lights up, the fix is drawn beside it, the goal goes.
  */
 export function Story() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const reduced = useUi((s) => s.reducedMotion);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const stage = useRef<FuturesStage | null>(null);
-  const [beat, setBeat] = useState(0);
-  const [fixed, setFixed] = useState(-1);
-  const [goals, setGoals] = useState(0);
-
-  const labels = useMemo(
-    () => ({
-      goal: t("story.tagGoal"),
-      start: t("story.tagStart"),
-      fixed: t("story.tagFixed"),
-      mistakes: MISTAKES.map((_, i) => t(`story.m${i + 1}`)),
-    }),
-    [t],
-  );
+  const labels = useRef<HTMLDivElement>(null);
+  const engine = useRef<{ stack: Timestack; data: StackData; gsap: typeof import("gsap").gsap | null } | null>(null);
+  const [step, setStep] = useState(0);
+  const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
 
   useEffect(() => {
-    const s = new FuturesStage(canvas.current!, labels, setGoals, reduced);
-    stage.current = s;
-    return () => s.dispose();
-    // labels are pushed separately below; the stage lives as long as the page
+    let off = false;
+    let dispose = () => {};
+    setStatus("loading");
+    Promise.all([loadExample(), import("../three/timestack"), reduced ? Promise.resolve(null) : loadGsap()])
+      .then(([data, { Timestack, stackPoint }, g]) => {
+        if (off || !canvas.current || !labels.current) return;
+        const N = data.seconds.length;
+        const iFault = data.seconds.indexOf(data.faultSecond);
+        const cj = data.ids.indexOf(data.culprit);
+        const last = data.fix[data.fix.length - 1];
+        const top = (s: StackState) => stackPoint(data.ball[N - 1][0], data.ball[N - 1][1], N - 1, s.height);
+        const defs: StackLabel[] = [
+          { text: t("storyx.tagGoal"), at: top, show: (s) => s.gone < 0.5 },
+          { text: t("storyx.tagFault"), bug: true, at: (s) => stackPoint(data.pos[iFault][cj][0], data.pos[iFault][cj][1], iFault, s.height), show: (s) => s.fault > 0.5 && s.patch < 0.5 },
+          ...(last ? [{ text: t("storyx.tagFix"), bug: true, at: (s: StackState) => stackPoint(last.culprit[0], last.culprit[1], last.second - data.seconds[0], s.height), show: (s: StackState) => s.patch > 0.7 }] : []),
+          { text: t("storyx.tagGone"), at: top, show: (s) => s.gone > 0.6 },
+        ];
+        const first: StackState = reduced
+          ? { shot: 0, ...(stepState(0, N, iFault) as Omit<StackState, "shot">) }
+          : { shot: 0, height: 0.02, draw: 0, scan: N - 1, focus: 0, fault: 0, line: 0, patch: 0, gone: 0 };
+        const stack = new Timestack(canvas.current, labels.current, data, first, defs, [SHOTS[0]], storyFree);
+        engine.current = { stack, data, gsap: g?.gsap ?? null };
+        setStatus("ready");
+
+        const onResize = () => stack.resize();
+        addEventListener("resize", onResize);
+        let drag: number | null = null;
+        const el = canvas.current;
+        const down = (e: PointerEvent) => (drag = e.clientX);
+        const move = (e: PointerEvent) => {
+          if (drag === null) return;
+          stack.yawTarget = Math.max(-0.6, Math.min(0.6, stack.yawTarget + (e.clientX - drag) * 0.005));
+          drag = e.clientX;
+        };
+        const up = () => (drag = null);
+        el.addEventListener("pointerdown", down);
+        addEventListener("pointermove", move);
+        addEventListener("pointerup", up);
+        dispose = () => {
+          g?.gsap.killTweensOf(stack.state);
+          removeEventListener("resize", onResize);
+          el.removeEventListener("pointerdown", down);
+          removeEventListener("pointermove", move);
+          removeEventListener("pointerup", up);
+          stack.dispose();
+        };
+      })
+      .catch((e) => {
+        console.warn(e);
+        if (!off) setStatus("failed");
+      });
+    return () => {
+      off = true;
+      engine.current = null;
+      dispose();
+    };
+    // the 3D tags are written once, so a language change rebuilds the stage
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced]);
-  useEffect(() => stage.current?.setLabels(labels), [labels]);
+  }, [reduced, i18n.language]);
 
-  const fix = (i: number) => {
-    setFixed(i);
-    stage.current?.setFix(i);
-  };
-  const show = (b: number) => {
-    const next = Math.max(0, Math.min(BEATS - 1, b));
-    setBeat(next);
-    stage.current?.setBeat(next);
-    if (next === 2) setFixed(-1);
-    if (next === BEATS - 1 && fixed < 0) fix(0);
-  };
-
-  // on the fix step, fix the biggest mistake for people who don't tap
+  // each step: glide the camera, ease the layers into that step's state
   useEffect(() => {
-    if (beat !== FIX_BEAT || fixed >= 0) return;
-    const id = setTimeout(() => fix(0), 2600);
-    return () => clearTimeout(id);
-  }, [beat, fixed]);
+    const e = engine.current;
+    if (!e || status !== "ready") return;
+    const { stack, data, gsap } = e;
+    const N = data.seconds.length;
+    const iFault = data.seconds.indexOf(data.faultSecond);
+    const to = stepState(step, N, iFault);
+    if (!gsap) {
+      stack.glideTo(SHOTS[step]);
+      Object.assign(stack.state, to, { shot: 1, scan: step === 1 ? iFault : (to.scan ?? iFault) });
+      return;
+    }
+    gsap.killTweensOf(stack.state);
+    stack.glideTo(SHOTS[step]);
+    gsap.to(stack.state, { ...to, shot: 1, duration: 1.8, ease: "power2.inOut" });
+    if (step === 1) {
+      gsap.fromTo(stack.state, { scan: N - 1 }, { scan: iFault, duration: 3.4, ease: "power1.inOut", repeat: -1, repeatDelay: 0.8, delay: 0.6 });
+    }
+  }, [step, status]);
 
-  const names = Array.from({ length: BEATS }, (_, i) => t(`story.b${i + 1}`));
+  const show = (i: number) => setStep(Math.max(0, Math.min(STEPS - 1, i)));
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest("input, textarea, select")) return;
+      if (e.key === "ArrowRight") setStep((s) => Math.min(STEPS - 1, s + 1));
+      if (e.key === "ArrowLeft") setStep((s) => Math.max(0, s - 1));
+    };
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <section aria-labelledby="story-h" className="mx-auto max-w-[1280px] px-5 pb-16 pt-8 sm:px-8">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk-faint">{t("story.eyebrow")}</p>
-        <p className="text-[13px] text-chalk-faint">{t("story.invented")}</p>
+    <section aria-labelledby="story-h" className="relative h-[calc(100svh-var(--header-h))] min-h-[560px] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#1530d6_45%,#0b1a8a_100%)]">
+      <canvas ref={canvas} className={`absolute inset-0 block h-full w-full cursor-grab touch-pan-y transition-opacity duration-700 active:cursor-grabbing ${status === "ready" ? "opacity-100" : "opacity-0"}`} role="img" aria-label={t("storyx.canvas")} />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#1530d6_0%,transparent_9%,transparent_91%,#1530d6_100%)]" aria-hidden="true" />
+      <div ref={labels} className="pointer-events-none absolute inset-0" aria-hidden="true" />
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 px-5 pt-5 sm:px-10 sm:pt-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk">{t("storyx.eyebrow")}</p>
+          <p className="text-[13px] text-chalk-dim">{t("storyx.example")}</p>
+        </div>
+        <ol className="pointer-events-auto mt-4 grid max-w-[720px] grid-cols-5 gap-1.5" aria-label={t("storyx.steps")}>
+          {Array.from({ length: STEPS }, (_, i) => (
+            <li key={i}>
+              <button
+                type="button"
+                onClick={() => show(i)}
+                aria-current={i === step ? "step" : undefined}
+                className={`rc-press grid min-h-[40px] w-full content-start gap-2 text-left text-[12px] font-semibold ${i === step ? "text-chalk" : "text-chalk-faint hover:text-chalk"}`}
+              >
+                <span className="relative block h-[3px] overflow-hidden rounded-full bg-chalk/15">
+                  <span className={`absolute inset-0 origin-left transition-transform duration-500 ease-out ${i === 2 || i === 3 ? "bg-flare" : "bg-chalk"} ${i <= step ? "scale-x-100" : "scale-x-0"}`} />
+                </span>
+                <span className="truncate">
+                  <span className="sm:hidden">{i + 1}</span>
+                  <span className="hidden sm:inline">{t(`storyx.s${i + 1}`)}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
 
-      <ol className="mt-4 grid grid-cols-5 gap-1.5" aria-label={t("story.steps")}>
-        {names.map((n, i) => (
-          <li key={i}>
-            <button
-              type="button"
-              onClick={() => show(i)}
-              aria-current={i === beat ? "step" : undefined}
-              className={`rc-press grid w-full gap-1.5 text-left text-[12px] font-semibold ${i === beat ? "text-chalk" : "text-chalk-faint hover:text-chalk"}`}
-            >
-              <span className="relative block h-[3px] overflow-hidden rounded-full bg-turf-edge">
-                <span className={`absolute inset-0 origin-left bg-chalk transition-transform duration-500 ease-out ${i <= beat ? "scale-x-100" : "scale-x-0"}`} />
-              </span>
-              <span className="hidden truncate sm:block">{n}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-
-      <div className="mt-6 min-h-[168px]" aria-live="polite">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={beat}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <h1 id="story-h" className="font-display text-[clamp(36px,5.4vw,72px)] leading-[0.95] text-chalk [text-wrap:balance]">
-              {t(`story.t${beat + 1}`)}
-            </h1>
-            <p className="mt-3 max-w-[56ch] text-[17px] leading-[1.55] text-chalk-dim sm:text-[18px]">{t(`story.l${beat + 1}`)}</p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
-        <div className="relative aspect-[4/3.4] min-w-0 overflow-hidden rounded-[24px] bg-[radial-gradient(120%_90%_at_50%_0%,#2a48ec_0%,#1027b8_55%,#0a1a8c_100%)] sm:aspect-[16/10]">
-          <canvas ref={canvas} className="block h-full w-full" role="img" aria-label={t("story.canvasLabel")} />
-          <div className="absolute bottom-3 left-3.5 flex flex-wrap gap-3.5 text-[12px] font-semibold text-chalk-dim" aria-hidden="true">
-            <Key color="#f3f5ff">{t("story.keyAttack")}</Key>
-            <Key color="#7f93ff">{t("story.keyDefence")}</Key>
-            <Key color="#ffd60a">{t("story.keyMistake")}</Key>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0b1a8a] via-[#0b1a8a]/80 to-transparent px-5 pb-6 pt-16 sm:px-10 sm:pb-8">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="min-h-[132px] max-w-[640px]" aria-live="polite">
+            {status === "failed" ? (
+              <p className="text-[17px] text-chalk">{t("storyx.failed")}</p>
+            ) : (
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: reduced ? 0 : 0.35, ease: [0.23, 1, 0.32, 1] }}>
+                  <h1 id="story-h" className="font-display text-[clamp(32px,4.6vw,64px)] leading-[0.95] text-chalk [text-wrap:balance]">
+                    {t(`storyx.t${step + 1}`)}
+                  </h1>
+                  <p className="mt-3 max-w-[46ch] text-[16px] leading-[1.5] text-chalk-dim sm:text-[18px]">{status === "loading" && step === 0 ? t("storyx.loading") : t(`storyx.l${step + 1}`)}</p>
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </div>
+          <div className="flex flex-col items-start gap-4 sm:items-end">
+            <div className="flex flex-wrap gap-3.5 text-[12px] font-semibold text-chalk-dim" aria-hidden="true">
+              <Key color={css.chalk}>{t("storyx.keyAttack")}</Key>
+              <Key color={css.sky}>{t("storyx.keyDefence")}</Key>
+              <Key color={css.var}>{t("storyx.keyMistake")}</Key>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={() => show(step - 1)} disabled={step === 0} className="rc-press min-h-[46px] rounded-full px-5 text-[15px] font-semibold text-chalk ring-1 ring-inset ring-chalk/30 hover:bg-chalk/10 disabled:opacity-40">
+                {t("storyx.back")}
+              </button>
+              {step === STEPS - 1 ? (
+                <>
+                  <a href={pageHref("autopsy", { demo: EXAMPLE.match, goal: EXAMPLE.goal })} className="rc-press inline-flex min-h-[46px] items-center rounded-full bg-flare px-6 text-[15px] font-bold text-flare-ink hover:brightness-105">
+                    {t("storyx.autopsy")}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => go("matches")}
+                    className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90"
+                  >
+                    {t("storyx.library")}
+                  </button>
+                </>
+              ) : (
+                <button type="button" onClick={() => show(step + 1)} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
+                  {t("storyx.next")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className={`flex min-w-0 flex-col gap-3 transition-opacity duration-300 ${beat < 2 ? "invisible opacity-0" : "opacity-100"}`}>
-          <Tally goals={goals} fixed={fixed >= 0 && beat >= FIX_BEAT} />
-          {beat >= FIX_BEAT && (
-            <div className="grid gap-2">
-              {MISTAKES.map((m, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-pressed={fixed === i}
-                  onClick={() => fix(fixed === i ? -1 : i)}
-                  className={`rc-press grid gap-1.5 rounded-2xl bg-turf px-3.5 py-3 text-left ring-inset hover:bg-turf-raised/60 ${fixed === i ? "ring-2 ring-flare" : "ring-1 ring-turf-edge"}`}
-                >
-                  <span className="flex justify-between gap-2 text-[14px] font-semibold text-chalk">
-                    {t(`story.m${i + 1}`)}
-                    <span className="font-trace text-[13px] text-flare tabular-nums">{Math.round(BLAME[i] * 100)}%</span>
-                  </span>
-                  <span className="block h-1.5 overflow-hidden rounded-full bg-turf-raised">
-                    <span className="block h-full bg-flare transition-[width] duration-700 ease-out" style={{ width: fixed === i ? `${BLAME[i] * 100}%` : 0 }} />
-                  </span>
-                  <span className="text-[12px] text-chalk-faint">{t("story.fixedLine", { who: t(`story.who${i + 1}`), goals: m.fixedGoals, trials: TRIALS })}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-5 flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => show(beat - 1)}
-          disabled={beat === 0}
-          className="rc-press min-h-[46px] rounded-full px-5 text-[15px] font-semibold text-chalk ring-1 ring-turf-edge hover:bg-turf-raised disabled:opacity-40"
-        >
-          {t("story.back")}
-        </button>
-        {beat === BEATS - 1 ? (
-          <button type="button" onClick={() => go("lab")} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
-            {t("story.labCta")}
-          </button>
-        ) : (
-          <button type="button" onClick={() => show(beat + 1)} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
-            {t("story.next")}
-          </button>
-        )}
       </div>
     </section>
   );
@@ -169,23 +259,5 @@ function Key({ color, children }: { color: string; children: string }) {
       <i className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: color }} />
       {children}
     </span>
-  );
-}
-
-/** One dot per replay: white goes in, yellow is a goal the fix took away. */
-function Tally({ goals, fixed }: { goals: number; fixed: boolean }) {
-  const { t } = useTranslation();
-  return (
-    <div className="rounded-[20px] bg-turf p-4">
-      <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk-faint">{t("story.tally", { trials: TRIALS })}</p>
-      <p className="mt-2 font-display text-[44px] leading-none text-chalk tabular-nums">
-        {goals} <span className="text-[18px] text-chalk-faint">/ {TRIALS}</span>
-      </p>
-      <div className="mt-3 grid grid-cols-[repeat(20,minmax(0,1fr))] gap-[3px]" aria-hidden="true">
-        {Array.from({ length: TRIALS }, (_, i) => (
-          <i key={i} className={`aspect-square rounded-full transition-colors duration-200 ${i < goals ? "bg-chalk" : fixed && i < BASE_GOALS ? "bg-flare" : "bg-turf-raised"}`} />
-        ))}
-      </div>
-    </div>
   );
 }

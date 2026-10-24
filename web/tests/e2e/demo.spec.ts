@@ -1,34 +1,22 @@
 import { expect, test } from "@playwright/test";
 
-// The first-visit flow: home explains the product, the story explains the engine, explore and report hold up.
-test("a first-time visitor can follow the story from home to the match report", async ({ page }) => {
+// The first visit: home sells the product with no match's data in its copy, the story walks one example goal.
+test("home explains the product and the story walks one traced goal", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Every goal has a bug." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "What it does" })).toBeAttached();
-  await expect(page.getByRole("link", { name: /HTN 2–1 NGR/ })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: "Trace. Prove. Explain." })).toBeAttached();
+  await expect(page.getByRole("heading", { name: "Match library" })).toBeAttached();
+  const hero = page.locator("section[aria-labelledby=hero-h]");
+  await expect(hero).not.toContainText(/Harbour|Northgate|\d+[′']/);
 
-  await page.getByRole("link", { name: "See the engine in motion" }).click();
-  await expect(page.getByRole("heading", { name: "A goal goes in." })).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByRole("heading", { name: "Rewind the move." })).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText("146")).toBeVisible({ timeout: 10_000 });
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: /Lost the runner/ }).click();
-  await expect(page.getByRole("button", { name: /Lost the runner/ })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("118")).toBeVisible({ timeout: 10_000 });
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Open the Tactics Lab" }).click();
-  await expect(page.getByRole("img", { name: "Interactive 3D view of the goal move" })).toBeVisible();
-
-  await page.goto("/#/explore");
-  await page.getByRole("tab", { name: "What if?" }).click();
-  await page.getByRole("button", { name: "Mistake fixed" }).click();
-  await expect(page.getByText("0 / 200")).toBeVisible();
-
-  await page.getByRole("link", { name: "Match report" }).first().click();
-  await expect(page.getByRole("heading", { name: "Bug Report" })).toBeVisible();
-  await expect(page.getByText("Not yet measured")).toBeVisible();
+  await page.getByRole("button", { name: "How it thinks" }).first().click();
+  await expect(page.getByText("Example: a real traced goal from Meeting 1")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The goal sits on top." })).toBeVisible();
+  for (const h of ["Scan down, layer by layer.", "One layer lights up.", "Draw the fix beside it.", "The goal disappears."]) {
+    await page.getByRole("button", { name: "Next" }).click();
+    await expect(page.getByRole("heading", { name: h })).toBeVisible();
+  }
+  await expect(page.getByRole("link", { name: "Open this goal's autopsy" })).toHaveAttribute("href", /goal=p-1008-g4.*#\/autopsy|#\/autopsy/);
 });
 
 // The full-match analysis: overview, tactics, every chance with its breakdown, player cards.
