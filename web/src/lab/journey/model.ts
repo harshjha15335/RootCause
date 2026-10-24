@@ -72,8 +72,10 @@ const mean = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.lengt
  */
 export function goalFrame(lab: Lab, goalS: number, att: 0 | 1) {
   const M = (p: Pt): Pt => (att === 1 ? [PX - p[0], PY - p[1]] : p);
-  const shotFrom = M(frameAt(lab, goalS - 1).ball);
-  const net: Pt = [PX + 0.8, Math.min(Math.max(shotFrom[1], 31), 37)];
+  // the shot as the event records it: where it was struck and where it crossed the line
+  const shot = lab.actions.find((x) => x.s === goalS && x.type === "shot");
+  const shotFrom = shot ? M(shot.from) : M(frameAt(lab, goalS - 1).ball);
+  const net: Pt = [PX + 0.8, Math.min(Math.max(shot ? M(shot.to)[1] : shotFrom[1], 31), 37)];
   const frame = (s: number): Snap => {
     const f = frameAt(lab, Math.min(s, goalS));
     const pos = f.pos.map(M);

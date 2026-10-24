@@ -44,6 +44,8 @@ export type Lab = {
   numbers: number[];
   /** formation role per player (GK, RB, LCB, ST, ...) */
   roles: string[];
+  /** 1 at a goal's second: play stops there and restarts with the kick-off, so never blend across it */
+  cut?: Uint8Array;
   short: [string, string];
   clubs: [MatchMeta["home"], MatchMeta["away"]];
 };
@@ -70,8 +72,13 @@ export function frameAt(lab: Lab, t: number): Frame {
   const r = lab.raw;
   const p0 = r[s0 * STRIDE + 48] || 1;
   // neighbouring seconds in the same half (the frame flips at half-time; never blend across it)
+  const cut = lab.cut;
   const same = (s: number) => {
-    const c = Math.min(Math.max(s, 0), SECONDS - 1);
+    let c = Math.min(Math.max(s, 0), SECONDS - 1);
+    if (cut) {
+      for (let k = s0; k < c; k++) if (cut[k]) { c = k; break; }
+      for (let k = s0 - 1; k >= c; k--) if (cut[k]) { c = k + 1; break; }
+    }
     return (r[c * STRIDE + 48] || 1) === p0 ? c : s0;
   };
   const sm = same(s0 - 1), s1 = same(s0 + 1), s2 = same(s0 + 2);
@@ -124,6 +131,71 @@ function classify(lab: Omit<Lab, "poss" | "phase" | "possStart">) {
   return { poss, phase, possStart };
 }
 
+type RawEvent = (string | number | null)[];
+
+/**
+ * The tracking file restarts play for the kick-off before the goal has gone in: in every goal of
+ * every match, the two seconds before it (and the goal second) already blend toward the centre
+ * circle, so the scorer runs away from goal at 12 to 16 m/s and the ball is at halfway when it
+ * "goes in". This rebuilds those three seconds from what the events say happened: players carry on
+ * from the last clean second, the passer, receiver and scorer are where the events put them, and the
+ * ball travels the event lines. Raw frame and units (decimetres), before any flip.
+ */
+function repairGoals(raw: Int16Array, ev: RawEvent[]) {
+  const at = (s: number, k: number) => raw[s * STRIDE + k] / 10;
+  const set = (s: number, k: number, v: number) => (raw[s * STRIDE + k] = Math.round(v * 10));
+  const evs = ev.map((e) => ({ s: e[0] as number, type: e[1] as string, team: e[2] as number, player: e[3] as number, receiver: e[4] as number | null, from: [e[5], e[6]] as number[], to: [e[7], e[8]] as number[], outcome: e[9] }));
+  for (const shot of evs.filter((e) => e.type === "shot" && e.outcome === "goal")) {
+    const g = shot.s, c = g - 3;
+    if (c < 1 || g >= SECONDS || raw[c * STRIDE + 48] !== raw[g * STRIDE + 48]) continue;
+    const near = evs.filter((e) => e.s <= g && e.s > g - 30);
+    const next = (e: (typeof evs)[number]) => evs.find((x) => x.s > e.s)?.s ?? e.s + 1;
+    // where each player must be, and when, by the events after the last clean second
+    const keys: [number, number, number][][] = Array.from({ length: 22 }, (_, i) => [[c, at(c, 2 + i * 2), at(c, 3 + i * 2)]]);
+    const arrive = (e: (typeof evs)[number]) => Math.min(next(e), e.s + Math.max(0.6, Math.hypot(e.to[0] - e.from[0], e.to[1] - e.from[1]) / 18));
+    for (const e of near) {
+      if (e.s <= c) continue;
+      keys[e.player].push([e.s, e.from[0], e.from[1]]);
+      if (e.type === "pass" && e.receiver != null && e.outcome === "complete") keys[e.receiver].push([arrive(e), e.to[0], e.to[1]]);
+      if (e.type === "carry") keys[e.player].push([next(e), e.to[0], e.to[1]]);
+    }
+    for (let t = c + 1; t <= g; t++) {
+      for (let i = 0; i < 22; i++) {
+        const k = [...keys[i]].sort((a, b) => a[0] - b[0]);
+        const before = [...k].reverse().find((q) => q[0] <= t)!, after = k.find((q) => q[0] > t);
+        let x: number, y: number;
+        if (after) {
+          const u = (t - before[0]) / (after[0] - before[0]);
+          x = before[1] + (after[1] - before[1]) * u;
+          y = before[2] + (after[2] - before[2]) * u;
+        } else {
+          // no event needs him anywhere: he carries on, slowing
+          const vx = at(c, 2 + i * 2) - at(c - 1, 2 + i * 2), vy = at(c, 3 + i * 2) - at(c - 1, 3 + i * 2);
+          const d = (1 - Math.pow(0.6, t - before[0])) / (1 - 0.6);
+          x = before[1] + vx * 0.6 * d;
+          y = before[2] + vy * 0.6 * d;
+        }
+        set(t, 2 + i * 2, x);
+        set(t, 3 + i * 2, y);
+      }
+      // the ball follows the last event's line
+      const e = [...near].reverse().find((q) => q.s <= t);
+      if (!e) continue;
+      let bx = e.from[0], by = e.from[1], who = e.player;
+      if (e.type === "pass" || e.type === "carry") {
+        const end = e.type === "pass" ? arrive(e) : next(e), u = Math.min(1, (t - e.s) / Math.max(0.01, end - e.s));
+        bx = e.from[0] + (e.to[0] - e.from[0]) * u;
+        by = e.from[1] + (e.to[1] - e.from[1]) * u;
+        if (e.type === "pass" && u >= 1 && e.receiver != null) who = e.receiver;
+      }
+      set(t, 0, bx);
+      set(t, 1, by);
+      raw[t * STRIDE + 46] = shot.team;
+      raw[t * STRIDE + 47] = who;
+    }
+  }
+}
+
 /** Fetches and decodes one match's Lab data (tracking.bin, events.json, meta.json). */
 export async function loadLab(matchId: string, base = `${import.meta.env.BASE_URL}showcase/${matchId}/`, fetcher: typeof fetch = fetch): Promise<Lab> {
   const get = async (f: string) => {
@@ -137,6 +209,9 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
     get("meta.json").then((r) => r.json() as Promise<MatchMeta>),
   ]);
   const raw = new Int16Array(bin);
+  repairGoals(raw, ev);
+  const cut = new Uint8Array(SECONDS);
+  for (const e of ev) if (e[1] === "shot" && e[9] === "goal" && (e[0] as number) < SECONDS) cut[e[0] as number] = 1;
   // tracking index i is H1..H11 then A1..A11
   const ids = Array.from({ length: 22 }, (_, i) => (i < 11 ? `H${i + 1}` : `A${i - 10}`));
   const byId = new Map([...meta.home.players, ...meta.away.players].map((p) => [p.id, p]));
@@ -147,6 +222,7 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
     names: ids.map((id) => byId.get(id)?.name ?? id),
     numbers: ids.map((id) => byId.get(id)?.number ?? 0),
     roles: ids.map((id) => byId.get(id)?.position ?? ""),
+    cut,
     short: [meta.home.short_name, meta.away.short_name] as [string, string],
     clubs: [meta.home, meta.away] as [MatchMeta["home"], MatchMeta["away"]],
   };
