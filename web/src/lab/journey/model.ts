@@ -66,6 +66,24 @@ const median = (a: number[]) => {
 };
 const mean = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
 
+/**
+ * The move behind a goal, in a frame where the scoring side `att` attacks toward x = 105. The
+ * tracking puts the ball back on the spot at the goal second, so the shot is finished into the net.
+ */
+export function goalFrame(lab: Lab, goalS: number, att: 0 | 1) {
+  const M = (p: Pt): Pt => (att === 1 ? [PX - p[0], PY - p[1]] : p);
+  const shotFrom = M(frameAt(lab, goalS - 1).ball);
+  const net: Pt = [PX + 0.8, Math.min(Math.max(shotFrom[1], 31), 37)];
+  const frame = (s: number): Snap => {
+    const f = frameAt(lab, Math.min(s, goalS));
+    const pos = f.pos.map(M);
+    if (s < goalS - 1) return { ball: M(f.ball), pos };
+    const u = Math.min(s - (goalS - 1), 1);
+    return { ball: [shotFrom[0] + (net[0] - shotFrom[0]) * u, shotFrom[1] + (net[1] - shotFrom[1]) * u], pos };
+  };
+  return { M, frame };
+}
+
 export function buildJourney(
   lab: Lab,
   c: GoalCase,
@@ -74,22 +92,10 @@ export function buildJourney(
   analyses: Record<string, Analysis>,
 ): Journey | null {
   const att = c.attack, def = (1 - att) as 0 | 1;
-  const flip = att === 1;
   // home-attacks-right frame -> scoring side attacks right
-  const M = (p: Pt): Pt => (flip ? [PX - p[0], PY - p[1]] : p);
+  const { M, frame } = goalFrame(lab, c.goalS, att);
   const period = periodAt(lab, c.goalS);
   const fromRaw = (x: number, y: number): Pt => M(period === 1 ? [x, y] : [PX - x, PY - y]);
-
-  // the tracking puts the ball back on the spot at the goal second: finish the shot into the net instead
-  const shotFrom = M(frameAt(lab, c.goalS - 1).ball);
-  const net: Pt = [PX + 0.8, Math.min(Math.max(shotFrom[1], 31), 37)];
-  const frame = (s: number): Snap => {
-    const f = frameAt(lab, Math.min(s, c.goalS));
-    const pos = f.pos.map(M);
-    if (s < c.goalS - 1) return { ball: M(f.ball), pos };
-    const u = Math.min(s - (c.goalS - 1), 1);
-    return { ball: [shotFrom[0] + (net[0] - shotFrom[0]) * u, shotFrom[1] + (net[1] - shotFrom[1]) * u], pos };
-  };
   const backFour = [1, 2, 3, 4].map((k) => def * 11 + k);
   const lineOf = (p: Snap, without = c.culprit) => median(backFour.filter((i) => i !== without).map((i) => p.pos[i][0]));
   const offsideLine = (p: Snap) => {
