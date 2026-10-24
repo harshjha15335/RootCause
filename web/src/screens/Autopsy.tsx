@@ -275,7 +275,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
           wide ? "bottom-[84px] left-6 max-h-[calc(100%-200px)] w-[420px] px-6 pb-6 pt-5" : "bottom-[68px] left-3 right-3 max-h-[40%] px-4 pb-4 pt-3.5"
         }`}
       >
-        <Copy a={a} st={st} t={t} expert={expert} elapsed={elapsed} download={download} openEngine={() => setEngine(true)} wide={wide} />
+        <Copy a={a} st={st} t={t} expert={expert} elapsed={reduced ? 1e3 : elapsed} download={download} openEngine={() => setEngine(true)} wide={wide} />
         {!wide && <DepthSwitch className="mt-3" />}
       </article>
 

@@ -498,7 +498,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const target = new THREE.WebGLRenderTarget(1, 1, { samples: opts.phone ? 0 : 4, type: THREE.HalfFloatType });
   const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
-  const bokeh = opts.phone ? null : new BokehPass(scene, camera, { focus: 60, aperture: 0.00012, maxblur: 0.006 });
+  const bokeh = opts.phone || opts.reduced ? null : new BokehPass(scene, camera, { focus: 60, aperture: 0.00012, maxblur: 0.006 });
   if (bokeh) { bokeh.enabled = false; composer.addPass(bokeh); }
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.85, 0.55, 1.0);
   composer.addPass(bloom);
@@ -588,12 +588,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const lift = first ? ease(seg(t, 0, 2.8)) : 1;
       const t0 = first ? 3 : 0; // the walk down starts once the stack has risen
       stack.visible = true;
-      stack.scale.y = flat ? 0.0001 : Math.max(0.0001, lift);
+      stack.scale.y = flat ? 1 : Math.max(0.0001, lift);
       const draw = flat ? 1 : first ? seg(t, 0.3, 3) : 1;
       ribbons.forEach((r) => drawn(r, draw));
       drawn(ballRibbon, draw);
       fixedRibbons.forEach((f) => (f.r.visible = f.b.visible = false));
-      top.material.opacity = 0.5 * lift;
+      top.material.opacity = flat ? 0 : 0.5 * lift;
       // the scan sheet walks down from the goal (or the last mistake); everything above it is peeled away
       const startY = st.k === 0 ? yOf(s1) + H : yOf(lit[st.k - 1].m.x.second);
       const walk = flat ? 1 : ease(seg(t, t0, t0 + 2.2));
@@ -811,7 +811,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       from = camera.userData.at ? camNow() : null;
       fromAt = at;
       step = n;
-      t = at;
+      t = opts.reduced ? steps[n].dur : at; // reduced motion: every step is shown at its end state
       follow.ok = false;
       if (!raf) raf = requestAnimationFrame(tick);
     },
