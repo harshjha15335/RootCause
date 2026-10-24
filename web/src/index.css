@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: rgb(var(--turf-deep));
+    color: rgb(var(--chalk));
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+    scrollbar-color: rgb(var(--turf-edge)) rgb(var(--turf-deep));
+  }
+  body {
+    overflow-x: clip;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: rgb(var(--chalk));
+    color: rgb(var(--turf-deep));
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--chalk));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button, [role="button"], [role="slider"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /* Anybody, heavy and wide: the width axis is part of the voice (it squeezes on scroll) */
+  .font-display {
+    font-weight: 820 !important;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    font-variation-settings: "wdth" 112;
+  }
+  .rc-tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 5px 7px;
+    border-radius: 3px;
+    border: 1px solid rgb(var(--turf-edge));
+    background: rgb(var(--turf) / 0.8);
+    color: rgb(var(--chalk));
+    font: 600 11px/1 "JetBrains Mono Variable", ui-monospace, monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .rc-tag-bug {
+    background: rgb(var(--flare));
+    border-color: rgb(var(--flare));
+    color: rgb(var(--flare-ink));
+  }
+  .rc-drip {
+    transform-origin: top;
+    animation: rc-drip 1.8s ease-in-out infinite;
+  }
+  .rc-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: rgb(var(--chalk-faint));
+  }
+  .rc-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: currentColor;
+  }
+}
+
+@layer utilities {
+  /* press feedback: `scale` composes with any translate already on the element */
+  .rc-press {
+    transition-property: color, background-color, box-shadow, opacity, scale;
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-out);
+  }
+  .rc-press:active:not(:disabled) {
+    scale: 0.97;
+  }
+  .rc-spin {
+    animation: rc-spin 0.8s linear infinite;
+  }
+  .rc-blink {
+    animation: rc-blink 1.6s var(--ease-in-out) infinite;
+  }
+  .rc-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: -1;
+    animation: rc-draw 1.4s var(--ease-out) 0.2s forwards;
+    /* drawn backward: from the goal to the root cause */
+    transform-box: fill-box;
+  }
+}
+
+.rc-rise {
+  transform: translateY(110%);
+  animation: rc-rise 1.15s var(--ease-out) forwards;
+}
+@keyframes rc-rise {
+  to { transform: none; }
+}
+.rc-fade-in {
+  opacity: 0;
+  animation: rc-fade-in 1.2s var(--ease-out) forwards;
+}
+@keyframes rc-fade-in {
+  to { opacity: 1; }
+}
+.rc-marquee {
+  display: flex;
+  width: max-content;
+  animation: rc-marquee 42s linear infinite;
+}
+@keyframes rc-marquee {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes rc-drip {
+  0% { transform: scaleY(0); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes rc-spin {
+  to { rotate: 360deg; }
+}
+@keyframes rc-blink {
+  50% { opacity: 0.25; }
+}
+@keyframes rc-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rc-draw { stroke-dashoffset: 0; }
+  .rc-rise { transform: none; }
+  .rc-fade-in { opacity: 1; }
+  .rc-marquee { animation: none; }
+}
+
+/* Devanagari has no serif here; it needs room for its matras above and below */
+:lang(hi) .font-display {
+  font-family: "Noto Sans Devanagari", sans-serif;
+  text-transform: none;
+  font-variation-settings: normal !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+}
+
+/* Tactics Lab: the callout under the 3D stage and the hover tag */
+.lab-card { animation: lab-card-in 0.6s cubic-bezier(0.19, 1, 0.22, 1) both; }
+.lab-card b { color: rgb(var(--chalk)); font-weight: 700; }
+@keyframes lab-card-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .lab-card { animation: none; } }
+.lab-tag small { display: block; font-weight: 500; opacity: 0.7; }

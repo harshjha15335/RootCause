@@ -1,0 +1,59 @@
+/*
+ * Root Cause design tokens: Timestack. Floodlit broadcast cobalt, with the VAR line for the bug.
+ *   turf   the blues: page, panels and wells (names kept from the pitch they started as)
+ *   chalk  floodlight white; text, lines, anything neutral or "fixed"
+ *   paper  white card stock for the verdict (see .paper, which re-inks the tokens)
+ *   flare  VAR-line yellow: only ever a mistake, the causal thread, or the root cause.
+ * Stored as "r g b" so Tailwind can apply alpha.
+ */
+:root {
+  --turf-deep: 21 48 214;    /* #1530d6 cobalt page */
+  --turf: 14 34 166;         /* #0e22a6 panels, for long reading */
+  --turf-raised: 33 61 224;  /* #213de0 hover, wells */
+  --turf-edge: 86 110 236;   /* #566eec hairlines */
+  --chalk: 243 245 255;      /* #f3f5ff */
+  --chalk-dim: 214 220 255;  /* #d6dcff secondary */
+  --chalk-faint: 174 187 255;/* #aebbff tertiary */
+  --flare: 255 214 10;       /* #ffd60a the bug */
+  --flare-ink: 20 18 58;     /* text on flare */
+  --paper: 243 245 255;
+  --ink: 10 16 72;
+
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --header-h: 68px;
+  color-scheme: dark;
+}
+
+/* White cards: the same components, printed. Every token flips. */
+.paper {
+  --turf-deep: 226 231 255;
+  --turf: 243 245 255;
+  --turf-raised: 231 235 255;
+  --turf-edge: 196 205 250;
+  --chalk: 10 16 72;
+  --chalk-dim: 46 56 128;    /* #2e3880 */
+  --chalk-faint: 78 90 160;  /* #4e5aa0 */
+  --flare: 21 48 214;        /* printed, the bug takes the cobalt */
+  --flare-ink: 243 245 255;
+  color-scheme: light;
+  background: rgb(var(--turf));
+  color: rgb(var(--chalk));
+}
+.paper ::selection {
+  background: rgb(var(--ink));
+  color: rgb(var(--paper));
+}
+
+@media (max-width: 640px) {
+  :root { --header-h: 60px; }
+}
+
+/* page-code loading mark: the wordmark's layers breathing */
+.rc-loading { animation: rc-breathe 1.4s var(--ease-in-out) infinite; }
+@keyframes rc-breathe { 50% { opacity: 0.35; transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) {
+  .rc-loading { animation: none; opacity: 0.6; }
+}
