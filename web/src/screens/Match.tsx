@@ -79,7 +79,8 @@ export function Match() {
 // ------------------------------------------------------------------------------------ helpers
 
 const sideOf = (id: string): Side => (id[0] === "H" ? "home" : "away");
-const minute = (s: number) => Math.floor(s / 60) + 1;
+// floor(second / 60), the same minute the library and the Autopsy show (3756 s is 62′)
+const minute = (s: number) => Math.floor(s / 60);
 const f2 = (v: number) => v.toFixed(2);
 
 function useNames(s: Stacks) {
