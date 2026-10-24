@@ -11,10 +11,8 @@ import { useUi } from "./store/uiStore";
 import { Home } from "./screens/Home";
 import { chronological, rootLink } from "./lib/geometry";
 
-// Match and Autopsy move to screens/Match.tsx and screens/Autopsy.tsx in their own workstreams;
-// these imports switch over when those files land.
 const Match = lazyPage(() => import("./screens/Match").then((m) => ({ default: m.Match })));
-const Autopsy = lazyPage(() => import("./screens/Lab").then((m) => ({ default: m.Lab })));
+const Autopsy = lazyPage(() => import("./screens/Autopsy").then((m) => ({ default: m.Autopsy })));
 const Story = lazyPage(() => import("./screens/Story").then((m) => ({ default: m.Story })));
 const Matches = lazyPage(() => import("./screens/Matches").then((m) => ({ default: m.Matches })));
 const Explore = lazyPage(() => import("./screens/MatchScreen").then((m) => ({ default: m.MatchScreen })));
