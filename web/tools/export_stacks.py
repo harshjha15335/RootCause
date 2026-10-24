@@ -105,7 +105,9 @@ def windows(m: dict) -> list[dict]:
         for t, side in ((0, "home"), (1, "away")):
             for key in ("in", "out"):
                 pts = acc[(t, key)]
-                win[f"{side}_{key}"] = [[r1(a[0] / a[2]), r1(a[1] / a[2])] if a[2] else None for a in pts]
+                win[f"{side}_{key}"] = [
+                    [r1(a[0] / a[2]), r1(a[1] / a[2])] if a[2] else None for a in pts
+                ]
         out.append(win)
     return out
 
@@ -133,7 +135,15 @@ def bends(series: list[float | None], kind_up: str, kind_down: str) -> list[dict
             continue
         delta = (c + d) / 2 - (a + b) / 2
         if abs(delta) >= BEND_M:
-            cands.append({"w": k, "kind": kind_up if delta > 0 else kind_down, "m": r1(abs(delta)), "from": r1((a + b) / 2), "to": r1((c + d) / 2)})
+            cands.append(
+                {
+                    "w": k,
+                    "kind": kind_up if delta > 0 else kind_down,
+                    "m": r1(abs(delta)),
+                    "from": r1((a + b) / 2),
+                    "to": r1((c + d) / 2),
+                }
+            )
     cands.sort(key=lambda b: -b["m"])
     keep: list[dict] = []
     for b in cands:
@@ -218,7 +228,14 @@ def chances(m: dict) -> list[dict]:
         for o in c.get("alternatives") or []:
             gain = o["value"] - c["xg"]
             if gain >= 0.01 and (best is None or o["value"] > best["value"]):
-                best = {"id": o["id"], "pass_p": r2(o["pass_p"]), "xg": round(o["xg"], 3), "value": round(o["value"], 3), "gain": round(gain, 3), "at": fr["pos"][player_index(o["id"])]}
+                best = {
+                    "id": o["id"],
+                    "pass_p": r2(o["pass_p"]),
+                    "xg": round(o["xg"], 3),
+                    "value": round(o["value"], 3),
+                    "gain": round(gain, 3),
+                    "at": fr["pos"][player_index(o["id"])],
+                }
         out.append(
             {
                 "seq": c["seq"],
@@ -316,7 +333,13 @@ def goals(m: dict, ch: list[dict]) -> list[dict]:
                 "d": c["d"],
                 "build_up_s": c["build_up_s"],
                 "assist": c["assist"],
-                "won_ball": {"player_id": to["player_id"], "second": to["second"], "kind": to["kind"]} if to else None,
+                "won_ball": {
+                    "player_id": to["player_id"],
+                    "second": to["second"],
+                    "kind": to["kind"],
+                }
+                if to
+                else None,
             }
         out.append(g)
     return out
@@ -329,13 +352,35 @@ def moments(m: dict, ch: list[dict], gl: list[dict]) -> dict[str, list[dict]]:
     by: dict[str, list[dict]] = {i: [] for s in ("home", "away") for i in ids(s)}
     for c in ch:
         if c["outcome"] == "goal":
-            by[c["shooter"]].append({"kind": "goal", "s": c["s"], "seq": c["seq"], "xg": c["xg"], "d": c["d"]})
+            by[c["shooter"]].append(
+                {"kind": "goal", "s": c["s"], "seq": c["seq"], "xg": c["xg"], "d": c["d"]}
+            )
         elif c["best"]:
-            by[c["shooter"]].append({"kind": "better", "s": c["s"], "seq": c["seq"], "xg": c["xg"], "to": c["best"]["id"], "gain": c["best"]["gain"]})
+            by[c["shooter"]].append(
+                {
+                    "kind": "better",
+                    "s": c["s"],
+                    "seq": c["seq"],
+                    "xg": c["xg"],
+                    "to": c["best"]["id"],
+                    "gain": c["best"]["gain"],
+                }
+            )
         elif c["xg"] >= 0.3:
-            by[c["shooter"]].append({"kind": "big_miss", "s": c["s"], "seq": c["seq"], "xg": c["xg"], "d": c["d"], "outcome": c["outcome"]})
+            by[c["shooter"]].append(
+                {
+                    "kind": "big_miss",
+                    "s": c["s"],
+                    "seq": c["seq"],
+                    "xg": c["xg"],
+                    "d": c["d"],
+                    "outcome": c["outcome"],
+                }
+            )
         if c["assist"] and c["outcome"] == "goal":
-            by[c["assist"]].append({"kind": "assist", "s": c["s"], "seq": c["seq"], "to": c["shooter"]})
+            by[c["assist"]].append(
+                {"kind": "assist", "s": c["s"], "seq": c["seq"], "to": c["shooter"]}
+            )
     for g in gl:
         if not g["traced"]:
             continue
@@ -353,13 +398,24 @@ def moments(m: dict, ch: list[dict], gl: list[dict]) -> dict[str, list[dict]]:
                     "fixed_goals": sp["fixed_goals"],
                     "trials": g["verdict"]["trials"],
                     "baseline_goals": g["verdict"]["baseline_goals"],
-                    "fixed_at": fixed_at(m, g["goal_id"], sp["evidence_id"], sp["id"], sp["second"]),
+                    "fixed_at": fixed_at(
+                        m, g["goal_id"], sp["evidence_id"], sp["id"], sp["second"]
+                    ),
                 }
             )
     seqs = {c["seq"]: c for c in ch}
     for t in m["analysis"]["turnovers"]:
         if t["xg_conceded"] >= 0.1 or t["goal"]:
-            by[t["player_id"]].append({"kind": "turnover", "s": t["second"], "seq": t["shot_seq"] if t["shot_seq"] in seqs else None, "xg": round(t["xg_conceded"], 3), "goal": t["goal"], "how": t["kind"]})
+            by[t["player_id"]].append(
+                {
+                    "kind": "turnover",
+                    "s": t["second"],
+                    "seq": t["shot_seq"] if t["shot_seq"] in seqs else None,
+                    "xg": round(t["xg_conceded"], 3),
+                    "goal": t["goal"],
+                    "how": t["kind"],
+                }
+            )
     return {k: sorted(v, key=lambda x: x["s"]) for k, v in by.items()}
 
 
@@ -388,7 +444,11 @@ def dossier(m: dict, all_: dict[str, dict]) -> dict:
     out = {}
     for side in ("home", "away"):
         now = team_numbers(m, side)
-        usual = {key: r1(sum(team_numbers(o, side)[key] for o in others) / len(others)) for key in now} if others else None
+        usual = (
+            {key: r1(sum(team_numbers(o, side)[key] for o in others) / len(others)) for key in now}
+            if others
+            else None
+        )
         notes = []
         if usual:
             for key, up, down, thr in (
@@ -399,14 +459,29 @@ def dossier(m: dict, all_: dict[str, dict]) -> dict:
             ):
                 d = now[key] - usual[key]
                 if abs(d) >= thr:
-                    notes.append({"key": up if d > 0 else down, "params": {"by": r1(abs(d)), "now": now[key], "usual": usual[key]}})
+                    notes.append(
+                        {
+                            "key": up if d > 0 else down,
+                            "params": {"by": r1(abs(d)), "now": now[key], "usual": usual[key]},
+                        }
+                    )
             if not notes:
                 notes.append({"key": "as_usual", "params": {}})
         if k > 0 and SERIES[k - 1] in all_:
             prev = all_[SERIES[k - 1]]
             sc = prev["analysis"]["score"]
             mine, theirs = (sc[0], sc[1]) if side == "home" else (sc[1], sc[0])
-            notes.append({"key": "last_meeting", "params": {"meeting": k, "result": "won" if mine > theirs else "lost" if mine < theirs else "drew", "for": mine, "against": theirs}})
+            notes.append(
+                {
+                    "key": "last_meeting",
+                    "params": {
+                        "meeting": k,
+                        "result": "won" if mine > theirs else "lost" if mine < theirs else "drew",
+                        "for": mine,
+                        "against": theirs,
+                    },
+                }
+            )
         sh = m["analysis"]["shapes"][side]
         out[side] = {
             "formation": m["meta"][side]["formation"],
@@ -435,7 +510,11 @@ def export(mid: str, all_: dict[str, dict]) -> Path:
         "meeting": SERIES.index(mid) + 1 if mid in SERIES else None,
         "score": m["analysis"]["score"],
         "duration_s": m["meta"]["duration_s"],
-        "names": {p["id"]: {"name": p["name"], "number": p["number"], "position": p["position"]} for s in ("home", "away") for p in m["meta"][s]["players"]},
+        "names": {
+            p["id"]: {"name": p["name"], "number": p["number"], "position": p["position"]}
+            for s in ("home", "away")
+            for p in m["meta"][s]["players"]
+        },
         "shape_stack": shape_stack(m),
         "chances": ch,
         "goals": gl,
