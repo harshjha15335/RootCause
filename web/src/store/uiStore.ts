@@ -2,13 +2,13 @@ import { create } from "zustand";
 import type { Lang, Mode } from "../api/types";
 
 export type Tab = "live" | "trace" | "whatif" | "cause" | "script";
-export type Screen = "home" | "story" | "matches" | "match" | "autopsy" | "explore";
+export type Screen = "home" | "story" | "matches" | "match" | "autopsy" | "lab" | "explore";
 /** How much a page shows: visuals and one line, or every number, formula and link. */
 export type Depth = "simple" | "expert";
-const SCREENS: Screen[] = ["home", "story", "matches", "match", "autopsy", "explore"];
-/** Old links keep working: the Tactics Lab became the Goal Autopsy, Analysis and Report the Match page. */
-export const ALIASES: Record<string, Screen> = { lab: "autopsy", analysis: "match", report: "match" };
-/** #/story, #/matches, #/match, #/autopsy, #/explore; anything else is the home page. */
+const SCREENS: Screen[] = ["home", "story", "matches", "match", "autopsy", "lab", "explore"];
+/** Old links keep working: Analysis and Report became the Match page. */
+export const ALIASES: Record<string, Screen> = { analysis: "match", report: "match" };
+/** #/story, #/matches, #/match, #/autopsy, #/lab, #/explore; anything else is the home page. */
 export const screenFromHash = (): Screen => {
   const s = location.hash.replace(/^#\/?/, "").split(/[/?]/)[0];
   return ALIASES[s] ?? (SCREENS.includes(s as Screen) ? (s as Screen) : "home");

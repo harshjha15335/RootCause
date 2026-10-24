@@ -15,9 +15,10 @@ const Match = lazyPage(() => import("./screens/Match").then((m) => ({ default: m
 const Autopsy = lazyPage(() => import("./screens/Autopsy").then((m) => ({ default: m.Autopsy })));
 const Story = lazyPage(() => import("./screens/Story").then((m) => ({ default: m.Story })));
 const Matches = lazyPage(() => import("./screens/Matches").then((m) => ({ default: m.Matches })));
+const TacticsLab = lazyPage(() => import("./screens/TacticsLab").then((m) => ({ default: m.TacticsLab })));
 const Explore = lazyPage(() => import("./screens/MatchScreen").then((m) => ({ default: m.MatchScreen })));
 
-const PAGES = { story: Story, matches: Matches, match: Match, autopsy: Autopsy, explore: Explore } as const;
+const PAGES = { story: Story, matches: Matches, match: Match, autopsy: Autopsy, lab: TacticsLab, explore: Explore } as const;
 
 export default function App() {
   useBroadcast();

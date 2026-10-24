@@ -82,6 +82,7 @@ const NAV: { key: Screen; also: Screen[] }[] = [
   { key: "story", also: [] },
   { key: "matches", also: ["match", "explore"] },
   { key: "autopsy", also: [] },
+  { key: "lab", also: [] },
 ];
 
 function NavLinks() {
@@ -198,13 +199,13 @@ function LanguageMenu() {
   );
 }
 
-/** Home · Story · Matches, and the language. Match picking lives in the library, depth on each page. */
+/** Home · Story · Matches · Autopsy · Tactics Lab, and the language. Match picking lives in the library, depth on each page. */
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-turf-edge/60 bg-turf-deep/85 backdrop-blur-md">
       <div className="mx-auto flex h-[var(--header-h)] max-w-[1600px] items-center gap-2 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] sm:gap-4 lg:px-10">
         <Wordmark />
-        <div className="ml-auto sm:ml-6 sm:mr-auto">
+        <div className="ml-auto min-w-0 overflow-x-auto [scrollbar-width:none] sm:ml-6 sm:mr-auto">
           <NavLinks />
         </div>
         <LanguageMenu />

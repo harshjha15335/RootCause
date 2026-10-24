@@ -82,7 +82,7 @@ void main() {
   if (n.y < 0.0) n = -n;
   float own = abs(vC - 0.5) * 2.0;
   vec3 team = vC > 0.5 ? homeCol : awayCol;
-  vec3 base = vec3(0.075, 0.08, 0.1);
+  vec3 base = vec3(0.055, 0.085, 0.07);
   vec3 col = mix(base, team * 0.62, smoothstep(0.05, 0.9, own) * vIn * strength);
   // light: a low key light from the south-west and a cool sky
   float diff = max(dot(n, normalize(lightDir)), 0.0);
@@ -325,7 +325,7 @@ export class Terrain {
   }
 
   render(f: Frame, o: { dt: number; focus: number | null; space: boolean }) {
-    const want = o.space ? 1 : 0.18;
+    const want = o.space ? 1 : 0;
     this.strength += (want - this.strength) * Math.min(1, o.dt * (this.reduced ? 60 : 4));
     const u = this.land.material.uniforms;
     u.strength.value = this.strength;

@@ -6,10 +6,11 @@ import { quality } from "../../../lib/device";
 import { useUi } from "../../../store/uiStore";
 import { coachLine, type Line } from "./coach";
 import "./copy";
+import "./storyCopy";
 import { Dna, type Marker } from "./Dna";
 import { drawScene, pick, type LensId } from "./draw";
-import { race, shape, spaceShare, teamOf, type Unit } from "./model";
-import { LAND_AWAY, LAND_HOME, type Terrain } from "./terrain";
+import { lanes, pressure, race, shape, spaceShare, teamOf, type Unit } from "./model";
+import { LAND_AWAY, type Terrain } from "./terrain";
 
 const LENSES: LensId[] = ["space", "options", "shape", "pressure", "runs", "chain"];
 const SPEEDS = [0.5, 1, 3];
@@ -22,7 +23,7 @@ const clock = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60))
  * and draws it on the land; in Explore mode every lens is yours. The Match DNA strip scrubs the 90
  * minutes. The football models (model.ts, coach.ts, draw.ts) are the first Lab's, unchanged.
  */
-export function MatchLab({ matchId }: { matchId: string }) {
+export function MatchLab({ matchId, control }: { matchId: string; control?: React.MutableRefObject<((s: number) => void) | null> }) {
   const { t } = useTranslation();
   const lab = useLab(matchId);
   const an = useAnalysis(matchId);
@@ -33,12 +34,12 @@ export function MatchLab({ matchId }: { matchId: string }) {
         <p className="absolute left-6 top-6 text-[15px] text-chalk-dim">{t("tlab.loading")}</p>
       </div>
     );
-  return <LabView lab={lab.data} an={an.data} />;
+  return <LabView lab={lab.data} an={an.data} control={control} />;
 }
 
 type Live = { playing: boolean; speed: number; coach: boolean; lenses: Set<LensId>; focus: number | null; probe: [number, number] | null; hover: number | null; line: Line | null; lineAt: number; since: number };
 
-function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
+function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: React.MutableRefObject<((s: number) => void) | null> }) {
   const { t: tr } = useTranslation();
   const reduced = useUi((s) => s.reducedMotion) || quality.reducedMotion;
   const unitOf = useMemo(() => {
@@ -63,7 +64,7 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
   const [playing, setPlaying] = useState(!reduced);
   const [speed, setSpeed] = useState(1);
   const [coach, setCoach] = useState(true);
-  const [lenses, setLenses] = useState<Set<LensId>>(new Set(["space", "options"]));
+  const [lenses, setLenses] = useState<Set<LensId>>(new Set(["space"]));
   const [focus, setFocus] = useState<number | null>(null);
   const [probe, setProbe] = useState<[number, number] | null>(null);
   const [hover, setHover] = useState<number | null>(null);
@@ -127,7 +128,8 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
           }
           L.lineAt = ms;
         }
-        const shown = L.coach ? new Set<LensId>(L.line ? [L.line.lens] : []) : L.lenses;
+        // each team's lines (back, middle, front) stay on the land; the coach adds one idea on top
+        const shown = new Set<LensId>(["shape", ...(L.coach ? (L.line ? [L.line.lens] : []) : L.lenses)]);
         const g = st!.overlay.getContext("2d")!;
         g.setTransform(1, 0, 0, 1, 0, 0);
         g.clearRect(0, 0, st!.overlay.width, st!.overlay.height);
@@ -146,7 +148,7 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
           faults,
           solid: true,
         });
-        st!.render(f, { dt, focus: L.focus ?? (L.coach ? (L.line?.at ?? null) : null), space: L.coach || L.lenses.has("space") });
+        st!.render(f, { dt, focus: L.focus ?? (L.coach ? (L.line?.at ?? null) : null), space: L.coach ? L.line?.lens === "space" : L.lenses.has("space") });
         if (ms - lastUi > 120) {
           lastUi = ms;
           setNow({ t, f });
@@ -168,13 +170,20 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
     time.current = Math.min(Math.max(s, 0), SECONDS - 1);
     live.current.line = null;
   };
-  const toggle = (l: LensId) =>
-    setLenses((cur) => {
-      const n = new Set(cur);
-      if (n.has(l)) n.delete(l);
-      else n.add(l);
-      return n;
-    });
+  if (control) control.current = (sec: number) => {
+    seek(sec);
+    setPlaying(true);
+  };
+  // one feature at a time: the coach picks for you, or you pick one lens
+  const feature: "coach" | LensId = coach ? "coach" : ([...lenses][0] ?? "shape");
+  const pickFeature = (f: "coach" | LensId) => {
+    setProbe(null);
+    if (f === "coach") setCoach(true);
+    else {
+      setCoach(false);
+      setLenses(new Set([f]));
+    }
+  };
 
   // drag turns the land; a click follows a player or asks who reaches that spot first
   const drag = useRef<{ x: number; y: number; moved: boolean } | null>(null);
@@ -186,7 +195,6 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
   const score = [sofar.filter((a) => a.team === 0).length, sofar.filter((a) => a.team === 1).length];
   const block = now ? shape(now.f, 1 - team, unitOf).block : "mid";
   const raced = probe && now ? race(now.f, probe[0], probe[1]) : null;
-  const share = useMemo(() => (now ? spaceShare(now.f).home : 0.5), [now]);
   const lineText = line
     ? tr(`tlab.coach.${line.key}`, {
         ...line.params,
@@ -201,6 +209,22 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
 
   return (
     <div>
+      <div className="mb-3 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none]" role="tablist" aria-label={tr("tlab.lensesLabel")}>
+        {(["coach", ...LENSES] as const).map((f) => (
+          <button
+            key={f}
+            type="button"
+            role="tab"
+            aria-selected={feature === f}
+            onClick={() => pickFeature(f)}
+            className={`rc-press flex min-h-[42px] shrink-0 items-center gap-2 rounded-full px-4 text-[14px] font-semibold ${feature === f ? "bg-chalk text-turf-deep" : "bg-turf text-chalk-dim ring-1 ring-inset ring-turf-edge hover:text-chalk"}`}
+          >
+            {f === "coach" ? <CoachIcon /> : <LensIcon l={f} />}
+            {f === "coach" ? tr("tlab.topo.coachOn") : tr(`tlab.lens.${f}`)}
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_330px]">
       <div
         ref={host}
         className="relative h-[min(84svh,780px)] min-h-[520px] w-full touch-pan-y select-none overflow-hidden rounded-[22px] bg-[#06070b] sm:h-[min(80svh,760px)]"
@@ -237,7 +261,6 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
             setProbe(null);
           } else if (p[0] >= 0 && p[0] <= PX && p[1] >= 0 && p[1] <= PY) {
             setProbe([p[0], p[1]]);
-            setCoach(false);
           }
         }}
         onPointerCancel={() => (drag.current = null)}
@@ -257,27 +280,6 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
                 {lab.short[team]} · {tr(`tlab.phase.${PHASES[lab.phase[s]]}`)} <span className="mx-1 text-white/35">/</span> {lab.short[1 - team]} · {tr(`tlab.block.${block}`)}
               </span>
             )}
-          </div>
-          <div className="pointer-events-auto flex rounded-full bg-black/55 p-1 backdrop-blur" role="group" aria-label={tr("tlab.modeLabel")}>
-            {(
-              [
-                [true, tr("tlab.topo.coachOn")],
-                [false, tr("tlab.topo.explore")],
-              ] as const
-            ).map(([v, text]) => (
-              <button
-                key={String(v)}
-                type="button"
-                aria-pressed={coach === v}
-                onClick={() => {
-                  setCoach(v);
-                  if (v) setProbe(null);
-                }}
-                className={`min-h-[36px] rounded-full px-3.5 text-[13px] font-semibold ${coach === v ? "bg-white text-[#0b0c12]" : "text-white/70 hover:text-white"}`}
-              >
-                {text}
-              </button>
-            ))}
           </div>
         </div>
 
@@ -299,22 +301,6 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
             ) : raced ? (
               <div className="max-w-[640px] rounded-2xl bg-black/60 px-4 py-3 text-[16px] font-semibold text-white backdrop-blur-md">
                 {tr("tlab.g.probeWin", { name: lab.names[raced.first.i], s: raced.first.t.toFixed(1), team: lab.short[teamOf(raced.first.i)] })}
-              </div>
-            ) : !coach ? (
-              <div className="pointer-events-auto flex flex-wrap gap-1.5" role="group" aria-label={tr("tlab.lensesLabel")}>
-                {LENSES.map((l) => (
-                  <button
-                    key={l}
-                    type="button"
-                    aria-pressed={lenses.has(l)}
-                    onClick={() => toggle(l)}
-                    title={l === "space" ? tr("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : tr(`tlab.how.${l}`)}
-                    className={`rc-press flex min-h-[38px] items-center gap-2 rounded-full px-3 text-[13px] font-semibold backdrop-blur ${lenses.has(l) ? "bg-white text-[#0b0c12]" : "bg-black/50 text-white/70 ring-1 ring-inset ring-white/15 hover:text-white"}`}
-                  >
-                    <LensIcon l={l} />
-                    {tr(`tlab.lens.${l}`)}
-                  </button>
-                ))}
               </div>
             ) : null}
           </div>
@@ -346,7 +332,6 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
                 onClick={() => {
                   seek(g.s - 12);
                   setPlaying(true);
-                  setCoach(true);
                 }}
                 className="rc-press min-h-[30px] rounded-full px-3 text-[12px] font-bold"
                 style={{ background: g.team === 0 ? "#dfe4ff" : LAND_AWAY, color: "#0b0c12" }}
@@ -358,32 +343,62 @@ function LabView({ lab, an }: { lab: LabData; an: Analysis }) {
           </div>
         </div>
       </div>
-
-      {/* the key: how to read the land, for someone who has never watched football */}
-      <div className="mt-6 grid gap-x-10 gap-y-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
-        <div>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{tr("tlab.topo.what")}</p>
-          <ul className="mt-3 grid gap-2.5 text-[15px] leading-snug text-chalk-dim">
-            <li className="flex items-start gap-3"><i className="mt-1 h-3.5 w-6 shrink-0 rounded-sm" style={{ background: LAND_HOME }} />{tr("tlab.topo.legendHome", { c: tr("tlab.topo.blue"), team: club(0) })}</li>
-            <li className="flex items-start gap-3"><i className="mt-1 h-3.5 w-6 shrink-0 rounded-sm" style={{ background: LAND_AWAY }} />{tr("tlab.topo.legendAway", { c: tr("tlab.topo.amber"), team: club(1) })}</li>
-            <li className="flex items-start gap-3"><i className="mt-1 h-3.5 w-6 shrink-0 rounded-sm bg-[#0b0c12] ring-1 ring-inset ring-white/25" />{tr("tlab.topo.legendSeam")}</li>
-            <li className="flex items-start gap-3"><i className="mt-1 h-3.5 w-6 shrink-0 rounded-sm bg-flare" />{tr("tlab.topo.legendLines")}</li>
-          </ul>
-          <p className="mt-4 text-[15px] font-semibold text-chalk">{tr("tlab.topo.own", { team: club(share >= 0.5 ? 0 : 1), p: Math.round((share >= 0.5 ? share : 1 - share) * 100) })}</p>
-        </div>
-        <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
-          {LENSES.map((l) => (
-            <div key={l} className="min-w-0">
-              <dt className="flex items-center gap-2 font-display text-[15px] font-extrabold uppercase text-chalk [font-stretch:115%]">
-                <LensIcon l={l} />
-                {tr(`tlab.lens.${l}`)}
-              </dt>
-              <dd className="mt-1 text-[14px] leading-snug text-chalk-dim">{l === "space" ? tr("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : tr(`tlab.how.${l}`)}</dd>
-            </div>
-          ))}
-        </dl>
+      <Side lab={lab} f={now?.f ?? null} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} />
       </div>
     </div>
+  );
+}
+
+/** Beside the pitch: what the chosen feature shows, then this moment in numbers. */
+function Side({ lab, f, feature, line, unitOf, club, grid }: { lab: LabData; f: Frame | null; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][] }) {
+  const { t } = useTranslation();
+  const lens = feature === "coach" ? line?.lens ?? null : feature;
+  const how = lens === "space" ? t("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : lens ? t(`tlab.how.${lens}`) : "";
+  const rows: [string, string, boolean][] = [];
+  if (f) {
+    const sp = spaceShare(f).home;
+    const own = sp >= 0.5 ? 0 : 1;
+    rows.push([t("tlab.now.space"), t("tlab.now.spaceSub", { team: club(own), p: Math.round((own === 0 ? sp : 1 - sp) * 100) }), lens === "space"]);
+    const c = f.carrier;
+    if (c >= 0 && c < 22) {
+      const ls = lanes(f, grid);
+      rows.push([t("tlab.now.options"), t("tlab.now.optionsSub", { open: ls.filter((l) => l.open >= 0.5).length, n: ls.length, name: lab.names[c] }), lens === "options"]);
+      const p = pressure(f);
+      if (p) rows.push([t("tlab.now.pressure"), t("tlab.now.pressureSub", { n: p.pressers.length, m: p.nearest.toFixed(1) }), lens === "pressure"]);
+    } else rows.push([t("tlab.now.options"), t("tlab.now.noBall"), lens === "options"]);
+    const h = shape(f, 0, unitOf), a = shape(f, 1, unitOf);
+    rows.push([t("tlab.now.lines"), t("tlab.now.linesSub", { home: lab.short[0], away: lab.short[1], a: Math.round(h.line.def), b: Math.round(a.line.def) }), lens === "shape"]);
+    rows.push([t("tlab.now.shape"), `${t("tlab.now.shapeSub", { team: lab.short[0], d: Math.round(h.depth), w: Math.round(h.width) })} ${t("tlab.now.shapeSub", { team: lab.short[1], d: Math.round(a.depth), w: Math.round(a.width) })}`, lens === "shape"]);
+  }
+  return (
+    <aside className="rounded-[22px] bg-turf p-4 ring-1 ring-inset ring-turf-edge sm:p-5">
+      {lens && (
+        <div className="mb-4 border-b border-turf-edge pb-4">
+          <p className="flex items-center gap-2 font-display text-[18px] font-extrabold uppercase text-chalk [font-stretch:115%]">
+            <LensIcon l={lens} />
+            {t(`tlab.lens.${lens}`)}
+          </p>
+          <p className="mt-1.5 text-[14px] leading-snug text-chalk-dim">{how}</p>
+        </div>
+      )}
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("tlab.now.title")}</p>
+      <dl className="mt-2 grid gap-3">
+        {rows.map(([k, v, hot]) => (
+          <div key={k} className={`rounded-xl px-3 py-2 ${hot ? "bg-chalk/10 ring-1 ring-inset ring-flare/60" : ""}`}>
+            <dt className="text-[12px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{k}</dt>
+            <dd className="mt-0.5 text-[14.5px] leading-snug text-chalk">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </aside>
+  );
+}
+
+function CoachIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path d="M3 4.5h12v7H8l-3 2.5v-2.5H3z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
   );
 }
 

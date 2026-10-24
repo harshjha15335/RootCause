@@ -1,7 +1,7 @@
 import { ALIASES, useUi, type Screen } from "../store/uiStore";
 
-/** Old screen names still accepted while screens move over: lab → autopsy, analysis/report → match. */
-type AnyScreen = Screen | "lab" | "analysis" | "report";
+/** Old screen names still accepted: analysis/report → match. */
+type AnyScreen = Screen | "analysis" | "report";
 const resolve = (s: AnyScreen): Screen => ALIASES[s] ?? (s as Screen);
 
 /** Moving between screens of the match already loaded. */

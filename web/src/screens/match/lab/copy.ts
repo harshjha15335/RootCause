@@ -109,8 +109,8 @@ const bundles = {
     "focus": "Following {{name}}. The grass now shows only the ground they own. Click them again to stop."
    },
    "topo": {
-    "title": "The match, as a landscape.",
-    "sub": "Every second of the 90 minutes, replayed on ground that rises under whoever owns it. A coach points at one thing at a time.",
+    "title": "See the whole match.",
+    "sub": "Every second of the 90 minutes on a live pitch. Let the coach point out what matters, or pick one feature yourself: who owns the space, the passes that were on, each team's lines, the press, the runs and the move.",
     "legendHome": "High {{c}} ground: {{team}} would reach a ball there first.",
     "legendAway": "High {{c}} ground: {{team}} own it.",
     "legendSeam": "Valleys are no man's land, where the two sides meet.",
@@ -232,8 +232,8 @@ const bundles = {
     "focus": "Siguiendo a {{name}}. El césped muestra solo su zona. Púlsalo otra vez para dejar de seguirlo."
    },
    "topo": {
-    "title": "El partido, como un paisaje.",
-    "sub": "Cada segundo de los 90 minutos, repetido sobre un terreno que se eleva bajo quien lo domina. Un entrenador señala una cosa cada vez.",
+    "title": "Mira el partido entero.",
+    "sub": "Cada segundo de los 90 minutos en un campo en vivo. Deja que el entrenador señale lo importante o elige una función: de quién es el espacio, los pases posibles, las líneas, la presión, los desmarques y la jugada.",
     "legendHome": "Terreno alto {{c}}: {{team}} llegaría antes al balón ahí.",
     "legendAway": "Terreno alto {{c}}: lo domina {{team}}.",
     "legendSeam": "Los valles son tierra de nadie, donde se encuentran los dos equipos.",
@@ -355,8 +355,8 @@ const bundles = {
     "focus": "{{name}} को फ़ॉलो कर रहे हैं। घास अब सिर्फ़ उनकी जगह दिखाती है। रोकने के लिए उन पर फिर क्लिक करें।"
    },
    "topo": {
-    "title": "मैच, एक भू-दृश्य की तरह।",
-    "sub": "90 मिनट का हर सेकंड, ऐसी ज़मीन पर दोबारा चलता है जो उसके मालिक के नीचे उठती है। एक कोच एक बार में एक बात दिखाता है।",
+    "title": "पूरा मैच देखें।",
+    "sub": "90 मिनट का हर सेकंड एक लाइव पिच पर। कोच को ज़रूरी बातें दिखाने दें, या ख़ुद एक फ़ीचर चुनें: जगह किसकी है, कौन से पास खुले थे, टीमों की लाइनें, प्रेस, दौड़ और मूव।",
     "legendHome": "ऊँची {{c}} ज़मीन: वहाँ गेंद तक {{team}} पहले पहुँचते।",
     "legendAway": "ऊँची {{c}} ज़मीन: उस पर {{team}} का क़ब्ज़ा।",
     "legendSeam": "घाटियाँ किसी की नहीं, जहाँ दोनों टीमें मिलती हैं।",

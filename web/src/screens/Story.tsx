@@ -157,19 +157,37 @@ export function Story() {
     }
   }, [step, status]);
 
-  const show = (i: number) => setStep(Math.max(0, Math.min(STEPS - 1, i)));
+  // the story is scrolled: the stage stays pinned while the page runs through one screen per step
+  const track = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement).closest("input, textarea, select")) return;
-      if (e.key === "ArrowRight") setStep((s) => Math.min(STEPS - 1, s + 1));
-      if (e.key === "ArrowLeft") setStep((s) => Math.max(0, s - 1));
+    const onScroll = () => {
+      const el = track.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const range = Math.max(1, r.height - innerHeight);
+      const p = Math.min(0.9999, Math.max(0, -r.top / range));
+      setStep(Math.floor(p * STEPS));
     };
-    addEventListener("keydown", onKey);
-    return () => removeEventListener("keydown", onKey);
+    onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    return () => {
+      removeEventListener("scroll", onScroll);
+      removeEventListener("resize", onScroll);
+    };
   }, []);
+  const show = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const k = Math.max(0, Math.min(STEPS - 1, i));
+    const range = Math.max(1, el.offsetHeight - innerHeight);
+    const top = el.getBoundingClientRect().top + scrollY;
+    scrollTo({ top: top + ((k + 0.5) / STEPS) * range, behavior: reduced ? "auto" : "smooth" });
+  };
 
   return (
-    <section aria-labelledby="story-h" className="relative h-[calc(100svh-var(--header-h))] min-h-[560px] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#1530d6_45%,#0b1a8a_100%)]">
+    <div ref={track} style={{ height: `${STEPS * 90 + 40}svh` }}>
+    <section aria-labelledby="story-h" className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] min-h-[560px] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#1530d6_45%,#0b1a8a_100%)]">
       <canvas ref={canvas} className={`absolute inset-0 block h-full w-full cursor-grab touch-pan-y transition-opacity duration-700 active:cursor-grabbing ${status === "ready" ? "opacity-100" : "opacity-0"}`} role="img" aria-label={t("storyx.canvas")} />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#1530d6_0%,transparent_9%,transparent_91%,#1530d6_100%)]" aria-hidden="true" />
       <div ref={labels} className="pointer-events-none absolute inset-0" aria-hidden="true" />
@@ -224,9 +242,6 @@ export function Story() {
               <Key color={css.var}>{t("storyx.keyMistake")}</Key>
             </div>
             <div className="flex flex-wrap gap-3">
-              <button type="button" onClick={() => show(step - 1)} disabled={step === 0} className="rc-press min-h-[46px] rounded-full px-5 text-[15px] font-semibold text-chalk ring-1 ring-inset ring-chalk/30 hover:bg-chalk/10 disabled:opacity-40">
-                {t("storyx.back")}
-              </button>
               {step === STEPS - 1 ? (
                 <>
                   <a href={pageHref("autopsy", { demo: EXAMPLE.match, goal: EXAMPLE.goal })} className="rc-press inline-flex min-h-[46px] items-center rounded-full bg-flare px-6 text-[15px] font-bold text-flare-ink hover:brightness-105">
@@ -241,8 +256,9 @@ export function Story() {
                   </button>
                 </>
               ) : (
-                <button type="button" onClick={() => show(step + 1)} className="rc-press min-h-[46px] rounded-full bg-chalk px-6 text-[15px] font-bold text-turf hover:opacity-90">
-                  {t("storyx.next")}
+                <button type="button" onClick={() => show(step + 1)} className="rc-press inline-flex min-h-[46px] items-center gap-2 rounded-full px-5 text-[14px] font-semibold text-chalk-dim ring-1 ring-inset ring-chalk/25 hover:text-chalk">
+                  {t("storyx.scroll")}
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2v8m0 0L2.5 6.5M6 10l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </button>
               )}
             </div>
@@ -250,6 +266,7 @@ export function Story() {
         </div>
       </div>
     </section>
+    </div>
   );
 }
 
