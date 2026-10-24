@@ -19,6 +19,7 @@ const hi: Dict = {
   },
   score: { home: "घरेलू", away: "मेहमान", live: "लाइव", recorded: "रिकॉर्ड किया मैच", replay: "रीप्ले" },
   nav: {
+    autopsy: "ऑटोप्सी",
     matches: "मैच",
     lab: "टैक्टिक्स लैब",
     bugReport: "मैच रिपोर्ट",

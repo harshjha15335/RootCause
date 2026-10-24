@@ -8,7 +8,8 @@ import { go } from "../lib/nav";
 import { useSelectedEvidence } from "../store/selectors";
 import { useUi } from "../store/uiStore";
 import "./landingCopy";
-import { TimestackStory } from "./TimestackStory";
+import "./heroCopy";
+import { TimestackStory } from "./HeroTimestack";
 
 /** Home sells the product: the Timestack hero, three beats, then the match library. No match data in the copy. */
 export function Home() {

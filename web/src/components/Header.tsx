@@ -80,7 +80,8 @@ function Flip({ value }: { value: number }) {
 const NAV: { key: Screen; also: Screen[] }[] = [
   { key: "home", also: [] },
   { key: "story", also: [] },
-  { key: "matches", also: ["match", "autopsy", "explore"] },
+  { key: "matches", also: ["match", "explore"] },
+  { key: "autopsy", also: [] },
 ];
 
 function NavLinks() {

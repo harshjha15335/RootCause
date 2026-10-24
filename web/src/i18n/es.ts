@@ -19,6 +19,7 @@ const es: Dict = {
   },
   score: { home: "Local", away: "Visitante", live: "En directo", recorded: "Partido grabado", replay: "Repetición" },
   nav: {
+    autopsy: "Autopsia",
     matches: "Partidos",
     lab: "Laboratorio táctico",
     bugReport: "Informe del partido",

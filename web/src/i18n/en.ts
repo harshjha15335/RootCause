@@ -18,6 +18,7 @@ const en = {
   },
   score: { home: "Home", away: "Away", live: "Live", recorded: "Recorded match", replay: "Replay" },
   nav: {
+    autopsy: "Autopsy",
     matches: "Matches",
     lab: "Tactics Lab",
     bugReport: "Match report",
