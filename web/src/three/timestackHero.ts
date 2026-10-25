@@ -265,9 +265,12 @@ export class Timestack {
 
   private frame = () => {
     const S = this.state;
-    this.yaw += (this.yawTarget - this.yaw) * 0.08;
+    const now = performance.now() * 0.001;
+    const idleYaw = Math.sin(now * 0.5) * 0.025;
+    const idlePitch = Math.sin(now * 0.8) * 0.7;
+    this.yaw += (this.yawTarget + idleYaw - this.yaw) * 0.06;
     const dx = S.cx - S.tx, dz = S.cz - S.tz, c = Math.cos(this.yaw), s = Math.sin(this.yaw);
-    this.camera.position.set(S.tx + dx * c - dz * s, S.cy, S.tz + dx * s + dz * c);
+    this.camera.position.set(S.tx + dx * c - dz * s, S.cy + idlePitch, S.tz + dx * s + dz * c);
     this.camera.lookAt(S.tx, S.ty, S.tz);
     this.apply();
     this.renderer.render(this.scene, this.camera);

@@ -163,9 +163,12 @@ export function useBroadcast() {
         }
         untracedEvents = new Set((x.manifest.untraced as { event_id: string }[]).map((u) => u.event_id));
         goalSeconds = (x.ticks as any[]).filter((e) => e.type === "goal").map((e) => e.clock_s);
-        const tracedGoals = (x.ticks as any[]).filter((e) => e.type === "goal" && !untracedEvents.has(e.id ?? ""));
+        const tracedGoals = (x.ticks as any[]).filter(
+          (e) => e.type === "goal" && !untracedEvents.has(`wlb-msb-2023-11-12-e${e.clock_s}`)
+        );
         const firstTracedSec = tracedGoals[0]?.clock_s;
-        engine.featured = x.truth?.goal_clock_s ?? firstTracedSec ?? goalSeconds[0] ?? goalSeconds[goalSeconds.length - 1];
+        engine.extras = x;
+        engine.featured = x.truth?.goal_clock_s ?? firstTracedSec ?? 2184;
         begin(pending ?? (useUi.getState().screen === "story" ? "buildup" : "verdict"));
         pending = null;
       }
