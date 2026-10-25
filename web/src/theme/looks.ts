@@ -48,8 +48,12 @@ export const LOOKS: Record<LookId, Look> = {
 };
 
 /** Headline fonts to try on any look (?font=). Body text stays the look's own font. */
-export const FONTS: Record<string, { name: string; display: string; weight: number; tracking: string; adjust: number }> = {
+export const FONTS: Record<string, { name: string; display: string; weight: number; tracking: string; adjust: number; width?: number }> = {
   syne: { name: "Syne", display: "'Syne'", weight: 700, tracking: "-0.03em", adjust: 0.46 },
+  archivo: { name: "Archivo Expanded", display: "'Archivo'", weight: 700, tracking: "-0.035em", adjust: 0.44, width: 125 },
+  jakarta: { name: "Plus Jakarta", display: "'Plus Jakarta Sans'", weight: 800, tracking: "-0.04em", adjust: 0.44 },
+  sora: { name: "Sora", display: "'Sora'", weight: 700, tracking: "-0.04em", adjust: 0.44 },
+  redhat: { name: "Red Hat Display", display: "'Red Hat Display'", weight: 800, tracking: "-0.035em", adjust: 0.44 },
   serif: { name: "Instrument Serif", display: "'Instrument Serif'", weight: 400, tracking: "-0.01em", adjust: 0.5 },
   bodoni: { name: "Bodoni Moda", display: "'Bodoni Moda'", weight: 600, tracking: "-0.02em", adjust: 0.44 },
   unbounded: { name: "Unbounded", display: "'Unbounded'", weight: 600, tracking: "-0.04em", adjust: 0.4 },
@@ -81,7 +85,7 @@ const pick = (): LookId => {
 
 const base = LOOKS[typeof location === "undefined" ? "cobalt" : pick()];
 const f = FONT ? FONTS[FONT] : null;
-export const LOOK: Look = f ? { ...base, type: { ...base.type, display: f.display, weight: f.weight, tracking: f.tracking, adjust: f.adjust, caps: false, width: 100 } } : base;
+export const LOOK: Look = f ? { ...base, type: { ...base.type, display: f.display, weight: f.weight, tracking: f.tracking, adjust: f.adjust, caps: false, width: f.width ?? 100 } } : base;
 
 const parts = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const rgb = (hex: string) => parts(hex).join(" ");
