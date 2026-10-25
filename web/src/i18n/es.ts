@@ -466,7 +466,7 @@ const es: Dict = {
   },
   library: {
     title: "Partidos",
-    lede: "Cuatro duelos entre los mismos dos clubes. Elige uno.",
+    lede: "Todos los partidos analizados hasta ahora. Elige uno.",
     failed: "La lista de partidos no cargó. Recargar suele arreglarlo.",
     meeting: "Duelo {{n}}",
     traced_one: "{{count}} gol · {{traced}} rastreado",
@@ -478,7 +478,7 @@ const es: Dict = {
   app: {
     loading: "Cargando",
     screenFailed: "Esta página no se cargó. Recargar suele arreglarlo.",
-    recording: "Partido grabado del motor p-1008, reproducido con el formato de mensajes en directo.",
+    recording: "Partido grabado del motor {{id}}, reproducido con el formato de mensajes en directo.",
     failed: "Se detuvo la señal del partido",
     retry: "Reintentar",
   },

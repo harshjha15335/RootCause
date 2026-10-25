@@ -465,7 +465,7 @@ const en = {
   },
   library: {
     title: "Matches",
-    lede: "Four meetings of the same two clubs. Pick one.",
+    lede: "Every match analysed so far. Pick one.",
     failed: "The match list didn't load. Reloading usually fixes it.",
     meeting: "Meeting {{n}}",
     traced_one: "{{count}} goal · {{traced}} traced",
@@ -477,7 +477,7 @@ const en = {
   app: {
     loading: "Loading",
     screenFailed: "This page didn't load. Reloading usually fixes it.",
-    recording: "Recorded engine match p-1008, replayed through the live message format.",
+    recording: "Recorded engine match {{id}}, replayed through the live message format.",
     failed: "The match feed stopped",
     retry: "Try again",
   },

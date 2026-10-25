@@ -52,8 +52,9 @@ async function json<T>(url: string, init?: RequestInit): Promise<T> {
   return r.json() as Promise<T>;
 }
 
-/** Engine-generated demo matches, all exported offline (web/tools). The first is the default. */
-export const DEMO_MATCHES = ["p-1008", "p-1009", "p-1014", "p-1017"] as const;
+declare const __MATCHES__: string[];
+/** Every match exported to public/showcase, found at build time (tools/matches.mjs). The first is the default. */
+export const DEMO_MATCHES: readonly string[] = __MATCHES__;
 /** ?demo= wins; otherwise the match picked last time, so every page stays on the same match. */
 const asked = (() => {
   const fromUrl = new URLSearchParams(location.search).get("demo");
