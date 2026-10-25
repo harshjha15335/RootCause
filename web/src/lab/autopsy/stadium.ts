@@ -10,7 +10,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
-import { teamMotion } from "./motion";
+import { goalType, teamMotion } from "./motion";
 
 /**
  * The Goal Autopsy's 3D stage: a floodlit night stadium where one goal is taken apart, the way
@@ -224,6 +224,7 @@ const yellowLine = (x: number, h = 0.3) => [[x, h, -34, x, h, 34], [0.776, 1, 0.
 export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOpts): AutopsyStage {
   const { lab } = a;
   const tr = a.kind === "traced" ? a : null;
+  const corner = goalType(a.chance?.honest?.kind) === "corner";
   const say = (k: string, v?: Record<string, string | number>) => opts.say(`s.${k}`, v);
   const sur = (i: number) => lab.names[i].split(" ").slice(-1)[0];
   const backFour = [1, 2, 3, 4].map((k) => a.def * 11 + k);
@@ -586,6 +587,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   };
   const shotOf = (i: number) => {
     const b = beatOf(i);
+    if (corner && (b === "plans" || b === "move")) return { pos: [18, 95, 95], at: [40, 0, 0] };
     if (phone() && multi(b)) return { pos: [0, 330, 150], at: [0, 0, 14] };
     if (b === "mistake" && tr) {
       // close on the defender, from behind the attack, high enough to see the line he broke
@@ -596,7 +598,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     return SHOTS[b]!;
   };
 
-  let step = 0, since = 0, trans = 1, playing = false, shift = 1;
+  let step = 0, since = 0, trans = 1, playing = false, shift = 1, motionRequested = false;
   let from: { cam: THREE.Vector3; at: THREE.Vector3; lay: Layout } | null = null;
   let lay: Layout = JSON.parse(JSON.stringify(SOLO));
   camera.position.set(-10, 170, 170);
@@ -617,11 +619,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     return 99;
   };
 
-  function draw(dt: number) {
-    if (playing && !opts.still) since += dt;
+  function draw(dt: number, timelineDt = dt) {
+    if (playing && !opts.still) since += timelineDt;
     trans += dt;
     const b = beatOf(step), k = steps[step].k;
-    const sx = opts.reduced ? keyTime(b) : since;
+    const frozen = opts.reduced && !motionRequested;
+    const sx = frozen ? keyTime(b) : since;
     const T = opts.reduced || opts.still ? 1 : clamp01(trans / 2.4), e = ease(T);
     const shot = shotOf(step), to = layoutOf(b);
     if (from) {
@@ -719,7 +722,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const f = pose(real, liveAt, s, false), u = ease(clamp01(sx / 1.8));
       for (const team of [0, 1] as const) {
         const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45);
-        formationGroups(a.plan, team).forEach((ps, unit) => {
+        (corner ? [] : formationGroups(a.plan, team)).forEach((ps, unit) => {
           const pts: number[] = [], cols: number[] = [];
           ps.forEach((i) => {
             const p = real.pieces[i].t.position;
@@ -738,17 +741,17 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         const y0 = Math.min(...xs.map((p) => p[1])), y1 = Math.max(...xs.map((p) => p[1]));
         m.scale.set(x1 - x0, 1, y1 - y0);
         m.position.set((x0 + x1) / 2 - 52.5, 0.04, (y0 + y1) / 2 - 34);
-        m.material.opacity = 0.07 * u;
+        m.material.opacity = corner ? 0 : 0.07 * u;
       });
       const depth = lineOf(f);
       const [p, cl] = yellowLine(depth - 52.5);
       setLine(real.line, [...p], cl.map((v) => v * u));
-      real.line.visible = true;
-      planTag.visible = u > 0.6;
+      real.line.visible = !corner;
+      planTag.visible = !corner && u > 0.6;
       planTag.position.set(depth - 52.5, 4, -30);
     } else if (b === "move") {
       const s = moveClock(a, sx);
-      const f = pose(real, liveAt, s);
+      const f = pose(real, liveAt, s, !corner);
       for (const m of marks) {
         const behind = f.pos[m.x.player][0] - lineOf(f, m.x.player);
         const on = behind > 2.5;
@@ -796,7 +799,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         spaceTag.position.set(cx - 52.5, 2.2, cy - 34);
       }
     } else if ((b === "runs" || b === "trial") && uA && S1) {
-      const s = b === "runs" ? (opts.reduced ? a.goalS + 2 : Math.min(runsFrom(tr!) + sx * 0.9, a.goalS + 2)) : a.goalS + 2;
+      const s = b === "runs" ? (frozen ? a.goalS + 2 : Math.min(runsFrom(tr!) + sx * 0.9, a.goalS + 2)) : a.goalS + 2;
       pose(real, realAt, Math.min(s, a.goalS + 1));
       pose(uA, at1, s);
       if (uB && S2) pose(uB, at2, s);
@@ -814,7 +817,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       } else {
         bins.forEach((x) => {
           x.g.visible = true;
-          const r = rain(x, opts.reduced ? 99 : sx - 0.4);
+          const r = rain(x, frozen ? 99 : sx - 0.4);
           relabel(x.count, say("count", { g: r.goals, n: r.landed }), { bg: "rgba(6,8,18,.8)", size: 56, h: 5.4, weight: 800 });
         });
       }
@@ -826,7 +829,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     } else if (b === "fix" && uA && S1) {
       // the culprit's replay: level with the line, and the move dies
       const fs = fixSpan(S1);
-      const s = opts.reduced ? S1.end : Math.min(fs.from + sx * 0.8, fs.to);
+      const s = frozen ? S1.end : Math.min(fs.from + sx * 0.8, fs.to);
       const f = pose(uA, at1, s);
       const r = realAt(Math.min(s, S1.end));
       uA.head.visible = false;
@@ -896,11 +899,16 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   canvas.addEventListener("pointerleave", onLeave);
 
   let raf = 0, last = performance.now();
+  const onVisibility = () => { last = performance.now(); };
+  document.addEventListener("visibilitychange", onVisibility);
   const tick = (now: number) => {
     raf = requestAnimationFrame(tick);
-    const dt = Math.min((now - last) / 1000, 0.1);
+    const elapsed = (now - last) / 1000;
+    const dt = Math.min(elapsed, 0.1);
     last = now;
-    draw(dt);
+    // Camera easing stays bounded, but low frame rates must not slow the match clock.
+    // Visibility changes reset the clock, so hidden tabs do not skip through the replay.
+    draw(dt, document.hidden ? 0 : elapsed);
     controls.update();
     finish.uniforms.t.value = (now / 1000) % 10;
     camera.layers.set(0);
@@ -931,7 +939,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         lay = JSON.parse(JSON.stringify(layoutOf(beatOf(step))));
       }
     },
-    setPlaying(p) { playing = p; },
+    setPlaying(p) {
+      // Reduced motion starts paused. An explicit Play must still animate the pitch;
+      // otherwise the old renderer said "Pause" while permanently holding a still image.
+      if (p && opts.reduced && !motionRequested) { motionRequested = true; since = 0; }
+      playing = p;
+    },
     time: () => since,
     resize(width, height, ins) {
       w = Math.max(width, 1);
@@ -946,6 +959,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     },
     dispose() {
       cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", onVisibility);
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerleave", onLeave);
       controls.dispose();

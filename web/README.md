@@ -70,3 +70,26 @@ blame, recorded counterfactuals or frozen evidence diagrams. Pause and reduced-m
 settings still stop playback. The goal type is taken from explicit source classification
 (penalty, corner, free kick, open play, or another set piece); missing classifications
 are shown as not recorded instead of being guessed from shot coordinates.
+
+Visibility regression coverage checks the seven seconds viewers actually see for every
+goal, including Goal 2. Static or barely moving background players make staggered support
+and cover runs, rather than tiny whole-window drifts. Static actors ease back to their event
+position at a touch instead of being excluded from all off-ball movement. For imported
+scoring-slot mismatches, only a unique same-team track exactly at the finish can be assigned
+to the event's scorer; ambiguous cases are left untouched. Isolated sprint outliers are
+limited for display. These corrections do not rewrite tracking, player stats or attribution.
+
+Reduced-motion preferences start the scene paused and keep camera transitions still.
+Pressing Play explicitly enables pitch movement; Pause freezes it at the current moment.
+
+Corner-labelled goals use an explicitly illustrative set-piece setup instead of copying
+normal open-play formation: six attackers attack the box, eight defending outfield players
+mark runners or cover the posts, the defending keeper stays near the goal line, and the
+remaining players cover the edge/counterattack. The taker and scorer come from the event
+metadata and the header finishes at the recorded shot location. Missing taker metadata
+falls back to the available event replay rather than inventing a player identity.
+
+Open-play defenders close down the ball and track the scorer at a visible controlled jog.
+Replay time uses elapsed foreground time independently of camera easing, so a low frame
+rate does not silently turn the entire play into slow motion. Explicit slow-motion finish
+segments and Pause remain available.

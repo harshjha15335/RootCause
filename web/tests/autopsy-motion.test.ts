@@ -1,10 +1,11 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Analysis } from "../src/api/analysis";
 import { buildAutopsy, formationGroups, goalsOf } from "../src/lab/autopsy/model";
 import { frameAt, loadLab } from "../src/lab/data";
 import { goalFrame } from "../src/lab/journey/model";
 import { goalType, teamMotion } from "../src/lab/autopsy/motion";
+import type { Evidence } from "../src/api/types";
 
 const id = "wlb-msb-2023-11-12";
 const base = `public/showcase/${id}/`;
@@ -104,13 +105,15 @@ describe("Autopsy goal motion", () => {
       for (let i = 0; i < 22; i++) {
         expect(Math.hypot(next.pos[i][0] - frame.pos[i][0], next.pos[i][1] - frame.pos[i][1])).toBeLessThan(1.2);
       }
-      // Event actors, including the passer and scorer, follow the original recording.
-      expect(frame.pos[14]).toEqual(autopsy.frame(s).pos[14]);
-      expect(frame.pos[17]).toEqual(autopsy.frame(s).pos[17]);
-      expect(frame.ball).toEqual(autopsy.frame(s).ball);
     }
     replay(autopsy.moveFrom);
     expect(replay(autopsy.goalS)).toEqual(finish);
+    // In the illustrative corner setup, the named taker delivers to the recorded scorer
+    // at the event's finish location; unrelated normal-formation tracking is not reused.
+    const kick = replay(autopsy.goalS - 2.2), contact = replay(autopsy.goalS - 0.4);
+    expect(Math.hypot(kick.pos[17][0] - kick.ball[0], kick.pos[17][1] - kick.ball[1])).toBeLessThan(0.5);
+    expect(contact.pos[14]).toEqual(contact.ball);
+    expect(finish.ball[0]).toBeGreaterThan(105);
   });
 
   it.each([
@@ -120,5 +123,59 @@ describe("Autopsy goal motion", () => {
     [undefined, "unknown"], ["unclassified", "unknown"],
   ])("classifies recorded goal kind %s as %s without guessing", (kind, expected) => {
     expect(goalType(kind)).toBe(expected);
+  });
+
+  it("keeps off-ball runs visible in the actual seven-second replay for all eight goals", () => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const replays = JSON.parse(readFileSync(`${base}replays.json`, "utf8"));
+    const traces = readdirSync(`${base}traces`).map((name) => JSON.parse(readFileSync(`${base}traces/${name}`, "utf8")) as Evidence);
+    const goals = goalsOf(lab, traces);
+    expect(goals).toHaveLength(8);
+    for (const goal of goals) {
+      const ev = traces.find((e) => e.goal_id === goal.id) ?? null;
+      const a = buildAutopsy(lab, goal, ev, replays[goal.id] ?? {}, analyses)!;
+      const live = teamMotion(a), start = Math.max(a.moveFrom, a.goalS - 7);
+      let before = live(start);
+      const travel = Array(22).fill(0);
+      for (let s = start + 0.1; s <= a.goalS; s += 0.1) {
+        const f = live(s);
+        f.pos.forEach((p, i) => {
+          const delta = Math.hypot(p[0] - before.pos[i][0], p[1] - before.pos[i][1]);
+          expect(delta, `${goal.id} player ${i} jumped`).toBeLessThan(1.2);
+          travel[i] += delta;
+        });
+        before = f;
+      }
+      travel.forEach((distance, i) => {
+        const keeper = i % 11 === 0;
+        const penalty = goalType(a.chance?.honest?.kind) === "penalty";
+        expect(distance, `${goal.id}: ${lab.names[i]} appears frozen`).toBeGreaterThan(penalty ? 0.15 : keeper ? 0.3 : 1.5);
+      });
+    }
+  });
+
+  it("puts Goal 2's recorded scorer at the reconstructed corner finish", () => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const goal = goalsOf(lab, []).find((g) => g.s === 1704)!;
+    const a = buildAutopsy(lab, goal, null, {}, analyses)!;
+    const f = teamMotion(a)(a.goalS);
+    // H5 is the recorded scorer; the imported tracking had put this finish on H4.
+    expect(a.scorer).toBe(4);
+    expect(Math.hypot(f.pos[4][0] - 99.8, f.pos[4][1] - 41.5)).toBeLessThan(0.5);
+  });
+
+  it.each([1704, 2727])("crowds the box and marks runners in the %s corner", (second) => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const goal = goalsOf(lab, []).find((g) => g.s === second)!;
+    const a = buildAutopsy(lab, goal, null, {}, analyses)!;
+    const live = teamMotion(a);
+    for (const t of [second - 6, second - 2, second - 0.4]) {
+      const f = live(t);
+      const inBox = (i: number) => i % 11 !== 0 && f.pos[i][0] >= 88.5 && f.pos[i][0] <= 105 && f.pos[i][1] >= 13.84 && f.pos[i][1] <= 54.16;
+      expect(f.pos.filter((_, i) => Math.floor(i / 11) === a.def && inBox(i))).toHaveLength(8);
+      expect(f.pos.filter((_, i) => Math.floor(i / 11) === a.att && inBox(i))).toHaveLength(6);
+      expect(f.pos[a.def * 11][0]).toBeGreaterThan(102);
+      expect(f.pos[a.att * 11][0]).toBeLessThan(10);
+    }
   });
 });

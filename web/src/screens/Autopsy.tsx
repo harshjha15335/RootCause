@@ -132,6 +132,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
   const dev = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
   const [n, setN] = useState(() => Math.min(Number(dev?.get("step") ?? 0), steps.length - 1));
   const [playing, setPlaying] = useState(() => !reduced && !dev?.has("hold"));
+  const explicitPlay = useRef(false);
   const [glFailed, setGlFailed] = useState(false);
   const [engine, setEngine] = useState(false);
   const [wide, setWide] = useState(true);
@@ -191,7 +192,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
     setN(k);
     setElapsed(0);
     stage.current?.show(k);
-    const p = play && !reduced;
+    const p = play && (!reduced || explicitPlay.current);
     setPlaying(p);
     stage.current?.setPlaying(p);
   }, [steps.length, reduced]);
@@ -231,6 +232,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
   function toggle() {
     if (done) return goTo(0);
     const p = !playing;
+    if (p) explicitPlay.current = true;
     setPlaying(p);
     stage.current?.setPlaying(p);
   }
@@ -359,6 +361,14 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
   const Line = ({ children, dim }: { children: React.ReactNode; dim?: boolean }) => <p className={`mt-2 text-[15px] leading-[1.45] ${dim ? "text-chalk-faint" : "text-chalk-dim"}`}>{children}</p>;
 
   if (st.beat === "plans") {
+    if (goalType(a.chance?.honest?.kind) === "corner") return (
+      <>
+        <Kicker>{t("autopsy.corner.k")}</Kicker>
+        <Title>{t("autopsy.corner.title")}</Title>
+        <Line>{t("autopsy.corner.body")}</Line>
+        <Line dim>{t("autopsy.reconstruction")}</Line>
+      </>
+    );
     const fact = (k: 0 | 1) => {
       const f = a.dossier.facts[k][0];
       return t(`autopsy.pre.${f.key}`, { team: lab.clubs[k].name, ...f.params });
