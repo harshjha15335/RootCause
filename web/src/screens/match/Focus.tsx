@@ -1,0 +1,222 @@
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Badge } from "../../components/bits";
+import "../../components/fanStrings";
+import { SECONDS, useLab, type Lab } from "../../lab/data";
+import { matchStats, playerMoments, type Moment, type PlayerStat } from "../../lab/stats";
+import { go } from "../../lib/nav";
+import { fanIndex, fanSide, useFan } from "../../store/fanStore";
+import { MomentText } from "./lab/MatchLab";
+
+const minute = (s: number) => Math.floor(s / 60);
+const sur = (lab: Lab, i: number) => lab.names[i].split(" ").slice(-1)[0];
+const watch = (s: number) => {
+  useFan.getState().watchInLab(Math.max(0, s - 4));
+  go("lab");
+};
+
+/**
+ * Player focus on the Match page: the viewer's player through the whole match. Totals with their
+ * tags, a 90-minute strip of every moment, and the moments worth watching, each opening the
+ * Tactics Lab on that second. Without a pick, a prompt to choose from this match's squads.
+ */
+export function FocusSection({ matchId }: { matchId: string }) {
+  const { t } = useTranslation();
+  const q = useLab(matchId);
+  const player = useFan((u) => u.player);
+  const club = useFan((u) => u.club);
+  if (!q.data) return <div className="h-[220px] animate-pulse rounded-[22px] bg-turf/60" aria-hidden="true" />;
+  const lab = q.data;
+  const i = fanIndex(lab, player);
+  if (i == null) {
+    const side = fanSide(lab.clubs, club);
+    return (
+      <div className="rounded-[22px] bg-turf p-5 ring-1 ring-inset ring-turf-edge sm:p-6">
+        <p className="max-w-[60ch] text-[16px] leading-relaxed text-chalk-dim">
+          {player ? t("fan.focus.notHere", { name: player, home: lab.clubs[0].name, away: lab.clubs[1].name }) : t("fan.focus.subNone")}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(side != null ? [side] : [0, 1]).flatMap((k) =>
+            lab.clubs[k].players.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => useFan.getState().setPlayer(p.name, lab.clubs[k].name)}
+                className="rc-press flex min-h-[40px] items-center gap-2 rounded-full bg-turf-deep px-3 text-[13px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised"
+              >
+                <Badge club={lab.clubs[k]} size={16} />
+                <span className="tabular-nums text-chalk-faint">{p.number}</span> {p.name}
+              </button>
+            )),
+          )}
+        </div>
+      </div>
+    );
+  }
+  return <Focused lab={lab} i={i} />;
+}
+
+function Focused({ lab, i }: { lab: Lab; i: number }) {
+  const { t } = useTranslation();
+  const st = matchStats(lab);
+  const p = st.players[i];
+  const moments = useMemo(() => playerMoments(lab, i), [lab, i]);
+  const team = i < 11 ? 0 : 1;
+  const key = moments.filter(
+    (m) =>
+      m.kind === "goal" ||
+      m.kind === "shot" ||
+      m.kind === "run" ||
+      (m.kind === "pass" && m.pass && (m.pass.grade === "hard" || m.pass.grade === "elite" || m.pass.tags.includes("lineBreaking"))),
+  );
+  const [all, setAll] = useState(false);
+  const shown = all ? key : key.slice(0, 8);
+  return (
+    <div className="rounded-[22px] bg-turf p-5 ring-1 ring-inset ring-turf-edge sm:p-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <Badge club={lab.clubs[team]} size={34} />
+        <div>
+          <p className="font-display text-[22px] font-extrabold leading-tight text-chalk">
+            #{lab.numbers[i]} {lab.names[i]}
+          </p>
+          <p className="text-[14px] text-chalk-dim">
+            {lab.clubs[team].name} · {lab.roles[i]}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5 sm:ml-auto">
+          {p.tags.map((g) => (
+            <span key={g} className="rounded-full bg-flare px-3 py-1 text-[12px] font-bold text-flare-ink">
+              {t(`fan.tag.${g}`)}
+            </span>
+          ))}
+        </div>
+      </div>
+      <Totals lab={lab} p={p} />
+      <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.timeline")}</p>
+      <Strip moments={moments} />
+      <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.key")}</p>
+      <ul className="mt-2 divide-y divide-turf-edge">
+        {shown.map((m) => (
+          <li key={m.kind + m.s} className="flex items-start gap-3 py-2.5">
+            <span className="w-10 shrink-0 pt-0.5 text-right text-[13px] font-semibold tabular-nums text-chalk-faint">{minute(m.s)}′</span>
+            <span className="min-w-0 flex-1 text-[14.5px] leading-snug text-chalk">
+              <MomentText lab={lab} m={m} />
+            </span>
+            <button type="button" onClick={() => watch(m.s)} className="rc-press min-h-[34px] shrink-0 rounded-full px-3 text-[12px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised">
+              {t("fan.focus.watch")} ▸
+            </button>
+          </li>
+        ))}
+      </ul>
+      {key.length > 8 && (
+        <button type="button" onClick={() => setAll(!all)} className="mt-2 min-h-[36px] text-[13px] font-semibold text-chalk-dim underline underline-offset-4 hover:text-chalk">
+          {all ? "−" : `+${key.length - 8}`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function Totals({ lab, p }: { lab: Lab; p: PlayerStat }) {
+  const { t } = useTranslation();
+  const tiles: [string, string, string?][] = [
+    [t("fan.focus.km"), t("fan.focus.kmV", { v: p.km.toFixed(1) })],
+    [t("fan.focus.top"), t("fan.focus.kmh", { v: p.topKmh.toFixed(1) })],
+    [t("fan.focus.hsr"), String(p.hsr), t("fan.focus.hsrSub")],
+    [t("fan.focus.passes"), t("fan.focus.passesV", { done: p.completed, n: p.passes }), t("fan.focus.acc", { p: Math.round(p.accuracy * 100) })],
+    [t("fan.focus.diff"), t("fan.focus.diffV", { v: Math.round(p.avgDifficulty) }), t("fan.focus.diffSub")],
+    [
+      t("fan.focus.hardest"),
+      p.hardest ? t(`fan.grade.${p.hardest.grade}`) : t("fan.focus.none"),
+      p.hardest ? t("fan.focus.hardestV", { m: minute(p.hardest.s), to: p.hardest.receiver != null ? sur(lab, p.hardest.receiver) : "", d: Math.round(p.hardest.dist), v: p.hardest.difficulty }) : undefined,
+    ],
+    [t("fan.focus.shot"), p.fastestShot ? t("fan.focus.kmh", { v: p.fastestShot.kmh }) : t("fan.focus.none"), p.fastestShot ? t("fan.focus.shotV", { v: p.fastestShot.kmh, m: minute(p.fastestShot.s) }) : undefined],
+  ];
+  return (
+    <dl className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+      {tiles.map(([k, v, sub]) => (
+        <div key={k} className="rounded-xl bg-turf-deep px-3 py-2.5 ring-1 ring-inset ring-turf-edge">
+          <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{k}</dt>
+          <dd className="mt-1 text-[18px] font-bold tabular-nums text-chalk">{v}</dd>
+          {sub && <dd className="mt-0.5 text-[12px] leading-snug text-chalk-dim">{sub}</dd>}
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/** 90 minutes left to right: a tick for every moment, taller for shots, red for goals. */
+function Strip({ moments }: { moments: Moment[] }) {
+  const h = (m: Moment) => (m.kind === "goal" ? 30 : m.kind === "shot" ? 24 : m.kind === "run" ? 18 : m.kind === "pass" ? 12 : 8);
+  return (
+    <div className="relative mt-2 h-[38px] w-full rounded-lg bg-turf-deep ring-1 ring-inset ring-turf-edge" role="img" aria-label={`${moments.length}`}>
+      <div className="absolute inset-y-0 left-1/2 w-px bg-turf-edge" aria-hidden="true" />
+      {moments.map((m) => (
+        <button
+          key={m.kind + m.s}
+          type="button"
+          tabIndex={-1}
+          title={`${minute(m.s)}′`}
+          onClick={() => watch(m.s)}
+          className={`absolute bottom-1 w-[3px] -translate-x-1/2 rounded-full ${m.kind === "goal" || m.kind === "shot" ? "bg-flare" : m.kind === "run" ? "bg-chalk" : "bg-chalk/40"}`}
+          style={{ left: `${(m.s / SECONDS) * 100}%`, height: h(m) }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** Match-wide speed and pass leaders, then each team in one line. */
+export function SpeedSection({ matchId }: { matchId: string }) {
+  const { t } = useTranslation();
+  const q = useLab(matchId);
+  if (!q.data) return <div className="h-[220px] animate-pulse rounded-[22px] bg-turf/60" aria-hidden="true" />;
+  const lab = q.data;
+  const st = matchStats(lab);
+  const best = <T,>(xs: T[], k: (x: T) => number) => xs.reduce<T | null>((b, x) => (!b || k(x) > k(b) ? x : b), null);
+  const shot = best(st.shots, (x) => x.kmh);
+  const fast = best(st.players, (p) => p.topKmh);
+  const far = best(st.players.filter((p) => lab.roles[p.i] !== "GK"), (p) => p.km);
+  const hard = best(st.passes.filter((x) => x.ok), (x) => x.difficulty);
+  const lbBy = st.players.map((p) => ({ i: p.i, n: st.passes.filter((x) => x.player === p.i && x.tags.includes("lineBreaking")).length }));
+  const lb = best(lbBy, (x) => x.n);
+  const rows: { k: string; i: number; v: string; s?: number }[] = [];
+  if (shot) rows.push({ k: t("fan.speed.fastestShot"), i: shot.player, v: `${shot.kmh} km/h · ${t(`fan.stag.${shot.tag}`)} · ${minute(shot.s)}′`, s: shot.s });
+  if (fast) rows.push({ k: t("fan.speed.fastestPlayer"), i: fast.i, v: `${fast.topKmh.toFixed(1)} km/h` });
+  if (far) rows.push({ k: t("fan.speed.distance"), i: far.i, v: `${far.km.toFixed(1)} km` });
+  if (hard) rows.push({ k: t("fan.speed.hardestPass"), i: hard.player, v: `${t(`fan.grade.${hard.grade}`)} ${hard.difficulty}/100 · ${Math.round(hard.dist)} m · ${minute(hard.s)}′`, s: hard.s });
+  if (lb && lb.n) rows.push({ k: t("fan.speed.lineBreaker"), i: lb.i, v: t("fan.speed.nLb", { n: lb.n }) });
+  const fan = fanIndex(lab, useFan.getState().player);
+  return (
+    <div>
+      <ul className="divide-y divide-turf-edge rounded-[22px] bg-turf px-5 ring-1 ring-inset ring-turf-edge">
+        {rows.map((r) => (
+          <li key={r.k} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3.5">
+            <span className="w-full text-[12px] font-semibold uppercase tracking-[0.1em] text-chalk-faint sm:w-[230px]">{r.k}</span>
+            <span className={`flex items-center gap-2 text-[15px] font-semibold ${r.i === fan ? "text-flare" : "text-chalk"}`}>
+              <Badge club={lab.clubs[r.i < 11 ? 0 : 1]} size={18} />#{lab.numbers[r.i]} {lab.names[r.i]}
+            </span>
+            <span className="text-[14px] tabular-nums text-chalk-dim">{r.v}</span>
+            {r.s != null && (
+              <button type="button" onClick={() => watch(r.s!)} className="rc-press ml-auto min-h-[34px] rounded-full px-3 text-[12px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised">
+                {t("fan.focus.watch")} ▸
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-4 grid gap-1.5">
+        {[0, 1].map((k) => {
+          const ps = st.passes.filter((x) => x.team === k);
+          const avg = (f: (x: (typeof ps)[number]) => number) => Math.round(ps.reduce((s, x) => s + f(x), 0) / Math.max(1, ps.length));
+          return (
+            <p key={k} className="text-[14px] text-chalk-dim">
+              {t("fan.speed.team", { team: lab.clubs[k].name, acc: Math.round((ps.filter((x) => x.ok).length / Math.max(1, ps.length)) * 100), d: avg((x) => x.difficulty), v: avg((x) => x.ballKmh) })}
+            </p>
+          );
+        })}
+      </div>
+      <p className="mt-4 max-w-[80ch] text-[13px] leading-relaxed text-chalk-faint">{t("fan.speed.how")}</p>
+    </div>
+  );
+}

@@ -4,6 +4,10 @@ import { useAnalysis, type Analysis } from "../../../api/analysis";
 import { PHASES, PX, PY, SECONDS, frameAt, useLab, type Frame, type Lab as LabData } from "../../../lab/data";
 import { quality } from "../../../lib/device";
 import { useUi } from "../../../store/uiStore";
+import { fanIndex, useFan } from "../../../store/fanStore";
+import { band, matchStats, playerMoments, type Moment } from "../../../lab/stats";
+import { Star } from "../../../components/FanPicker";
+import "../../../components/fanStrings";
 import { coachLine, type Line } from "./coach";
 import "./copy";
 import "./storyCopy";
@@ -60,12 +64,19 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   );
 
   // start on the build-up to the first traced mistake, where the coach has the most to say
-  const time = useRef(Math.max((faults[0]?.s ?? goals[0]?.s ?? 600) - 16, 0));
+  // a "watch in the Lab" link opens on its moment
+  const time = useRef(useFan.getState().labStart ?? Math.max((faults[0]?.s ?? goals[0]?.s ?? 600) - 16, 0));
+  useEffect(() => useFan.getState().watchInLab(null), []);
   const [playing, setPlaying] = useState(!reduced);
   const [speed, setSpeed] = useState(1);
   const [coach, setCoach] = useState(true);
   const [lenses, setLenses] = useState<Set<LensId>>(new Set(["space"]));
-  const [focus, setFocus] = useState<number | null>(null);
+  // player focus: the viewer's own player is followed from the first second
+  const fanPlayer = useFan((u) => u.player);
+  const fan = fanIndex(lab, fanPlayer);
+  const [focus, setFocus] = useState<number | null>(fan);
+  useEffect(() => setFocus(fan), [fan]);
+  const moments = useMemo(() => (focus != null ? playerMoments(lab, focus) : []), [lab, focus]);
   const [probe, setProbe] = useState<[number, number] | null>(null);
   const [hover, setHover] = useState<number | null>(null);
   const [line, setLine] = useState<Line | null>(null);
@@ -275,6 +286,32 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
               <span style={{ color: "#c9d2ff" }}>{lab.short[0]}</span> {score[0]}–{score[1]} <span style={{ color: LAND_AWAY }}>{lab.short[1]}</span>
               <span className="ml-3 text-[14px] font-bold text-white/60">{now ? clock(now.t) : ""}</span>
             </span>
+            {fan != null && (
+              <button
+                type="button"
+                aria-pressed={focus === fan}
+                onClick={() => setFocus(focus === fan ? null : fan)}
+                className={`pointer-events-auto flex min-h-[40px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold backdrop-blur ${focus === fan ? "bg-white text-[#0b0c12]" : "bg-black/55 text-white/80"}`}
+              >
+                <Star filled={focus === fan} />
+                {focus === fan ? tr("fan.following", { name: lab.names[fan].split(" ").slice(-1)[0] }) : tr("fan.follow", { name: lab.names[fan].split(" ").slice(-1)[0] })}
+              </button>
+            )}
+            {focus != null && now && (
+              <button
+                type="button"
+                onClick={() => {
+                  const n = moments.find((m) => m.s > now.t + 1);
+                  if (n) {
+                    seek(n.s - 3);
+                    setPlaying(true);
+                  }
+                }}
+                className="pointer-events-auto min-h-[40px] rounded-full bg-black/55 px-3 text-[13px] font-semibold text-white/80 backdrop-blur hover:text-white"
+              >
+                {tr("fan.nextTouch")} →
+              </button>
+            )}
             {now && (
               <span className="hidden rounded-full bg-black/55 px-3 py-2 text-[13px] font-semibold text-white/70 backdrop-blur md:inline">
                 {lab.short[team]} · {tr(`tlab.phase.${PHASES[lab.phase[s]]}`)} <span className="mx-1 text-white/35">/</span> {lab.short[1 - team]} · {tr(`tlab.block.${block}`)}
@@ -343,14 +380,14 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
           </div>
         </div>
       </div>
-      <Side lab={lab} f={now?.f ?? null} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} />
+      <Side lab={lab} f={now?.f ?? null} t={now?.t ?? 0} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} focus={focus} moments={moments} />
       </div>
     </div>
   );
 }
 
 /** Beside the pitch: what the chosen feature shows, then this moment in numbers. */
-function Side({ lab, f, feature, line, unitOf, club, grid }: { lab: LabData; f: Frame | null; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][] }) {
+function Side({ lab, f, t: now, feature, line, unitOf, club, grid, focus, moments }: { lab: LabData; f: Frame | null; t: number; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][]; focus: number | null; moments: Moment[] }) {
   const { t } = useTranslation();
   const lens = feature === "coach" ? line?.lens ?? null : feature;
   const how = lens === "space" ? t("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : lens ? t(`tlab.how.${lens}`) : "";
@@ -372,6 +409,7 @@ function Side({ lab, f, feature, line, unitOf, club, grid }: { lab: LabData; f: 
   }
   return (
     <aside className="rounded-[22px] bg-turf p-4 ring-1 ring-inset ring-turf-edge sm:p-5">
+      {focus != null && f && <FocusCard lab={lab} i={focus} t={now} f={f} moments={moments} />}
       {lens && (
         <div className="mb-4 border-b border-turf-edge pb-4">
           <p className="flex items-center gap-2 font-display text-[18px] font-extrabold uppercase text-chalk [font-stretch:115%]">
@@ -402,6 +440,73 @@ function CoachIcon() {
   );
 }
 
+/** Player focus beside the pitch: ground covered so far, speed now, the last and next touch. */
+function FocusCard({ lab, i, t: sec, f, moments }: { lab: LabData; i: number; t: number; f: Frame; moments: Moment[] }) {
+  const { t } = useTranslation();
+  const st = matchStats(lab);
+  const s = Math.min(Math.max(Math.floor(sec), 0), SECONDS - 1);
+  const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
+  const last = [...moments].reverse().find((m) => m.s <= sec);
+  const next = moments.find((m) => m.s > sec);
+  return (
+    <div className="mb-4 border-b border-turf-edge pb-4">
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.following", { name: "" }).trim()}</p>
+      <p className="mt-1 font-display text-[18px] font-extrabold text-chalk">
+        #{lab.numbers[i]} {lab.names[i]}
+      </p>
+      <p className="mt-1 text-[14px] text-chalk-dim">
+        {t("fan.focus.soFar", { km: (st.cum[i * SECONDS + s] / 1000).toFixed(1) })} · {Math.round(sp * 3.6)} km/h <SpeedChip ms={sp} />
+      </p>
+      {last && (
+        <p className="mt-2 text-[14px] leading-snug text-chalk">
+          <span className="text-chalk-faint">{t("fan.focus.last")} {clock(last.s)} · </span>
+          <MomentText lab={lab} m={last} />
+        </p>
+      )}
+      {next && (
+        <p className="mt-1 text-[13px] leading-snug text-chalk-dim">
+          {t("fan.focus.next")} {clock(next.s)} · <MomentText lab={lab} m={next} />
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SpeedChip({ ms }: { ms: number }) {
+  const { t } = useTranslation();
+  const b = band(ms);
+  return <span className={`ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] ${b === "hsr" || b === "sprint" ? "bg-flare text-flare-ink" : "bg-chalk/10 text-chalk-dim"}`}>{t(`fan.band.${b}`)}</span>;
+}
+
+/** One moment in words, with its speed and difficulty tags. Shared with the Match page. */
+export function MomentText({ lab, m }: { lab: LabData; m: Moment }) {
+  const { t } = useTranslation();
+  const sur = (k: number | null | undefined) => (k == null ? "" : lab.names[k].split(" ").slice(-1)[0]);
+  let text = "";
+  const tags: string[] = [];
+  if (m.kind === "pass" && m.pass) {
+    text = t(m.pass.ok ? "fan.m.pass" : m.outcome === "offside" ? "fan.m.passOffside" : "fan.m.passFail", { to: sur(m.other) });
+    tags.push(`${t(`fan.grade.${m.pass.grade}`)} ${m.pass.difficulty}`, `${m.pass.ballKmh} km/h`, ...m.pass.tags.map((g) => t(`fan.ptag.${g}`)));
+  } else if (m.kind === "received") text = t("fan.m.received", { from: sur(m.other) });
+  else if ((m.kind === "shot" || m.kind === "goal") && m.shot) {
+    text = m.kind === "goal" ? t("fan.m.goal") : t("fan.m.shot", { outcome: t(`fan.outcome.${m.outcome}`, { defaultValue: m.outcome ?? "" }) });
+    tags.push(`${m.shot.kmh} km/h`, t(`fan.stag.${m.shot.tag}`));
+  } else if (m.kind === "run" && m.run) {
+    text = t(m.run.kind === "sprint" ? "fan.m.sprint" : "fan.m.run", { m: Math.round(m.run.metres) });
+    tags.push(`${Math.round(m.run.peakKmh)} km/h`);
+  } else if (m.kind === "duel") text = t("fan.m.duel", { outcome: t(`fan.outcome.${m.outcome}`, { defaultValue: m.outcome ?? "" }) });
+  return (
+    <>
+      {text}
+      {tags.map((g) => (
+        <span key={g} className="ml-1.5 inline-block rounded-full bg-chalk/10 px-2 py-px text-[11px] font-semibold text-chalk-dim">
+          {g}
+        </span>
+      ))}
+    </>
+  );
+}
+
 function Tag({ lab, i, x, y, f, unit }: { lab: LabData; i: number; x: number; y: number; f: Frame; unit: Unit }) {
   const { t } = useTranslation();
   const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
@@ -411,7 +516,7 @@ function Tag({ lab, i, x, y, f, unit }: { lab: LabData; i: number; x: number; y:
         #{lab.numbers[i]} {lab.names[i]}
       </div>
       <div className="whitespace-nowrap text-white/60">
-        {lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)} · {sp.toFixed(1)} m/s
+        {lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)} · {Math.round(sp * 3.6)} km/h · {t(`fan.band.${band(sp)}`)}
       </div>
     </div>
   );

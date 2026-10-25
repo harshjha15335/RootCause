@@ -12,6 +12,8 @@ import { useNearViewport } from "../lib/device";
 import { pageHref } from "../lib/nav";
 import { useUi, type Depth } from "../store/uiStore";
 import "./match/strings";
+import { FocusSection, SpeedSection } from "./match/Focus";
+import { useFan } from "../store/fanStore";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
@@ -27,6 +29,7 @@ export function Match() {
   const meta = demo?.meta ?? null;
   const depth = useUi((u) => u.depth);
   const [player, setPlayer] = useState<string | null>(null);
+  const fanPlayer = useFan((u) => u.player);
   const [chance, setChance] = useState<number | null>(null);
   const chanceRef = useRef<HTMLElement>(null);
 
@@ -51,6 +54,9 @@ export function Match() {
   return (
     <div className="min-h-[calc(100dvh-var(--header-h))] overflow-x-clip bg-turf-deep pb-28">
       <Top s={s} meta={meta} />
+      <Section id="focus" title={fanPlayer ? t("fan.focus.title") : t("fan.focus.titleNone")} sub={fanPlayer ? t("fan.focus.sub", { name: fanPlayer }) : undefined}>
+        <FocusSection matchId={SHOWCASE_MATCH} />
+      </Section>
       <Section id="goals" title={t("match.goals.title")} sub={t("match.goals.sub")}>
         <Goals s={s} meta={meta} depth={depth} />
       </Section>
@@ -59,6 +65,9 @@ export function Match() {
       </Section>
       <Section id="players" title={t("match.players.title")} sub={t("match.players.sub")}>
         <Players s={s} meta={meta} depth={depth} player={player} onPlayer={setPlayer} onShow={showChance} />
+      </Section>
+      <Section id="speed" title={t("fan.speed.title")} sub={t("fan.speed.sub")}>
+        <SpeedSection matchId={SHOWCASE_MATCH} />
       </Section>
       <Section id="numbers" title={t("match.numbers.title")}>
         <Numbers meta={meta} />
@@ -132,6 +141,7 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
   const { t } = useTranslation();
   const n = useNames(s);
   const dur = s.duration_s;
+  const fanClub = useFan((u) => u.club);
   return (
     <section className="mx-auto max-w-[1280px] px-4 pt-10 sm:px-8 sm:pt-14">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -146,6 +156,11 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
         </div>
       </div>
       <p className="mt-10 text-[14px] font-semibold uppercase tracking-[0.16em] text-chalk-faint">{s.meeting ? t("match.meeting", { n: s.meeting }) : null}</p>
+      {meta && (fanClub === meta.home.name || fanClub === meta.away.name) && (
+        <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-flare px-3 py-1 text-[13px] font-bold text-flare-ink">
+          {t("fan.yours")}: {fanClub}
+        </p>
+      )}
       <h1 className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-display text-[clamp(34px,6.4vw,92px)] font-black leading-[0.92] tracking-display text-chalk">
         <span className="inline-flex items-center gap-4">
           <Badge club={meta?.home ?? null} size={44} />

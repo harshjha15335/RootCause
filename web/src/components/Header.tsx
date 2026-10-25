@@ -9,6 +9,7 @@ import { useUi, type Screen } from "../store/uiStore";
 import type { Lang } from "../api/types";
 import { Badge } from "./bits";
 import { go } from "../lib/nav";
+import { FanPicker } from "./FanPicker";
 
 export function Wordmark() {
   return (
@@ -215,6 +216,7 @@ export function Header() {
         <div className="ml-auto min-w-0 overflow-x-auto [scrollbar-width:none] sm:ml-6 sm:mr-auto">
           <NavLinks />
         </div>
+        <FanPicker />
         <LanguageMenu />
       </div>
     </header>
