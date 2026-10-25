@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Component, Suspense, useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
+import { LookSwitch } from "./components/LookSwitch";
 import { chunkReloadDone, lazyPage } from "./lib/lazyPage";
 import { chainBounds, jumpTo } from "./store/broadcast";
 import { useBroadcast } from "./store/broadcast";
@@ -37,6 +38,7 @@ export default function App() {
         Skip to content
       </a>
       <Header />
+      {import.meta.env.VITE_LOOK_SWITCH === "1" && <LookSwitch />}
       {failure && (
         <div role="alert" className="border-b border-flare/40 bg-flare/10 px-4 py-2 text-[14px] text-chalk">
           {t("app.failed")}: {failure}

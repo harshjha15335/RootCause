@@ -7,9 +7,12 @@ import "@fontsource/noto-sans-devanagari/400.css";
 import "@fontsource/noto-sans-devanagari/600.css";
 import "@fontsource/noto-sans-devanagari/800.css";
 import "./theme/tokens.css";
+import { applyLook } from "./theme/looks";
 import "./index.css";
 import "./i18n";
 import App from "./App";
+
+applyLook();
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
 

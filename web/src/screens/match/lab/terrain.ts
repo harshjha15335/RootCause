@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { PX, PY, type Frame } from "../../../lab/data";
 import { MARGIN } from "./draw";
 import { EDGE_S, REACT_S, RUN_MS, SOFT_TAU, homeControl, teamOf } from "./model";
+import { css as tone } from "../../../theme/palette";
 
 /**
  * The Match Topography: the Tactics Lab's live pitch turned into a landscape, an architectural
@@ -11,7 +12,7 @@ import { EDGE_S, REACT_S, RUN_MS, SOFT_TAU, homeControl, teamOf } from "./model"
  * hills, each player raises a small mound where they stand, and every lens is drawn on a canvas
  * that drapes over the land.
  */
-export const LAND_HOME = "#4766ff";
+export const LAND_HOME = tone.plate;
 export const LAND_AWAY = "#ff9f1c";
 const RISE = 6.5; // metres of rise for ground a side fully owns
 const MOUND = 1.8; // a player's own mound
@@ -106,11 +107,11 @@ function numberTexture(n: number, team: number) {
   const c = document.createElement("canvas");
   c.width = c.height = 64;
   const g = c.getContext("2d")!;
-  g.fillStyle = team === 0 ? "#eef1ff" : LAND_AWAY;
+  g.fillStyle = team === 0 ? tone.chalk : LAND_AWAY;
   g.beginPath();
   g.arc(32, 32, 27, 0, Math.PI * 2);
   g.fill();
-  g.fillStyle = team === 0 ? "#1d2fb8" : "#1a1206";
+  g.fillStyle = team === 0 ? tone.deep2 : "#1a1206";
   g.font = "800 30px system-ui, sans-serif";
   g.textAlign = "center";
   g.textBaseline = "middle";
@@ -193,7 +194,7 @@ export class Terrain {
     const rim = new THREE.LineSegments(rimGeo, new THREE.LineBasicMaterial({ color: "#3a4060", transparent: true, opacity: 0.55 }));
     rim.position.y = -1.62;
     this.scene.add(rim);
-    this.scene.add(new THREE.HemisphereLight("#c8d2ff", "#0a0a10", 0.7));
+    this.scene.add(new THREE.HemisphereLight(tone.dim, "#0a0a10", 0.7));
     const key = new THREE.DirectionalLight("#fff1dc", 1.6);
     key.position.set(-60, 90, 70);
     this.scene.add(key);
@@ -201,7 +202,7 @@ export class Terrain {
     const poleGeo = new THREE.CylinderGeometry(0.22, 0.22, 2.4, 8);
     const headGeo = new THREE.SphereGeometry(0.85, 18, 12);
     // players are lit from within so they read against any ground
-    const homeMat = new THREE.MeshBasicMaterial({ color: "#f4f6ff", toneMapped: false });
+    const homeMat = new THREE.MeshBasicMaterial({ color: tone.chalk, toneMapped: false });
     const awayMat = new THREE.MeshBasicMaterial({ color: "#ffc066", toneMapped: false });
     for (let i = 0; i < 22; i++) {
       const team = teamOf(i);

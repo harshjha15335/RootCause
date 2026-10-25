@@ -1,5 +1,7 @@
 import { PX, PY, fwdX, type Action, type Frame, type Lab } from "../../../lab/data";
 import { lanes, pressure, race, shape, teamOf, type Lane, type Unit } from "./model";
+import { css as tone } from "../../../theme/palette";
+import { LOOK } from "../../../theme/looks";
 
 /** Everything drawn over the grass, on a 2D canvas in pitch metres (y = 0 at the top). */
 export const MARGIN = 3;
@@ -8,12 +10,12 @@ export const BOX: [number, number, number, number] = [-MARGIN, -MARGIN, PX + 2 *
 export type LensId = "space" | "options" | "shape" | "pressure" | "runs" | "chain";
 
 export const INK = {
-  home: "#f3f5ff",
-  homeInk: "#1530d6",
+  home: tone.chalk,
+  homeInk: tone.cobalt,
   away: "#ffb547",
   awayInk: "#1a1206",
-  night: "#050d4a",
-  flare: "#ffd60a",
+  night: tone.ink,
+  flare: tone.var,
   chalk: (a: number) => `rgba(243,245,255,${a})`,
   blue: (a: number) => `rgba(255,181,71,${a})`,
   dark: (a: number) => `rgba(8,9,14,${a})`,
@@ -58,7 +60,7 @@ export function drawScene(g: CanvasRenderingContext2D, k: number, sc: Scene) {
 function label(g: CanvasRenderingContext2D, k: number, text: string, x: number, y: number, o: { bg?: string; fg?: string; size?: number; align?: CanvasTextAlign } = {}) {
   const size = (o.size ?? 11.5) / k;
   g.save();
-  g.font = `600 ${size}px "Hanken Grotesk Variable", system-ui, sans-serif`;
+  g.font = `600 ${size}px ${LOOK.type.body}, system-ui, sans-serif`;
   const w = g.measureText(text).width, padX = 5 / k, h = size * 1.55;
   const align = o.align ?? "center";
   const x0 = align === "center" ? x - w / 2 - padX : align === "left" ? x : x - w - 2 * padX;
@@ -359,7 +361,7 @@ function drawChain(g: CanvasRenderingContext2D, k: number, sc: Scene) {
     g.arc(ax, ay, 1.15, 0, Math.PI * 2);
     g.fill();
     g.fillStyle = team === 0 ? INK.homeInk : INK.awayInk;
-    g.font = `700 ${1.3}px "Hanken Grotesk Variable", system-ui`;
+    g.font = `700 ${1.3}px ${LOOK.type.body}, system-ui`;
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillText(String(n), ax, ay + 0.05);
@@ -465,7 +467,7 @@ function drawPlayers(g: CanvasRenderingContext2D, k: number, sc: Scene) {
     g.fill();
     g.stroke();
     g.fillStyle = team === 0 ? INK.homeInk : INK.awayInk;
-    g.font = `800 ${1.45}px "Hanken Grotesk Variable", system-ui`;
+    g.font = `800 ${1.45}px ${LOOK.type.body}, system-ui`;
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillText(String(lab.numbers[i]), x, y + 0.08);

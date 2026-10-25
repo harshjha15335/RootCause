@@ -1,4 +1,5 @@
 import type { ClubMeta, MatchMeta } from "../api/types";
+import { css as tone } from "../theme/palette";
 
 /** Match clock as broadcasters show it: 62:36 */
 export function clock(second: number): string {
@@ -60,5 +61,5 @@ export const PLAYER_TOKEN = /\b((?:H|A)\d{1,2}|(?:home|away)-\d{1,2})\b/g;
 /** Figures on the pitch wear the theme, not the club kit: white for home, blue for away, so the
  * yellow stays free for the bug and both sides read on the cobalt pitch. Badges keep real kits. */
 export function pitchKit(side: "home" | "away"): { kit: string; trim: string } {
-  return side === "home" ? { kit: "#f3f5ff", trim: "#1530d6" } : { kit: "#5a78ff", trim: "#f3f5ff" };
+  return side === "home" ? { kit: tone.chalk, trim: tone.cobalt } : { kit: tone.kitAway, trim: tone.chalk };
 }

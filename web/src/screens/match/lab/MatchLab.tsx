@@ -11,6 +11,7 @@ import { Dna, type Marker } from "./Dna";
 import { drawScene, pick, type LensId } from "./draw";
 import { lanes, pressure, race, shape, spaceShare, teamOf, type Unit } from "./model";
 import { LAND_AWAY, type Terrain } from "./terrain";
+import { css as tone } from "../../../theme/palette";
 
 const LENSES: LensId[] = ["space", "options", "shape", "pressure", "runs", "chain"];
 const SPEEDS = [0.5, 1, 3];
@@ -272,7 +273,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
         <div ref={top} className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-2 p-3 sm:p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-black/55 px-4 py-2 font-display text-[18px] font-black tabular-nums text-white backdrop-blur [font-stretch:120%] sm:text-[22px]">
-              <span style={{ color: "#c9d2ff" }}>{lab.short[0]}</span> {score[0]}–{score[1]} <span style={{ color: LAND_AWAY }}>{lab.short[1]}</span>
+              <span style={{ color: tone.dim }}>{lab.short[0]}</span> {score[0]}–{score[1]} <span style={{ color: LAND_AWAY }}>{lab.short[1]}</span>
               <span className="ml-3 text-[14px] font-bold text-white/60">{now ? clock(now.t) : ""}</span>
             </span>
             {now && (
@@ -334,7 +335,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
                   setPlaying(true);
                 }}
                 className="rc-press min-h-[30px] rounded-full px-3 text-[12px] font-bold"
-                style={{ background: g.team === 0 ? "#dfe4ff" : LAND_AWAY, color: "#0b0c12" }}
+                style={{ background: g.team === 0 ? tone.dim : LAND_AWAY, color: "#0b0c12" }}
               >
                 {lab.names[g.player].split(" ").slice(-1)[0]} {Math.floor(g.s / 60)}′
               </button>

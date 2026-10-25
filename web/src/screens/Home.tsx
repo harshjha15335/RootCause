@@ -10,6 +10,7 @@ import { useUi } from "../store/uiStore";
 import "./landingCopy";
 import "./heroCopy";
 import { TimestackStory } from "./HeroTimestack";
+import { alpha, css as tone } from "../theme/palette";
 
 /** Home sells the product: the Timestack hero, three beats, then the match library. No match data in the copy. */
 export function Home() {
@@ -69,7 +70,7 @@ function Beats() {
 
 const CHALK = "rgb(var(--chalk))";
 const FAINT = "rgb(var(--chalk) / 0.3)";
-const VAR = "#ffd60a";
+const VAR = tone.var;
 
 /** Trace: a small Timestack; a scan sheet walks down from the goal and stops on the mistake layer. */
 function TraceArt() {
@@ -88,7 +89,7 @@ function TraceArt() {
         <motion.path
           key={i}
           d={layer(i)}
-          fill={i === hit ? "rgb(255 214 10 / 0.14)" : "rgb(243 245 255 / 0.03)"}
+          fill={i === hit ? alpha(tone.var, 0.14) : alpha(tone.chalk, 0.03)}
           stroke={i === hit ? VAR : FAINT}
           strokeWidth={i === hit ? 1.6 : 1}
           initial={false}
@@ -98,14 +99,14 @@ function TraceArt() {
       ))}
       {/* two ribbons: an attacker reaching the goal, the defender who fell behind */}
       <path d="M120 200 C126 168 112 140 132 114 S158 76 150 60" fill="none" stroke={CHALK} strokeWidth="3" strokeLinecap="round" />
-      <path d="M196 196 C192 172 202 150 190 128 S176 96 186 74" fill="none" stroke="#8fa6ff" strokeWidth="3" strokeLinecap="round" />
+      <path d="M196 196 C192 172 202 150 190 128 S176 96 186 74" fill="none" stroke={tone.sky} strokeWidth="3" strokeLinecap="round" />
       <circle cx="150" cy="60" r="5" fill={CHALK} />
       <text x="150" y="44" textAnchor="middle" fontSize="12" fontWeight="600" fill={CHALK}>
         {t("landing.traceGoal")}
       </text>
       <motion.path
         d={layer(layers - 1)}
-        fill="rgb(243 245 255 / 0.12)"
+        fill={alpha(tone.chalk, 0.12)}
         stroke={CHALK}
         strokeWidth="1.4"
         initial={false}
@@ -114,7 +115,7 @@ function TraceArt() {
       />
       <motion.g initial={false} animate={{ opacity: run ? 1 : 0 }} transition={{ delay: reduced ? 0 : 1.9, duration: 0.5 }}>
         <rect x="214" y={176 - hit * gap - 9} width="62" height="18" rx="4" fill={VAR} />
-        <text x="245" y={176 - hit * gap + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#06104f">
+        <text x="245" y={176 - hit * gap + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill={tone.flareInk}>
           {t("landing.traceMistake")}
         </text>
       </motion.g>
@@ -141,7 +142,7 @@ function ProveArt() {
             className="block aspect-square rounded-full transition-colors"
             style={{
               background: goal ? CHALK : "transparent",
-              boxShadow: goal ? "none" : `inset 0 0 0 1px ${fix && scored(i) ? VAR : "rgb(243 245 255 / 0.22)"}`,
+              boxShadow: goal ? "none" : `inset 0 0 0 1px ${fix && scored(i) ? VAR : alpha(tone.chalk, 0.22)}`,
               transitionDuration: "400ms",
               transitionDelay: fix && !reduced ? `${600 + (i % 40) * 22 + Math.floor(i / 40) * 40}ms` : "0ms",
             }}

@@ -199,9 +199,9 @@ export function Story() {
 
   return (
     <div ref={track} style={{ height: `${STEPS * 90 + 40}svh` }}>
-    <section aria-labelledby="story-h" className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] min-h-[560px] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#1530d6_45%,#0b1a8a_100%)]">
+    <section aria-labelledby="story-h" className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] min-h-[560px] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,rgb(var(--glow))_0%,rgb(var(--turf-deep))_45%,rgb(var(--stage))_100%)]">
       <canvas ref={canvas} className={`absolute inset-0 block h-full w-full cursor-grab touch-pan-y transition-opacity duration-700 active:cursor-grabbing ${status === "ready" ? "opacity-100" : "opacity-0"}`} role="img" aria-label={t("storyx.canvas")} />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#1530d6_0%,transparent_9%,transparent_91%,#1530d6_100%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgb(var(--turf-deep))_0%,transparent_9%,transparent_91%,rgb(var(--turf-deep))_100%)]" aria-hidden="true" />
       <div ref={labels} className="pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 px-5 pt-5 sm:px-10 sm:pt-6">
@@ -231,7 +231,7 @@ export function Story() {
         </ol>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0b1a8a] via-[#0b1a8a]/80 to-transparent px-5 pb-6 pt-16 sm:px-10 sm:pb-8">
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-stage via-stage/80 to-transparent px-5 pb-6 pt-16 sm:px-10 sm:pb-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="min-h-[132px] max-w-[640px]" aria-live="polite">
             {status === "failed" ? (

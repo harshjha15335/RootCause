@@ -1,25 +1,41 @@
+import { LOOK, mix } from "./looks";
+
 /**
- * The Timestack palette as numbers, for three.js and canvas. Same values as tokens.css.
- * Yellow (var) means one thing only: the mistake, the culprit and the fix.
+ * The active look's palette for three.js and canvas. The same values are in the CSS variables
+ * (looks.ts writes them at boot). The flare colour means one thing only: the mistake.
  */
-export const palette = {
-  cobalt: 0x1530d6, // page ground
-  deep: 0x0b1a8a, // stage
-  ink: 0x06104f, // stage floor, shadows
-  plate: 0x2f4dff, // Timestack layer fill
-  chalk: 0xf4f6ff, // ribbons, lines, text; also "fixed"
-  sky: 0x8fa6ff, // the other side
-  var: 0xffd60a, // the mistake, the culprit, the fix
-} as const;
+const t = LOOK.tones;
+const num = (hex: string) => parseInt(hex.slice(1), 16);
 
 export const css = {
-  cobalt: "#1530d6",
-  deep: "#0b1a8a",
-  ink: "#06104f",
-  plate: "#2f4dff",
-  chalk: "#f4f6ff",
-  sky: "#8fa6ff",
-  var: "#ffd60a",
+  cobalt: t.ground, // page ground
+  deep: t.stage, // stage
+  ink: t.floor, // stage floor, shadows
+  plate: t.plate, // Timestack layer fill
+  chalk: t.chalk, // ribbons, lines, text; also "fixed"
+  sky: t.sky, // the other side
+  var: t.flare, // the mistake, the culprit, the fix
+  flareInk: t.flareInk,
+  panel: t.panel,
+  edge: t.edge,
+  dim: t.dim,
+  faint: t.faint,
+  glow: t.glow,
+  kitAway: t.kitAway,
+  deep2: mix(t.stage, t.ground, 0.35), // between stage and ground
+  skySoft: mix(t.sky, t.chalk, 0.35),
+};
+
+export const palette = {
+  cobalt: num(css.cobalt),
+  deep: num(css.deep),
+  ink: num(css.ink),
+  plate: num(css.plate),
+  chalk: num(css.chalk),
+  sky: num(css.sky),
+  var: num(css.var),
+  deep2: num(css.deep2),
+  skySoft: num(css.skySoft),
 } as const;
 
 /** Camera and UI timing: few, slow, deliberate moves. */
@@ -29,3 +45,6 @@ export const motion = {
   ease: "power2.inOut", // GSAP name
   easeOut: "expo.out",
 } as const;
+
+/** A palette colour at some opacity, for SVG attributes and canvas, where CSS variables don't reach. */
+export const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, "0");

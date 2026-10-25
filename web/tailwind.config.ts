@@ -12,11 +12,16 @@ export default {
         chalk: { DEFAULT: v("chalk"), dim: v("chalk-dim"), faint: v("chalk-faint") },
         flare: { DEFAULT: v("flare"), ink: v("flare-ink") },
         paper: v("paper"),
+        stage: v("stage"),
+        floor: v("floor"),
+        plate: v("plate"),
+        glow: v("glow"),
+        sky: v("sky"),
         ink: v("ink"),
       },
       fontFamily: {
-        display: ["'Anybody Variable'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
-        body: ["'Hanken Grotesk Variable'", "'Noto Sans Devanagari'", "system-ui", "sans-serif"],
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
         trace: ["'JetBrains Mono Variable'", "ui-monospace", "monospace"],
       },
       transitionTimingFunction: {

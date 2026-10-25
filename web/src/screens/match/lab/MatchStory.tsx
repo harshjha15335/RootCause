@@ -5,8 +5,9 @@ import { useLab, type Lab } from "../../../lab/data";
 import { pageHref } from "../../../lib/nav";
 import { buildChapters, type Chapter, type Lane } from "./story";
 import "./storyCopy";
+import { css as tone } from "../../../theme/palette";
 
-const HOME = "#dfe4ff";
+const HOME = tone.dim;
 const AWAY = "#ffb547";
 
 /**

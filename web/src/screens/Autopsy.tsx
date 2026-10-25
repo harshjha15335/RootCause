@@ -15,6 +15,7 @@ import { quality } from "../lib/device";
 import { go, goalParam, pageHref } from "../lib/nav";
 import { useFullTime } from "../store/selectors";
 import { useUi } from "../store/uiStore";
+import { css as tone } from "../theme/palette";
 
 registerAutopsyWords();
 
@@ -234,7 +235,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
       {/* top: which meeting and goal, the depth switch, play */}
       <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 bg-gradient-to-b from-[#04060f]/90 to-transparent px-4 pb-6 pt-3 sm:px-6 sm:pt-4">
         <div className="min-w-0">
-          <p className="truncate text-[11px] font-bold uppercase tracking-[0.18em] text-[#ffd60a]">{t("autopsy.eyebrow")}</p>
+          <p className="truncate text-[11px] font-bold uppercase tracking-[0.18em] text-flare">{t("autopsy.eyebrow")}</p>
           <p className="truncate text-[13px] font-semibold text-chalk-dim">{t("autopsy.matchLine", { home, away, n: a.dossier.meeting })}</p>
           {goals.length > 1 && (
             <div role="group" aria-label={t("autopsy.goalsLabel")} className="-mx-1 mt-2 flex max-w-[calc(100vw-32px)] gap-1.5 overflow-x-auto px-1 pb-1 sm:max-w-[640px]">
@@ -246,7 +247,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
                   onClick={() => g.id !== a.id && onGoal(g)}
                   className="rc-press flex min-h-[34px] shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-[#070a1d]/60 px-3 text-[12.5px] font-semibold text-chalk-dim backdrop-blur aria-pressed:border-chalk aria-pressed:bg-chalk aria-pressed:text-[#070a1d]"
                 >
-                  <i aria-hidden className={`block h-1.5 w-1.5 rounded-full ${g.traced ? "bg-[#ffd60a]" : "bg-current opacity-40"}`} />
+                  <i aria-hidden className={`block h-1.5 w-1.5 rounded-full ${g.traced ? "bg-flare" : "bg-current opacity-40"}`} />
                   {t("autopsy.goalChip", { clock: clock(g.s), name: surname(lab.names[g.scorer]) })}
                 </button>
               ))}
@@ -297,7 +298,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
                   className={`grid h-10 w-full content-center gap-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.08em] ${here ? "text-chalk" : "text-chalk-faint"}`}
                 >
                   <span className="relative block h-[3px] overflow-hidden rounded bg-white/20">
-                    <i className={`absolute inset-y-0 left-0 rounded ${r.key === "verdict" || r.key === "mistakes" ? "bg-[#ffd60a]" : "bg-chalk"}`} style={{ width: `${fillK * 100}%` }} />
+                    <i className={`absolute inset-y-0 left-0 rounded ${r.key === "verdict" || r.key === "mistakes" ? "bg-flare" : "bg-chalk"}`} style={{ width: `${fillK * 100}%` }} />
                   </span>
                   <span className="hidden truncate sm:block">{r.label}</span>
                 </button>
@@ -320,7 +321,7 @@ type T = ReturnType<typeof useTranslation>["t"];
 function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Data; st: Step; t: T; expert: boolean; elapsed: number; download: () => void; openEngine: () => void; wide: boolean }) {
   const { lab } = a;
   const [home, away] = [lab.clubs[0].name, lab.clubs[1].name];
-  const Kicker = ({ children }: { children: React.ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#ffd60a]">{children}</p>;
+  const Kicker = ({ children }: { children: React.ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-flare">{children}</p>;
   const Title = ({ children }: { children: React.ReactNode }) => (
     <h2 className={`mt-1.5 text-balance font-display font-black leading-[1.02] tracking-display [font-stretch:118%] ${wide ? "text-[30px]" : "text-[22px]"}`}>{children}</h2>
   );
@@ -356,7 +357,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
       <>
         <div className="flex items-center gap-2">
           <Kicker>{t("autopsy.goal.k")}</Kicker>
-          {elapsed >= slowAt(a) && <span className="autopsy-fade rounded-full border border-[#ffd60a]/50 px-2 py-0.5 text-[11px] font-semibold text-[#ffd60a]">{t("autopsy.goal.slow")}</span>}
+          {elapsed >= slowAt(a) && <span className="autopsy-fade rounded-full border border-flare/50 px-2 py-0.5 text-[11px] font-semibold text-flare">{t("autopsy.goal.slow")}</span>}
         </div>
         <Title>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</Title>
         <Line>{t("autopsy.goal.score", { home, away, h: a.score[0], a: a.score[1] })}</Line>
@@ -414,7 +415,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
           <>
             <Line dim>{t("autopsy.mistake.x", { base: m.x.base, fixed: m.x.fixed })}</Line>
             <p className="mt-2 flex items-center gap-2 text-[12.5px] text-chalk-faint">
-              <i aria-hidden className="block h-3 w-3 shrink-0 rounded-[3px] bg-[#ffd60a]/60" />
+              <i aria-hidden className="block h-3 w-3 shrink-0 rounded-[3px] bg-flare/60" />
               {t("autopsy.mistake.spaceX")}
             </p>
           </>
@@ -461,7 +462,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
 function Actions({ t, download, openEngine, show, expert }: { t: T; download: () => void; openEngine: () => void; show: boolean; expert: boolean }) {
   return (
     <div className={`mt-4 flex flex-wrap gap-2 transition-opacity duration-500 ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}>
-      {expert && <button type="button" onClick={download} className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full bg-[#ffd60a] px-4 text-[13.5px] font-bold text-[#14123a]">
+      {expert && <button type="button" onClick={download} className="rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full bg-flare px-4 text-[13.5px] font-bold text-flare-ink">
         <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden><path d="M8 2v8m0 0-3.5-3.5M8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         {t("autopsy.verdict.script")}
       </button>}
@@ -475,8 +476,8 @@ function Actions({ t, download, openEngine, show, expert }: { t: T; download: ()
 /** 200 replays per row as a 20 × 10 field: goals fill from the left (bright), no-goals stay hollow. */
 function Trial({ a, t, expert, elapsed }: { a: Traced; t: T; expert: boolean; elapsed: number }) {
   const rows = [
-    { key: "base", label: t("autopsy.trial.asPlayed"), g: a.j.culprit.base, n: a.j.culprit.trials, tone: "#f4f6ff", at: 0.4 },
-    ...trialRows(a).map((x, k) => ({ key: String(x.player), label: t("autopsy.trial.fixed", { name: surname(a.lab.names[x.player]) }), g: x.fixed, n: x.trials, tone: k === 0 ? "#ffd60a" : "#c9b45a", at: 1.2 + 2.4 * k })),
+    { key: "base", label: t("autopsy.trial.asPlayed"), g: a.j.culprit.base, n: a.j.culprit.trials, tone: tone.chalk, at: 0.4 },
+    ...trialRows(a).map((x, k) => ({ key: String(x.player), label: t("autopsy.trial.fixed", { name: surname(a.lab.names[x.player]) }), g: x.fixed, n: x.trials, tone: k === 0 ? tone.var : "#c9b45a", at: 1.2 + 2.4 * k })),
   ];
   return (
     <div className="mt-3 grid gap-2.5">
@@ -536,12 +537,12 @@ function Formula({ a, t, expert }: { a: Traced; t: T; expert: boolean }) {
       <figcaption className="text-[12.5px] text-chalk-faint">{t("autopsy.verdict.formula")}</figcaption>
       <div className="mt-1.5 flex h-3 overflow-hidden rounded-full bg-white/10">
         {parts.map((x) => (
-          <i key={x.player} className={`autopsy-bar block h-full ${x === a.j.culprit ? "bg-[#ffd60a]" : "bg-chalk/45"}`} style={{ width: on ? `${(100 * prevented(x)) / a.total}%` : "0%" }} />
+          <i key={x.player} className={`autopsy-bar block h-full ${x === a.j.culprit ? "bg-flare" : "bg-chalk/45"}`} style={{ width: on ? `${(100 * prevented(x)) / a.total}%` : "0%" }} />
         ))}
       </div>
       <div className="mt-1.5 flex flex-wrap gap-x-4 text-[12.5px] text-chalk-dim">
         {parts.map((x) => (
-          <span key={x.player} className={x === a.j.culprit ? "font-semibold text-[#ffd60a]" : ""}>
+          <span key={x.player} className={x === a.j.culprit ? "font-semibold text-flare" : ""}>
             {expert ? t("autopsy.verdict.prevented", { name: surname(a.lab.names[x.player]), n: prevented(x) }) : `${surname(a.lab.names[x.player])} ${Math.round(x.blame)}%`}
           </span>
         ))}
@@ -560,12 +561,12 @@ function EngineSteps({ t }: { t: T }) {
       <ol className="mt-3 grid gap-2">
         {steps.map(([k, line], i) => (
           <li key={k} className="grid grid-cols-[22px_1fr] gap-2 text-[14px] leading-snug">
-            <span className="font-bold text-[#ffd60a]">{i + 1}</span>
+            <span className="font-bold text-flare">{i + 1}</span>
             <span><b className="text-chalk">{k}.</b> <span className="text-chalk-dim">{line}</span></span>
           </li>
         ))}
       </ol>
-      <button type="button" onClick={() => go("story")} className="mt-3 text-[14px] font-semibold text-[#ffd60a] underline underline-offset-4">{t("autopsy.engine.story")}</button>
+      <button type="button" onClick={() => go("story")} className="mt-3 text-[14px] font-semibold text-flare underline underline-offset-4">{t("autopsy.engine.story")}</button>
     </>
   );
 }
@@ -573,11 +574,11 @@ function EngineSteps({ t }: { t: T }) {
 function EngineDiagram({ t, close }: { t: T; close: () => void }) {
   const steps = t("autopsy.engine.steps", { returnObjects: true }) as [string, string][];
   const icons = [
-    <g key="0"><rect x="6" y="20" width="36" height="14" rx="2" fill="none" stroke="currentColor" opacity=".5" /><rect x="6" y="10" width="36" height="14" rx="2" fill="none" stroke="#ffd60a" /><circle cx="28" cy="17" r="3" fill="#ffd60a" /></g>,
-    <g key="1"><circle cx="16" cy="24" r="4" fill="none" stroke="currentColor" strokeDasharray="2 2" /><circle cx="32" cy="24" r="4" fill="#ffd60a" /><path d="M20 24h8" stroke="#ffd60a" strokeDasharray="2 2" /></g>,
+    <g key="0"><rect x="6" y="20" width="36" height="14" rx="2" fill="none" stroke="currentColor" opacity=".5" /><rect x="6" y="10" width="36" height="14" rx="2" fill="none" stroke={tone.var} /><circle cx="28" cy="17" r="3" fill={tone.var} /></g>,
+    <g key="1"><circle cx="16" cy="24" r="4" fill="none" stroke="currentColor" strokeDasharray="2 2" /><circle cx="32" cy="24" r="4" fill={tone.var} /><path d="M20 24h8" stroke={tone.var} strokeDasharray="2 2" /></g>,
     <g key="2">{Array.from({ length: 24 }, (_, i) => <circle key={i} cx={8 + (i % 8) * 4.6} cy={14 + Math.floor(i / 8) * 7} r="1.6" fill="currentColor" opacity={0.35 + (i % 3) * 0.25} />)}</g>,
-    <g key="3"><rect x="8" y="12" width="30" height="7" rx="3.5" fill="currentColor" opacity=".7" /><rect x="8" y="26" width="4" height="7" rx="3.5" fill="#ffd60a" /></g>,
-    <g key="4"><circle cx="24" cy="22" r="11" fill="none" stroke="currentColor" opacity=".35" strokeWidth="5" /><path d="M24 11a11 11 0 1 1-10.5 14.3" fill="none" stroke="#ffd60a" strokeWidth="5" /></g>,
+    <g key="3"><rect x="8" y="12" width="30" height="7" rx="3.5" fill="currentColor" opacity=".7" /><rect x="8" y="26" width="4" height="7" rx="3.5" fill={tone.var} /></g>,
+    <g key="4"><circle cx="24" cy="22" r="11" fill="none" stroke="currentColor" opacity=".35" strokeWidth="5" /><path d="M24 11a11 11 0 1 1-10.5 14.3" fill="none" stroke={tone.var} strokeWidth="5" /></g>,
   ];
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="engine-h" className="autopsy-fade absolute inset-0 z-20 grid place-items-center bg-[#04060f]/80 p-4 backdrop-blur-sm" onClick={close}>
@@ -597,7 +598,7 @@ function EngineDiagram({ t, close }: { t: T; close: () => void }) {
             </li>
           ))}
         </ol>
-        <button type="button" onClick={() => go("story")} className="mt-5 text-[14px] font-semibold text-[#ffd60a] underline underline-offset-4">{t("autopsy.engine.story")}</button>
+        <button type="button" onClick={() => go("story")} className="mt-5 text-[14px] font-semibold text-flare underline underline-offset-4">{t("autopsy.engine.story")}</button>
       </div>
     </div>
   );

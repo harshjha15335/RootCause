@@ -12,6 +12,7 @@ import { useNearViewport } from "../lib/device";
 import { pageHref } from "../lib/nav";
 import { useUi, type Depth } from "../store/uiStore";
 import "./match/strings";
+import { css as tone } from "../theme/palette";
 
 /**
  * The Match page: the whole match, picked from the library. Every goal with its verdict (or an
@@ -181,7 +182,7 @@ function Top({ s, meta }: { s: Stacks; meta: MatchMeta | null }) {
                 <span className={`whitespace-nowrap rounded-md px-1.5 py-0.5 text-[12px] font-semibold tabular-nums ${g.traced ? "bg-flare text-flare-ink" : "bg-chalk/12 text-chalk"}`}>
                   {minute(g.s)}′<span className="hidden sm:inline"> {n.short(g.scorer)}</span>
                 </span>
-                <span className={`h-3 w-3 rounded-full ${up ? "bg-chalk" : "bg-[#8fa6ff]"} ring-4 ring-turf-deep`} />
+                <span className={`h-3 w-3 rounded-full ${up ? "bg-chalk" : "bg-sky"} ring-4 ring-turf-deep`} />
               </a>
             );
           })}
@@ -216,7 +217,7 @@ function GoalCard({ g, s, meta, depth }: { g: GoalRow; s: Stacks; meta: MatchMet
   const v = g.verdict;
   const h = g.honest;
   return (
-    <article className={`flex h-full flex-col rounded-[20px] p-5 ring-1 ring-inset ${v ? "bg-[#0b1a8a] ring-flare/50" : "bg-turf ring-turf-edge"}`}>
+    <article className={`flex h-full flex-col rounded-[20px] p-5 ring-1 ring-inset ${v ? "bg-stage ring-flare/50" : "bg-turf ring-turf-edge"}`}>
       <header className="flex items-baseline justify-between gap-3">
         <span className="font-display text-[34px] font-black leading-none tabular-nums text-chalk">{minute(g.s)}′</span>
         <span className="text-right text-[14px] text-chalk-dim">
@@ -340,9 +341,9 @@ function ChanceSection({ s, meta, depth, sel, onSel, player }: { s: Stacks; meta
         />
         <p className="text-[14px] text-chalk-dim">{t("match.chance.count", { n: list.length, b: better })}</p>
       </div>
-      <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,#1d3cf0_0%,#0b1a8a_70%,#06104f_100%)]">
+      <div className="relative mt-5 overflow-hidden rounded-[22px] ring-1 ring-inset ring-turf-edge/70 [background:radial-gradient(120%_90%_at_50%_0%,rgb(var(--glow))_0%,rgb(var(--stage))_70%,rgb(var(--floor))_100%)]">
         <ShotMap s={s} c={c} lit={lit} onPick={onSel} name={n.short} />
-        <aside aria-live="polite" className="border-t border-turf-edge/60 p-4 sm:absolute sm:right-4 sm:top-4 sm:w-[300px] sm:rounded-2xl sm:border-0 sm:bg-[#06104f]/80 sm:ring-1 sm:ring-inset sm:ring-chalk/10 sm:backdrop-blur-md">
+        <aside aria-live="polite" className="border-t border-turf-edge/60 p-4 sm:absolute sm:right-4 sm:top-4 sm:w-[300px] sm:rounded-2xl sm:border-0 sm:bg-floor/80 sm:ring-1 sm:ring-inset sm:ring-chalk/10 sm:backdrop-blur-md">
           {c ? (
             <>
               <p className="font-display text-[17px] font-bold text-chalk">
@@ -414,7 +415,7 @@ function ShotMap({ s, c, lit, onPick, name }: { s: Stacks; c: StackChance | null
   const idOf = (i: number) => (i < 11 ? `H${i + 1}` : `A${i - 10}`);
   const goalX = c ? (c.frame.ball[0] > 52.5 ? 105 : 0) : 105;
   const tag = (x: number, y: number, text: string, col: string) => (
-    <text x={x} y={y - 2.4} textAnchor="middle" fontSize="2.4" fontWeight="700" fill={col} stroke="#06104f" strokeWidth="0.6" paintOrder="stroke">
+    <text x={x} y={y - 2.4} textAnchor="middle" fontSize="2.4" fontWeight="700" fill={col} stroke={tone.ink} strokeWidth="0.6" paintOrder="stroke">
       {text}
     </text>
   );
@@ -422,7 +423,7 @@ function ShotMap({ s, c, lit, onPick, name }: { s: Stacks; c: StackChance | null
     <svg viewBox="-2 -2 109 72" className="block w-full sm:pr-[320px]" role="img" aria-label="Shots">
       <defs>
         <marker id="shot-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">
-          <path d="M0 0 L6 3 L0 6 z" fill="#f4f6ff" />
+          <path d="M0 0 L6 3 L0 6 z" fill={tone.chalk} />
         </marker>
         <marker id="best-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">
           <path d="M0 0 L6 3 L0 6 z" fill="rgb(var(--flare))" />
@@ -438,10 +439,10 @@ function ShotMap({ s, c, lit, onPick, name }: { s: Stacks; c: StackChance | null
           {c.frame.pos.map((p, i) => {
             const [x, y] = sv(p);
             const id = idOf(i);
-            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? "#f4f6ff" : "#0b1660"} stroke={i < 11 ? "#f4f6ff" : "#8fa6ff"} strokeWidth={0.45} opacity={id === c.shooter || id === c.best?.id ? 1 : 0.75} />;
+            return <circle key={i} cx={x} cy={y} r={id === c.shooter ? 1.6 : 1.1} fill={i < 11 ? tone.chalk : tone.ink} stroke={i < 11 ? tone.chalk : tone.sky} strokeWidth={0.45} opacity={id === c.shooter || id === c.best?.id ? 1 : 0.75} />;
           })}
-          <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={goalX + (goalX ? -0.6 : 0.6)} y2={34} stroke="#f4f6ff" strokeWidth={0.45} markerEnd="url(#shot-arrow)" opacity={0.85} />
-          {tag(sv(c.frame.ball)[0], sv(c.frame.ball)[1], name(c.shooter), "#f4f6ff")}
+          <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={goalX + (goalX ? -0.6 : 0.6)} y2={34} stroke={tone.chalk} strokeWidth={0.45} markerEnd="url(#shot-arrow)" opacity={0.85} />
+          {tag(sv(c.frame.ball)[0], sv(c.frame.ball)[1], name(c.shooter), tone.chalk)}
           {c.best && (
             <g>
               <line x1={sv(c.frame.ball)[0]} y1={sv(c.frame.ball)[1]} x2={sv(c.best.at)[0]} y2={sv(c.best.at)[1]} stroke="rgb(var(--flare))" strokeWidth={0.55} strokeDasharray="1.2 0.8" markerEnd="url(#best-arrow)" />
@@ -455,7 +456,7 @@ function ShotMap({ s, c, lit, onPick, name }: { s: Stacks; c: StackChance | null
         s.chances.map((x) => {
           const [cx, cy] = sv(x.frame.ball);
           const r = 0.7 + Math.sqrt(x.xg) * 2.2;
-          const col = x.side === "home" ? "#f4f6ff" : "#8fa6ff";
+          const col = x.side === "home" ? tone.chalk : tone.sky;
           return (
             <g key={x.seq} opacity={lit(x) ? 1 : 0.15} className="cursor-pointer" onClick={() => onPick(x.seq)}>
               <circle cx={cx} cy={cy} r={Math.max(r, 2.4)} fill="transparent" />
@@ -493,7 +494,7 @@ function Players({ s, meta, depth, player, onPlayer, onShow }: { s: Stacks; meta
                     onClick={() => onPlayer(player === id ? null : id)}
                     className={`rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full pl-1.5 pr-3.5 text-[14px] ring-1 ring-inset transition-colors ${player === id ? "bg-chalk text-turf-deep ring-chalk" : "bg-turf text-chalk ring-turf-edge hover:ring-chalk/40"} ${count(id) ? "" : "opacity-60"}`}
                   >
-                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-[#8fa6ff] text-turf-deep"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
+                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-sky text-turf-deep"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
                     {n.short(id)}
                     {count(id) > 0 && <span className={`text-[12px] tabular-nums ${player === id ? "text-turf-deep/70" : "text-chalk-faint"}`}>{count(id)}</span>}
                   </button>
@@ -618,7 +619,7 @@ function Numbers({ meta }: { meta: MatchMeta | null }) {
               {k}
               <span className="mx-auto mt-1.5 flex h-1.5 max-w-[220px] overflow-hidden rounded-full bg-chalk/10" aria-hidden>
                 <span className="bg-chalk" style={{ width: `${(av / (av + bv || 1)) * 100}%` }} />
-                <span className="bg-[#8fa6ff]" style={{ width: `${(bv / (av + bv || 1)) * 100}%` }} />
+                <span className="bg-sky" style={{ width: `${(bv / (av + bv || 1)) * 100}%` }} />
               </span>
             </td>
             <td className="py-3 text-right font-semibold tabular-nums text-chalk">{b1}</td>

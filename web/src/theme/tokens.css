@@ -18,6 +18,20 @@
   --flare-ink: 20 18 58;     /* text on flare */
   --paper: 243 245 255;
   --ink: 10 16 72;
+  --stage: 11 26 138;        /* #0b1a8a 3D stage */
+  --floor: 6 16 79;          /* #06104f stage floor */
+  --plate: 47 77 255;        /* #2f4dff Timestack layers */
+  --glow: 29 60 240;         /* #1d3cf0 stage light */
+  --sky: 143 166 255;        /* #8fa6ff the other side */
+
+  /* type: theme/looks.ts swaps these per look */
+  --font-display: "Anybody Variable", "Noto Sans Devanagari", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk Variable", "Noto Sans Devanagari", system-ui, sans-serif;
+  --display-weight: 820;
+  --display-case: uppercase;
+  --display-width: 112;
+  --display-tracking: -0.005em;
+  --display-adjust: none;
 
   --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);

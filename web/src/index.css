@@ -39,11 +39,17 @@
 @layer components {
   /* Anybody, heavy and wide: the width axis is part of the voice (it squeezes on scroll) */
   .font-display {
-    font-weight: 820 !important;
-    text-transform: uppercase;
-    letter-spacing: -0.005em;
-    font-variation-settings: "wdth" 112;
+    font-weight: var(--display-weight) !important;
+    text-transform: var(--display-case);
+    letter-spacing: var(--display-tracking);
+    font-variation-settings: "wdth" var(--display-width);
   }
+  /* big headings only: the new looks draw them about a fifth smaller, buttons keep their size */
+  h1.font-display, h2.font-display, h1 .font-display, h2 .font-display { font-size-adjust: var(--display-adjust); }
+  /* the new looks speak in sentence case: no shouting caps, no tracked labels, no mono tags */
+  [data-look]:not([data-look="cobalt"]) .uppercase { text-transform: none; letter-spacing: normal; }
+  [data-look]:not([data-look="cobalt"]) .font-trace:not(ol) { font-family: var(--font-body); }
+  [data-look]:not([data-look="cobalt"]) .rc-tag { font-family: var(--font-body); font-size: 12px; text-transform: none; letter-spacing: 0; border-radius: 6px; }
   .rc-tag {
     position: absolute;
     left: 0;

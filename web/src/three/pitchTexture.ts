@@ -1,5 +1,6 @@
 import { CanvasTexture, SRGBColorSpace } from "three";
 import { PITCH_L, PITCH_W } from "../lib/geometry";
+import { css as tone } from "../theme/palette";
 
 /**
  * The pitch as one canvas texture: mown stripes and chalk lines at true FIFA dimensions.
@@ -16,12 +17,12 @@ export function makePitchTexture(margin = 6): CanvasTexture {
   const X = (m: number) => (m + margin) * px;
   const Y = (m: number) => (m + margin) * px;
 
-  g.fillStyle = "#0b1a8a";
+  g.fillStyle = tone.deep;
   g.fillRect(0, 0, c.width, c.height);
   // mown stripes, 12 across the length
   const band = PITCH_L / 12;
   for (let i = 0; i < 12; i++) {
-    g.fillStyle = i % 2 ? "#0e1f96" : "#0c1c90";
+    g.fillStyle = i % 2 ? tone.deep2 : tone.deep2;
     g.fillRect(X(i * band), Y(0), band * px + 1, PITCH_W * px);
   }
   // floodlight pools: four soft lifts at the corners of the stand roofs

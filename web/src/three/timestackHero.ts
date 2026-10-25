@@ -1,5 +1,6 @@
 import { Delaunay } from "d3-delaunay";
 import * as THREE from "three";
+import { palette as pal } from "../theme/palette";
 
 /**
  * The Timestack: one goal as a stack of seconds. Each layer is the pitch at one second, the
@@ -35,11 +36,11 @@ export type StackState = {
 
 export type StackLabel = { text: string; bug?: boolean; at: (s: StackState) => [number, number, number] | null; show: (s: StackState) => boolean };
 
-const COBALT = 0x1530d6;
-const DEEP = 0x0c1d97;
-const PAPER = 0xf3f5ff;
-const AWAY = 0x9fb0ff;
-const VAR = 0xffd60a;
+const COBALT = pal.cobalt;
+const DEEP = pal.deep2;
+const PAPER = pal.chalk;
+const AWAY = pal.skySoft;
+const VAR = pal.var;
 export const LAYER = 2.7;
 const X = (x: number) => x - 52.5;
 const Z = (y: number) => y - 34;
