@@ -61,3 +61,12 @@ The last delivery and finish are reconstructed continuously from event endpoints
 recorded header classification adds an illustrative ball arc. Flight height and subsecond
 contact timing are animation, not measured 3D tracking or a counterfactual result; the
 Autopsy labels this distinction. In the 45:27 example, A7 delivers to A4, who scores.
+
+Autopsy's live goal, build-up and move beats also include deterministic, display-only
+team motion. Recorded moving players and event actors keep their source paths; stationary
+background players receive speed-limited support/cover movement, including goalkeeper
+adjustments. It is labelled illustrative and is never fed into distances, speed metrics,
+blame, recorded counterfactuals or frozen evidence diagrams. Pause and reduced-motion
+settings still stop playback. The goal type is taken from explicit source classification
+(penalty, corner, free kick, open play, or another set piece); missing classifications
+are shown as not recorded instead of being guessed from shot coordinates.

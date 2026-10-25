@@ -11,6 +11,7 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { PX } from "../data";
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
+import { teamMotion } from "./motion";
 
 /**
  * The Goal Autopsy's 3D stage: a floodlit night stadium where one goal is taken apart, the way
@@ -229,7 +230,6 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const backFour = [1, 2, 3, 4].map((k) => a.def * 11 + k);
   /** the defending back line: median depth of the back four, leaving one player out */
   const lineOf = (p: Snap, without = tr ? tr.j.culprit.player : -1) => median(backFour.filter((i) => i !== without).map((i) => p.pos[i][0]));
-  const defLine = median(backFour.map((i) => a.plan.shape[i]?.[0] ?? PX - 30));
   const kit = (team: number) => new THREE.Color(lab.clubs[team].kit_primary);
   const trim = (team: number) => new THREE.Color(lab.clubs[team].kit_secondary);
 
@@ -418,6 +418,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const uB = S2 ? universe(say("ifHeld", { name: sur(S2.player) }), say("replaySub"), 0xf2a093) : null;
   real.head.visible = false;
   const realAt = (s: number) => a.frame(s);
+  const liveAt = teamMotion(a);
   const at1 = (s: number) => tr!.j.replay(S1!, s), at2 = (s: number) => tr!.j.replay(S2!, s);
   const suspects = tr ? tr.j.suspects : [];
   const culprit = tr ? tr.j.culprit : null;
@@ -481,7 +482,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     real.g.add(m);
     return m;
   });
-  const planTag = label(say("planLine", { team: lab.clubs[a.def].name, m: (PX - defLine).toFixed(1) }), { color: "#0b1028", bg: "#c6ff4d", size: 32, h: 2.4 });
+  const planTag = label(say("planLine", { team: lab.clubs[a.def].name }), { color: "#0b1028", bg: "#c6ff4d", size: 32, h: 2.4 });
   real.g.add(planTag);
 
   // each mistake: a ghost where he should have been, an arrow to it, and the grass he left to an attacker
@@ -710,17 +711,13 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
 
     if (b === "goal") {
       const s = goalClock(a, sx);
-      pose(real, realAt, s, false);
+      pose(real, liveAt, s, false);
       goalFlash(s);
     } else if (b === "plans") {
-      // from a real moment the players glide into their average positions: the two plans
-      const f = realAt(a.moveFrom), u = ease(clamp01(sx / 1.8));
-      f.pos.forEach(([x, y], i) => {
-        const [px, py] = a.plan.shape[i] ?? [x, y];
-        real.pieces[i].t.position.set(x + (px - x) * u - 52.5, 0, y + (py - y) * u - 34);
-      });
-      real.ball.position.set(0, -5, 0);
-      setLine(real.trail, [0, -9, 0, 0, -9, 0], [0, 0, 0, 0, 0, 0]);
+      // Show the team shapes in motion during the build-up, rather than parking every
+      // player on a static formation after the first two seconds.
+      const s = Math.min(a.moveFrom + sx * 0.65, a.goalS - 1);
+      const f = pose(real, liveAt, s, false), u = ease(clamp01(sx / 1.8));
       for (const team of [0, 1] as const) {
         const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45);
         formationGroups(a.plan, team).forEach((ps, unit) => {
@@ -736,7 +733,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         });
       }
       blocks.forEach((m, team) => {
-        const xs = Array.from({ length: 11 }, (_, n) => team * 11 + n).filter((i) => a.plan.unit[i] !== "gk" && a.plan.shape[i]).map((i) => a.plan.shape[i]);
+        const xs = Array.from({ length: 11 }, (_, n) => team * 11 + n).filter((i) => a.plan.unit[i] !== "gk").map((i) => f.pos[i]);
         if (!xs.length) return;
         const x0 = Math.min(...xs.map((p) => p[0])), x1 = Math.max(...xs.map((p) => p[0]));
         const y0 = Math.min(...xs.map((p) => p[1])), y1 = Math.max(...xs.map((p) => p[1]));
@@ -744,14 +741,15 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         m.position.set((x0 + x1) / 2 - 52.5, 0.04, (y0 + y1) / 2 - 34);
         m.material.opacity = 0.07 * u;
       });
-      const [p, cl] = yellowLine(defLine - 52.5);
+      const depth = lineOf(f);
+      const [p, cl] = yellowLine(depth - 52.5);
       setLine(real.line, [...p], cl.map((v) => v * u));
       real.line.visible = true;
       planTag.visible = u > 0.6;
-      planTag.position.set(defLine - 52.5, 4, -30);
+      planTag.position.set(depth - 52.5, 4, -30);
     } else if (b === "move") {
       const s = moveClock(a, sx);
-      const f = pose(real, realAt, s);
+      const f = pose(real, liveAt, s);
       for (const m of marks) {
         const behind = f.pos[m.x.player][0] - lineOf(f, m.x.player);
         const on = behind > 2.5;

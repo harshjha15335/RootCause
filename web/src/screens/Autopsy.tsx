@@ -11,6 +11,7 @@ import { betterLine, broadcastScript, honestLines, verdictVars } from "../lab/au
 import { clock, createStage, slowAt, stepsOf, trialRows, type AutopsyStage, type Step } from "../lab/autopsy/stadium";
 import "../lab/autopsy/autopsy.css";
 import { useLab } from "../lab/data";
+import { goalType } from "../lab/autopsy/motion";
 import { quality } from "../lib/device";
 import { go, goalParam, pageHref } from "../lib/nav";
 import { useFullTime } from "../store/selectors";
@@ -390,6 +391,9 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
           {elapsed >= slowAt(a) && <span className="autopsy-fade rounded-full border border-[#c6ff4d]/50 px-2 py-0.5 text-[11px] font-semibold text-[#c6ff4d]">{t("autopsy.goal.slow")}</span>}
         </div>
         <Title>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</Title>
+        <p className="mt-2 text-[13px] font-semibold text-[#c6ff4d]" data-testid="goal-type">
+          {t(`autopsy.goalTypes.${goalType(a.chance?.honest?.kind)}`)}
+        </p>
         <Line>{t("autopsy.goal.score", { home, away, h: a.score[0], a: a.score[1] })}</Line>
         <Line dim>{t("autopsy.reconstruction")}</Line>
         {a.kind === "traced" && <Line>{t("autopsy.goal.traced", { s: Math.round(a.goalS - a.j.culprit.second) })}</Line>}

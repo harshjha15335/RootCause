@@ -4,6 +4,7 @@ import type { Analysis } from "../src/api/analysis";
 import { buildAutopsy, formationGroups, goalsOf } from "../src/lab/autopsy/model";
 import { frameAt, loadLab } from "../src/lab/data";
 import { goalFrame } from "../src/lab/journey/model";
+import { goalType, teamMotion } from "../src/lab/autopsy/motion";
 
 const id = "wlb-msb-2023-11-12";
 const base = `public/showcase/${id}/`;
@@ -87,5 +88,37 @@ describe("Autopsy goal motion", () => {
       const before = autopsy.frame(t - 0.0001).ballHeight ?? 0.75;
       expect(Math.abs((autopsy.frame(t + 0.0001).ballHeight ?? 0.75) - before)).toBeLessThan(0.01);
     }
+  });
+
+  it("moves all 22 players during the replay, with controlled off-ball speed and deterministic scrubbing", () => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const goal = goalsOf(lab, []).find((g) => g.s === 2727)!;
+    const autopsy = buildAutopsy(lab, goal, null, {}, analyses)!;
+    const replay = teamMotion(autopsy);
+    const first = replay(autopsy.moveFrom), finish = replay(autopsy.goalS);
+    for (let i = 0; i < 22; i++) {
+      expect(Math.hypot(finish.pos[i][0] - first.pos[i][0], finish.pos[i][1] - first.pos[i][1])).toBeGreaterThan(0.05);
+    }
+    for (let s = autopsy.moveFrom; s < autopsy.goalS; s += 0.1) {
+      const frame = replay(s), next = replay(s + 0.1);
+      for (let i = 0; i < 22; i++) {
+        expect(Math.hypot(next.pos[i][0] - frame.pos[i][0], next.pos[i][1] - frame.pos[i][1])).toBeLessThan(1.2);
+      }
+      // Event actors, including the passer and scorer, follow the original recording.
+      expect(frame.pos[14]).toEqual(autopsy.frame(s).pos[14]);
+      expect(frame.pos[17]).toEqual(autopsy.frame(s).pos[17]);
+      expect(frame.ball).toEqual(autopsy.frame(s).ball);
+    }
+    replay(autopsy.moveFrom);
+    expect(replay(autopsy.goalS)).toEqual(finish);
+  });
+
+  it.each([
+    ["penalty", "penalty"], ["corner_header", "corner"], ["direct_free_kick", "freeKick"],
+    ["indirect-freekick", "freeKick"], ["set_piece", "setPiece"], ["open_play_tap_in", "openPlay"],
+    ["sliding_finish", "openPlay"], ["rebound_tap_in", "openPlay"], ["deflected_long_shot", "openPlay"],
+    [undefined, "unknown"], ["unclassified", "unknown"],
+  ])("classifies recorded goal kind %s as %s without guessing", (kind, expected) => {
+    expect(goalType(kind)).toBe(expected);
   });
 });
