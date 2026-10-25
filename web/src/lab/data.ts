@@ -10,7 +10,7 @@ import type { MatchMeta } from "../api/types";
  */
 export const PX = 105;
 export const PY = 68;
-export const SECONDS = 5400;
+export const SECONDS = 6420;
 const STRIDE = 49;
 
 export type ActionType = "pass" | "carry" | "duel" | "shot" | "offside";
@@ -54,7 +54,8 @@ const flipX = (x: number, period: number) => (period === 1 ? x : PX - x);
 const flipY = (y: number, period: number) => (period === 1 ? y : PY - y);
 
 export function periodAt(lab: Lab, s: number) {
-  return lab.raw[Math.min(Math.max(Math.floor(s), 0), SECONDS - 1) * STRIDE + 48] || 1;
+  const maxS = Math.floor(lab.raw.length / STRIDE) || SECONDS;
+  return lab.raw[Math.min(Math.max(Math.floor(s), 0), maxS - 1) * STRIDE + 48] || 1;
 }
 
 /** Ball and 22 players at a fractional second, in the home-attacks-right frame. */
@@ -67,14 +68,15 @@ export type Frame = {
 };
 
 export function frameAt(lab: Lab, t: number): Frame {
-  const s0 = Math.min(Math.max(Math.floor(t), 0), SECONDS - 1);
+  const maxS = Math.floor(lab.raw.length / STRIDE) || SECONDS;
+  const s0 = Math.min(Math.max(Math.floor(t), 0), maxS - 1);
   const f = Math.min(Math.max(t - s0, 0), 1);
   const r = lab.raw;
   const p0 = r[s0 * STRIDE + 48] || 1;
   // neighbouring seconds in the same half (the frame flips at half-time; never blend across it)
   const cut = lab.cut;
   const same = (s: number) => {
-    let c = Math.min(Math.max(s, 0), SECONDS - 1);
+    let c = Math.min(Math.max(s, 0), maxS - 1);
     if (cut) {
       for (let k = s0; k < c; k++) if (cut[k]) { c = k; break; }
       for (let k = s0 - 1; k >= c; k--) if (cut[k]) { c = k + 1; break; }
@@ -103,7 +105,8 @@ export function frameAt(lab: Lab, t: number): Frame {
 
 /** A player's position at whole second s (home-attacks-right frame). */
 export function posAt(lab: Lab, s: number, i: number): [number, number] {
-  const k = Math.min(Math.max(s, 0), SECONDS - 1) * STRIDE;
+  const maxS = Math.floor(lab.raw.length / STRIDE) || SECONDS;
+  const k = Math.min(Math.max(s, 0), maxS - 1) * STRIDE;
   const p = lab.raw[k + 48] || 1;
   return [flipX(lab.raw[k + 2 + i * 2] / 10, p), flipY(lab.raw[k + 3 + i * 2] / 10, p)];
 }
@@ -112,11 +115,12 @@ export function posAt(lab: Lab, s: number, i: number): [number, number] {
 export const fwdX = (x: number, team: number) => (team === 0 ? x : PX - x);
 
 function classify(lab: Omit<Lab, "poss" | "phase" | "possStart">) {
-  const poss = new Uint8Array(SECONDS);
-  const phase = new Uint8Array(SECONDS);
-  const possStart = new Uint32Array(SECONDS);
+  const total = Math.floor(lab.raw.length / STRIDE) || SECONDS;
+  const poss = new Uint8Array(total);
+  const phase = new Uint8Array(total);
+  const possStart = new Uint32Array(total);
   let start = 0;
-  for (let s = 0; s < SECONDS; s++) {
+  for (let s = 0; s < total; s++) {
     const k = s * STRIDE;
     const team = lab.raw[k + 46];
     poss[s] = team;
@@ -210,8 +214,9 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
   ]);
   const raw = new Int16Array(bin);
   repairGoals(raw, ev);
-  const cut = new Uint8Array(SECONDS);
-  for (const e of ev) if (e[1] === "shot" && e[9] === "goal" && (e[0] as number) < SECONDS) cut[e[0] as number] = 1;
+  const totalSeconds = Math.floor(raw.length / STRIDE) || SECONDS;
+  const cut = new Uint8Array(totalSeconds);
+  for (const e of ev) if (e[1] === "shot" && e[9] === "goal" && (e[0] as number) < totalSeconds) cut[e[0] as number] = 1;
   // tracking index i is H1..H11 then A1..A11
   const ids = Array.from({ length: 22 }, (_, i) => (i < 11 ? `H${i + 1}` : `A${i - 10}`));
   const byId = new Map([...meta.home.players, ...meta.away.players].map((p) => [p.id, p]));
@@ -228,7 +233,7 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
   };
   rawLab.actions = ev.map((e) => {
     const s = e[0] as number;
-    const p = (raw[Math.min(s, SECONDS - 1) * STRIDE + 48] || 1) as number;
+    const p = (raw[Math.min(s, totalSeconds - 1) * STRIDE + 48] || 1) as number;
     return {
       s,
       type: e[1] as ActionType,

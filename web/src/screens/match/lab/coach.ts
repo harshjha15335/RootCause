@@ -13,7 +13,7 @@ export type Line = { key: string; lens: LensId; params: Record<string, string | 
 export function coachLine(lab: Lab, t: number, f: Frame, o: { unitOf: (i: number) => Unit; grid?: number[][]; faults: { s: number; player: number; bug: string }[] }): Line {
   const name = (i: number) => `${lab.names[i]}`;
   const num = (i: number) => lab.numbers[i];
-  const s = Math.min(Math.floor(t), 5399);
+  const s = Math.min(Math.floor(t), Math.max(0, lab.poss.length - 1));
   const team = lab.poss[s], opp = 1 - team;
 
   const shot = lab.actions.find((a) => a.type === "shot" && t >= a.s - 0.5 && t <= a.s + 3.5);

@@ -1,4 +1,3 @@
-// @ts-expect-error node built-ins are not in this browser project's types; vitest runs on node
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Analysis } from "../src/api/analysis";
@@ -7,7 +6,7 @@ import { loadLab } from "../src/lab/data";
 import { buildAutopsy, goalsOf } from "../src/lab/autopsy/model";
 
 const root = "public/showcase"; // vitest runs from web/
-const MATCHES = ["p-1008", "p-1009", "p-1014", "p-1017"];
+const MATCHES = ["wlb-msb-2023-11-12", "p-1008", "p-1009", "p-1014", "p-1017"];
 const read = (f: string) => JSON.parse(readFileSync(f, "utf8"));
 const fsFetch = (async (url: string) => {
   const buf: Uint8Array = readFileSync(url);

@@ -58,12 +58,12 @@ export function race(f: Frame, x: number, y: number) {
 
 /** xT of a point for a team (socceraction 16 x 12 grid, rows from the far touchline). */
 export function xtAt(grid: number[][] | undefined, x: number, y: number, team: number) {
-  if (!grid?.length) return 0;
+  if (!grid?.length || !grid[0]?.length) return 0;
   const W = grid.length, L = grid[0].length;
   const fx = fwdX(x, team), fy = team === 0 ? y : PY - y;
   const xi = Math.min(Math.max(Math.floor((fx / PX) * L), 0), L - 1);
   const yj = Math.min(Math.max(Math.floor((fy / PY) * W), 0), W - 1);
-  return grid[W - 1 - yj][xi];
+  return grid[W - 1 - yj]?.[xi] ?? 0;
 }
 
 // ------------------------------------------------------------------ passing options

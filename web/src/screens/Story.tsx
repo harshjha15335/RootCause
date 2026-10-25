@@ -11,8 +11,8 @@ import type { FreeArea, Shot, StackData, StackLabel, StackState, Timestack } fro
 import "./landingCopy";
 import { buildStack } from "./TimestackStory";
 
-/** The example: the traced 62nd-minute goal of Meeting 1, the same goal the demo autopsy opens on. */
-const EXAMPLE = { match: "p-1008", goal: "p-1008-g4" };
+/** The example: the traced 36th-minute goal of West London Blue vs Man Sky Blue. */
+const EXAMPLE = { match: "wlb-msb-2023-11-12", goal: "wlb-msb-2023-11-12-g3" };
 const STEPS = 5;
 
 // The camera stays level, beside the stack: time reads bottom to top, the goal at the far end.

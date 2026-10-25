@@ -52,14 +52,24 @@ async function json<T>(url: string, init?: RequestInit): Promise<T> {
   return r.json() as Promise<T>;
 }
 
-/** Engine-generated demo matches, all exported offline (web/tools). The first is the default. */
-export const DEMO_MATCHES = ["p-1008", "p-1009", "p-1014", "p-1017"] as const;
+/** Canonical demo match for RootCause. */
+export const DEMO_MATCHES = ["wlb-msb-2023-11-12"] as const;
 /** ?demo= wins; otherwise the match picked last time, so every page stays on the same match. */
 const asked = (() => {
   const fromUrl = new URLSearchParams(location.search).get("demo");
   try {
+    // If the URL or localStorage contains a legacy match ID, migrate cleanly to the canonical fixture
+    if (fromUrl && !DEMO_MATCHES.includes(fromUrl as (typeof DEMO_MATCHES)[number])) {
+      localStorage.setItem("rc.demo", DEMO_MATCHES[0]);
+      return DEMO_MATCHES[0];
+    }
     if (fromUrl) localStorage.setItem("rc.demo", fromUrl);
-    return fromUrl ?? localStorage.getItem("rc.demo");
+    const stored = localStorage.getItem("rc.demo");
+    if (stored && !DEMO_MATCHES.includes(stored as (typeof DEMO_MATCHES)[number])) {
+      localStorage.setItem("rc.demo", DEMO_MATCHES[0]);
+      return DEMO_MATCHES[0];
+    }
+    return fromUrl ?? stored;
   } catch {
     return fromUrl;
   }

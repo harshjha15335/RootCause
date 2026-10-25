@@ -47,7 +47,10 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
     return (i: number) => m.get(i < 11 ? `H${i + 1}` : `A${i - 10}`) ?? "mid";
   }, [an]);
   const faults = useMemo(
-    () => an.mistakes.map((m) => ({ s: m.second, player: m.player_id[0] === "H" ? Number(m.player_id.slice(1)) - 1 : 10 + Number(m.player_id.slice(1)), bug: m.bug })),
+    () => (an.mistakes ?? []).map((m) => {
+      const pid = m.player_id || "A1";
+      return { s: m.second, player: pid[0] === "H" ? Number(pid.slice(1)) - 1 : 10 + Number(pid.slice(1)), bug: m.bug };
+    }),
     [an],
   );
   const goals = useMemo(() => lab.actions.filter((a) => a.type === "shot" && a.outcome === "goal"), [lab]);
