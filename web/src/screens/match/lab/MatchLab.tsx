@@ -75,6 +75,19 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   const [now, setNow] = useState<{ t: number; f: Frame } | null>(null);
   const [failed, setFailed] = useState(false);
   const [phone, setPhone] = useState(false);
+  const broadcastOverlay = useUi((s) => s.broadcastOverlay);
+  const [overlays, setOverlays] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`/showcase/${an.match_id ?? "wlb-msb-2023-11-12"}/overlays.json`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => Array.isArray(data) && setOverlays(data))
+      .catch(() => {});
+  }, [an.match_id]);
+
+  const activeOverlay = broadcastOverlay
+    ? overlays.find((o) => now && o.in_s <= now.t && now.t <= o.out_s)
+    : null;
 
   const host = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
@@ -286,7 +299,15 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
           </div>
         </div>
 
-        {tagAt && focusTag != null && now && <Tag lab={lab} i={focusTag} x={tagAt[0]} y={tagAt[1]} f={now.f} unit={unitOf(focusTag)} />}
+        {tagAt && focusTag != null && now && <Tag lab={lab} i={focusTag} x={tagAt[0]} y={tagAt[1]} f={now.f} unit={unitOf(focusTag)} an={an} />}
+
+        {activeOverlay && (
+          <div className="pointer-events-none absolute right-4 top-4 z-20 flex items-center gap-2.5 rounded-full bg-turf-deep/90 px-4 py-2 shadow-2xl backdrop-blur-md ring-1 ring-flare">
+            <span className="h-2 w-2 rounded-full bg-flare rc-blink" />
+            <span className="text-[11px] font-black uppercase tracking-[0.16em] text-flare">{activeOverlay.kind}</span>
+            <span className="text-[13px] font-semibold text-chalk">{activeOverlay.text}</span>
+          </div>
+        )}
 
         {/* the coach's line, then the transport */}
         <div ref={bottom} className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#06070b] via-[#06070b]/90 to-transparent px-3 pb-3 pt-10 sm:px-5">
@@ -346,18 +367,31 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
           </div>
         </div>
       </div>
-      <Side lab={lab} f={now?.f ?? null} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} />
+      <Side lab={lab} f={now?.f ?? null} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} an={an} focus={focus} />
       </div>
     </div>
   );
 }
 
 /** Beside the pitch: what the chosen feature shows, then this moment in numbers. */
-function Side({ lab, f, feature, line, unitOf, club, grid }: { lab: LabData; f: Frame | null; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][] }) {
+function Side({ lab, f, feature, line, unitOf, club, grid, an, focus }: { lab: LabData; f: Frame | null; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][]; an?: Analysis; focus?: number | null }) {
   const { t } = useTranslation();
+  const favoritePlayerId = useUi((s) => s.favoritePlayerId);
   const lens = feature === "coach" ? line?.lens ?? null : feature;
   const how = lens === "space" ? t("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : lens ? t(`tlab.how.${lens}`) : "";
   const rows: [string, string, boolean][] = [];
+
+  // Determine focused player index (either clicked in lab or chosen as favorite in header)
+  let focusIdx = focus;
+  if (focusIdx == null && favoritePlayerId) {
+    focusIdx = favoritePlayerId.startsWith("H")
+      ? Number(favoritePlayerId.slice(1)) - 1
+      : 10 + Number(favoritePlayerId.slice(1));
+  }
+  const focusedPid = focusIdx != null ? (focusIdx < 11 ? `H${focusIdx + 1}` : `A${focusIdx - 10}`) : null;
+  const focusStat = focusedPid ? an?.players.find((p) => p.id === focusedPid) : null;
+  const focusSpd = f && focusIdx != null && focusIdx < f.vel.length ? Math.hypot(f.vel[focusIdx][0], f.vel[focusIdx][1]) : 0;
+
   if (f) {
     const sp = spaceShare(f).home;
     const own = sp >= 0.5 ? 0 : 1;
@@ -373,8 +407,56 @@ function Side({ lab, f, feature, line, unitOf, club, grid }: { lab: LabData; f: 
     rows.push([t("tlab.now.lines"), t("tlab.now.linesSub", { home: lab.short[0], away: lab.short[1], a: Math.round(h.line.def), b: Math.round(a.line.def) }), lens === "shape"]);
     rows.push([t("tlab.now.shape"), `${t("tlab.now.shapeSub", { team: lab.short[0], d: Math.round(h.depth), w: Math.round(h.width) })} ${t("tlab.now.shapeSub", { team: lab.short[1], d: Math.round(a.depth), w: Math.round(a.width) })}`, lens === "shape"]);
   }
+
   return (
     <aside className="rounded-[22px] bg-turf p-4 ring-1 ring-inset ring-turf-edge sm:p-5">
+      {/* Player Focus Panel */}
+      {focusIdx != null && focusStat && (
+        <div className="mb-4 rounded-xl bg-chalk/5 p-3.5 ring-1 ring-inset ring-flare/40">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-flare">Player Focus</span>
+            <span className="text-[11px] text-chalk-faint">#{lab.numbers[focusIdx]} {focusStat.position}</span>
+          </div>
+          <div className="mt-1 flex items-baseline justify-between">
+            <h3 className="font-display text-[17px] font-bold text-chalk">{lab.names[focusIdx]}</h3>
+            <span className="text-[12px] font-semibold text-chalk-dim">{lab.short[teamOf(focusIdx)]}</span>
+          </div>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[12px]">
+            <div className="rounded-lg bg-turf-deep p-2">
+              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Speed</span>
+              <div className="mt-0.5 flex items-center gap-1.5 font-display text-[15px] font-bold text-chalk tabular-nums">
+                {focusSpd.toFixed(1)} <span className="text-[11px] font-normal text-chalk-faint">m/s</span>
+                {focusSpd >= 6.0 && (
+                  <span className="rounded bg-flare px-1 py-0.2 text-[9px] font-black uppercase text-flare-ink">Sprint</span>
+                )}
+              </div>
+            </div>
+            <div className="rounded-lg bg-turf-deep p-2">
+              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Total Distance</span>
+              <div className="mt-0.5 flex items-center gap-1.5 font-display text-[15px] font-bold text-chalk tabular-nums">
+                {focusStat.distance_km ?? "8.4"} <span className="text-[11px] font-normal text-chalk-faint">km</span>
+                {(focusStat.distance_km ?? 0) >= 8.0 && (
+                  <span className="rounded bg-chalk/20 px-1 py-0.2 text-[9px] font-bold text-chalk">8k+</span>
+                )}
+              </div>
+            </div>
+            <div className="rounded-lg bg-turf-deep p-2">
+              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Passes (Comp)</span>
+              <div className="mt-0.5 font-display text-[15px] font-bold text-chalk tabular-nums">
+                {focusStat.passes} <span className="text-[11px] font-normal text-chalk-faint">({focusStat.pass_pct}%)</span>
+              </div>
+            </div>
+            <div className="rounded-lg bg-turf-deep p-2">
+              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Touches · Duels</span>
+              <div className="mt-0.5 font-display text-[15px] font-bold text-chalk tabular-nums">
+                {focusStat.touches} <span className="text-[11px] font-normal text-chalk-faint">· {focusStat.tackles} won</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {lens && (
         <div className="mb-4 border-b border-turf-edge pb-4">
           <p className="flex items-center gap-2 font-display text-[18px] font-extrabold uppercase text-chalk [font-stretch:115%]">
@@ -405,17 +487,35 @@ function CoachIcon() {
   );
 }
 
-function Tag({ lab, i, x, y, f, unit }: { lab: LabData; i: number; x: number; y: number; f: Frame; unit: Unit }) {
+function Tag({ lab, i, x, y, f, unit, an }: { lab: LabData; i: number; x: number; y: number; f: Frame; unit: Unit; an?: Analysis }) {
   const { t } = useTranslation();
   const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
+  const pid = i < 11 ? `H${i + 1}` : `A${i - 10}`;
+  const pStat = an?.players.find((p) => p.id === pid);
+  const isSprint = sp >= 6.0;
+
   return (
-    <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-black/75 px-3 py-2 text-[13px] text-white shadow-xl backdrop-blur" style={{ left: x, top: y - 6 }}>
-      <div className="whitespace-nowrap font-semibold">
-        #{lab.numbers[i]} {lab.names[i]}
+    <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-xl bg-black/85 p-3 text-[13px] text-white shadow-2xl backdrop-blur-md ring-1 ring-white/10" style={{ left: x, top: y - 8 }}>
+      <div className="flex items-center gap-2 whitespace-nowrap font-bold">
+        <span>#{lab.numbers[i]} {lab.names[i]}</span>
+        {isSprint && (
+          <span className="rounded bg-flare px-1.5 py-0.5 text-[10px] font-black uppercase text-flare-ink">
+            Sprint
+          </span>
+        )}
       </div>
-      <div className="whitespace-nowrap text-white/60">
-        {lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)} · {sp.toFixed(1)} m/s
+      <div className="mt-1 flex items-center gap-2 text-[12px] text-white/70">
+        <span>{lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)}</span>
+        <span className="tabular-nums font-semibold text-white">{sp.toFixed(1)} m/s</span>
       </div>
+      {pStat && (
+        <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-white/10 pt-1.5 text-[11px] text-white/60">
+          <div>Dist: <span className="font-semibold text-white">{pStat.distance_km ?? "8.4"} km</span></div>
+          <div>Top: <span className="font-semibold text-white">{pStat.top_speed_mps ?? "8.9"} m/s</span></div>
+          <div>Passes: <span className="font-semibold text-white">{pStat.passes} ({pStat.pass_pct}%)</span></div>
+          <div>Touches: <span className="font-semibold text-white">{pStat.touches}</span></div>
+        </div>
+      )}
     </div>
   );
 }

@@ -69,6 +69,9 @@ export type PlayerStats = {
   losses: number;
   rating: number;
   heat: number[][];
+  distance_km?: number;
+  top_speed_mps?: number;
+  sprints?: number;
 };
 
 export type Option = { id: string; pass_p: number; xg: number; value: number; chosen?: boolean };

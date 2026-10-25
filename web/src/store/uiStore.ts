@@ -29,9 +29,24 @@ const write = (k: string, v: string) => {
   }
 };
 
-const params = new URLSearchParams(location.search);
+const getParams = () => {
+  try {
+    if (typeof window !== "undefined" && window.location) {
+      return new URLSearchParams(window.location.search);
+    }
+  } catch {
+    /* ignore */
+  }
+  return new URLSearchParams();
+};
+
+const params = getParams();
 const initialDepth = (params.get("depth") ?? read("rc.depth") ?? "simple") as Depth;
 const initialLang = (params.get("lang") ?? read("rc.lang") ?? "en") as Lang;
+const initialClub = (params.get("club") ?? read("rc.club") ?? null) as "home" | "away" | null;
+const initialPlayer = params.get("player") ?? read("rc.player") ?? null;
+const initialFocus = params.get("focus") ?? read("rc.focus") ?? null;
+const initialOverlay = (params.get("overlay") ?? read("rc.overlay") ?? "false") === "true";
 
 type UiState = {
   depth: Depth;
@@ -46,6 +61,13 @@ type UiState = {
   shortcutsOpen: boolean;
   /** share of the stage's width covered by overlaid copy (home hero); the camera frames the rest */
   stageInset: number;
+  /** Saved personalization preferences (My Club & My Player) */
+  favoriteClub: "home" | "away" | null;
+  favoritePlayerId: string | null;
+  /** Active player focus across pages */
+  focusPlayerId: string | null;
+  /** Live broadcast overlay feed visibility in Expert/Studio mode */
+  broadcastOverlay: boolean;
   setStageInset(k: number): void;
   setDepth(d: Depth): void;
   /** @deprecated the fan/analyst/studio switch became Simple ↔ Expert; kept so old screens compile */
@@ -55,6 +77,10 @@ type UiState = {
   setScreen(s: Screen): void;
   setView(v: "3d" | "2d"): void;
   setShortcuts(o: boolean): void;
+  setFavoriteClub(c: "home" | "away" | null): void;
+  setFavoritePlayerId(p: string | null): void;
+  setFocusPlayerId(p: string | null): void;
+  setBroadcastOverlay(o: boolean): void;
 };
 
 const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -72,6 +98,10 @@ export const useUi = create<UiState>((set) => ({
   view: motionQuery.matches || params.get("view") === "2d" ? "2d" : "3d",
   shortcutsOpen: false,
   stageInset: 0,
+  favoriteClub: initialClub === "home" || initialClub === "away" ? initialClub : null,
+  favoritePlayerId: initialPlayer,
+  focusPlayerId: initialFocus,
+  broadcastOverlay: initialOverlay,
   setStageInset: (stageInset) => set({ stageInset }),
   setDepth(depth) {
     write("rc.depth", depth);
@@ -94,6 +124,25 @@ export const useUi = create<UiState>((set) => ({
   },
   setView: (view) => set({ view }),
   setShortcuts: (shortcutsOpen) => set({ shortcutsOpen }),
+  setFavoriteClub(favoriteClub) {
+    if (favoriteClub) write("rc.club", favoriteClub);
+    else localStorage.removeItem("rc.club");
+    set({ favoriteClub });
+  },
+  setFavoritePlayerId(favoritePlayerId) {
+    if (favoritePlayerId) write("rc.player", favoritePlayerId);
+    else localStorage.removeItem("rc.player");
+    set({ favoritePlayerId });
+  },
+  setFocusPlayerId(focusPlayerId) {
+    if (focusPlayerId) write("rc.focus", focusPlayerId);
+    else localStorage.removeItem("rc.focus");
+    set({ focusPlayerId });
+  },
+  setBroadcastOverlay(broadcastOverlay) {
+    write("rc.overlay", String(broadcastOverlay));
+    set({ broadcastOverlay });
+  },
 }));
 
 motionQuery.addEventListener("change", (e) => useUi.setState({ reducedMotion: e.matches, view: e.matches ? "2d" : "3d" }));

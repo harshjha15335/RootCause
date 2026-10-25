@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { liveFeed, recordedFeed, type Feed } from "../api/socket";
 import { liveSource, showcaseSource, startLiveMatch, type ShowcaseExtras, type Source } from "../api/rest";
+import type { RecordedReplay } from "../api/types";
 import { Track } from "../lib/frames";
 import { useMatch } from "./matchStore";
 import { playhead, useTrace } from "./traceStore";
@@ -84,7 +85,10 @@ export function begin(kind: Session) {
   match.reset(source.matchId, x.meta);
   const { track } = useMatch.getState();
   for (const e of x.ticks) track.addEngine(e);
-  useMatch.setState({ replays: x.replays, untraced: Object.fromEntries(x.manifest.untraced.map((u) => [u.event_id, u.reason])) });
+  useMatch.setState({
+    replays: x.replays,
+    untraced: Object.fromEntries(x.manifest.untraced.map((u: { event_id: string; reason: string }) => [u.event_id, u.reason])),
+  });
   const tr = useTrace.getState();
   tr.setMorph(0, null);
   tr.pin(null, null);
@@ -94,9 +98,9 @@ export function begin(kind: Session) {
     const startSecond = featured - LEAD_IN_S;
     playhead.edge = startSecond;
     playhead.t = startSecond;
-    const goals = x.messages.filter((m) => m.type === "match.event" && m.payload.type === "goal");
-    engine.handledGoals = goals.filter((m) => m.type === "match.event" && m.payload.second <= startSecond).length;
-    engine.feed = recordedFeed(x.messages, startSecond, (m) => useMatch.getState().ingest(m));
+    const goals = x.messages.filter((m: any) => m.type === "match.event" && m.payload?.type === "goal");
+    engine.handledGoals = goals.filter((m: any) => m.type === "match.event" && m.payload?.second <= startSecond).length;
+    engine.feed = recordedFeed(x.messages, startSecond, (m: any) => useMatch.getState().ingest(m));
     tr.selectGoal(null);
     tr.setWindow([startSecond, featured + 8]);
     tr.setSpeed(1);
@@ -150,17 +154,18 @@ export function useBroadcast() {
         loaded ??= sc.extras();
         const x = await loaded;
         if (cancelled) return;
-        for (const [, links] of Object.entries(x.replays)) {
-          for (const [eid, rep] of Object.entries(links)) {
+        for (const [, links] of Object.entries(x.replays as Record<string, Record<string, RecordedReplay>>)) {
+          for (const [eid, rep] of Object.entries(links as Record<string, RecordedReplay>)) {
             const t = new Track(x.meta ? [...x.meta.home.players, ...x.meta.away.players].map((p) => p.id) : undefined);
             for (const f of rep.frames) t.addReplay(f);
             fixedTracks.set(eid, t);
           }
         }
-        untracedEvents = new Set(x.manifest.untraced.map((u) => u.event_id));
-        goalSeconds = x.ticks.filter((e) => e.type === "goal").map((e) => e.clock_s);
-        engine.extras = x;
-        engine.featured = x.truth?.goal_clock_s ?? goalSeconds[goalSeconds.length - 1];
+        untracedEvents = new Set((x.manifest.untraced as { event_id: string }[]).map((u) => u.event_id));
+        goalSeconds = (x.ticks as any[]).filter((e) => e.type === "goal").map((e) => e.clock_s);
+        const tracedGoals = (x.ticks as any[]).filter((e) => e.type === "goal" && !untracedEvents.has(e.id ?? ""));
+        const firstTracedSec = tracedGoals[0]?.clock_s;
+        engine.featured = x.truth?.goal_clock_s ?? firstTracedSec ?? goalSeconds[0] ?? goalSeconds[goalSeconds.length - 1];
         begin(pending ?? (useUi.getState().screen === "story" ? "buildup" : "verdict"));
         pending = null;
       }

@@ -206,6 +206,153 @@ function LanguageMenu() {
   );
 }
 
+/** My Club & My Player personalization preferences */
+function PreferencesMenu() {
+  const meta = useMatch((s) => s.meta);
+  const favoriteClub = useUi((s) => s.favoriteClub);
+  const favoritePlayerId = useUi((s) => s.favoritePlayerId);
+  const broadcastOverlay = useUi((s) => s.broadcastOverlay);
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onDown = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [open]);
+
+  const allPlayers = [
+    ...(meta?.home.players ?? []),
+    ...(meta?.away.players ?? []),
+  ];
+  const favPlayer = allPlayers.find((p) => p.id === favoritePlayerId);
+  const label = favPlayer
+    ? favPlayer.name.split(" ").slice(-1)[0]
+    : favoriteClub
+    ? favoriteClub.toUpperCase()
+    : "My Team";
+
+  return (
+    <div ref={root} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Personalization: My Club and My Player preferences"
+        onClick={() => setOpen((o) => !o)}
+        className={`rc-press flex min-h-[40px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold ring-1 ring-inset transition-colors ${
+          favoriteClub || favoritePlayerId
+            ? "bg-flare/10 text-flare ring-flare/40 hover:bg-flare/20"
+            : "text-chalk ring-turf-edge hover:bg-turf-raised/60"
+        }`}
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 1.5l1.9 4.3 4.7.4-3.5 3.2 1 4.6L8 11.6 3.9 14l1-4.6L1.4 6.2l4.7-.4z" />
+        </svg>
+        <span className="hidden sm:inline">{label}</span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="menu"
+            aria-label="My Club and My Player preferences"
+            className="absolute right-0 top-[calc(100%+8px)] z-50 min-w-[240px] rounded-[16px] bg-turf p-3 shadow-[0_20px_50px_-12px_rgb(0_0_0/0.7)] ring-1 ring-turf-edge"
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -2 }}
+            transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <div className="mb-2 border-b border-turf-edge pb-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-chalk-faint">My Club</span>
+              <div className="mt-1.5 flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => useUi.getState().setFavoriteClub(favoriteClub === "home" ? null : "home")}
+                  className={`rc-press flex-1 rounded-lg py-1.5 text-[12px] font-bold transition-colors ${
+                    favoriteClub === "home"
+                      ? "bg-flare text-flare-ink"
+                      : "bg-turf-raised text-chalk hover:bg-turf-edge"
+                  }`}
+                >
+                  {meta?.home.short_name ?? "WLB"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => useUi.getState().setFavoriteClub(favoriteClub === "away" ? null : "away")}
+                  className={`rc-press flex-1 rounded-lg py-1.5 text-[12px] font-bold transition-colors ${
+                    favoriteClub === "away"
+                      ? "bg-flare text-flare-ink"
+                      : "bg-turf-raised text-chalk hover:bg-turf-edge"
+                  }`}
+                >
+                  {meta?.away.short_name ?? "MSB"}
+                </button>
+                {favoriteClub && (
+                  <button
+                    type="button"
+                    onClick={() => useUi.getState().setFavoriteClub(null)}
+                    title="Clear club"
+                    className="rounded-lg px-2 text-[12px] text-chalk-faint hover:text-chalk"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-2 border-b border-turf-edge pb-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-chalk-faint">My Player</span>
+              <select
+                value={favoritePlayerId ?? ""}
+                onChange={(e) => useUi.getState().setFavoritePlayerId(e.target.value || null)}
+                className="mt-1.5 w-full rounded-lg bg-turf-raised px-2.5 py-1.5 text-[13px] font-semibold text-chalk ring-1 ring-turf-edge focus:outline-none"
+              >
+                <option value="">None (all players)</option>
+                <optgroup label={meta?.home.name ?? "Home Team"}>
+                  {(meta?.home.players ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      #{p.number} {p.name} ({p.position})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label={meta?.away.name ?? "Away Team"}>
+                  {(meta?.away.players ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      #{p.number} {p.name} ({p.position})
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
+
+            <div>
+              <label className="flex cursor-pointer items-center justify-between text-[13px] font-medium text-chalk">
+                <span>Broadcast Overlays</span>
+                <input
+                  type="checkbox"
+                  checked={broadcastOverlay}
+                  onChange={(e) => useUi.getState().setBroadcastOverlay(e.target.checked)}
+                  className="rounded accent-[#c6ff4d]"
+                />
+              </label>
+              <p className="mt-0.5 text-[11px] text-chalk-faint">Live cues for goals, sprints, and root causes</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 /** Home · Story · Matches · Autopsy · Tactics Lab, and the language. Match picking lives in the library, depth on each page. */
 export function Header() {
   return (
@@ -215,7 +362,10 @@ export function Header() {
         <div className="ml-auto min-w-0 overflow-x-auto [scrollbar-width:none] sm:ml-6 sm:mr-auto">
           <NavLinks />
         </div>
-        <LanguageMenu />
+        <div className="flex items-center gap-2">
+          <PreferencesMenu />
+          <LanguageMenu />
+        </div>
       </div>
     </header>
   );

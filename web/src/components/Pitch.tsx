@@ -6,6 +6,7 @@ import { samplePositions } from "../lib/sample";
 import { useMatch } from "../store/matchStore";
 import { useSelectedEvidence } from "../store/selectors";
 import { useTrace } from "../store/traceStore";
+import { useUi } from "../store/uiStore";
 
 const M = 3; // margin in metres
 
@@ -92,6 +93,8 @@ export function Pitch({
 
   const showBackLine = backLine && (at !== undefined ? Math.abs(at - backLine.second) < 2 : true);
 
+  const fav = useUi((s) => s.favoritePlayerId);
+
   return (
     <svg
       viewBox={`0 0 ${PITCH_L + M * 2} ${PITCH_W + M * 2}`}
@@ -145,6 +148,7 @@ export function Pitch({
         const { kit, trim } = pitchKit(info.side);
         const hot = culprits.has(id);
         const isFocus = focusPlayer === id;
+        const isFav = fav === id;
         return (
           <g
             key={id}
@@ -154,7 +158,15 @@ export function Pitch({
             onPointerLeave={at === undefined ? () => useTrace.getState().hover(null, null) : undefined}
             onClick={at === undefined ? () => useTrace.getState().pin(ev?.links.find((l) => l.player_id === id)?.evidence_id ?? null, id) : undefined}
           >
-            {(hot || isFocus) && <circle r={isFocus ? 2.9 : 2.4} fill="none" stroke={hot ? "#c6ff4d" : "#f3f5ff"} strokeWidth="0.45" />}
+            {(hot || isFocus || isFav) && (
+              <circle
+                r={isFocus ? 2.9 : isFav ? 2.6 : 2.4}
+                fill="none"
+                stroke={isFav ? "#c6ff4d" : hot ? "#c6ff4d" : "#f3f5ff"}
+                strokeWidth={isFav ? "0.6" : "0.45"}
+                strokeDasharray={isFav && !hot ? "1 0.5" : undefined}
+              />
+            )}
             <circle r="1.55" fill={kit} stroke={trim} strokeWidth="0.35" />
             <text y="0.62" textAnchor="middle" fontSize="1.65" fontWeight="700" fill={trim} className="pointer-events-none select-none tabular-nums">
               {info.number}
