@@ -127,38 +127,16 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
     addEventListener("pointermove", move);
     addEventListener("pointerup", up);
 
-    let introTween: { kill(): void; isActive?: () => boolean } | null = null;
     let ctx: { revert(): void } | null = null;
     let off = false;
     if (!reduced) {
       loadGsap().then(({ gsap }) => {
         if (off) return;
-        introTween = gsap.to(state, {
-          ...K[1],
-          height: 1,
-          draw: 1,
-          duration: 1.6,
-          ease: "power2.out",
-        });
-
         ctx = gsap.context(() => {
           gsap
-            .timeline({
-              defaults: { ease: "power2.inOut" },
-              scrollTrigger: {
-                trigger: el,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1,
-                onUpdate: (self) => {
-                  if (self.progress > 0.01 && introTween) {
-                    introTween.kill();
-                    introTween = null;
-                  }
-                },
-              },
-            })
-            .fromTo(state, { ...K[1], height: 1, draw: 1 }, { ...K[1], height: 1, draw: 1, duration: 0.8 })
+            .timeline({ defaults: { ease: "power2.inOut" }, scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 1 } })
+            .to(state, { ...K[1], height: 1, duration: 1 })
+            .to(state, { draw: 1, duration: 0.8, ease: "none" }, 0.25)
             .to(state, { ...K[2], duration: 1 })
             .to(state, { scan: iFault, duration: 1, ease: "none" }, "<")
             .to(state, { ...K[3], focus: 1, fault: 1, line: 1, duration: 1 })
@@ -177,7 +155,6 @@ export function TimestackStory({ ev }: { ev: Evidence | null }) {
 
     return () => {
       off = true;
-      introTween?.kill();
       ctx?.revert();
       obs.forEach((o) => o.disconnect());
       removeEventListener("resize", onResize);
