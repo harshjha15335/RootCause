@@ -1,0 +1,348 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g6",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g6-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "sentences": [
+        {
+          "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 5.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 81.3793% of the blame to A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 140/200 to 22/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "sentences": [
+        {
+          "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 3.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 18.6207% of the blame to A4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 140/200 to 113/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "start_second": 4397,
+      "end_second": 4397,
+      "caption": {
+        "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "start_second": 4394,
+      "end_second": 4394,
+      "caption": {
+        "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 81.3793% of the blame to A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 18.6207% of the blame to A4.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 81.3793% of the blame to A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 140/200 to 22/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 18.6207% of the blame to A4.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 140/200 to 113/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "player_id": "A3",
+      "second": 4397,
+      "bug_type": "REBOUND_UNCHECKED",
+      "description": "Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike. (metres behind line: 5.2)",
+      "blame_percent": 81.37931034482759,
+      "baseline_goals": 140,
+      "fixed_goals": 22,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "player_id": "A4",
+      "second": 4394,
+      "bug_type": "REBOUND_UNCHECKED",
+      "description": "Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound. (metres behind line: 3.8)",
+      "blame_percent": 18.620689655172413,
+      "baseline_goals": 140,
+      "fixed_goals": 113,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "fan",
+  "lang": "en",
+  "requested_lang": "en",
+  "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres behind line: 5.2) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 81.3793% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nA4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound. [wlb-msb-2023-11-12-g6-l2]\nA4: (metres behind line: 3.8) [wlb-msb-2023-11-12-g6-l2]\nThe engine attributes 18.6207% of the blame to A4. [wlb-msb-2023-11-12-g6-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (metres behind line: 5.2)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 81.3793% of the blame to A3.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A4: (metres behind line: 3.8)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 18.6207% of the blame to A4.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "attribution"
+    }
+  ]
+}
