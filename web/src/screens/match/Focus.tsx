@@ -2,11 +2,12 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "../../components/bits";
 import "../../components/fanStrings";
-import { SECONDS, useLab, type Lab } from "../../lab/data";
-import { matchStats, playerMoments, rhythmAt, type Moment, type PlayerStat } from "../../lab/stats";
+import { useLab, type Lab } from "../../lab/data";
+import { matchStats, playerMoments, rhythmAt } from "../../lab/stats";
 import { go } from "../../lib/nav";
 import { fanIndex, fanSide, useFan } from "../../store/fanStore";
 import { MomentText } from "./lab/MatchLab";
+import { PlayerReel } from "./PlayerReel";
 
 const minute = (s: number) => Math.floor(s / 60);
 const watch = (s: number) => {
@@ -90,9 +91,7 @@ function Focused({ lab, i }: { lab: Lab; i: number }) {
           ))}
         </div>
       </div>
-      <Totals p={p} />
-      <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.timeline")}</p>
-      <Strip moments={moments} />
+      <PlayerReel lab={lab} i={i} />
       <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.key")}</p>
       <ul className="mt-2 divide-y divide-turf-edge">
         {shown.map((m) => (
@@ -113,47 +112,6 @@ function Focused({ lab, i }: { lab: Lab; i: number }) {
           {all ? "−" : `+${key.length - 8}`}
         </button>
       )}
-    </div>
-  );
-}
-
-function Totals({ p }: { p: PlayerStat }) {
-  const { t } = useTranslation();
-  const tiles: [string, string, string?][] = [
-    [t("fan.focus.km"), t("fan.focus.kmV", { v: p.km.toFixed(1) })],
-    [t("fan.focus.top"), t("fan.focus.kmh", { v: p.topKmh.toFixed(1) })],
-    [t("fan.focus.passes"), t("fan.focus.passesV", { done: p.completed, n: p.passes }), t("fan.focus.acc", { p: Math.round(p.accuracy * 100) })],
-  ];
-  return (
-    <dl className="mt-5 grid grid-cols-3 gap-3 sm:max-w-[620px]">
-      {tiles.map(([k, v, sub]) => (
-        <div key={k} className="rounded-xl bg-turf-deep px-3 py-2.5 ring-1 ring-inset ring-turf-edge">
-          <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{k}</dt>
-          <dd className="mt-1 text-[18px] font-bold tabular-nums text-chalk">{v}</dd>
-          {sub && <dd className="mt-0.5 text-[12px] leading-snug text-chalk-dim">{sub}</dd>}
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-/** 90 minutes left to right: a tick for every moment, taller for shots, red for goals. */
-function Strip({ moments }: { moments: Moment[] }) {
-  const h = (m: Moment) => (m.kind === "goal" ? 30 : m.kind === "shot" ? 24 : m.kind === "run" ? 18 : m.kind === "pass" ? 12 : 8);
-  return (
-    <div className="relative mt-2 h-[38px] w-full rounded-lg bg-turf-deep ring-1 ring-inset ring-turf-edge" role="img" aria-label={`${moments.length}`}>
-      <div className="absolute inset-y-0 left-1/2 w-px bg-turf-edge" aria-hidden="true" />
-      {moments.map((m) => (
-        <button
-          key={m.kind + m.s}
-          type="button"
-          tabIndex={-1}
-          title={`${minute(m.s)}′`}
-          onClick={() => watch(m.s)}
-          className={`absolute bottom-1 w-[3px] -translate-x-1/2 rounded-full ${m.kind === "goal" || m.kind === "shot" ? "bg-flare" : m.kind === "run" ? "bg-chalk" : "bg-chalk/40"}`}
-          style={{ left: `${(m.s / SECONDS) * 100}%`, height: h(m) }}
-        />
-      ))}
     </div>
   );
 }
