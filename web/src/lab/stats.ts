@@ -264,3 +264,36 @@ export function playerMoments(lab: Lab, i: number): Moment[] {
   for (const a of lab.actions) if (a.player === i && a.type === "duel") out.push({ s: a.s, kind: "duel", other: a.receiver, outcome: a.outcome });
   return out.sort((a, b) => a.s - b.s);
 }
+
+export type Rhythm = {
+  kind: "control" | "chaos" | "open";
+  /** seconds the team with the ball has kept it */
+  held: number;
+  /** times the ball changed sides in the 30 s before */
+  swaps: number;
+  /** share of the ball the player's team had in the five minutes before, 0..1 */
+  share: number;
+  trend: "up" | "down" | "flat";
+};
+
+/**
+ * Control vs chaos and the game's rhythm at second s, for team: how long the current spell on the
+ * ball has lasted, how often the ball changed sides in the last 30 s, and whether the team's share
+ * of the ball is rising or falling (last five minutes against the five before). From the tracking's
+ * possession column, so it works for any match.
+ */
+export function rhythmAt(lab: Lab, s: number, team: 0 | 1): Rhythm {
+  const at = Math.min(Math.max(Math.floor(s), 0), SECONDS - 1);
+  let swaps = 0;
+  for (let k = Math.max(1, at - 30); k <= at; k++) if (lab.poss[k] !== lab.poss[k - 1]) swaps++;
+  const held = at - lab.possStart[at];
+  const shareIn = (a: number, b: number) => {
+    let n = 0, mine = 0;
+    for (let k = Math.max(0, a); k < Math.min(SECONDS, b); k++, n++) if (lab.poss[k] === team) mine++;
+    return n ? mine / n : 0.5;
+  };
+  const share = shareIn(at - 300, at);
+  const before = shareIn(at - 600, at - 300);
+  const kind = swaps >= 5 ? "chaos" : swaps <= 2 && held >= 8 ? "control" : "open";
+  return { kind, held, swaps, share, trend: share - before > 0.07 ? "up" : before - share > 0.07 ? "down" : "flat" };
+}

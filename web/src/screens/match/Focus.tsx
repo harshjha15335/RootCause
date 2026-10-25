@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Badge } from "../../components/bits";
 import "../../components/fanStrings";
 import { SECONDS, useLab, type Lab } from "../../lab/data";
-import { matchStats, playerMoments, type Moment, type PlayerStat } from "../../lab/stats";
+import { matchStats, playerMoments, rhythmAt, type Moment, type PlayerStat } from "../../lab/stats";
 import { go } from "../../lib/nav";
 import { fanIndex, fanSide, useFan } from "../../store/fanStore";
 import { MomentText } from "./lab/MatchLab";
@@ -101,6 +101,7 @@ function Focused({ lab, i }: { lab: Lab; i: number }) {
             <span className="w-10 shrink-0 pt-0.5 text-right text-[13px] font-semibold tabular-nums text-chalk-faint">{minute(m.s)}′</span>
             <span className="min-w-0 flex-1 text-[14.5px] leading-snug text-chalk">
               <MomentText lab={lab} m={m} />
+              <RhythmNote lab={lab} s={m.s} team={team} />
             </span>
             <button type="button" onClick={() => watch(m.s)} className="rc-press min-h-[34px] shrink-0 rounded-full px-3 text-[12px] font-semibold text-chalk ring-1 ring-inset ring-turf-edge hover:bg-turf-raised">
               {t("fan.focus.watch")} ▸
@@ -218,5 +219,18 @@ export function SpeedSection({ matchId }: { matchId: string }) {
       </div>
       <p className="mt-4 max-w-[80ch] text-[13px] leading-relaxed text-chalk-faint">{t("fan.speed.how")}</p>
     </div>
+  );
+}
+
+/** Under each key moment: was the game settled or broken, and which way it was flowing, and why it matters. */
+function RhythmNote({ lab, s, team }: { lab: Lab; s: number; team: 0 | 1 }) {
+  const { t } = useTranslation();
+  const r = rhythmAt(lab, s, team);
+  const tone = r.kind === "chaos" ? "bg-flare text-flare-ink" : r.kind === "control" ? "bg-chalk text-turf-deep" : "bg-chalk/15 text-chalk";
+  return (
+    <span className="mt-1 block text-[13px] leading-snug text-chalk-dim">
+      <span className={`mr-1.5 inline-block rounded-full px-2 py-px text-[11px] font-bold uppercase tracking-[0.08em] ${tone}`}>{t(`fan.rhythm.${r.kind}`)}</span>
+      {t("fan.rhythm.line", { n: r.held, swaps: r.swaps, team: lab.clubs[team].name, p: Math.round(r.share * 100), trend: t(`fan.rhythm.${r.trend}`) })} {t(`fan.rhythm.why.${r.kind}`)}
+    </span>
   );
 }

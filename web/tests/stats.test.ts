@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { loadLab } from "../src/lab/data";
-import { matchStats, passProb, playerMoments } from "../src/lab/stats";
+import { matchStats, passProb, playerMoments, rhythmAt } from "../src/lab/stats";
 
 const root = "public/showcase";
 const fsFetch = (async (url: string) => {
@@ -44,6 +44,9 @@ describe("speed and pass tags", () => {
       expect(rate("easy")).toBeGreaterThan(rate("hard"));
       for (const x of st.shots) expect(x.kmh).toBeGreaterThanOrEqual(45);
       for (const tag of ["engine", "speedster", "metronome", "riskTaker"]) expect(st.players.some((p) => p.tags.includes(tag as never))).toBe(true);
+      // control vs chaos: every kind turns up somewhere in a match
+      const kinds = new Set(Array.from({ length: 90 }, (_, m) => rhythmAt(lab, m * 60 + 30, 0).kind));
+      expect(kinds.size).toBeGreaterThanOrEqual(2);
       const nine = playerMoments(lab, 8);
       expect(nine.length).toBeGreaterThan(10);
       if (match === "p-1008") {
