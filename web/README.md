@@ -93,3 +93,9 @@ Open-play defenders close down the ball and track the scorer at a visible contro
 Replay time uses elapsed foreground time independently of camera easing, so a low frame
 rate does not silently turn the entire play into slow motion. Explicit slow-motion finish
 segments and Pause remain available.
+
+In non-penalty, non-corner live replays, pass arrivals and subsequent possession follow
+the displayed receiver's feet so speed-limited player motion cannot leave the ball parked
+ahead of its owner. Saved/blocked shots return from the displayed keeper/blocker to the
+rebound scorer before the final shot crosses the goal line. These are illustrative touch
+and flight timings; source events and analysis remain unchanged.

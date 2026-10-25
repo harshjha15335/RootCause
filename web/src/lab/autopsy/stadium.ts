@@ -466,9 +466,6 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     real.g.add(m);
     return m;
   })();
-  const burst = new THREE.Mesh(new THREE.RingGeometry(0.8, 1.15, 64).rotateY(Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false }));
-  burst.position.set(52.6, 1.2, 0);
-  real.g.add(burst);
   const goalTitle = title(`${say("goalWord")}  ${a.score.join("–")}`, `${clock(a.goalS)} · ${lab.names[a.scorer]}`, "#ffffff");
   goalTitle.position.set(30, 17, 0);
   real.g.add(goalTitle);
@@ -655,7 +652,6 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     planTag.visible = false;
     bins.forEach((x) => (x.g.visible = false));
     goalTitle.visible = false;
-    burst.material.opacity = 0;
     if (uA) uA.head.visible = true;
     for (const u of [real, uA, uB]) {
       if (!u) continue;
@@ -678,8 +674,6 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     const goalFlash = (s: number) => {
       const g = s - a.goalS;
       if (g <= 0) return;
-      burst.material.opacity = Math.max(0, 1 - g / 1.5);
-      burst.scale.setScalar(1 + g * 14);
       goalTitle.visible = true;
       goalTitle.material.opacity = clamp01(g * 2);
     };

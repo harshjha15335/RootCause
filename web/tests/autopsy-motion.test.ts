@@ -178,4 +178,44 @@ describe("Autopsy goal motion", () => {
       expect(f.pos[a.att * 11][0]).toBeLessThan(10);
     }
   });
+
+  it("keeps the 53:31 passes at the receiving player's feet instead of parking ahead", () => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const goal = goalsOf(lab, []).find((g) => g.s === 3211)!;
+    const a = buildAutopsy(lab, goal, null, {}, analyses)!;
+    const replay = teamMotion(a);
+    for (const [t, receiver] of [[3203.7, 18], [3207.7, 19], [3209.7, 18], [3210.6, 21]]) {
+      const f = replay(t);
+      expect(Math.hypot(f.ball[0] - f.pos[receiver][0], f.ball[1] - f.pos[receiver][1])).toBeLessThan(1);
+    }
+    for (const t of [3204, 3208, 3210, 3210.6, 3211]) {
+      const p = replay(t - 0.0001).ball, q = replay(t + 0.0001).ball;
+      expect(Math.hypot(q[0] - p[0], q[1] - p[1]), `Ball jumped at ${t}`).toBeLessThan(0.05);
+    }
+    const early = replay(3211.05).ball[0], later = replay(3211.2).ball[0], settled = replay(3212).ball[0];
+    expect(early).toBeGreaterThan(105);
+    expect(later).toBeGreaterThan(early);
+    expect(settled).toBeGreaterThan(later);
+    expect(settled).toBeLessThan(106);
+    // Net travel decelerates instead of stopping abruptly at the goal timestamp.
+    expect(replay(3211.1).ball[0] - replay(3211).ball[0]).toBeGreaterThan(replay(3211.5).ball[0] - replay(3211.4).ball[0]);
+  });
+
+  it("shows a save and rebound before Jaxsen's 73:25 finish, without a premature goal", () => {
+    const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
+    const goal = goalsOf(lab, []).find((g) => g.s === 4405)!;
+    const a = buildAutopsy(lab, goal, null, {}, analyses)!;
+    const replay = teamMotion(a);
+    expect(lab.actions.find((e) => e.s === 4403 && e.type === "shot")?.outcome).toBe("saved");
+    const start = replay(4403), saved = replay(4403.65), returned = replay(4404.2), touch = replay(4404.6);
+    expect(saved.ball[0]).toBeGreaterThan(start.ball[0]);
+    expect(returned.ball[0]).toBeLessThan(saved.ball[0]);
+    expect(Math.hypot(touch.ball[0] - touch.pos[a.scorer][0], touch.ball[1] - touch.pos[a.scorer][1])).toBeLessThan(1);
+    for (let s = 4403; s < 4404.6; s += 0.05) expect(replay(s).ball[0]).toBeLessThan(105);
+    for (const t of [4403, 4403.65, 4404.6, 4405]) {
+      const p = replay(t - 0.0001).ball, q = replay(t + 0.0001).ball;
+      expect(Math.hypot(q[0] - p[0], q[1] - p[1]), `Rebound jumped at ${t}`).toBeLessThan(0.05);
+    }
+    expect(replay(4405).ball[0]).toBeGreaterThan(105);
+  });
 });

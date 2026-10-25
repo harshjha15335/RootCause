@@ -1,6 +1,7 @@
 import type { Lab } from "../data";
 import type { Pt, Snap } from "../journey/model";
 import { cornerMotion } from "./corner";
+import { possessionBall } from "./possession";
 
 export type GoalType = "penalty" | "corner" | "freeKick" | "openPlay" | "setPiece" | "unknown";
 
@@ -12,7 +13,7 @@ export function goalType(kind?: string): GoalType {
   if (k.includes("corner")) return "corner";
   if (k.includes("free_kick") || k.includes("freekick")) return "freeKick";
   if (k.includes("set_piece")) return "setPiece";
-  if (["open_play", "open_play_tap_in", "sliding_finish", "rebound_tap_in", "deflected_long_shot", "header", "long_shot"].includes(k)) return "openPlay";
+  if (["open_play", "open_play_tap_in", "counter_tap_in", "sliding_finish", "rebound_tap_in", "deflected_long_shot", "header", "long_shot"].includes(k)) return "openPlay";
   return "unknown";
 }
 
@@ -23,7 +24,7 @@ export type Play = { lab: Lab; goalS: number; moveFrom: number; att: 0 | 1; scor
 
 /**
  * Display-only reconstruction for fixture players with no off-ball tracking motion.
- * The event's ball path stays authoritative. Source paths are retained where consistent;
+ * Source event order and actors drive the ball's reconstructed touches. Player paths are retained where consistent;
  * static players react with bounded support/cover runs, obvious speed outliers are
  * smoothed, and unambiguous scoring-slot mismatches are reconciled. Never used for stats,
  * blame, fixed replays or frozen evidence diagrams. Precomputation makes scrubbing and
@@ -116,7 +117,7 @@ export function teamMotion(a: Play): (s: number) => Snap {
     });
     samples.push(frames);
   }
-  return (s) => {
+  const display = (s: number): Snap => {
     const f = recorded(s);
     if (s < start) return f;
     const t = clamp((s - start) / dt, 0, samples.length - 1), i = Math.floor(t), j = Math.min(i + 1, samples.length - 1), u = t - i;
@@ -133,4 +134,7 @@ export function teamMotion(a: Play): (s: number) => Snap {
       ];
     }) };
   };
+  // Touch continuity does not depend on a finish label. Imported datasets may call a
+  // goal "rebound" or "counter_tap_in" rather than the exporter's older aliases.
+  return penalty ? display : possessionBall(a, display);
 }
