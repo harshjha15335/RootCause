@@ -10,7 +10,7 @@ import type { GoalCase } from "../goal";
  * blame from the trace, and the two teams' plans from analysis.json for this match and the others.
  */
 export type Pt = [number, number];
-export type Snap = { ball: Pt; pos: Pt[] };
+export type Snap = { ball: Pt; pos: Pt[]; ballHeight?: number };
 
 export type Suspect = {
   player: number;
@@ -70,18 +70,26 @@ const mean = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.lengt
  * The move behind a goal, in a frame where the scoring side `att` attacks toward x = 105. The
  * tracking puts the ball back on the spot at the goal second, so the shot is finished into the net.
  */
-export function goalFrame(lab: Lab, goalS: number, att: 0 | 1) {
+export function goalFrame(lab: Lab, goalS: number, att: 0 | 1, aerial = false) {
   const M = (p: Pt): Pt => (att === 1 ? [PX - p[0], PY - p[1]] : p);
   // the shot as the event records it: where it was struck and where it crossed the line
   const shot = lab.actions.find((x) => x.s === goalS && x.type === "shot");
   const shotFrom = shot ? M(shot.from) : M(frameAt(lab, goalS - 1).ball);
   const net: Pt = [PX + 0.8, Math.min(Math.max(shot ? M(shot.to)[1] : shotFrom[1], 31), 37)];
+  const delivery = M(frameAt(lab, goalS - 1).ball);
   const frame = (s: number): Snap => {
     const f = frameAt(lab, Math.min(s, goalS));
     const pos = f.pos.map(M);
     if (s < goalS - 1) return { ball: M(f.ball), pos };
-    const u = Math.min(s - (goalS - 1), 1);
-    return { ball: [shotFrom[0] + (net[0] - shotFrom[0]) * u, shotFrom[1] + (net[1] - shotFrom[1]) * u], pos };
+    // Resolve the final delivery and finish continuously. Starting the shot at the previous
+    // whole second teleports the ball away from the passer and creates a long stray trail.
+    const t = Math.min(Math.max(s - (goalS - 1), 0), 1);
+    const from = t < 0.6 ? delivery : shotFrom, to = t < 0.6 ? shotFrom : net;
+    const u = t < 0.6 ? t / 0.6 : (t - 0.6) / 0.4;
+    // Heights are illustrative: tracking contains x/y only. A recorded header gets an arc,
+    // not a dribble into goal. Keep height continuous at delivery, contact and the finish.
+    const ballHeight = aerial ? (t < 0.6 ? 0.75 + 1.05 * u + 3 * Math.sin(Math.PI * u) : 1.8 - 1.05 * u) : 0.75;
+    return { ball: [from[0] + (to[0] - from[0]) * u, from[1] + (to[1] - from[1]) * u], pos, ballHeight };
   };
   return { M, frame };
 }
@@ -95,7 +103,8 @@ export function buildJourney(
 ): Journey | null {
   const att = c.attack, def = (1 - att) as 0 | 1;
   // home-attacks-right frame -> scoring side attacks right
-  const { M, frame } = goalFrame(lab, c.goalS, att);
+  const chance = analyses[lab.id].chances.find((x) => x.second === c.goalS);
+  const { M, frame } = goalFrame(lab, c.goalS, att, chance?.honest?.kind.includes("header"));
   const period = periodAt(lab, c.goalS);
   const fromRaw = (x: number, y: number): Pt => M(period === 1 ? [x, y] : [PX - x, PY - y]);
   const backFour = [1, 2, 3, 4].map((k) => def * 11 + k);

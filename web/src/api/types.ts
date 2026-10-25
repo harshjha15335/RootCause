@@ -170,6 +170,8 @@ export type MatchMeta = {
   pitch_length_m: number;
   pitch_width_m: number;
   duration_s: number;
+  /** Event endpoints may use the acting team's attacking-right frame instead of raw tracking. */
+  event_coordinate_frame?: "raw" | "attacking-right";
   home: ClubMeta;
   away: ClubMeta;
 };

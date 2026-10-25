@@ -518,5 +518,6 @@
         "unit": "att"
       }
     ]
-  }
+  },
+  "event_coordinate_frame": "attacking-right"
 }

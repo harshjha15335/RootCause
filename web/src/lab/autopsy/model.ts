@@ -1,7 +1,7 @@
 import type { Analysis, Chance, Side, Unit } from "../../api/analysis";
 import { DEMO_MATCHES } from "../../api/rest";
 import type { Evidence, RecordedReplay } from "../../api/types";
-import { PX, PY, periodAt, type Lab } from "../data";
+import { PX, PY, periodAt, posAt, type Lab } from "../data";
 import { buildCase } from "../goal";
 import { buildJourney, goalFrame, type Journey, type Pt, type Snap, type Suspect } from "../journey/model";
 
@@ -26,6 +26,15 @@ export type Mistake = {
 };
 
 export type Plan = { shape: Pt[]; unit: Unit[]; formation: [string, string] };
+
+/** Each unit is its own polyline; joining units draws spurious diagonals across the pitch. */
+export function formationGroups(plan: Plan, team: 0 | 1): number[][] {
+  return (["def", "mid", "att"] as const).map((unit) =>
+    Array.from({ length: 11 }, (_, n) => team * 11 + n)
+      .filter((i) => plan.unit[i] === unit && plan.shape[i])
+      .sort((p, q) => plan.shape[p][1] - plan.shape[q][1]),
+  );
+}
 
 export type Dossier = {
   meeting: number;
@@ -78,12 +87,34 @@ export function goalsOf(lab: Lab, traces: Evidence[]): GoalRef[] {
     .sort((a, b) => a.s - b.s);
 }
 
+const observedPlans = new WeakMap<Lab, Map<number, Pt[]>>();
+
 function planOf(lab: Lab, here: Analysis, att: 0 | 1): Plan {
   const def = 1 - att, aS = SIDES[att], dS = SIDES[def];
   const shape: Pt[] = Array(22), unit: Unit[] = Array(22);
   for (const p of here.shapes[aS].in.players) { shape[indexOf(p.id)] = [p.x, p.y]; unit[indexOf(p.id)] = p.unit; }
   // analysis shapes are drawn attacking right for each team: the defending side is turned round
   for (const p of here.shapes[dS].out.players) { shape[indexOf(p.id)] = [PX - p.x, PY - p.y]; unit[indexOf(p.id)] = p.unit; }
+  // Derive the displayed average positions from tracking. Some imported analysis files carry
+  // illustrative diagonal shapes (even the keeper at midfield), not the recorded formation.
+  let plans = observedPlans.get(lab);
+  if (!plans) { plans = new Map(); observedPlans.set(lab, plans); }
+  let observed = plans.get(att);
+  if (!observed) {
+    const sums: Pt[] = Array.from({ length: 22 }, () => [0, 0]);
+    let count = 0;
+    for (let s = 0; s < lab.poss.length; s++) {
+      if (lab.poss[s] !== att || lab.cut?.[s] || (s > 0 && lab.cut?.[s - 1])) continue;
+      count++;
+      for (let i = 0; i < 22; i++) {
+        const p = posAt(lab, s, i);
+        sums[i][0] += att ? PX - p[0] : p[0];
+        sums[i][1] += att ? PY - p[1] : p[1];
+      }
+    }
+    if (count) { observed = sums.map(([x, y]) => [x / count, y / count]); plans.set(att, observed); }
+  }
+  if (observed) observed.forEach((p, i) => { shape[i] = p; });
   return { shape, unit, formation: [lab.clubs[0].formation, lab.clubs[1].formation] };
 }
 
@@ -209,7 +240,7 @@ export function buildAutopsy(
       };
     }
   }
-  const { frame } = goalFrame(lab, goal.s, att);
+  const { frame } = goalFrame(lab, goal.s, att, chance?.honest?.kind.includes("header"));
   // the move: from the start of this possession, at most 16 s before the goal, inside one half
   const half = periodAt(lab, goal.s);
   let from = Math.max(lab.possStart[Math.max(goal.s - 1, 0)] - 2, goal.s - 16, 0);

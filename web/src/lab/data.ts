@@ -152,6 +152,10 @@ function repairGoals(raw: Int16Array, ev: RawEvent[]) {
   for (const shot of evs.filter((e) => e.type === "shot" && e.outcome === "goal")) {
     const g = shot.s, c = g - 3;
     if (c < 1 || g >= SECONDS || raw[c * STRIDE + 48] !== raw[g * STRIDE + 48]) continue;
+    // Only repair the old engine's premature kickoff reset. Continuous tracking is already
+    // authoritative: snapping its players to event endpoints invents cross-pitch runs.
+    if (Math.hypot(at(g, 0) - PX / 2, at(g, 1) - PY / 2) > 12 ||
+        Math.hypot(shot.from[0] - PX / 2, shot.from[1] - PY / 2) < 20) continue;
     const near = evs.filter((e) => e.s <= g && e.s > g - 30);
     const next = (e: (typeof evs)[number]) => evs.find((x) => x.s > e.s)?.s ?? e.s + 1;
     // where each player must be, and when, by the events after the last clean second
@@ -207,12 +211,27 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
     if (!r.ok) throw new Error(`${base + f} returned ${r.status}`);
     return r;
   };
-  const [bin, ev, meta] = await Promise.all([
+  const [bin, events, meta] = await Promise.all([
     get("tracking.bin").then((r) => r.arrayBuffer()),
     get("events.json").then((r) => r.json() as Promise<(string | number | null)[][]>),
     get("meta.json").then((r) => r.json() as Promise<MatchMeta>),
   ]);
   const raw = new Int16Array(bin);
+  // Convert explicitly declared event coordinates to the same physical frame as tracking
+  // before repairing goals or converting the whole Lab to home-attacks-right.
+  const ev = events.map((e) => {
+    if (meta.event_coordinate_frame !== "attacking-right") return e;
+    const s = Math.min(Math.max(e[0] as number, 0), raw.length / STRIDE - 1);
+    const period = raw[s * STRIDE + 48] || 1;
+    const flip = (e[2] === 1) !== (period === 2);
+    if (!flip) return e;
+    const out = e.slice();
+    for (const k of [5, 7]) {
+      out[k] = PX - (e[k] as number);
+      out[k + 1] = PY - (e[k + 1] as number);
+    }
+    return out;
+  });
   repairGoals(raw, ev);
   const totalSeconds = Math.floor(raw.length / STRIDE) || SECONDS;
   const cut = new Uint8Array(totalSeconds);

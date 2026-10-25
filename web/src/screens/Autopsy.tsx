@@ -391,6 +391,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
         </div>
         <Title>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</Title>
         <Line>{t("autopsy.goal.score", { home, away, h: a.score[0], a: a.score[1] })}</Line>
+        <Line dim>{t("autopsy.reconstruction")}</Line>
         {a.kind === "traced" && <Line>{t("autopsy.goal.traced", { s: Math.round(a.goalS - a.j.culprit.second) })}</Line>}
         {expert && a.chance && <Line dim>{`${a.chance.xg.toFixed(2)} xG · ${a.chance.distance_m.toFixed(1)} m`}</Line>}
       </>

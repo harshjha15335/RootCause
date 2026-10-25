@@ -42,3 +42,22 @@ The accuracy badge reads "Not yet measured" until `eval/accuracy.py` produces a 
 Keyboard: Space play/pause, ←/→ one second (Shift: five), [ ] previous/next link, G goal,
 R root cause, F mistake fixed, 1/2/3 modes, ? shortcuts, Esc clears the highlight.
 `prefers-reduced-motion` swaps the 3D stage for the flat pitch and removes the scroll pinning.
+
+## Replay coordinates and reconstruction
+
+Tracking stays in physical pitch coordinates. Showcase metadata may declare
+`event_coordinate_frame: "attacking-right"` when event endpoints are relative to the
+acting team's attacking direction; omitted/`raw` retains the engine's original format.
+The Lab converts those endpoints to tracking coordinates before any goal repair, then
+normalizes both to its home-attacks-right view. Do not infer this convention from a
+particular match ID or mirror already normalized events a second time.
+
+The kickoff-repair path is limited to the old engine's premature centre-spot reset.
+Continuous tracking must retain its recorded player positions. Autopsy's tactical shapes
+are averages of those positions with the attacking side in possession; each formation
+unit has its own line, rather than joining unrelated units across the pitch.
+
+The last delivery and finish are reconstructed continuously from event endpoints. A
+recorded header classification adds an illustrative ball arc. Flight height and subsecond
+contact timing are animation, not measured 3D tracking or a counterfactual result; the
+Autopsy labels this distinction. In the 45:27 example, A7 delivers to A4, who scores.

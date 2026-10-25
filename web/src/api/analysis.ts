@@ -78,6 +78,8 @@ export type Option = { id: string; pass_p: number; xg: number; value: number; ch
 export type Reason = "better_pass" | "better_assist" | "earlier" | "crowded" | "long_range" | "tight_angle" | "pressured" | "big_chance";
 
 export type Chance = {
+  /** Optional event classification supplied by the showcase, not inferred from the animation. */
+  honest?: { kind: string; xg?: number };
   seq: number;
   second: number;
   period: number;

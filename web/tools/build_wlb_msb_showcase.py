@@ -582,6 +582,7 @@ def build_meta() -> dict:
         "competition": "Premier League 2023/24",
         "stadium": "Stamford Bridge, London",
         "duration_s": DURATION_S,
+        "event_coordinate_frame": "attacking-right",
         "home": {
             "id": "WLB",
             "name": "West London Blues",

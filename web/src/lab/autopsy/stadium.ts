@@ -10,7 +10,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { PX } from "../data";
-import type { Autopsy, Pt, Snap, Suspect, Traced } from "./model";
+import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
 
 /**
  * The Goal Autopsy's 3D stage: a floodlit night stadium where one goal is taken apart, the way
@@ -382,12 +382,13 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   function pose(u: Universe, at: (s: number) => Snap, s: number, line = true) {
     const f = at(s);
     f.pos.forEach(([x, y], i) => u.pieces[i].t.position.set(x - 52.5, 0, y - 34));
-    u.ball.position.set(f.ball[0] - 52.5, 0.75, f.ball[1] - 34);
+    u.ball.position.set(f.ball[0] - 52.5, f.ballHeight ?? 0.75, f.ball[1] - 34);
     // the ball's last three seconds as a fading streak
     const pts: number[] = [], cols: number[] = [];
     for (let k = 30; k >= 0; k--) {
-      const b = at(Math.max(s - k * 0.1, a.moveFrom - 30)).ball;
-      pts.push(b[0] - 52.5, 0.75, b[1] - 34);
+      const sample = at(Math.max(s - k * 0.1, a.moveFrom - 30));
+      const b = sample.ball;
+      pts.push(b[0] - 52.5, sample.ballHeight ?? 0.75, b[1] - 34);
       const o = 1 - k / 30;
       cols.push(o, o * 0.93, o * 0.8);
     }
@@ -472,7 +473,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   real.g.add(goalTitle);
 
   // the plans, as constellations
-  const shapeLines = [fat(2.2, { order: 4 }), fat(2.2, { order: 4 })];
+  const shapeLines = Array.from({ length: 6 }, () => fat(2.2, { order: 4 }));
   real.g.add(...shapeLines);
   const blocks = [0, 1].map((k) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: kit(k), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
@@ -720,21 +721,19 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       });
       real.ball.position.set(0, -5, 0);
       setLine(real.trail, [0, -9, 0, 0, -9, 0], [0, 0, 0, 0, 0, 0]);
-      for (const team of [0, 1]) {
-        const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45), pts: number[] = [], cols: number[] = [];
-        for (const unit of ["def", "mid", "att"]) {
-          const ps = Array.from({ length: 11 }, (_, n) => team * 11 + n).filter((i) => a.plan.unit[i] === unit && a.plan.shape[i]).sort((p, q) => a.plan.shape[p][1] - a.plan.shape[q][1]);
-          // Line2 draws one polyline: each unit starts and ends on a dark copy of its end points
-          ps.forEach((i, n) => {
+      for (const team of [0, 1] as const) {
+        const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45);
+        formationGroups(a.plan, team).forEach((ps, unit) => {
+          const pts: number[] = [], cols: number[] = [];
+          ps.forEach((i) => {
             const p = real.pieces[i].t.position;
-            if (n === 0) { pts.push(p.x, 0.4, p.z); cols.push(0, 0, 0); }
             pts.push(p.x, 0.4, p.z);
             cols.push(col.r * u, col.g * u, col.b * u);
-            if (n === ps.length - 1) { pts.push(p.x, 0.4, p.z); cols.push(0, 0, 0); }
           });
-        }
-        if (pts.length) setLine(shapeLines[team], pts, cols);
-        shapeLines[team].visible = pts.length > 0;
+          const line = shapeLines[team * 3 + unit];
+          if (ps.length > 1) setLine(line, pts, cols);
+          line.visible = ps.length > 1;
+        });
       }
       blocks.forEach((m, team) => {
         const xs = Array.from({ length: 11 }, (_, n) => team * 11 + n).filter((i) => a.plan.unit[i] !== "gk" && a.plan.shape[i]).map((i) => a.plan.shape[i]);
