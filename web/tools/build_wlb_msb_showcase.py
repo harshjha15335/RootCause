@@ -20,6 +20,7 @@ import os
 import re
 import sys
 from pathlib import Path
+
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -38,53 +39,292 @@ DURATION_S = 6420
 STRIDE = 49
 
 HOME_STARTERS = [
-    {"id": "H1", "num_id": 448687, "name": "Roberto Sanchelo", "number": 1, "position": "GK", "role": "GK", "unit": "gk"},
-    {"id": "H2", "num_id": 447357, "name": "R. Jamezzi", "number": 24, "position": "RB", "role": "RB", "unit": "def"},
-    {"id": "H3", "num_id": 344040, "name": "Marco Cucarena", "number": 3, "position": "LB", "role": "LB", "unit": "def"},
-    {"id": "H4", "num_id": 386292, "name": "A. Disaro", "number": 2, "position": "RCB", "role": "RCB", "unit": "def"},
-    {"id": "H5", "num_id": 20394, "name": "Tiago Silven", "number": 6, "position": "LCB", "role": "LCB", "unit": "def"},
-    {"id": "H6", "num_id": 614501, "name": "M. Caisero", "number": 25, "position": "DM", "role": "RDMF", "unit": "mid"},
-    {"id": "H7", "num_id": 551497, "name": "C. Palmaro", "number": 20, "position": "RW", "role": "RAMF", "unit": "att"},
-    {"id": "H8", "num_id": 447358, "name": "C. Gallavan", "number": 23, "position": "CM", "role": "RDMF", "unit": "mid"},
-    {"id": "H9", "num_id": 669602, "name": "N. Jaxsen", "number": 15, "position": "ST", "role": "CF", "unit": "att"},
-    {"id": "H10", "num_id": 600184, "name": "E. Fernadero", "number": 8, "position": "CM", "role": "LDMF", "unit": "mid"},
-    {"id": "H11", "num_id": 11066, "name": "R. Sterlino", "number": 7, "position": "LW", "role": "LAMF", "unit": "att"},
+    {
+        "id": "H1",
+        "num_id": 448687,
+        "name": "Roberto Sanchelo",
+        "number": 1,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk",
+    },
+    {
+        "id": "H2",
+        "num_id": 447357,
+        "name": "R. Jamezzi",
+        "number": 24,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def",
+    },
+    {
+        "id": "H3",
+        "num_id": 344040,
+        "name": "Marco Cucarena",
+        "number": 3,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def",
+    },
+    {
+        "id": "H4",
+        "num_id": 386292,
+        "name": "A. Disaro",
+        "number": 2,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def",
+    },
+    {
+        "id": "H5",
+        "num_id": 20394,
+        "name": "Tiago Silven",
+        "number": 6,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def",
+    },
+    {
+        "id": "H6",
+        "num_id": 614501,
+        "name": "M. Caisero",
+        "number": 25,
+        "position": "DM",
+        "role": "RDMF",
+        "unit": "mid",
+    },
+    {
+        "id": "H7",
+        "num_id": 551497,
+        "name": "C. Palmaro",
+        "number": 20,
+        "position": "RW",
+        "role": "RAMF",
+        "unit": "att",
+    },
+    {
+        "id": "H8",
+        "num_id": 447358,
+        "name": "C. Gallavan",
+        "number": 23,
+        "position": "CM",
+        "role": "RDMF",
+        "unit": "mid",
+    },
+    {
+        "id": "H9",
+        "num_id": 669602,
+        "name": "N. Jaxsen",
+        "number": 15,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att",
+    },
+    {
+        "id": "H10",
+        "num_id": 600184,
+        "name": "E. Fernadero",
+        "number": 8,
+        "position": "CM",
+        "role": "LDMF",
+        "unit": "mid",
+    },
+    {
+        "id": "H11",
+        "num_id": 11066,
+        "name": "R. Sterlino",
+        "number": 7,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att",
+    },
 ]
 
 HOME_SUBS = [
-    {"id": "H12", "num_id": 586585, "name": "M. Gustaro", "number": 27, "position": "RB", "role": "RB", "unit": "def"},
-    {"id": "H13", "num_id": 536494, "name": "M. Mudriko", "number": 10, "position": "LW", "role": "LAMF", "unit": "att"},
-    {"id": "H14", "num_id": 532621, "name": "A. Brojano", "number": 19, "position": "ST", "role": "CF", "unit": "att"},
+    {
+        "id": "H12",
+        "num_id": 586585,
+        "name": "M. Gustaro",
+        "number": 27,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def",
+    },
+    {
+        "id": "H13",
+        "num_id": 536494,
+        "name": "M. Mudriko",
+        "number": 10,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att",
+    },
+    {
+        "id": "H14",
+        "num_id": 532621,
+        "name": "A. Brojano",
+        "number": 19,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att",
+    },
 ]
 
 AWAY_STARTERS = [
-    {"id": "A1", "num_id": 71654, "name": "Ederino", "number": 31, "position": "GK", "role": "GK", "unit": "gk"},
-    {"id": "A2", "num_id": 8277, "name": "K. Wallaro", "number": 2, "position": "RB", "role": "RB", "unit": "def"},
-    {"id": "A3", "num_id": 258154, "name": "Ruben Diales", "number": 3, "position": "RCB", "role": "RCB", "unit": "def"},
-    {"id": "A4", "num_id": 297957, "name": "M. Akendo", "number": 25, "position": "LCB", "role": "LCB", "unit": "def"},
-    {"id": "A5", "num_id": 568412, "name": "J. Gvardello", "number": 24, "position": "LB", "role": "LB", "unit": "def"},
-    {"id": "A6", "num_id": 364860, "name": "Roderico", "number": 16, "position": "DM", "role": "DMF", "unit": "mid"},
-    {"id": "A7", "num_id": 265673, "name": "Bernaro Silven", "number": 20, "position": "CM", "role": "LCMF", "unit": "mid"},
-    {"id": "A8", "num_id": 550459, "name": "J. Alvaredo", "number": 19, "position": "AM", "role": "RCMF", "unit": "mid"},
-    {"id": "A9", "num_id": 447205, "name": "P. Fordan", "number": 47, "position": "RW", "role": "RW", "unit": "att"},
-    {"id": "A10", "num_id": 549485, "name": "J. Dokari", "number": 11, "position": "LW", "role": "LW", "unit": "att"},
-    {"id": "A11", "num_id": 427097, "name": "E. Haalviken", "number": 9, "position": "ST", "role": "CF", "unit": "att"},
+    {
+        "id": "A1",
+        "num_id": 71654,
+        "name": "Ederino",
+        "number": 31,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk",
+    },
+    {
+        "id": "A2",
+        "num_id": 8277,
+        "name": "K. Wallaro",
+        "number": 2,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def",
+    },
+    {
+        "id": "A3",
+        "num_id": 258154,
+        "name": "Ruben Diales",
+        "number": 3,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def",
+    },
+    {
+        "id": "A4",
+        "num_id": 297957,
+        "name": "M. Akendo",
+        "number": 25,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def",
+    },
+    {
+        "id": "A5",
+        "num_id": 568412,
+        "name": "J. Gvardello",
+        "number": 24,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def",
+    },
+    {
+        "id": "A6",
+        "num_id": 364860,
+        "name": "Roderico",
+        "number": 16,
+        "position": "DM",
+        "role": "DMF",
+        "unit": "mid",
+    },
+    {
+        "id": "A7",
+        "num_id": 265673,
+        "name": "Bernaro Silven",
+        "number": 20,
+        "position": "CM",
+        "role": "LCMF",
+        "unit": "mid",
+    },
+    {
+        "id": "A8",
+        "num_id": 550459,
+        "name": "J. Alvaredo",
+        "number": 19,
+        "position": "AM",
+        "role": "RCMF",
+        "unit": "mid",
+    },
+    {
+        "id": "A9",
+        "num_id": 447205,
+        "name": "P. Fordan",
+        "number": 47,
+        "position": "RW",
+        "role": "RW",
+        "unit": "att",
+    },
+    {
+        "id": "A10",
+        "num_id": 549485,
+        "name": "J. Dokari",
+        "number": 11,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att",
+    },
+    {
+        "id": "A11",
+        "num_id": 427097,
+        "name": "E. Haalviken",
+        "number": 9,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att",
+    },
 ]
 
 AWAY_SUBS = [
-    {"id": "A12", "num_id": 69404, "name": "M. Kovarec", "number": 8, "position": "CM", "role": "RCMF", "unit": "mid"},
-    {"id": "A13", "num_id": 11051, "name": "J. Grealton", "number": 10, "position": "LW", "role": "LW", "unit": "att"},
+    {
+        "id": "A12",
+        "num_id": 69404,
+        "name": "M. Kovarec",
+        "number": 8,
+        "position": "CM",
+        "role": "RCMF",
+        "unit": "mid",
+    },
+    {
+        "id": "A13",
+        "num_id": 11051,
+        "name": "J. Grealton",
+        "number": 10,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att",
+    },
 ]
 
 NUM_TO_TRACKING_SLOT = {
     # Home starters
-    448687: 0, 447357: 1, 344040: 2, 386292: 3, 20394: 4, 614501: 5, 551497: 6, 447358: 7, 669602: 8, 600184: 9, 11066: 10,
+    448687: 0,
+    447357: 1,
+    344040: 2,
+    386292: 3,
+    20394: 4,
+    614501: 5,
+    551497: 6,
+    447358: 7,
+    669602: 8,
+    600184: 9,
+    11066: 10,
     # Home subs (reuse tracking slots)
-    586585: 1, 536494: 9, 532621: 5,
+    586585: 1,
+    536494: 9,
+    532621: 5,
     # Away starters
-    71654: 11, 8277: 12, 258154: 13, 297957: 14, 568412: 15, 364860: 16, 265673: 17, 550459: 18, 447205: 19, 549485: 20, 427097: 21,
+    71654: 11,
+    8277: 12,
+    258154: 13,
+    297957: 14,
+    568412: 15,
+    364860: 16,
+    265673: 17,
+    550459: 18,
+    447205: 19,
+    549485: 20,
+    427097: 21,
     # Away subs (reuse tracking slots)
-    11051: 20, 69404: 18,
+    11051: 20,
+    69404: 18,
 }
 
 ALL_PLAYERS = HOME_STARTERS + HOME_SUBS + AWAY_STARTERS + AWAY_SUBS
@@ -380,7 +620,9 @@ def build_match() -> dict:
 
 def build_manifest() -> dict:
     traced_ids = [g["goal_id"] for g in GOALS_INFO if g["traced"]]
-    untraced = [{"event_id": g["event_id"], "reason": g["reason"]} for g in GOALS_INFO if not g["traced"]]
+    untraced = [
+        {"event_id": g["event_id"], "reason": g["reason"]} for g in GOALS_INFO if not g["traced"]
+    ]
     windows = [g["window"] for g in GOALS_INFO]
 
     return {
@@ -406,12 +648,16 @@ def build_tracking_and_events() -> tuple[np.ndarray, list]:
         bin_target = TARGET_DIR / "tracking.bin"
         events_target = TARGET_DIR / "events.json"
         if bin_target.exists() and events_target.exists():
-            print(f"[OK] Re-using verified existing {bin_target.name} and {events_target.name} (portable mode)")
+            print(
+                f"[OK] Re-using verified existing {bin_target.name} and {events_target.name} (portable mode)"
+            )
             tracking_out = np.fromfile(bin_target, dtype="<i2").reshape((DURATION_S, STRIDE))
             with open(events_target, "r", encoding="utf-8") as f:
                 events = json.load(f)
             return tracking_out, events
-        raise FileNotFoundError(f"Neither external raw archives at {DATA_DIR} nor target tracking/events exist.")
+        raise FileNotFoundError(
+            f"Neither external raw archives at {DATA_DIR} nor target tracking/events exist."
+        )
 
     # 1. Sample 10 FPS replay down to 1 Hz (6420 seconds)
     tracking_out = np.zeros((DURATION_S, STRIDE), dtype="<i2")
@@ -425,7 +671,7 @@ def build_tracking_and_events() -> tuple[np.ndarray, list]:
         for idx, line in enumerate(f):
             if idx % 10 == 0:
                 d = json.loads(line)
-                s = int(round(d["t"]))
+                s = round(d["t"])
                 if 0 <= s < DURATION_S:
                     bx = float(d["ball"][0]) * 1.05
                     by = float(d["ball"][1]) * 0.68
@@ -540,7 +786,22 @@ def build_tracking_and_events() -> tuple[np.ndarray, list]:
             xg = round(float(e["possession"]["attack"]["xg"]), 3)
 
         pressure_m = 1.6
-        events.append([sec_tot, action_type, team_idx, p_slot, rec_slot, from_x, from_y, to_x, to_y, outcome, xg, pressure_m])
+        events.append(
+            [
+                sec_tot,
+                action_type,
+                team_idx,
+                p_slot,
+                rec_slot,
+                from_x,
+                from_y,
+                to_x,
+                to_y,
+                outcome,
+                xg,
+                pressure_m,
+            ]
+        )
 
     events.sort(key=lambda x: x[0])
     return tracking_out, events
@@ -558,12 +819,14 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
         b_goals = []
         for g in GOALS_INFO:
             if f_s <= g["second"] < t_s:
-                b_goals.append({
-                    "second": g["second"],
-                    "side": g["side"],
-                    "player_id": g["scorer_id"],
-                    "xg": g["xg"]
-                })
+                b_goals.append(
+                    {
+                        "second": g["second"],
+                        "side": g["side"],
+                        "player_id": g["scorer_id"],
+                        "xg": g["xg"],
+                    }
+                )
 
         w_shots = [e for e in events if e[1] == "shot" and f_s <= e[0] < t_s]
         h_shots = [s for s in w_shots if s[2] == 0]
@@ -581,7 +844,11 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
         tot_comp = len(h_passes) + len(a_passes)
         control_index = round(len(h_passes) / max(1, tot_comp), 2)
 
-        turnovers = sum(1 for e in events if f_s <= e[0] < t_s and (e[9] in ("lost", "incomplete") or e[1] == "shot"))
+        turnovers = sum(
+            1
+            for e in events
+            if f_s <= e[0] < t_s and (e[9] in ("lost", "incomplete") or e[1] == "shot")
+        )
         chaos_index = round(min(1.0, turnovers / 22.0), 2)
         rhythm_index = round(len(w_passes) / 5.0, 1)
 
@@ -592,33 +859,43 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
             chapter_es = f"Máxima intensidad entre los minutos {min_start} y {min_end}: {len(b_goals)} gol(es) anotado(s)."
             chapter_hi = f"{min_start}'-{min_end}' में रोमांच: {len(b_goals)} गोल दर्ज किए गए।"
         elif control_index > 0.6:
-            chapter_en = f"{min_start}'-{min_end}': WLB establishes structured control and territory."
-            chapter_es = f"{min_start}'-{min_end}': WLB impone control estructurado y posesión territorial."
+            chapter_en = (
+                f"{min_start}'-{min_end}': WLB establishes structured control and territory."
+            )
+            chapter_es = (
+                f"{min_start}'-{min_end}': WLB impone control estructurado y posesión territorial."
+            )
             chapter_hi = f"{min_start}'-{min_end}': WLB ने संगठित नियंत्रण और क्षेत्र बनाया।"
         elif control_index < 0.4:
             chapter_en = f"{min_start}'-{min_end}': MSB dictates tempo with precise build-up play."
-            chapter_es = f"{min_start}'-{min_end}': MSB dicta el ritmo con juego de elaboración preciso."
+            chapter_es = (
+                f"{min_start}'-{min_end}': MSB dicta el ritmo con juego de elaboración preciso."
+            )
             chapter_hi = f"{min_start}'-{min_end}': MSB ने सटीक निर्माण खेल के साथ गति तय की।"
         else:
             chapter_en = f"{min_start}'-{min_end}': Contested midfield duel with rapid transitions."
-            chapter_es = f"{min_start}'-{min_end}': Intenso duelo en mediocampo con transiciones rápidas."
+            chapter_es = (
+                f"{min_start}'-{min_end}': Intenso duelo en mediocampo con transiciones rápidas."
+            )
             chapter_hi = f"{min_start}'-{min_end}': तीव्र बदलावों के साथ कड़ा मिडफील्ड मुकाबला।"
 
-        momentum.append({
-            "from_s": f_s,
-            "to_s": t_s,
-            "home_xt": h_xt,
-            "away_xt": a_xt,
-            "home_xg": h_xg,
-            "away_xg": a_xg,
-            "home_shots": len(h_shots),
-            "away_shots": len(a_shots),
-            "control_index": control_index,
-            "chaos_index": chaos_index,
-            "rhythm_index": rhythm_index,
-            "summary": {"en": chapter_en, "es": chapter_es, "hi": chapter_hi},
-            "goals": b_goals
-        })
+        momentum.append(
+            {
+                "from_s": f_s,
+                "to_s": t_s,
+                "home_xt": h_xt,
+                "away_xt": a_xt,
+                "home_xg": h_xg,
+                "away_xg": a_xg,
+                "home_shots": len(h_shots),
+                "away_shots": len(a_shots),
+                "control_index": control_index,
+                "chaos_index": chaos_index,
+                "rhythm_index": rhythm_index,
+                "summary": {"en": chapter_en, "es": chapter_es, "hi": chapter_hi},
+                "goals": b_goals,
+            }
+        )
 
     players_stats = []
     for p in ALL_PLAYERS:
@@ -628,7 +905,9 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
         t_start, t_end = PLAYER_INTERVALS[p["id"]]
 
         # Filter events strictly to player's active interval
-        p_events = [e for e in events if e[2] == team_idx and e[3] == slot and t_start <= e[0] < t_end]
+        p_events = [
+            e for e in events if e[2] == team_idx and e[3] == slot and t_start <= e[0] < t_end
+        ]
         shots = [e for e in p_events if e[1] == "shot"]
         passes = [e for e in p_events if e[1] == "pass"]
         comp_passes = [e for e in passes if e[9] == "complete"]
@@ -652,13 +931,16 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
 
             if s > t_start:
                 # filter out halftime resets (> 12 m/s jumps around 2700-3300)
-                dx = (float(tracking[s, 2 + slot * 2]) - float(tracking[s - 1, 2 + slot * 2])) / 10.0
-                dy = (float(tracking[s, 3 + slot * 2]) - float(tracking[s - 1, 3 + slot * 2])) / 10.0
+                dx = (
+                    float(tracking[s, 2 + slot * 2]) - float(tracking[s - 1, 2 + slot * 2])
+                ) / 10.0
+                dy = (
+                    float(tracking[s, 3 + slot * 2]) - float(tracking[s - 1, 3 + slot * 2])
+                ) / 10.0
                 spd = math.hypot(dx, dy)
                 if spd < 12.0:
                     dist_m += spd
-                    if spd > top_spd:
-                        top_spd = spd
+                    top_spd = max(top_spd, spd)
                     if spd >= 6.0:
                         sprints += 1
 
@@ -667,31 +949,39 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
 
         pass_pct = round(100.0 * len(comp_passes) / max(1, len(passes)), 1) if passes else 0.0
 
-        players_stats.append({
-            "id": p["id"],
-            "side": side,
-            "position": p["position"],
-            "unit": p["unit"],
-            "touches": len(p_events),
-            "passes": len(passes),
-            "pass_pct": pass_pct,
-            "progressive": max(1, len(comp_passes) // 4) if comp_passes else 0,
-            "key_passes": 2 if p["id"] in ("H8", "H7", "H11", "A7", "A8", "A9") else 0,
-            "assists": 1 if p["id"] in ("H8", "H2", "A7", "A8") else 0,
-            "tackles": len([d for d in duels if d[9] == "won"]),
-            "interceptions": 2 if p["unit"] in ("def", "mid") else 0,
-            "clearances": 4 if p["unit"] == "def" else 0,
-            "blocks": 2 if p["unit"] == "def" else 0,
-            "xg": total_xg if total_xg > 0 else (0.76 if p["id"] == "H7" else (0.668 if p["id"] == "H9" else 0.0)),
-            "shots": len(shots) if shots else (1 if goals_c else 0),
-            "goals": goals_c,
-            "box_touches": max(1, len([e for e in p_events if (e[5] > 88.5 and 13.8 < e[6] < 54.2)])) if p["unit"] == "att" else 0,
-            "xt": round(0.04 + len(comp_passes) * 0.005, 3),
-            "distance_km": round(dist_m / 1000.0, 2),
-            "top_speed_mps": round(top_spd, 1),
-            "sprints": sprints,
-            "heat": heat,
-        })
+        players_stats.append(
+            {
+                "id": p["id"],
+                "side": side,
+                "position": p["position"],
+                "unit": p["unit"],
+                "touches": len(p_events),
+                "passes": len(passes),
+                "pass_pct": pass_pct,
+                "progressive": max(1, len(comp_passes) // 4) if comp_passes else 0,
+                "key_passes": 2 if p["id"] in ("H8", "H7", "H11", "A7", "A8", "A9") else 0,
+                "assists": 1 if p["id"] in ("H8", "H2", "A7", "A8") else 0,
+                "tackles": len([d for d in duels if d[9] == "won"]),
+                "interceptions": 2 if p["unit"] in ("def", "mid") else 0,
+                "clearances": 4 if p["unit"] == "def" else 0,
+                "blocks": 2 if p["unit"] == "def" else 0,
+                "xg": total_xg
+                if total_xg > 0
+                else (0.76 if p["id"] == "H7" else (0.668 if p["id"] == "H9" else 0.0)),
+                "shots": len(shots) if shots else (1 if goals_c else 0),
+                "goals": goals_c,
+                "box_touches": max(
+                    1, len([e for e in p_events if (e[5] > 88.5 and 13.8 < e[6] < 54.2)])
+                )
+                if p["unit"] == "att"
+                else 0,
+                "xt": round(0.04 + len(comp_passes) * 0.005, 3),
+                "distance_km": round(dist_m / 1000.0, 2),
+                "top_speed_mps": round(top_spd, 1),
+                "sprints": sprints,
+                "heat": heat,
+            }
+        )
 
     def extract_chance_frames(s: int) -> list[dict]:
         frs = []
@@ -721,32 +1011,38 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
                 else:
                     score_before[1] += 1
 
-        chances.append({
-            "seq": g["n"],
-            "second": s,
-            "period": p_val,
-            "side": side,
-            "attack_dir": att_dir,
-            "shooter": g["scorer_id"],
-            "outcome": "goal",
-            "xg": g["xg"],
-            "distance_m": 11.0 if g["kind"] == "penalty" else 14.5,
-            "angle_deg": 24.0,
-            "blockers": 0 if g["kind"] == "penalty" else 2,
-            "nearest_m": 2.2,
-            "score_before": score_before,
-            "assist": {"id": g["assist_id"]} if g.get("assist_id") else None,
-            "build_up_s": 12,
-            "reach": 1.2,
-            "xg_1s_before": round(g["xg"] * 0.7, 3),
-            "assist_options": [],
-            "alternatives": [],
-            "reasons": [],
-            "frames": extract_chance_frames(s),
-            "honest": {"kind": g["kind"], "xg": g["xg"]}
-        })
+        chances.append(
+            {
+                "seq": g["n"],
+                "second": s,
+                "period": p_val,
+                "side": side,
+                "attack_dir": att_dir,
+                "shooter": g["scorer_id"],
+                "outcome": "goal",
+                "xg": g["xg"],
+                "distance_m": 11.0 if g["kind"] == "penalty" else 14.5,
+                "angle_deg": 24.0,
+                "blockers": 0 if g["kind"] == "penalty" else 2,
+                "nearest_m": 2.2,
+                "score_before": score_before,
+                "assist": {"id": g["assist_id"]} if g.get("assist_id") else None,
+                "build_up_s": 12,
+                "reach": 1.2,
+                "xg_1s_before": round(g["xg"] * 0.7, 3),
+                "assist_options": [],
+                "alternatives": [],
+                "reasons": [],
+                "frames": extract_chance_frames(s),
+                "honest": {"kind": g["kind"], "xg": g["xg"]},
+            }
+        )
 
-    shot_events = [e for e in events if e[1] == "shot" and not any(abs(e[0] - g["second"]) < 2 for g in GOALS_INFO)]
+    shot_events = [
+        e
+        for e in events
+        if e[1] == "shot" and not any(abs(e[0] - g["second"]) < 2 for g in GOALS_INFO)
+    ]
     for idx, e in enumerate(shot_events, start=9):
         s = e[0]
         p_val = 1 if s < 3120 else 2
@@ -762,75 +1058,85 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
                 else:
                     score_before[1] += 1
 
-        chances.append({
-            "seq": idx,
-            "second": s,
-            "period": p_val,
-            "side": side,
-            "attack_dir": att_dir,
-            "shooter": shooter_id,
-            "outcome": e[9],
-            "xg": e[10] or 0.08,
-            "distance_m": round(math.hypot(105.0 - e[5], 34.0 - e[6]), 1),
-            "angle_deg": 22.0,
-            "blockers": 2,
-            "nearest_m": 3.1,
-            "score_before": score_before,
-            "assist": None,
-            "build_up_s": 10,
-            "reach": 1.5,
-            "xg_1s_before": round((e[10] or 0.08) * 0.6, 3),
-            "assist_options": [],
-            "alternatives": [],
-            "reasons": [],
-            "frames": extract_chance_frames(s),
-            "honest": {"kind": "open_play", "xg": e[10] or 0.08}
-        })
+        chances.append(
+            {
+                "seq": idx,
+                "second": s,
+                "period": p_val,
+                "side": side,
+                "attack_dir": att_dir,
+                "shooter": shooter_id,
+                "outcome": e[9],
+                "xg": e[10] or 0.08,
+                "distance_m": round(math.hypot(105.0 - e[5], 34.0 - e[6]), 1),
+                "angle_deg": 22.0,
+                "blockers": 2,
+                "nearest_m": 3.1,
+                "score_before": score_before,
+                "assist": None,
+                "build_up_s": 10,
+                "reach": 1.5,
+                "xg_1s_before": round((e[10] or 0.08) * 0.6, 3),
+                "assist_options": [],
+                "alternatives": [],
+                "reasons": [],
+                "frames": extract_chance_frames(s),
+                "honest": {"kind": "open_play", "xg": e[10] or 0.08},
+            }
+        )
 
     # Line heights
     lines = []
     for b_idx in range(22):
         s = b_idx * 300
-        lines.append({
-            "second": s,
-            "home": {"def_x": 32.5, "mid_x": 48.0, "att_x": 64.0},
-            "away": {"def_x": 72.5, "mid_x": 56.0, "att_x": 41.0},
-        })
+        lines.append(
+            {
+                "second": s,
+                "home": {"def_x": 32.5, "mid_x": 48.0, "att_x": 64.0},
+                "away": {"def_x": 72.5, "mid_x": 56.0, "att_x": 41.0},
+            }
+        )
 
     # Defensive mistakes (traced goals)
     mistakes = []
     for g in [g for g in GOALS_INFO if g["traced"]]:
-        mistakes.append({
-            "goal_id": g["goal_id"],
-            "second": g["second"],
-            "player_id": g["culprit_id"],
-            "player_name": g["culprit_name"],
-            "bug": g["bug_type"],
-            "baseline_goals": g["baseline_goals"],
-            "fixed_goals": g["fixed_goals"],
-            "description": g["description"]
-        })
+        mistakes.append(
+            {
+                "goal_id": g["goal_id"],
+                "second": g["second"],
+                "player_id": g["culprit_id"],
+                "player_name": g["culprit_name"],
+                "bug": g["bug_type"],
+                "baseline_goals": g["baseline_goals"],
+                "fixed_goals": g["fixed_goals"],
+                "description": g["description"],
+            }
+        )
 
     base_analysis = {}
     try:
         import subprocess
+
         raw_head = subprocess.check_output(
             ["git", "show", "HEAD:web/public/showcase/wlb-msb-2023-11-12/analysis.json"],
-            text=True, encoding="utf-8"
+            text=True,
+            encoding="utf-8",
         )
         base_analysis = json.loads(raw_head)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print("Could not load base analysis from git:", e)
 
     analysis = dict(base_analysis)
-    analysis.update({
-        "match_id": MATCH_ID,
-        "score": [4, 4],
-        "duration_s": DURATION_S,
-        "bucket_s": bucket_len,
-        "momentum": momentum,
-        "players": players_stats,
-    })
+    analysis.update(
+        {
+            "match_id": MATCH_ID,
+            "score": [4, 4],
+            "duration_s": DURATION_S,
+            "bucket_s": bucket_len,
+            "momentum": momentum,
+            "players": players_stats,
+        }
+    )
     if "turnovers" not in analysis:
         analysis["turnovers"] = []
     return analysis
@@ -853,11 +1159,13 @@ def build_traces_replays_and_narratives(tracking: np.ndarray) -> tuple[dict, dic
             pid = f"H{i + 1}" if i < 11 else f"A{i - 10}"
             px = round(float(tracking[s, 2 + i * 2]) / 10.0, 2)
             py = round(float(tracking[s, 3 + i * 2]) / 10.0, 2)
-            players_trace.append({
-                "player_id": pid,
-                "team": "home" if i < 11 else "away",
-                "position": {"x": px, "y": py}
-            })
+            players_trace.append(
+                {
+                    "player_id": pid,
+                    "team": "home" if i < 11 else "away",
+                    "position": {"x": px, "y": py},
+                }
+            )
 
         p1 = g["baseline_goals"] - g["fixed_goals"]
         p2 = g["baseline_goals"] - g.get("secondary_fixed_goals", g["baseline_goals"])
@@ -883,17 +1191,21 @@ def build_traces_replays_and_narratives(tracking: np.ndarray) -> tuple[dict, dic
         ]
 
         if g.get("secondary_culprit_id"):
-            links.append({
-                "evidence_id": l2_id,
-                "player_id": g["secondary_culprit_id"],
-                "second": l2_sec,
-                "bug_type": g["bug_type"],
-                "description": g.get("secondary_description", "Secondary delay in recovery track."),
-                "blame_percent": b2,
-                "baseline_goals": g["baseline_goals"],
-                "fixed_goals": g["secondary_fixed_goals"],
-                "trials": g["trials"],
-            })
+            links.append(
+                {
+                    "evidence_id": l2_id,
+                    "player_id": g["secondary_culprit_id"],
+                    "second": l2_sec,
+                    "bug_type": g["bug_type"],
+                    "description": g.get(
+                        "secondary_description", "Secondary delay in recovery track."
+                    ),
+                    "blame_percent": b2,
+                    "baseline_goals": g["baseline_goals"],
+                    "fixed_goals": g["secondary_fixed_goals"],
+                    "trials": g["trials"],
+                }
+            )
 
         trace = {
             "goal_id": gid,
@@ -934,13 +1246,15 @@ def build_traces_replays_and_narratives(tracking: np.ndarray) -> tuple[dict, dic
                 cur_players.append({"id": pid, "x": px, "y": py})
 
             note = "offside" if t_off == 0 else None
-            rep_frames_l1.append({
-                "clock_s": cur_s,
-                "carrier": g["scorer_id"],
-                "ball": [cur_bx, cur_by],
-                "players": cur_players,
-                **({"note": note} if note else {})
-            })
+            rep_frames_l1.append(
+                {
+                    "clock_s": cur_s,
+                    "carrier": g["scorer_id"],
+                    "ball": [cur_bx, cur_by],
+                    "players": cur_players,
+                    **({"note": note} if note else {}),
+                }
+            )
 
         # Build counterfactual replay frames for l2
         rep_frames_l2 = []
@@ -958,13 +1272,15 @@ def build_traces_replays_and_narratives(tracking: np.ndarray) -> tuple[dict, dic
                 cur_players.append({"id": pid, "x": px, "y": py})
 
             note = "offside" if t_off == 0 else None
-            rep_frames_l2.append({
-                "clock_s": cur_s,
-                "carrier": g["scorer_id"],
-                "ball": [cur_bx, cur_by],
-                "players": cur_players,
-                **({"note": note} if note else {})
-            })
+            rep_frames_l2.append(
+                {
+                    "clock_s": cur_s,
+                    "carrier": g["scorer_id"],
+                    "ball": [cur_bx, cur_by],
+                    "players": cur_players,
+                    **({"note": note} if note else {}),
+                }
+            )
 
         replays[gid] = {
             l1_id: {
@@ -984,7 +1300,7 @@ def build_traces_replays_and_narratives(tracking: np.ndarray) -> tuple[dict, dic
                 "chain_start_s": s - 14,
                 "frames": rep_frames_l2,
                 "source": "illustrative-tactical-playback",
-            }
+            },
         }
 
     return traces, replays, explanations
@@ -994,65 +1310,96 @@ def build_ticks_and_messages(tracking: np.ndarray, events: list, traces: dict) -
     print("Building ticks.json and messages.json...")
     try:
         import subprocess
-        raw_ticks = subprocess.check_output(["git", "show", "HEAD:web/public/showcase/wlb-msb-2023-11-12/ticks.json"], text=True, encoding="utf-8")
-        raw_msgs = subprocess.check_output(["git", "show", "HEAD:web/public/showcase/wlb-msb-2023-11-12/messages.json"], text=True, encoding="utf-8")
+
+        raw_ticks = subprocess.check_output(
+            ["git", "show", "HEAD:web/public/showcase/wlb-msb-2023-11-12/ticks.json"],
+            text=True,
+            encoding="utf-8",
+        )
+        raw_msgs = subprocess.check_output(
+            ["git", "show", "HEAD:web/public/showcase/wlb-msb-2023-11-12/messages.json"],
+            text=True,
+            encoding="utf-8",
+        )
         ticks = json.loads(raw_ticks)
         messages = json.loads(raw_msgs)
         return ticks, messages
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print("Could not load ticks from HEAD:", e)
 
     ticks = []
     messages = []
     seq = 1
 
-    messages.append({
-        "type": "match.started",
-        "match_id": MATCH_ID,
-        "sequence": seq,
-        "payload": {"id": MATCH_ID, "seed": 20231112}
-    })
+    messages.append(
+        {
+            "type": "match.started",
+            "match_id": MATCH_ID,
+            "sequence": seq,
+            "payload": {"id": MATCH_ID, "seed": 20231112},
+        }
+    )
     seq += 1
 
     # Emit ticks and bind goal / trace events
     for s in range(0, DURATION_S, 5):
-        ticks.append({
-            "second": s,
-            "period": 1 if s < 3120 else 2,
-            "ball": [round(float(tracking[s, 0]) / 10.0, 1), round(float(tracking[s, 1]) / 10.0, 1)],
-            "speed_mps": round(float(tracking[s, 46]) / 10.0, 1)
-        })
+        ticks.append(
+            {
+                "second": s,
+                "period": 1 if s < 3120 else 2,
+                "ball": [
+                    round(float(tracking[s, 0]) / 10.0, 1),
+                    round(float(tracking[s, 1]) / 10.0, 1),
+                ],
+                "speed_mps": round(float(tracking[s, 46]) / 10.0, 1),
+            }
+        )
 
         for g in GOALS_INFO:
             if s <= g["second"] < s + 5:
-                messages.append({
-                    "type": "goal.detected",
-                    "match_id": MATCH_ID,
-                    "sequence": seq,
-                    "payload": {"goal_id": g["goal_id"], "second": g["second"], "scorer_id": g["scorer_id"]}
-                })
+                messages.append(
+                    {
+                        "type": "goal.detected",
+                        "match_id": MATCH_ID,
+                        "sequence": seq,
+                        "payload": {
+                            "goal_id": g["goal_id"],
+                            "second": g["second"],
+                            "scorer_id": g["scorer_id"],
+                        },
+                    }
+                )
                 seq += 1
                 if g["traced"] and g["goal_id"] in traces:
-                    messages.append({
-                        "type": "agent.step",
-                        "match_id": MATCH_ID,
-                        "sequence": seq,
-                        "payload": {"step": "evaluating_defensive_counterfactual", "goal_id": g["goal_id"]}
-                    })
+                    messages.append(
+                        {
+                            "type": "agent.step",
+                            "match_id": MATCH_ID,
+                            "sequence": seq,
+                            "payload": {
+                                "step": "evaluating_defensive_counterfactual",
+                                "goal_id": g["goal_id"],
+                            },
+                        }
+                    )
                     seq += 1
-                    messages.append({
-                        "type": "trace.ready",
-                        "match_id": MATCH_ID,
-                        "sequence": seq,
-                        "payload": traces[g["goal_id"]]
-                    })
+                    messages.append(
+                        {
+                            "type": "trace.ready",
+                            "match_id": MATCH_ID,
+                            "sequence": seq,
+                            "payload": traces[g["goal_id"]],
+                        }
+                    )
                     seq += 1
-                    messages.append({
-                        "type": "explanation.ready",
-                        "match_id": MATCH_ID,
-                        "sequence": seq,
-                        "payload": {"goal_id": g["goal_id"]}
-                    })
+                    messages.append(
+                        {
+                            "type": "explanation.ready",
+                            "match_id": MATCH_ID,
+                            "sequence": seq,
+                            "payload": {"goal_id": g["goal_id"]},
+                        }
+                    )
                     seq += 1
 
     return ticks, messages
@@ -1060,9 +1407,9 @@ def build_ticks_and_messages(tracking: np.ndarray, events: list, traces: dict) -
 
 def build_explanations_and_reports(traces: dict) -> tuple[dict, dict]:
     print("Building checked, validated explanations and multilingual reports...")
-    from api.contracts import Evidence
     from agents.fallbacks import template_explanation
-    from agents.grounding import validate_explanation, iter_sentences
+    from agents.grounding import iter_sentences, validate_explanation
+    from api.contracts import Evidence
 
     explanations = {}
     reports = {}
@@ -1071,106 +1418,58 @@ def build_explanations_and_reports(traces: dict) -> tuple[dict, dict]:
     TRANSLATIONS = {
         "es": {
             # Root sentences
-            "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.":
-                "La causa raíz es el error de A4, clasificado primero por la reducción medida de goles del Debugger.",
-            "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.":
-                "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
-            "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.":
-                "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
-            "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.":
-                "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
-
+            "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.": "La causa raíz es el error de A4, clasificado primero por la reducción medida de goles del Debugger.",
+            "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+            "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+            "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
             # Descriptions (Goal 2)
-            "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.":
-                "A4: Fuga de marcaje zonal: Manuel Akendo desocupa la zona del primer palo, permitiendo un cabezazo sin marca.",
-            "A4: (metres behind line: 5.3)":
-                "A4: (metros detrás de la línea: 5.3)",
-            "A3: Late step-up: Ruben Diales stays behind the defensive line.":
-                "A3: Salida tardía: Ruben Diales permanece rezagado detrás de la línea defensiva.",
-            "A3: (metres behind line: 3.2)":
-                "A3: (metros detrás de la línea: 3.2)",
-
+            "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.": "A4: Fuga de marcaje zonal: Manuel Akendo desocupa la zona del primer palo, permitiendo un cabezazo sin marca.",
+            "A4: (metres behind line: 5.3)": "A4: (metros detrás de la línea: 5.3)",
+            "A3: Late step-up: Ruben Diales stays behind the defensive line.": "A3: Salida tardía: Ruben Diales permanece rezagado detrás de la línea defensiva.",
+            "A3: (metres behind line: 3.2)": "A3: (metros detrás de la línea: 3.2)",
             # Descriptions (Goal 3)
-            "A5: Late recovery run: Left defensive channel exposed on overlapping transition.":
-                "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
-            "A5: (metres behind line: 6.3)":
-                "A5: (metros detrás de la línea: 6.3)",
-            "A2: Delayed tracking: Recovery run halted before central cross delivery.":
-                "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
-            "A2: (metres behind line: 3.1)":
-                "A2: (metros detrás de la línea: 3.1)",
-
+            "A5: Late recovery run: Left defensive channel exposed on overlapping transition.": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+            "A5: (metres behind line: 6.3)": "A5: (metros detrás de la línea: 6.3)",
+            "A2: Delayed tracking: Recovery run halted before central cross delivery.": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+            "A2: (metres behind line: 3.1)": "A2: (metros detrás de la línea: 3.1)",
             # Descriptions (Goal 5)
-            "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.":
-                "H3: Cierre fallido al segundo palo: Marco Cucarena deja desmarcado a Erling Haalviken en el segundo palo.",
-            "H3: (metres behind line: 5.3)":
-                "H3: (metros detrás de la línea: 5.3)",
-            "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.":
-                "H5: Salida defensiva tardía: Tiago Silven no acompaña la subida de la línea defensiva.",
-            "H5: (metres behind line: 2.8)":
-                "H5: (metros detrás de la línea: 2.8)",
-
+            "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.": "H3: Cierre fallido al segundo palo: Marco Cucarena deja desmarcado a Erling Haalviken en el segundo palo.",
+            "H3: (metres behind line: 5.3)": "H3: (metros detrás de la línea: 5.3)",
+            "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.": "H5: Salida defensiva tardía: Tiago Silven no acompaña la subida de la línea defensiva.",
+            "H5: (metres behind line: 2.8)": "H5: (metros detrás de la línea: 2.8)",
             # Descriptions (Goal 6)
-            "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.":
-                "A3: Vacilación en el despeje del rebote en el área: Ruben Diales no logra despejar el balón rechazado.",
-            "A3: (metres behind line: 5.2)":
-                "A3: (metros detrás de la línea: 5.2)",
-            "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.":
-                "A4: Demora en el segundo despeje: Manuel Akendo es sorprendido a contrapié en el segundo rebote.",
-            "A4: (metres behind line: 3.8)":
-                "A4: (metros detrás de la línea: 3.8)",
+            "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.": "A3: Vacilación en el despeje del rebote en el área: Ruben Diales no logra despejar el balón rechazado.",
+            "A3: (metres behind line: 5.2)": "A3: (metros detrás de la línea: 5.2)",
+            "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.": "A4: Demora en el segundo despeje: Manuel Akendo es sorprendido a contrapié en el segundo rebote.",
+            "A4: (metres behind line: 3.8)": "A4: (metros detrás de la línea: 3.8)",
         },
         "hi": {
             # Root sentences
-            "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.":
-                "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
-            "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.":
-                "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
-            "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.":
-                "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
-            "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.":
-                "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
-
+            "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+            "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.": "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+            "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.": "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+            "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
             # Descriptions (Goal 2)
-            "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.":
-                "A4: जोनल मार्किंग में चूक: Manuel Akendo ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
-            "A4: (metres behind line: 5.3)":
-                "A4: (लाइन के पीछे मीटर: 5.3)",
-            "A3: Late step-up: Ruben Diales stays behind the defensive line.":
-                "A3: विलंबित स्टेप-अप: Ruben Diales रक्षात्मक रेखा के पीछे रह गए।",
-            "A3: (metres behind line: 3.2)":
-                "A3: (लाइन के पीछे मीटर: 3.2)",
-
+            "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.": "A4: जोनल मार्किंग में चूक: Manuel Akendo ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+            "A4: (metres behind line: 5.3)": "A4: (लाइन के पीछे मीटर: 5.3)",
+            "A3: Late step-up: Ruben Diales stays behind the defensive line.": "A3: विलंबित स्टेप-अप: Ruben Diales रक्षात्मक रेखा के पीछे रह गए।",
+            "A3: (metres behind line: 3.2)": "A3: (लाइन के पीछे मीटर: 3.2)",
             # Descriptions (Goal 3)
-            "A5: Late recovery run: Left defensive channel exposed on overlapping transition.":
-                "A5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया।",
-            "A5: (metres behind line: 6.3)":
-                "A5: (लाइन के पीछे मीटर: 6.3)",
-            "A2: Delayed tracking: Recovery run halted before central cross delivery.":
-                "A2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया।",
-            "A2: (metres behind line: 3.1)":
-                "A2: (लाइन के पीछे मीटर: 3.1)",
-
+            "A5: Late recovery run: Left defensive channel exposed on overlapping transition.": "A5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया।",
+            "A5: (metres behind line: 6.3)": "A5: (लाइन के पीछे मीटर: 6.3)",
+            "A2: Delayed tracking: Recovery run halted before central cross delivery.": "A2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया।",
+            "A2: (metres behind line: 3.1)": "A2: (लाइन के पीछे मीटर: 3.1)",
             # Descriptions (Goal 5)
-            "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.":
-                "H3: बैक-पोस्ट टक-इन में विफलता: Marco Cucarena ने बैक पोस्ट पर Erling Haalviken को खुला छोड़ दिया।",
-            "H3: (metres behind line: 5.3)":
-                "H3: (लाइन के पीछे मीटर: 5.3)",
-            "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.":
-                "H5: विलंबित रक्षात्मक स्टेप-अप: Tiago Silven रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे।",
-            "H5: (metres behind line: 2.8)":
-                "H5: (लाइन के पीछे मीटर: 2.8)",
-
+            "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.": "H3: बैक-पोस्ट टक-इन में विफलता: Marco Cucarena ने बैक पोस्ट पर Erling Haalviken को खुला छोड़ दिया।",
+            "H3: (metres behind line: 5.3)": "H3: (लाइन के पीछे मीटर: 5.3)",
+            "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.": "H5: विलंबित रक्षात्मक स्टेप-अप: Tiago Silven रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे।",
+            "H5: (metres behind line: 2.8)": "H5: (लाइन के पीछे मीटर: 2.8)",
             # Descriptions (Goal 6)
-            "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.":
-                "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
-            "A3: (metres behind line: 5.2)":
-                "A3: (लाइन के पीछे मीटर: 5.2)",
-            "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.":
-                "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
-            "A4: (metres behind line: 3.8)":
-                "A4: (लाइन के पीछे मीटर: 3.8)",
-        }
+            "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+            "A3: (metres behind line: 5.2)": "A3: (लाइन के पीछे मीटर: 5.2)",
+            "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+            "A4: (metres behind line: 3.8)": "A4: (लाइन के पीछे मीटर: 3.8)",
+        },
     }
 
     def translate_sentence(txt: str, lang: str) -> str:
@@ -1189,7 +1488,10 @@ def build_explanations_and_reports(traces: dict) -> tuple[dict, dict]:
                 return f"इंजन ने {pct}% दोष {pid} को दिया।"
 
         # Pattern: Fixing this mistake changed goals from A/B to C/D in the supplied replays.
-        m_cf = re.match(r"^Fixing this mistake changed goals from (\d+)/(\d+) to (\d+)/(\d+) in the supplied replays\.$", txt)
+        m_cf = re.match(
+            r"^Fixing this mistake changed goals from (\d+)/(\d+) to (\d+)/(\d+) in the supplied replays\.$",
+            txt,
+        )
         if m_cf:
             b, trials, f, _ = m_cf.groups()
             if lang == "es":
@@ -1248,13 +1550,15 @@ def build_explanations_and_reports(traces: dict) -> tuple[dict, dict]:
             patterns = {}
             for gid, tr in traces.items():
                 exp = explanations[(gid, mode, lang)]
-                rep_goals.append({
-                    "goal_id": gid,
-                    "text": exp["text"],
-                    "sentences": exp["sentences"],
-                    "lang": exp["lang"],
-                    "translation_warning": exp["translation_warning"],
-                })
+                rep_goals.append(
+                    {
+                        "goal_id": gid,
+                        "text": exp["text"],
+                        "sentences": exp["sentences"],
+                        "lang": exp["lang"],
+                        "translation_warning": exp["translation_warning"],
+                    }
+                )
                 for l in tr["links"]:
                     btype = l["bug_type"]
                     patterns[btype] = patterns.get(btype, 0) + 1
@@ -1281,34 +1585,42 @@ def build_overlays(events: list, tracking: np.ndarray, traces: dict) -> list[dic
     overlays = []
 
     # 1. Match Milestones
-    overlays.append({
-        "in_s": 0,
-        "out_s": 15,
-        "kind": "milestone",
-        "text": "KICK-OFF: Chelsea v Manchester City at Stamford Bridge",
-        "data": {"type": "kickoff", "period": 1}
-    })
-    overlays.append({
-        "in_s": 2700,
-        "out_s": 2715,
-        "kind": "milestone",
-        "text": "HALF-TIME: Intense first half concludes with four goals (2 - 2)",
-        "data": {"type": "halftime", "period": 1}
-    })
-    overlays.append({
-        "in_s": 6080,
-        "out_s": 6100,
-        "kind": "milestone",
-        "text": "EQUALIZER! Dramatic 90+5' equalizer caps eight-goal spectacle (4 - 4)",
-        "data": {"type": "equalizer", "score": [4, 4]}
-    })
-    overlays.append({
-        "in_s": 6400,
-        "out_s": 6420,
-        "kind": "milestone",
-        "text": "FULL-TIME: Historic 4 - 4 draw",
-        "data": {"type": "fulltime", "score": [4, 4]}
-    })
+    overlays.append(
+        {
+            "in_s": 0,
+            "out_s": 15,
+            "kind": "milestone",
+            "text": "KICK-OFF: Chelsea v Manchester City at Stamford Bridge",
+            "data": {"type": "kickoff", "period": 1},
+        }
+    )
+    overlays.append(
+        {
+            "in_s": 2700,
+            "out_s": 2715,
+            "kind": "milestone",
+            "text": "HALF-TIME: Intense first half concludes with four goals (2 - 2)",
+            "data": {"type": "halftime", "period": 1},
+        }
+    )
+    overlays.append(
+        {
+            "in_s": 6080,
+            "out_s": 6100,
+            "kind": "milestone",
+            "text": "EQUALIZER! Dramatic 90+5' equalizer caps eight-goal spectacle (4 - 4)",
+            "data": {"type": "equalizer", "score": [4, 4]},
+        }
+    )
+    overlays.append(
+        {
+            "in_s": 6400,
+            "out_s": 6420,
+            "kind": "milestone",
+            "text": "FULL-TIME: Historic 4 - 4 draw",
+            "data": {"type": "fulltime", "score": [4, 4]},
+        }
+    )
 
     # 2. All 8 goals
     for g in GOALS_INFO:
@@ -1317,20 +1629,22 @@ def build_overlays(events: list, tracking: np.ndarray, traces: dict) -> list[dic
         scorer = g["scorer_name"]
         side_txt = "WLB" if g["side"] == "home" else "MSB"
         score_txt = f"{g['score_after']['home']} - {g['score_after']['away']}"
-        overlays.append({
-            "in_s": max(0, s - 6),
-            "out_s": min(DURATION_S, s + 10),
-            "kind": "goal",
-            "text": f"GOAL! {scorer} scores ({m}') for {side_txt} ({score_txt})",
-            "data": {
-                "goal_id": g["goal_id"],
-                "scorer": scorer,
-                "scorer_id": g["scorer_id"],
-                "side": g["side"],
-                "xg": g["xg"],
-                "score": [g["score_after"]["home"], g["score_after"]["away"]],
+        overlays.append(
+            {
+                "in_s": max(0, s - 6),
+                "out_s": min(DURATION_S, s + 10),
+                "kind": "goal",
+                "text": f"GOAL! {scorer} scores ({m}') for {side_txt} ({score_txt})",
+                "data": {
+                    "goal_id": g["goal_id"],
+                    "scorer": scorer,
+                    "scorer_id": g["scorer_id"],
+                    "side": g["side"],
+                    "xg": g["xg"],
+                    "score": [g["score_after"]["home"], g["score_after"]["away"]],
+                },
             }
-        })
+        )
 
     # 3. Traced Root Cause cues for traced goals (g2, g3, g5, g6)
     for gid, tr in traces.items():
@@ -1338,37 +1652,43 @@ def build_overlays(events: list, tracking: np.ndarray, traces: dict) -> list[dic
         l1 = tr["links"][0]
         c_name = g["culprit_name"]
         blame_pct = round(l1["blame_percent"], 1)
-        overlays.append({
-            "in_s": max(0, l1["second"] - 3),
-            "out_s": min(DURATION_S, l1["second"] + 7),
-            "kind": "root_cause",
-            "text": f"ROOT CAUSE DETECTED: {l1['player_id']} ({c_name}) · {l1['bug_type']} ({blame_pct}% blame)",
-            "data": {
-                "goal_id": gid,
-                "evidence_id": l1["evidence_id"],
-                "culprit_id": l1["player_id"],
-                "culprit_name": c_name,
-                "bug_type": l1["bug_type"],
-                "blame_percent": blame_pct,
+        overlays.append(
+            {
+                "in_s": max(0, l1["second"] - 3),
+                "out_s": min(DURATION_S, l1["second"] + 7),
+                "kind": "root_cause",
+                "text": f"ROOT CAUSE DETECTED: {l1['player_id']} ({c_name}) · {l1['bug_type']} ({blame_pct}% blame)",
+                "data": {
+                    "goal_id": gid,
+                    "evidence_id": l1["evidence_id"],
+                    "culprit_id": l1["player_id"],
+                    "culprit_name": c_name,
+                    "bug_type": l1["bug_type"],
+                    "blame_percent": blame_pct,
+                },
             }
-        })
+        )
 
     # 4. Sprints (> 6.2 m/s top speed moments)
     for slot in [6, 10, 19, 21]:
-        pid = f"H{slot+1}" if slot < 11 else f"A{slot-10}"
-        pname = NUM_TO_PLAYER.get(next(num for num, s in NUM_TO_TRACKING_SLOT.items() if s == slot), {}).get("name", pid)
+        pid = f"H{slot + 1}" if slot < 11 else f"A{slot - 10}"
+        pname = NUM_TO_PLAYER.get(
+            next(num for num, s in NUM_TO_TRACKING_SLOT.items() if s == slot), {}
+        ).get("name", pid)
         for s in range(500, DURATION_S - 100, 1200):
-            dx = (float(tracking[s, 2 + slot*2]) - float(tracking[s-1, 2 + slot*2])) / 10.0
-            dy = (float(tracking[s, 3 + slot*2]) - float(tracking[s-1, 3 + slot*2])) / 10.0
+            dx = (float(tracking[s, 2 + slot * 2]) - float(tracking[s - 1, 2 + slot * 2])) / 10.0
+            dy = (float(tracking[s, 3 + slot * 2]) - float(tracking[s - 1, 3 + slot * 2])) / 10.0
             spd = round(math.hypot(dx, dy), 1)
             if spd >= 6.0:
-                overlays.append({
-                    "in_s": s - 2,
-                    "out_s": s + 3,
-                    "kind": "sprint",
-                    "text": f"SPRINT: {pname} accelerates to {spd} m/s",
-                    "data": {"player_id": pid, "player_name": pname, "speed_mps": spd}
-                })
+                overlays.append(
+                    {
+                        "in_s": s - 2,
+                        "out_s": s + 3,
+                        "kind": "sprint",
+                        "text": f"SPRINT: {pname} accelerates to {spd} m/s",
+                        "data": {"player_id": pid, "player_name": pname, "speed_mps": spd},
+                    }
+                )
 
     overlays.sort(key=lambda x: (x["in_s"], x["out_s"]))
     return overlays
@@ -1400,7 +1720,9 @@ def main():
     tracking, events = build_tracking_and_events()
     (TARGET_DIR / "tracking.bin").write_bytes(tracking.tobytes())
     dump_json(TARGET_DIR / "events.json", events)
-    print(f"[OK] Wrote tracking.bin ({len(tracking.tobytes())} bytes) and events.json ({len(events)} events)")
+    print(
+        f"[OK] Wrote tracking.bin ({len(tracking.tobytes())} bytes) and events.json ({len(events)} events)"
+    )
 
     # 5. Analysis
     analysis = build_analysis(events, tracking)
@@ -1420,7 +1742,9 @@ def main():
     ticks, messages = build_ticks_and_messages(tracking, events, traces)
     dump_json(TARGET_DIR / "ticks.json", ticks)
     dump_json(TARGET_DIR / "messages.json", messages)
-    print(f"[OK] Wrote ticks.json ({len(ticks)} ticks) and messages.json ({len(messages)} messages)")
+    print(
+        f"[OK] Wrote ticks.json ({len(ticks)} ticks) and messages.json ({len(messages)} messages)"
+    )
 
     explanations, reports = build_explanations_and_reports(traces)
     for (gid, mode, lang), exp in explanations.items():
@@ -1446,10 +1770,11 @@ def main():
     try:
         sys.path.insert(0, str(ROOT / "web" / "tools"))
         import export_stacks
+
         all_ = {MATCH_ID: export_stacks.load(MATCH_ID)}
         export_stacks.export(MATCH_ID, all_)
         print("[OK] Wrote stacks.json via export_stacks")
-    except Exception as err:
+    except Exception as err:  # noqa: BLE001
         print(f"export_stacks notice: {err}")
 
     print("\nShowcase directory generation complete!")

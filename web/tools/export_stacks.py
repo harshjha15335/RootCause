@@ -42,8 +42,14 @@ def load(mid: str) -> dict:
     raw.frombytes((d / "tracking.bin").read_bytes())
     if sys.byteorder == "big":
         raw.byteswap()
-    traces = [json.loads(p.read_text(encoding="utf-8")) for p in sorted((d / "traces").glob("*.json"))]
-    replays = json.loads((d / "replays.json").read_text(encoding="utf-8")) if (d / "replays.json").exists() else {}
+    traces = [
+        json.loads(p.read_text(encoding="utf-8")) for p in sorted((d / "traces").glob("*.json"))
+    ]
+    replays = (
+        json.loads((d / "replays.json").read_text(encoding="utf-8"))
+        if (d / "replays.json").exists()
+        else {}
+    )
     return {
         "id": mid,
         "raw": raw,
