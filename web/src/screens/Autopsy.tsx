@@ -261,7 +261,9 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
 
   return (
     <div ref={boxRef} className="absolute inset-0 select-none">
-      <canvas ref={canvasRef} role="img" aria-label={t("autopsy.stageLabel")} className={`absolute inset-0 block h-full w-full ${reduced ? "autopsy-fade" : ""}`} key={reduced ? n : "c"} />
+      {/* Keep the canvas attached across beats; replacing it stranded the renderer
+          on a detached canvas when reduced-motion users pressed Play. */}
+      <canvas ref={canvasRef} role="img" aria-label={t("autopsy.stageLabel")} className={`absolute inset-0 block h-full w-full ${reduced ? "autopsy-fade" : ""}`} />
       <div ref={hoverRef} hidden className="autopsy-hover" />
       {glFailed && <p className="absolute inset-0 grid place-items-center px-6 text-center text-[16px] text-chalk-dim">{t("autopsy.noGl")}</p>}
 
@@ -308,6 +310,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
         }`}
       >
         <Copy a={a} st={st} t={t} expert={expert} elapsed={reduced ? 1e3 : elapsed} download={download} openEngine={() => setEngine(true)} wide={wide} />
+        {st.beat !== "goal" && <p className="mt-3 text-[12px] leading-relaxed text-chalk-dim">{t("autopsy.contextMotion")}</p>}
         {!wide && <DepthSwitch className="mt-3" />}
       </article>
 

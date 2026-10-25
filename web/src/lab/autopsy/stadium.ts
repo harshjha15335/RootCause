@@ -11,11 +11,12 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
 import { goalType, teamMotion } from "./motion";
+import { evidenceContext } from "./context";
 
 /**
  * The Goal Autopsy's 3D stage: a floodlit night stadium where one goal is taken apart, the way
  * the old Tactics Lab did it. The goal, the two plans, the move against the yellow back line,
- * each mistake frozen with a ghost where he should have been and the space he left, the
+ * each mistake marked with a ghost where he should have been and the space he left, the
  * suspects' recorded fixed runs side by side, 200 replays each falling into Goal and No goal,
  * the verdict pillars, the fix, and how the engine decides. A goal with no defender at fault
  * keeps the goal, the plans and the move, then an honest answer.
@@ -287,13 +288,13 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   {
     const prof: THREE.Vector2[] = [];
     for (let k = 0; k <= 12; k++) { const r = 1 + k * 0.035, y = k * 2.6; prof.push(new THREE.Vector2(r, y), new THREE.Vector2(r + 0.035, y)); }
-    const shell = new THREE.Mesh(new THREE.LatheGeometry(prof.map((p) => new THREE.Vector2(p.x * 92, p.y)), 96), new THREE.MeshStandardMaterial({ color: 0x080b18, roughness: 0.9, side: THREE.DoubleSide, transparent: true }));
+    const shell = new THREE.Mesh(new THREE.LatheGeometry(prof.map((p) => new THREE.Vector2(p.x * 66, p.y)), 96), new THREE.MeshStandardMaterial({ color: 0x141b2c, roughness: 0.9, side: THREE.DoubleSide, transparent: true }));
     shell.scale.set(1.12, 1, 0.78);
     bowl.add(shell);
     const n = opts.phone ? 4000 : 9000, pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
     const tones = [new THREE.Color("#fff3d8"), new THREE.Color("#c9d4ff"), kit(0).lerp(new THREE.Color("#ffffff"), 0.4), kit(1).lerp(new THREE.Color("#ffffff"), 0.35)];
     for (let i = 0; i < n; i++) {
-      const k = Math.floor(Math.random() * 12), a = Math.random() * Math.PI * 2, r = 92 * (1 + k * 0.035 + 0.02);
+      const k = Math.floor(Math.random() * 12), a = Math.random() * Math.PI * 2, r = 66 * (1 + k * 0.035 + 0.02);
       pos.set([Math.cos(a) * r * 1.12, k * 2.6 + 1.1, Math.sin(a) * r * 0.78], i * 3);
       const tone = tones[Math.random() < 0.6 ? (Math.cos(a) < 0 ? 2 : 3) : Math.random() < 0.5 ? 0 : 1];
       const b = 0.25 + Math.random() * 0.55;
@@ -304,12 +305,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     g.setAttribute("color", new THREE.BufferAttribute(col, 3));
     bowl.add(new THREE.Points(g, new THREE.PointsMaterial({ size: 0.9, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
   }
-  const towers = [[-98, -66], [98, -66], [-98, 66], [98, 66]].map(([x, z]) => {
-    const head = new THREE.Mesh(new THREE.BoxGeometry(11, 4.5, 1.2), new THREE.MeshBasicMaterial({ color: 0xfff4d6 }));
-    head.position.set(x, 52, z);
+  const towers = [[-70, -48], [70, -48], [-70, 48], [70, 48]].map(([x, z]) => {
+    const head = new THREE.Mesh(new THREE.BoxGeometry(7, 3, 1.2), new THREE.MeshBasicMaterial({ color: 0xfff4d6 }));
+    head.position.set(x, 34, z);
     head.lookAt(0, 0, 0);
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.8, 52, 8), new THREE.MeshStandardMaterial({ color: 0x0c1124, roughness: 0.6, metalness: 0.4 }));
-    pole.position.set(x, 26, z);
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.8, 34, 8), new THREE.MeshStandardMaterial({ color: 0x33415b, roughness: 0.6, metalness: 0.4 }));
+    pole.position.set(x, 17, z);
     const beamGeo = new THREE.ConeGeometry(30, 92, 40, 1, true);
     beamGeo.translate(0, -46, 0);
     const beam = new THREE.Mesh(beamGeo, new THREE.ShaderMaterial({
@@ -317,11 +318,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       vertexShader: "varying float vY; void main(){ vY = position.y; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }",
       fragmentShader: "uniform float o; varying float vY; void main(){ float a = smoothstep(-92., 0., vY); gl_FragColor = vec4(vec3(1., .95, .84) * a * a * .05 * o, 1.); }",
     }));
-    beam.position.set(x, 52, z);
-    beam.lookAt(0, 0, 0);
-    beam.rotateX(Math.PI / 2);
+    beam.position.copy(head.position);
+    // ConeGeometry extends along local -Y. Align that axis with the pitch rather
+    // than rotating a +Z lookAt in the opposite direction.
+    beam.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), new THREE.Vector3(-x, -34, -z).normalize());
     const spot = new THREE.SpotLight(0xfff0d4, 0, 0, 0.42, 0.85, 0);
-    spot.position.set(x, 52, z);
+    spot.position.copy(head.position);
     scene.add(head, pole, beam, spot, spot.target);
     return { head, pole, beam, spot };
   });
@@ -422,6 +424,8 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const at1 = (s: number) => tr!.j.replay(S1!, s), at2 = (s: number) => tr!.j.replay(S2!, s);
   const suspects = tr ? tr.j.suspects : [];
   const culprit = tr ? tr.j.culprit : null;
+  const evidencePins = [a.scorer, ...suspects.map((x) => x.player), ...suspects.flatMap((x) => x.offside ? [x.offside.player] : [])];
+  const contextAt = (at: (s: number) => Snap, t: number) => (s: number) => evidenceContext(at(s), t, a.def, evidencePins);
 
   // ---------- props ----------
   const ring = (col: THREE.Color) => {
@@ -679,7 +683,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     };
     const verdictScene = (t: number) => {
       // the pitch dims, one pillar per suspect rises, a spotlight finds the culprit
-      const f = pose(real, realAt, verdictAt);
+      const f = pose(real, contextAt(realAt, sx), verdictAt);
       for (const p of real.pieces) { p.body.material.color.copy(p.col).multiplyScalar(0.3); p.body.material.emissiveIntensity = 0.04; }
       for (const x of suspects) glow(real, x.player, x === culprit ? BUG : new THREE.Color("#f2a093"), 0.6);
       if (!culprit) return;
@@ -713,7 +717,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       // Show the team shapes in motion during the build-up, rather than parking every
       // player on a static formation after the first two seconds.
       const s = Math.min(a.moveFrom + sx * 0.65, a.goalS - 1);
-      const f = pose(real, liveAt, s, false), u = ease(clamp01(sx / 1.8));
+      const f = pose(real, contextAt(liveAt, sx), s, false), u = ease(clamp01(sx / 1.8));
       for (const team of [0, 1] as const) {
         const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45);
         (corner ? [] : formationGroups(a.plan, team)).forEach((ps, unit) => {
@@ -745,7 +749,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       planTag.position.set(depth - 52.5, 4, -30);
     } else if (b === "move") {
       const s = moveClock(a, sx);
-      const f = pose(real, liveAt, s, !corner);
+      const f = pose(real, contextAt(liveAt, sx), s, !corner);
       for (const m of marks) {
         const behind = f.pos[m.x.player][0] - lineOf(f, m.x.player);
         const on = behind > 2.5;
@@ -758,7 +762,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     } else if (b === "mistake" && tr) {
       const m = tr.mistakes[k], who = m.x.player;
       const s = m.x.second - MISTAKE.lead + Math.min(sx, MISTAKE.lead);
-      const f = pose(real, realAt, s, false);
+      const f = pose(real, contextAt(realAt, sx), s, false);
       const line = lineOf(f, who);
       const [p, cl] = yellowLine(line - 52.5);
       setLine(real.line, [...p], [...cl]);
@@ -794,9 +798,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       }
     } else if ((b === "runs" || b === "trial") && uA && S1) {
       const s = b === "runs" ? (frozen ? a.goalS + 2 : Math.min(runsFrom(tr!) + sx * 0.9, a.goalS + 2)) : a.goalS + 2;
-      pose(real, realAt, Math.min(s, a.goalS + 1));
-      pose(uA, at1, s);
-      if (uB && S2) pose(uB, at2, s);
+      pose(real, contextAt(realAt, sx), Math.min(s, a.goalS + 1));
+      pose(uA, contextAt(at1, sx), s);
+      if (uB && S2) pose(uB, contextAt(at2, sx), s);
       if (b === "runs") {
         const ends: [Universe | null, Suspect | null][] = [[real, null], [uA, S1], [uB, S2 ?? null]];
         for (const [u, x] of ends) {
@@ -824,7 +828,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       // the culprit's replay: level with the line, and the move dies
       const fs = fixSpan(S1);
       const s = frozen ? S1.end : Math.min(fs.from + sx * 0.8, fs.to);
-      const f = pose(uA, at1, s);
+      const f = pose(uA, contextAt(at1, sx), s);
       const r = realAt(Math.min(s, S1.end));
       uA.head.visible = false;
       glow(uA, S1.player, BUG, 0.7);
@@ -844,7 +848,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       }
     } else if (b === "honest") {
       // no defender at fault: hold on the finish, the scorer ringed
-      pose(real, realAt, Math.min(a.goalS - 2 + sx * 0.4, a.goalS - 0.8), false);
+      pose(real, contextAt(realAt, sx), Math.min(a.goalS - 2 + sx * 0.4, a.goalS - 0.8), false);
       scorerRing.visible = true;
       scorerRing.material.opacity = 0.7 + 0.3 * Math.sin(performance.now() / 200);
       glow(real, a.scorer, new THREE.Color("#ffffff"), 0.5);

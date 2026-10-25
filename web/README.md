@@ -66,7 +66,7 @@ Autopsy's live goal, build-up and move beats also include deterministic, display
 team motion. Recorded moving players and event actors keep their source paths; stationary
 background players receive speed-limited support/cover movement, including goalkeeper
 adjustments. It is labelled illustrative and is never fed into distances, speed metrics,
-blame, recorded counterfactuals or frozen evidence diagrams. Pause and reduced-motion
+blame or recorded counterfactual inputs. Pause and reduced-motion
 settings still stop playback. The goal type is taken from explicit source classification
 (penalty, corner, free kick, open play, or another set piece); missing classifications
 are shown as not recorded instead of being guessed from shot coordinates.
@@ -99,3 +99,13 @@ the displayed receiver's feet so speed-limited player motion cannot leave the ba
 ahead of its owner. Saved/blocked shots return from the displayed keeper/blocker to the
 rebound scorer before the final shot crosses the goal line. These are illustrative touch
 and flight timings; source events and analysis remain unchanged.
+
+The later Autopsy beats also animate off-ball context, including while the mistake or
+trial result is held for explanation. Highlighted suspects, the scorer, offside actors,
+ball contact and the defending line's x positions retain their recorded evidence. Other
+players make bounded illustrative support/marking runs, with the same motion rules in the
+real and fixed universes. This display layer never changes replay counts or analysis;
+Pause freezes its stage clock. The UI labels this distinction in all three languages.
+
+The stadium bowl closely surrounds the pitch. Corner floodlights sit in the stands and
+their cones align local -Y toward the pitch centre, rather than shining out of the bowl.

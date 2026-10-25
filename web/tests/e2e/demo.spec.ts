@@ -45,6 +45,21 @@ test("goal autopsy preserves valid traces, respects direct goal 3 navigation, an
   await expect(page.getByRole("button", { name: "View Match Autopsy" })).toBeVisible();
 });
 
+test("reduced-motion playback keeps the rendered canvas attached when changing Autopsy beats", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/?goal=wlb-msb-2023-11-12-g2#/autopsy");
+  const canvas = await page.getByRole("img", { name: "3D replay of the goal and its autopsy" }).elementHandle();
+  expect(canvas).not.toBeNull();
+  await page.getByRole("button", { name: "Mistakes", exact: true }).click();
+  expect(await canvas!.evaluate((el) => el.isConnected)).toBe(true);
+  await page.getByRole("button", { name: "Play", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Pause", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "The test", exact: true }).click();
+  expect(await canvas!.evaluate((el) => el.isConnected)).toBe(true);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Play", exact: true })).toBeVisible();
+});
+
 // 3. Tactics Lab: Tactical lenses, Pitch, and Live Broadcast HUD toggle
 test("tactics lab displays live player tracking, focus panel, and broadcast HUD", async ({
   page,
