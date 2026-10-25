@@ -9,7 +9,6 @@ import { fanIndex, fanSide, useFan } from "../../store/fanStore";
 import { MomentText } from "./lab/MatchLab";
 
 const minute = (s: number) => Math.floor(s / 60);
-const sur = (lab: Lab, i: number) => lab.names[i].split(" ").slice(-1)[0];
 const watch = (s: number) => {
   useFan.getState().watchInLab(Math.max(0, s - 4));
   go("lab");
@@ -91,7 +90,7 @@ function Focused({ lab, i }: { lab: Lab; i: number }) {
           ))}
         </div>
       </div>
-      <Totals lab={lab} p={p} />
+      <Totals p={p} />
       <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.timeline")}</p>
       <Strip moments={moments} />
       <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.focus.key")}</p>
@@ -118,23 +117,15 @@ function Focused({ lab, i }: { lab: Lab; i: number }) {
   );
 }
 
-function Totals({ lab, p }: { lab: Lab; p: PlayerStat }) {
+function Totals({ p }: { p: PlayerStat }) {
   const { t } = useTranslation();
   const tiles: [string, string, string?][] = [
     [t("fan.focus.km"), t("fan.focus.kmV", { v: p.km.toFixed(1) })],
     [t("fan.focus.top"), t("fan.focus.kmh", { v: p.topKmh.toFixed(1) })],
-    [t("fan.focus.hsr"), String(p.hsr), t("fan.focus.hsrSub")],
     [t("fan.focus.passes"), t("fan.focus.passesV", { done: p.completed, n: p.passes }), t("fan.focus.acc", { p: Math.round(p.accuracy * 100) })],
-    [t("fan.focus.diff"), t("fan.focus.diffV", { v: Math.round(p.avgDifficulty) }), t("fan.focus.diffSub")],
-    [
-      t("fan.focus.hardest"),
-      p.hardest ? t(`fan.grade.${p.hardest.grade}`) : t("fan.focus.none"),
-      p.hardest ? t("fan.focus.hardestV", { m: minute(p.hardest.s), to: p.hardest.receiver != null ? sur(lab, p.hardest.receiver) : "", d: Math.round(p.hardest.dist), v: p.hardest.difficulty }) : undefined,
-    ],
-    [t("fan.focus.shot"), p.fastestShot ? t("fan.focus.kmh", { v: p.fastestShot.kmh }) : t("fan.focus.none"), p.fastestShot ? t("fan.focus.shotV", { v: p.fastestShot.kmh, m: minute(p.fastestShot.s) }) : undefined],
   ];
   return (
-    <dl className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+    <dl className="mt-5 grid grid-cols-3 gap-3 sm:max-w-[620px]">
       {tiles.map(([k, v, sub]) => (
         <div key={k} className="rounded-xl bg-turf-deep px-3 py-2.5 ring-1 ring-inset ring-turf-edge">
           <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{k}</dt>
@@ -228,9 +219,11 @@ function RhythmNote({ lab, s, team }: { lab: Lab; s: number; team: 0 | 1 }) {
   const r = rhythmAt(lab, s, team);
   const tone = r.kind === "chaos" ? "bg-flare text-flare-ink" : r.kind === "control" ? "bg-chalk text-turf-deep" : "bg-chalk/15 text-chalk";
   return (
-    <span className="mt-1 block text-[13px] leading-snug text-chalk-dim">
-      <span className={`mr-1.5 inline-block rounded-full px-2 py-px text-[11px] font-bold uppercase tracking-[0.08em] ${tone}`}>{t(`fan.rhythm.${r.kind}`)}</span>
-      {t("fan.rhythm.line", { n: r.held, swaps: r.swaps, team: lab.clubs[team].name, p: Math.round(r.share * 100), trend: t(`fan.rhythm.${r.trend}`) })} {t(`fan.rhythm.why.${r.kind}`)}
+    <span
+      title={`${t("fan.rhythm.line", { n: r.held, swaps: r.swaps, team: lab.clubs[team].name, p: Math.round(r.share * 100), trend: t(`fan.rhythm.${r.trend}`) })} ${t(`fan.rhythm.why.${r.kind}`)}`}
+      className={`ml-1.5 inline-block rounded-full px-2 py-px text-[11px] font-bold uppercase tracking-[0.08em] ${tone}`}
+    >
+      {t(`fan.rhythm.${r.kind}`)}
     </span>
   );
 }
