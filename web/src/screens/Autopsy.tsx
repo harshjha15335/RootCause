@@ -33,6 +33,7 @@ const surname = (name: string) => name.split(" ").slice(-1)[0];
  */
 export function Autopsy() {
   const { t } = useTranslation();
+  const [pick, setPick] = useState<string | null>(() => goalParam());
   const lab = useLab();
   const full = useFullTime();
   const id = lab.data?.id;

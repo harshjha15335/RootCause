@@ -31,6 +31,25 @@ export class HttpError extends Error {
   }
 }
 
+export type ShowcaseExtras = {
+  meta: MatchMeta;
+  ticks: EngineMatchEvent[];
+  replays: Record<string, Record<string, RecordedReplay>>;
+  truth: GroundTruth | null;
+  manifest: ShowcaseManifest;
+  messages: WsMessage[];
+};
+
+export interface Source {
+  kind: "showcase" | "live";
+  matchId: string;
+  trace(goalId: string): Promise<Evidence>;
+  explanation(goalId: string, mode: Mode, lang: Lang): Promise<ExplanationResponse>;
+  report(mode: Mode, lang: Lang): Promise<MatchReport>;
+  match(): Promise<MatchRecord>;
+  audio(goalId: string, mode: Mode, lang: Lang): Promise<Blob>;
+}
+
 export class MalformedJsonError extends Error {
   constructor(
     public readonly url: string,

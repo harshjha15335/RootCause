@@ -61,7 +61,7 @@ export function useFullTime() {
     queryKey: ["traces", source.matchId, ids.join(",")],
     queryFn: async () => {
       if (ids.length === 0) return [];
-      const settled = await Promise.allSettled(ids.map((id) => source.trace(id)));
+      const settled = await Promise.allSettled(ids.map((id: string) => source.trace(id)));
       const valid: Evidence[] = [];
       const unexpectedErrors: Error[] = [];
 
