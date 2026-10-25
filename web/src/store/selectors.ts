@@ -57,13 +57,44 @@ export function useReport() {
 export function useFullTime() {
   const match = useQuery({ queryKey: ["match", source.matchId], queryFn: () => source.match(), staleTime: 30_000 });
   const ids = match.data?.goal_ids ?? [];
-  const traces = useQuery({
+  const traces = useQuery<Evidence[], Error>({
     queryKey: ["traces", source.matchId, ids.join(",")],
-    queryFn: () => Promise.all(ids.map((id) => source.trace(id))),
+    queryFn: async () => {
+      if (ids.length === 0) return [];
+      const settled = await Promise.allSettled(ids.map((id) => source.trace(id)));
+      const valid: Evidence[] = [];
+      const unexpectedErrors: Error[] = [];
+
+      for (const res of settled) {
+        if (res.status === "fulfilled") {
+          valid.push(res.value);
+        } else {
+          const reason = res.reason;
+          // Expected missing trace: HTTP 404 (file/route does not exist for an untraced goal)
+          if (reason instanceof HttpError && reason.status === 404) {
+            continue;
+          }
+          // Genuine unexpected failures (auth, 500, network failure, malformed JSON)
+          unexpectedErrors.push(reason instanceof Error ? reason : new Error(String(reason)));
+        }
+      }
+
+      if (unexpectedErrors.length > 0) {
+        throw unexpectedErrors[0];
+      }
+
+      return valid;
+    },
     enabled: ids.length > 0,
     staleTime: Infinity,
+    retry: (n, e) => !(e instanceof HttpError && e.status === 404) && n < 2,
   });
-  return { match: match.data ?? null, traces: traces.data ?? [], loading: match.isPending || (ids.length > 0 && traces.isPending) };
+  return {
+    match: match.data ?? null,
+    traces: traces.data ?? [],
+    loading: match.isPending || (ids.length > 0 && traces.isPending),
+    error: match.error || traces.error || null,
+  };
 }
 
 /** The mistake planted in a synthetic showcase match, to check the Debugger against. Live matches have none. */

@@ -22,35 +22,47 @@ import type {
  */
 
 export class HttpError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
     super(message);
+    this.name = "HttpError";
   }
 }
 
-export type ShowcaseExtras = {
-  meta: MatchMeta;
-  ticks: EngineMatchEvent[];
-  replays: Record<string, Record<string, RecordedReplay>>;
-  truth: GroundTruth | null;
-  manifest: ShowcaseManifest;
-  messages: WsMessage[];
-};
-
-export interface Source {
-  kind: "showcase" | "live";
-  matchId: string;
-  trace(goalId: string): Promise<Evidence>;
-  explanation(goalId: string, mode: Mode, lang: Lang): Promise<ExplanationResponse>;
-  report(mode: Mode, lang: Lang): Promise<MatchReport>;
-  match(): Promise<MatchRecord>;
-  audio(goalId: string, mode: Mode, lang: Lang): Promise<Blob>;
+export class MalformedJsonError extends Error {
+  constructor(
+    public readonly url: string,
+    cause: Error,
+  ) {
+    super(`Malformed JSON response from ${url}: ${cause.message}`);
+    this.name = "MalformedJsonError";
+  }
 }
 
-async function json<T>(url: string, init?: RequestInit): Promise<T> {
+export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const r = await fetch(url, init);
   if (!r.ok) throw new HttpError(r.status, `${url} returned ${r.status}`);
-  return r.json() as Promise<T>;
+  const contentType = (r.headers.get("content-type") ?? "").toLowerCase();
+  const text = await r.text();
+  // Detect static SPA server fallback (e.g. Vite or GitHub Pages returning index.html for 404)
+  if (
+    contentType.includes("text/html") ||
+    text.trim().startsWith("<!DOCTYPE") ||
+    text.trim().startsWith("<!doctype") ||
+    text.trim().startsWith("<html")
+  ) {
+    throw new HttpError(404, `${url} returned HTML fallback instead of JSON`);
+  }
+  try {
+    return JSON.parse(text) as T;
+  } catch (err) {
+    throw new MalformedJsonError(url, err as Error);
+  }
 }
+
+const json = fetchJson;
 
 /** Canonical demo match for RootCause. */
 export const DEMO_MATCHES = ["wlb-msb-2023-11-12"] as const;

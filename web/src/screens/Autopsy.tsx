@@ -59,15 +59,27 @@ export function Autopsy() {
   const ready = !!lab.data && !!replays.data && analyses.every((q) => q.data) && !full.loading && !stacks.isPending;
   const goals = useMemo(() => (ready ? goalsOf(lab.data!, full.traces) : []), [ready, lab.data, full.traces]);
   // the goal asked for in the link, else the first traced goal, else the first goal
-  const [pick, setPick] = useState<string | null>(() => goalParam());
-  const goal = goals.find((g) => g.id === pick) ?? goals.find((g) => g.traced) ?? goals[0];
+  const goal = useMemo(() => {
+    if (!goals.length) return null;
+    if (pick) {
+      const exact = goals.find((g) => g.id === pick);
+      if (exact) return exact;
+      const suffix = goals.find((g) => g.id.endsWith(pick) || pick.endsWith(g.id));
+      if (suffix) return suffix;
+      const secondMatch = goals.find((g) => pick.includes(String(g.s)) || g.id.includes(pick));
+      if (secondMatch) return secondMatch;
+      return null;
+    }
+    return goals.find((g) => g.traced) ?? goals[0];
+  }, [goals, pick]);
+
   const data = useMemo(() => {
     if (!ready || !goal) return null;
     const all = Object.fromEntries(DEMO_MATCHES.map((m, k) => [m, analyses[k].data!]));
     const ev = full.traces.find((e: Evidence) => e.goal_id === goal.id) ?? null;
     return buildAutopsy(lab.data!, goal, ev, replays.data![goal.id] ?? {}, all, stacks.data?.dossier ?? null);
   }, [ready, goal, full.traces, lab.data, replays.data, stacks.data]);
-  const failed = lab.error || replays.error || analyses.some((q) => q.error);
+  const failed = lab.error || replays.error || analyses.some((q) => q.error) || full.error;
   const choose = (g: GoalRef) => {
     setPick(g.id);
     history.replaceState(null, "", pageHref("autopsy", { goal: g.id }));
@@ -79,6 +91,24 @@ export function Autopsy() {
         <p className="grid h-full place-items-center px-6 text-center text-[17px] text-chalk-dim">{t("autopsy.failed")}</p>
       ) : !ready ? (
         <p className="absolute left-6 top-6 animate-pulse text-[15px] text-chalk-dim">{t("autopsy.loading")}</p>
+      ) : pick && !goal ? (
+        <div className="grid h-full place-items-center px-6 text-center">
+          <div>
+            <p className="text-[17px] font-semibold text-chalk-dim mb-4">
+              Goal &ldquo;{pick}&rdquo; not found in this match.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setPick(null);
+                history.replaceState(null, "", pageHref("autopsy"));
+              }}
+              className="rounded-full border border-white/20 bg-[#070a1d]/80 px-4 py-2 text-[13px] font-semibold text-chalk hover:border-[#c6ff4d]"
+            >
+              View Match Autopsy
+            </button>
+          </div>
+        </div>
       ) : !data ? (
         <p className="grid h-full place-items-center px-6 text-center text-[17px] text-chalk-dim">{t("autopsy.noGoals")}</p>
       ) : (

@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { fetchJson, HttpError, MalformedJsonError } from "../src/api/rest";
 import type { Analysis } from "../src/api/analysis";
 import type { Evidence } from "../src/api/types";
 import { loadLab } from "../src/lab/data";
@@ -57,4 +58,103 @@ describe("Goal Autopsy", () => {
       }
     });
   }
+
+  describe("HTTP-level trace loading and autopsy navigation", () => {
+    it("detects HTML SPA fallback on 200 as HttpError 404", async () => {
+      const origFetch = globalThis.fetch;
+      try {
+        globalThis.fetch = (async () => ({
+          ok: true,
+          status: 200,
+          headers: new Headers({ "content-type": "text/html" }),
+          text: async () => "<!DOCTYPE html><html><body>RootCause SPA Fallback</body></html>",
+        })) as unknown as typeof fetch;
+
+        await expect(fetchJson("/traces/missing.json")).rejects.toThrow(HttpError);
+      } finally {
+        globalThis.fetch = origFetch;
+      }
+    });
+
+    it("distinguishes malformed JSON from expected 404 missing traces", async () => {
+      const origFetch = globalThis.fetch;
+      try {
+        globalThis.fetch = (async () => ({
+          ok: true,
+          status: 200,
+          headers: new Headers({ "content-type": "application/json" }),
+          text: async () => "invalid json content {[[",
+        })) as unknown as typeof fetch;
+
+        await expect(fetchJson("/traces/corrupt.json")).rejects.toThrow(MalformedJsonError);
+      } finally {
+        globalThis.fetch = origFetch;
+      }
+    });
+
+    it("loads eight goals with only four traces, keeping all goals visible and preserving valid traces", async () => {
+      const match = read(`${root}/wlb-msb-2023-11-12/match.json`);
+      const lab = await loadLab("wlb-msb-2023-11-12", `${root}/wlb-msb-2023-11-12/`, fsFetch);
+      const goalIds = match.goal_ids as string[];
+      expect(goalIds).toHaveLength(8);
+
+      const mockTraceFetch = async (id: string): Promise<Evidence> => {
+        const file = `${root}/wlb-msb-2023-11-12/traces/${id}.json`;
+        try {
+          return read(file) as Evidence;
+        } catch {
+          throw new HttpError(404, `Trace ${id} not found`);
+        }
+      };
+
+      const settled = await Promise.allSettled(goalIds.map((id) => mockTraceFetch(id)));
+      const validTraces: Evidence[] = [];
+      const unexpectedErrors: Error[] = [];
+      for (const res of settled) {
+        if (res.status === "fulfilled") validTraces.push(res.value);
+        else if (res.reason instanceof HttpError && res.reason.status === 404) continue;
+        else unexpectedErrors.push(res.reason);
+      }
+      expect(unexpectedErrors).toHaveLength(0);
+      expect(validTraces).toHaveLength(4);
+
+      const goals = goalsOf(lab, validTraces);
+      expect(goals).toHaveLength(8);
+      const tracedGoals = goals.filter((g) => g.traced);
+      const untracedGoals = goals.filter((g) => !g.traced);
+      expect(tracedGoals).toHaveLength(4);
+      expect(untracedGoals).toHaveLength(4);
+
+      // Direct Goal 3 navigation resolves cleanly to Goal 3
+      const goal3 = goals.find((g) => g.id === "wlb-msb-2023-11-12-g3");
+      expect(goal3).toBeDefined();
+      expect(goal3?.traced).toBe(true);
+      expect(goal3?.s).toBe(2184);
+
+      // Untraced goal navigation resolves cleanly to honest autopsy
+      const goal1 = goals.find((g) => g.id === "wlb-msb-2023-11-12-s1444");
+      expect(goal1).toBeDefined();
+      expect(goal1?.traced).toBe(false);
+
+      // Nonexistent goal
+      const missing = goals.find((g) => g.id === "nonexistent-goal-999");
+      expect(missing).toBeUndefined();
+    });
+
+    it("propagates genuine network errors and does not swallow them as untraced", async () => {
+      const mockFailFetch = async () => {
+        throw new TypeError("Failed to fetch (network disconnected)");
+      };
+
+      const settled = await Promise.allSettled(["g1"].map(() => mockFailFetch()));
+      const errors: Error[] = [];
+      for (const res of settled) {
+        if (res.status === "rejected" && !(res.reason instanceof HttpError && res.reason.status === 404)) {
+          errors.push(res.reason);
+        }
+      }
+      expect(errors).toHaveLength(1);
+      expect(errors[0].message).toContain("network disconnected");
+    });
+  });
 });
