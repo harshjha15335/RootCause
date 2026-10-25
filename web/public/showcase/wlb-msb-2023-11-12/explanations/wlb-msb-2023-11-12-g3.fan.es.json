@@ -1,1 +1,348 @@
-{"goal_id":"wlb-msb-2023-11-12-g3","match_id":"wlb-msb-2023-11-12","status":"pending","source":"evidence-only","root_cause_evidence_id":"wlb-msb-2023-11-12-g3-l1","paragraphs":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","sentences":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"El motor atribuye el 74.1% de la culpa a A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}]}],"root_summary":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"}],"highlights":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","start_second":2176,"end_second":2176,"caption":{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"}}],"recaps":{"fan":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"El motor atribuye el 74.1% de la culpa a A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}],"analyst":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"El motor atribuye el 74.1% de la culpa a A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}],"studio":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"}]},"blame_order":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","player_id":"A5","second":2176,"bug_type":"LATE_STEP_UP","description":"Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","blame_percent":74.11764705882354,"baseline_goals":138,"fixed_goals":12,"trials":200},{"evidence_id":"wlb-msb-2023-11-12-g3-l2","player_id":"A3","second":2172,"bug_type":"LATE_STEP_UP","description":"Delayed slide to cover the near-post cross channel. (metres behind line: 3.8)","blame_percent":25.88235294117647,"baseline_goals":138,"fixed_goals":94,"trials":200}],"latency_ms":11.2,"warnings":[],"mode":"fan","lang":"es","requested_lang":"es","text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles. [wlb-msb-2023-11-12-g3-l1]\nA5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nEl motor atribuye el 74.1% de la culpa a A5 (J. Gvardello). [wlb-msb-2023-11-12-g3-l1]","translation_warning":null,"audio_available":false,"sentences":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"El motor atribuye el 74.1% de la culpa a A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}]}
+{
+  "goal_id": "wlb-msb-2023-11-12-g3",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g3-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "sentences": [
+        {
+          "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metros detrás de la línea: 6.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 74.1176% de la culpa a A5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 138/200 a 12/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "sentences": [
+        {
+          "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metros detrás de la línea: 3.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 25.8824% de la culpa a A2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 138/200 a 94/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "start_second": 2176,
+      "end_second": 2176,
+      "caption": {
+        "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "start_second": 2174,
+      "end_second": 2174,
+      "caption": {
+        "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metros detrás de la línea: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 74.1176% de la culpa a A5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metros detrás de la línea: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 25.8824% de la culpa a A2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metros detrás de la línea: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 74.1176% de la culpa a A5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Corregir este error cambió los goles de 138/200 a 12/200 en las repeticiones suministradas.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metros detrás de la línea: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 25.8824% de la culpa a A2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Corregir este error cambió los goles de 138/200 a 94/200 en las repeticiones suministradas.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metros detrás de la línea: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metros detrás de la línea: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "player_id": "A5",
+      "second": 2176,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late recovery run: Left defensive channel exposed on overlapping transition. (metres behind line: 6.3)",
+      "blame_percent": 74.11764705882354,
+      "baseline_goals": 138,
+      "fixed_goals": 12,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "player_id": "A2",
+      "second": 2174,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Delayed tracking: Recovery run halted before central cross delivery. (metres behind line: 3.1)",
+      "blame_percent": 25.88235294117647,
+      "baseline_goals": 138,
+      "fixed_goals": 94,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "fan",
+  "lang": "es",
+  "requested_lang": "es",
+  "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g3-l1]\nA5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble. [wlb-msb-2023-11-12-g3-l1]\nA5: (metros detrás de la línea: 6.3) [wlb-msb-2023-11-12-g3-l1]\nEl motor atribuye el 74.1176% de la culpa a A5. [wlb-msb-2023-11-12-g3-l1]\nA2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área. [wlb-msb-2023-11-12-g3-l2]\nA2: (metros detrás de la línea: 3.1) [wlb-msb-2023-11-12-g3-l2]\nEl motor atribuye el 25.8824% de la culpa a A2. [wlb-msb-2023-11-12-g3-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A5: (metros detrás de la línea: 6.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "El motor atribuye el 74.1176% de la culpa a A5.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A2: (metros detrás de la línea: 3.1)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "El motor atribuye el 25.8824% de la culpa a A2.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l2"
+      ],
+      "kind": "attribution"
+    }
+  ]
+}

@@ -1,1 +1,200 @@
-{"match_id":"wlb-msb-2023-11-12","mode":"studio","requested_lang":"es","source":"evidence-only","goals":[{"goal_id":"wlb-msb-2023-11-12-g2","text":"La causa raíz es el error de A4 (M. Akendo), clasificado primero por reducción de goles. [wlb-msb-2023-11-12-g2-l1]\nA4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3) [wlb-msb-2023-11-12-g2-l1]\nEl motor atribuye el 83.7% de la culpa a A4 (M. Akendo). [wlb-msb-2023-11-12-g2-l1]","sentences":[{"text":"La causa raíz es el error de A4 (M. Akendo), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"El motor atribuye el 83.7% de la culpa a A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"}],"lang":"es","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g3","text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles. [wlb-msb-2023-11-12-g3-l1]\nA5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nEl motor atribuye el 74.1% de la culpa a A5 (J. Gvardello). [wlb-msb-2023-11-12-g3-l1]","sentences":[{"text":"La causa raíz es el error de A5 (J. Gvardello), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"El motor atribuye el 74.1% de la culpa a A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}],"lang":"es","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g5","text":"La causa raíz es el error de H3 (Marco Cucarena), clasificado primero por reducción de goles. [wlb-msb-2023-11-12-g5-l1]\nH3 (Marco Cucarena): Failed back-post tuck-in: Cucurella leaves Haaland unmarked at the back post. (metres behind line: 5.3) [wlb-msb-2023-11-12-g5-l1]\nEl motor atribuye el 77.5% de la culpa a H3 (Marco Cucarena). [wlb-msb-2023-11-12-g5-l1]","sentences":[{"text":"La causa raíz es el error de H3 (Marco Cucarena), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"root"},{"text":"H3 (Marco Cucarena): Failed back-post tuck-in: Cucurella leaves Haaland unmarked at the back post. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"description"},{"text":"El motor atribuye el 77.5% de la culpa a H3 (Marco Cucarena).","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"attribution"}],"lang":"es","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g6","text":"La causa raíz es el error de A3 (Ruben Diales), clasificado primero por reducción de goles. [wlb-msb-2023-11-12-g6-l1]\nA3 (Ruben Diales): Hesitation on rebound box clearance: Ruben Dias fails to clear parried strike. (metres behind line: 5.2) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 81.4% de la culpa a A3 (Ruben Diales). [wlb-msb-2023-11-12-g6-l1]","sentences":[{"text":"La causa raíz es el error de A3 (Ruben Diales), clasificado primero por reducción de goles.","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"root"},{"text":"A3 (Ruben Diales): Hesitation on rebound box clearance: Ruben Dias fails to clear parried strike. (metres behind line: 5.2)","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"description"},{"text":"El motor atribuye el 81.4% de la culpa a A3 (Ruben Diales).","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"attribution"}],"lang":"es","translation_warning":null}],"patterns":{"ZONAL_LEAK":2,"LATE_STEP_UP":4,"HESITATION_CLEARANCE":2},"top_causes":["ZONAL_LEAK","LATE_STEP_UP","HESITATION_CLEARANCE"],"provisional":false,"highlight_order":["wlb-msb-2023-11-12-g2","wlb-msb-2023-11-12-g3","wlb-msb-2023-11-12-g5","wlb-msb-2023-11-12-g6"],"report_warning":null}
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "studio",
+  "requested_lang": "es",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g2",
+      "text": "La causa raíz es el error de A4, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g2-l1]\nA4: Fuga de marcaje zonal: Manuel Akendo desocupa la zona del primer palo, permitiendo un cabezazo sin marca. [wlb-msb-2023-11-12-g2-l1]\nA4: (metros detrás de la línea: 5.3) [wlb-msb-2023-11-12-g2-l1]\nA3: Salida tardía: Ruben Diales permanece rezagado detrás de la línea defensiva. [wlb-msb-2023-11-12-g2-l2]\nA3: (metros detrás de la línea: 3.2) [wlb-msb-2023-11-12-g2-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A4, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A4: Fuga de marcaje zonal: Manuel Akendo desocupa la zona del primer palo, permitiendo un cabezazo sin marca.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metros detrás de la línea: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: Salida tardía: Ruben Diales permanece rezagado detrás de la línea defensiva.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metros detrás de la línea: 3.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g3-l1]\nA5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble. [wlb-msb-2023-11-12-g3-l1]\nA5: (metros detrás de la línea: 6.3) [wlb-msb-2023-11-12-g3-l1]\nA2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área. [wlb-msb-2023-11-12-g3-l2]\nA2: (metros detrás de la línea: 3.1) [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A5, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A5: Carrera de recuperación tardía: Canal defensivo izquierdo expuesto en transición con desdoble.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metros detrás de la línea: 6.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: Seguimiento demorado: La carrera de repliegue se frenó antes del centro al área.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metros detrás de la línea: 3.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g5-l1]\nH3: Cierre fallido al segundo palo: Marco Cucarena deja desmarcado a Erling Haalviken en el segundo palo. [wlb-msb-2023-11-12-g5-l1]\nH3: (metros detrás de la línea: 5.3) [wlb-msb-2023-11-12-g5-l1]\nH5: Salida defensiva tardía: Tiago Silven no acompaña la subida de la línea defensiva. [wlb-msb-2023-11-12-g5-l2]\nH5: (metros detrás de la línea: 2.8) [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Cierre fallido al segundo palo: Marco Cucarena deja desmarcado a Erling Haalviken en el segundo palo.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metros detrás de la línea: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: Salida defensiva tardía: Tiago Silven no acompaña la subida de la línea defensiva.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metros detrás de la línea: 2.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Vacilación en el despeje del rebote en el área: Ruben Diales no logra despejar el balón rechazado. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros detrás de la línea: 5.2) [wlb-msb-2023-11-12-g6-l1]\nA4: Demora en el segundo despeje: Manuel Akendo es sorprendido a contrapié en el segundo rebote. [wlb-msb-2023-11-12-g6-l2]\nA4: (metros detrás de la línea: 3.8) [wlb-msb-2023-11-12-g6-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Vacilación en el despeje del rebote en el área: Ruben Diales no logra despejar el balón rechazado.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metros detrás de la línea: 5.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: Demora en el segundo despeje: Manuel Akendo es sorprendido a contrapié en el segundo rebote.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metros detrás de la línea: 3.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "ZONAL_LEAK": 2,
+    "LATE_STEP_UP": 2,
+    "BACK_POST_EXPOSURE": 2,
+    "REBOUND_UNCHECKED": 2
+  },
+  "top_causes": [
+    "ZONAL_LEAK",
+    "LATE_STEP_UP",
+    "BACK_POST_EXPOSURE",
+    "REBOUND_UNCHECKED"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g2",
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

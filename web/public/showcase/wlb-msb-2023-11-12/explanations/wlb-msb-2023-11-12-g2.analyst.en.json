@@ -1,1 +1,362 @@
-{"goal_id":"wlb-msb-2023-11-12-g2","match_id":"wlb-msb-2023-11-12","status":"pending","source":"evidence-only","root_cause_evidence_id":"wlb-msb-2023-11-12-g2-l1","paragraphs":[{"evidence_id":"wlb-msb-2023-11-12-g2-l1","sentences":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"The engine attributes 83.7% of the blame to A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 142/200 to 14/200.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"counterfactual"}]}],"root_summary":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"}],"highlights":[{"evidence_id":"wlb-msb-2023-11-12-g2-l1","start_second":1698,"end_second":1698,"caption":{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"}}],"recaps":{"fan":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"The engine attributes 83.7% of the blame to A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 142/200 to 14/200.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"counterfactual"}],"analyst":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"The engine attributes 83.7% of the blame to A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 142/200 to 14/200.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"counterfactual"}],"studio":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"}]},"blame_order":[{"evidence_id":"wlb-msb-2023-11-12-g2-l1","player_id":"A4","second":1698,"bug_type":"ZONAL_LEAK","description":"Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","blame_percent":83.66013071895425,"baseline_goals":142,"fixed_goals":14,"trials":200},{"evidence_id":"wlb-msb-2023-11-12-g2-l2","player_id":"A3","second":1694,"bug_type":"ZONAL_LEAK","description":"Late step-up: Ruben Dias stays behind the defensive line. (metres behind line: 3.2)","blame_percent":16.33986928104575,"baseline_goals":142,"fixed_goals":117,"trials":200}],"latency_ms":11.2,"warnings":[],"mode":"analyst","lang":"en","requested_lang":"en","text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g2-l1]\nA4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3) [wlb-msb-2023-11-12-g2-l1]\nThe engine attributes 83.7% of the blame to A4 (M. Akendo). [wlb-msb-2023-11-12-g2-l1]\nFixing this mistake changed simulated goals from 142/200 to 14/200. [wlb-msb-2023-11-12-g2-l1]","translation_warning":null,"audio_available":false,"sentences":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"The engine attributes 83.7% of the blame to A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 142/200 to 14/200.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"counterfactual"}]}
+{
+  "goal_id": "wlb-msb-2023-11-12-g2",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g2-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l1",
+      "sentences": [
+        {
+          "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 83.6601% of the blame to A4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 142/200 to 14/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l2",
+      "sentences": [
+        {
+          "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 3.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 16.3399% of the blame to A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 142/200 to 117/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l1",
+      "start_second": 1697,
+      "end_second": 1697,
+      "caption": {
+        "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l2",
+      "start_second": 1694,
+      "end_second": 1694,
+      "caption": {
+        "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 83.6601% of the blame to A4.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 3.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 16.3399% of the blame to A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 83.6601% of the blame to A4.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 142/200 to 14/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 3.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 16.3399% of the blame to A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 142/200 to 117/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metres behind line: 3.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g2-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l1",
+      "player_id": "A4",
+      "second": 1697,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)",
+      "blame_percent": 83.66013071895425,
+      "baseline_goals": 142,
+      "fixed_goals": 14,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l2",
+      "player_id": "A3",
+      "second": 1694,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Late step-up: Ruben Diales stays behind the defensive line. (metres behind line: 3.2)",
+      "blame_percent": 16.33986928104575,
+      "baseline_goals": 142,
+      "fixed_goals": 117,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "analyst",
+  "lang": "en",
+  "requested_lang": "en",
+  "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g2-l1]\nA4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header. [wlb-msb-2023-11-12-g2-l1]\nA4: (metres behind line: 5.3) [wlb-msb-2023-11-12-g2-l1]\nThe engine attributes 83.6601% of the blame to A4. [wlb-msb-2023-11-12-g2-l1]\nFixing this mistake changed goals from 142/200 to 14/200 in the supplied replays. [wlb-msb-2023-11-12-g2-l1]\nA3: Late step-up: Ruben Diales stays behind the defensive line. [wlb-msb-2023-11-12-g2-l2]\nA3: (metres behind line: 3.2) [wlb-msb-2023-11-12-g2-l2]\nThe engine attributes 16.3399% of the blame to A3. [wlb-msb-2023-11-12-g2-l2]\nFixing this mistake changed goals from 142/200 to 117/200 in the supplied replays. [wlb-msb-2023-11-12-g2-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A4: (metres behind line: 5.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 83.6601% of the blame to A4.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "Fixing this mistake changed goals from 142/200 to 14/200 in the supplied replays.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l1"
+      ],
+      "kind": "counterfactual"
+    },
+    {
+      "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (metres behind line: 3.2)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 16.3399% of the blame to A3.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l2"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "Fixing this mistake changed goals from 142/200 to 117/200 in the supplied replays.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g2-l2"
+      ],
+      "kind": "counterfactual"
+    }
+  ]
+}

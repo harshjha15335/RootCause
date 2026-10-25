@@ -1,1 +1,334 @@
-{"goal_id":"wlb-msb-2023-11-12-g3","match_id":"wlb-msb-2023-11-12","status":"pending","source":"evidence-only","root_cause_evidence_id":"wlb-msb-2023-11-12-g3-l1","paragraphs":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","sentences":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"The engine attributes 74.1% of the blame to A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}]}],"root_summary":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"}],"highlights":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","start_second":2176,"end_second":2176,"caption":{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"}}],"recaps":{"fan":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"The engine attributes 74.1% of the blame to A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}],"analyst":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"The engine attributes 74.1% of the blame to A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}],"studio":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"}]},"blame_order":[{"evidence_id":"wlb-msb-2023-11-12-g3-l1","player_id":"A5","second":2176,"bug_type":"LATE_STEP_UP","description":"Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","blame_percent":74.11764705882354,"baseline_goals":138,"fixed_goals":12,"trials":200},{"evidence_id":"wlb-msb-2023-11-12-g3-l2","player_id":"A3","second":2172,"bug_type":"LATE_STEP_UP","description":"Delayed slide to cover the near-post cross channel. (metres behind line: 3.8)","blame_percent":25.88235294117647,"baseline_goals":138,"fixed_goals":94,"trials":200}],"latency_ms":11.2,"warnings":[],"mode":"studio","lang":"en","requested_lang":"en","text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g3-l1]\nA5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nThe engine attributes 74.1% of the blame to A5 (J. Gvardello). [wlb-msb-2023-11-12-g3-l1]","translation_warning":null,"audio_available":false,"sentences":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"The engine attributes 74.1% of the blame to A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"}]}
+{
+  "goal_id": "wlb-msb-2023-11-12-g3",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g3-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "sentences": [
+        {
+          "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metres behind line: 6.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 74.1176% of the blame to A5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 138/200 to 12/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "sentences": [
+        {
+          "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metres behind line: 3.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 25.8824% of the blame to A2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 138/200 to 94/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "start_second": 2176,
+      "end_second": 2176,
+      "caption": {
+        "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "start_second": 2174,
+      "end_second": 2174,
+      "caption": {
+        "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metres behind line: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 74.1176% of the blame to A5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metres behind line: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 25.8824% of the blame to A2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metres behind line: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 74.1176% of the blame to A5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 138/200 to 12/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metres behind line: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 25.8824% of the blame to A2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 138/200 to 94/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A5: (metres behind line: 6.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A2: (metres behind line: 3.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g3-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "player_id": "A5",
+      "second": 2176,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late recovery run: Left defensive channel exposed on overlapping transition. (metres behind line: 6.3)",
+      "blame_percent": 74.11764705882354,
+      "baseline_goals": 138,
+      "fixed_goals": 12,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g3-l2",
+      "player_id": "A2",
+      "second": 2174,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Delayed tracking: Recovery run halted before central cross delivery. (metres behind line: 3.1)",
+      "blame_percent": 25.88235294117647,
+      "baseline_goals": 138,
+      "fixed_goals": 94,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "studio",
+  "lang": "en",
+  "requested_lang": "en",
+  "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g3-l1]\nA5: Late recovery run: Left defensive channel exposed on overlapping transition. [wlb-msb-2023-11-12-g3-l1]\nA5: (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nA2: Delayed tracking: Recovery run halted before central cross delivery. [wlb-msb-2023-11-12-g3-l2]\nA2: (metres behind line: 3.1) [wlb-msb-2023-11-12-g3-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A5: (metres behind line: 6.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A2: (metres behind line: 3.1)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g3-l2"
+      ],
+      "kind": "description"
+    }
+  ]
+}

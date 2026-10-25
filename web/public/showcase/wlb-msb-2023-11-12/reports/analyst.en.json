@@ -1,1 +1,312 @@
-{"match_id":"wlb-msb-2023-11-12","mode":"analyst","requested_lang":"en","source":"evidence-only","goals":[{"goal_id":"wlb-msb-2023-11-12-g2","text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g2-l1]\nA4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3) [wlb-msb-2023-11-12-g2-l1]\nThe engine attributes 83.7% of the blame to A4 (M. Akendo). [wlb-msb-2023-11-12-g2-l1]\nFixing this mistake changed simulated goals from 142/200 to 14/200. [wlb-msb-2023-11-12-g2-l1]","sentences":[{"text":"The root cause is the mistake by A4 (M. Akendo), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"root"},{"text":"A4 (M. Akendo): Zonal marking leak: Akanji vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"description"},{"text":"The engine attributes 83.7% of the blame to A4 (M. Akendo).","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 142/200 to 14/200.","evidence_ids":["wlb-msb-2023-11-12-g2-l1"],"kind":"counterfactual"}],"lang":"en","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g3","text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g3-l1]\nA5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nThe engine attributes 74.1% of the blame to A5 (J. Gvardello). [wlb-msb-2023-11-12-g3-l1]\nFixing this mistake changed simulated goals from 138/200 to 12/200. [wlb-msb-2023-11-12-g3-l1]","sentences":[{"text":"The root cause is the mistake by A5 (J. Gvardello), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"root"},{"text":"A5 (J. Gvardello): Late recovery run: Left defensive channel exposed on overlapping cross. (metres behind line: 6.3)","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"description"},{"text":"The engine attributes 74.1% of the blame to A5 (J. Gvardello).","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 138/200 to 12/200.","evidence_ids":["wlb-msb-2023-11-12-g3-l1"],"kind":"counterfactual"}],"lang":"en","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g5","text":"The root cause is the mistake by H3 (Marco Cucarena), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g5-l1]\nH3 (Marco Cucarena): Failed back-post tuck-in: Cucurella leaves Haaland unmarked at the back post. (metres behind line: 5.3) [wlb-msb-2023-11-12-g5-l1]\nThe engine attributes 77.5% of the blame to H3 (Marco Cucarena). [wlb-msb-2023-11-12-g5-l1]\nFixing this mistake changed simulated goals from 152/200 to 18/200. [wlb-msb-2023-11-12-g5-l1]","sentences":[{"text":"The root cause is the mistake by H3 (Marco Cucarena), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"root"},{"text":"H3 (Marco Cucarena): Failed back-post tuck-in: Cucurella leaves Haaland unmarked at the back post. (metres behind line: 5.3)","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"description"},{"text":"The engine attributes 77.5% of the blame to H3 (Marco Cucarena).","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 152/200 to 18/200.","evidence_ids":["wlb-msb-2023-11-12-g5-l1"],"kind":"counterfactual"}],"lang":"en","translation_warning":null},{"goal_id":"wlb-msb-2023-11-12-g6","text":"The root cause is the mistake by A3 (Ruben Diales), ranked first by goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3 (Ruben Diales): Hesitation on rebound box clearance: Ruben Dias fails to clear parried strike. (metres behind line: 5.2) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 81.4% of the blame to A3 (Ruben Diales). [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed simulated goals from 140/200 to 22/200. [wlb-msb-2023-11-12-g6-l1]","sentences":[{"text":"The root cause is the mistake by A3 (Ruben Diales), ranked first by goal-rate reduction.","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"root"},{"text":"A3 (Ruben Diales): Hesitation on rebound box clearance: Ruben Dias fails to clear parried strike. (metres behind line: 5.2)","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"description"},{"text":"The engine attributes 81.4% of the blame to A3 (Ruben Diales).","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"attribution"},{"text":"Fixing this mistake changed simulated goals from 140/200 to 22/200.","evidence_ids":["wlb-msb-2023-11-12-g6-l1"],"kind":"counterfactual"}],"lang":"en","translation_warning":null}],"patterns":{"ZONAL_LEAK":2,"LATE_STEP_UP":4,"HESITATION_CLEARANCE":2},"top_causes":["ZONAL_LEAK","LATE_STEP_UP","HESITATION_CLEARANCE"],"provisional":false,"highlight_order":["wlb-msb-2023-11-12-g2","wlb-msb-2023-11-12-g3","wlb-msb-2023-11-12-g5","wlb-msb-2023-11-12-g6"],"report_warning":null}
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "analyst",
+  "requested_lang": "en",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g2",
+      "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g2-l1]\nA4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header. [wlb-msb-2023-11-12-g2-l1]\nA4: (metres behind line: 5.3) [wlb-msb-2023-11-12-g2-l1]\nThe engine attributes 83.6601% of the blame to A4. [wlb-msb-2023-11-12-g2-l1]\nFixing this mistake changed goals from 142/200 to 14/200 in the supplied replays. [wlb-msb-2023-11-12-g2-l1]\nA3: Late step-up: Ruben Diales stays behind the defensive line. [wlb-msb-2023-11-12-g2-l2]\nA3: (metres behind line: 3.2) [wlb-msb-2023-11-12-g2-l2]\nThe engine attributes 16.3399% of the blame to A3. [wlb-msb-2023-11-12-g2-l2]\nFixing this mistake changed goals from 142/200 to 117/200 in the supplied replays. [wlb-msb-2023-11-12-g2-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A4: Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 83.6601% of the blame to A4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 142/200 to 14/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A3: Late step-up: Ruben Diales stays behind the defensive line.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 3.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 16.3399% of the blame to A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 142/200 to 117/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g3-l1]\nA5: Late recovery run: Left defensive channel exposed on overlapping transition. [wlb-msb-2023-11-12-g3-l1]\nA5: (metres behind line: 6.3) [wlb-msb-2023-11-12-g3-l1]\nThe engine attributes 74.1176% of the blame to A5. [wlb-msb-2023-11-12-g3-l1]\nFixing this mistake changed goals from 138/200 to 12/200 in the supplied replays. [wlb-msb-2023-11-12-g3-l1]\nA2: Delayed tracking: Recovery run halted before central cross delivery. [wlb-msb-2023-11-12-g3-l2]\nA2: (metres behind line: 3.1) [wlb-msb-2023-11-12-g3-l2]\nThe engine attributes 25.8824% of the blame to A2. [wlb-msb-2023-11-12-g3-l2]\nFixing this mistake changed goals from 138/200 to 94/200 in the supplied replays. [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metres behind line: 6.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 74.1176% of the blame to A5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 138/200 to 12/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metres behind line: 3.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 25.8824% of the blame to A2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 138/200 to 94/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g5-l1]\nH3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post. [wlb-msb-2023-11-12-g5-l1]\nH3: (metres behind line: 5.3) [wlb-msb-2023-11-12-g5-l1]\nThe engine attributes 77.4566% of the blame to H3. [wlb-msb-2023-11-12-g5-l1]\nFixing this mistake changed goals from 152/200 to 18/200 in the supplied replays. [wlb-msb-2023-11-12-g5-l1]\nH5: Late defensive step-up: Tiago Silven fails to step up with the defensive line. [wlb-msb-2023-11-12-g5-l2]\nH5: (metres behind line: 2.8) [wlb-msb-2023-11-12-g5-l2]\nThe engine attributes 22.5434% of the blame to H5. [wlb-msb-2023-11-12-g5-l2]\nFixing this mistake changed goals from 152/200 to 113/200 in the supplied replays. [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 77.4566% of the blame to H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 152/200 to 18/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metres behind line: 2.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 22.5434% of the blame to H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 152/200 to 113/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres behind line: 5.2) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 81.3793% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed goals from 140/200 to 22/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l1]\nA4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound. [wlb-msb-2023-11-12-g6-l2]\nA4: (metres behind line: 3.8) [wlb-msb-2023-11-12-g6-l2]\nThe engine attributes 18.6207% of the blame to A4. [wlb-msb-2023-11-12-g6-l2]\nFixing this mistake changed goals from 140/200 to 113/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 5.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 81.3793% of the blame to A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 140/200 to 22/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A4: Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 3.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 18.6207% of the blame to A4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 140/200 to 113/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "ZONAL_LEAK": 2,
+    "LATE_STEP_UP": 2,
+    "BACK_POST_EXPOSURE": 2,
+    "REBOUND_UNCHECKED": 2
+  },
+  "top_causes": [
+    "ZONAL_LEAK",
+    "LATE_STEP_UP",
+    "BACK_POST_EXPOSURE",
+    "REBOUND_UNCHECKED"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g2",
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

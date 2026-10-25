@@ -42,14 +42,14 @@ def load(mid: str) -> dict:
     raw.frombytes((d / "tracking.bin").read_bytes())
     if sys.byteorder == "big":
         raw.byteswap()
-    traces = [json.loads(p.read_text()) for p in sorted((d / "traces").glob("*.json"))]
-    replays = json.loads((d / "replays.json").read_text()) if (d / "replays.json").exists() else {}
+    traces = [json.loads(p.read_text(encoding="utf-8")) for p in sorted((d / "traces").glob("*.json"))]
+    replays = json.loads((d / "replays.json").read_text(encoding="utf-8")) if (d / "replays.json").exists() else {}
     return {
         "id": mid,
         "raw": raw,
-        "meta": json.loads((d / "meta.json").read_text()),
-        "manifest": json.loads((d / "manifest.json").read_text()),
-        "analysis": json.loads((d / "analysis.json").read_text()),
+        "meta": json.loads((d / "meta.json").read_text(encoding="utf-8")),
+        "manifest": json.loads((d / "manifest.json").read_text(encoding="utf-8")),
+        "analysis": json.loads((d / "analysis.json").read_text(encoding="utf-8")),
         "traces": traces,
         "replays": replays,
     }
@@ -280,7 +280,7 @@ def fixed_at(m: dict, goal_id: str, ev_id: str, pid: str, second: int) -> list[f
 
 def goals(m: dict, ch: list[dict]) -> list[dict]:
     traces = {t["goal"]["second"]: t for t in m["traces"]}
-    turnovers = m["analysis"]["turnovers"]
+    turnovers = m["analysis"].get("turnovers", [])
     shots = [c for c in ch if c["outcome"] == "goal"]
     out = []
     for n, c in enumerate(sorted(shots, key=lambda c: c["s"]), start=1):
@@ -522,7 +522,7 @@ def export(mid: str, all_: dict[str, dict]) -> Path:
         "dossier": dossier(m, all_),
     }
     path = SHOWCASE / mid / "stacks.json"
-    path.write_text(json.dumps(doc, separators=(",", ":")))
+    path.write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
     return path
 
 
