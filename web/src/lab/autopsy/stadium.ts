@@ -9,7 +9,6 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { PX } from "../data";
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
 import { teamMotion } from "./motion";
 
