@@ -47,6 +47,26 @@ export const LOOKS: Record<LookId, Look> = {
   },
 };
 
+/** Headline fonts to try on any look (?font=). Body text stays the look's own font. */
+export const FONTS: Record<string, { name: string; display: string; weight: number; tracking: string; adjust: number }> = {
+  syne: { name: "Syne", display: "'Syne'", weight: 700, tracking: "-0.03em", adjust: 0.46 },
+  serif: { name: "Instrument Serif", display: "'Instrument Serif'", weight: 400, tracking: "-0.01em", adjust: 0.5 },
+  bodoni: { name: "Bodoni Moda", display: "'Bodoni Moda'", weight: 600, tracking: "-0.02em", adjust: 0.44 },
+  unbounded: { name: "Unbounded", display: "'Unbounded'", weight: 600, tracking: "-0.04em", adjust: 0.4 },
+  anton: { name: "Anton", display: "'Anton'", weight: 400, tracking: "0", adjust: 0.5 },
+};
+const fontParam = (): string | null => {
+  try {
+    const f = new URLSearchParams(location.search).get("font");
+    if (f && f in FONTS) localStorage.setItem("rc.font", f);
+    else if (f === "none") localStorage.removeItem("rc.font");
+    return f && f in FONTS ? f : f === "none" ? null : localStorage.getItem("rc.font");
+  } catch {
+    return null;
+  }
+};
+export const FONT: string | null = typeof location === "undefined" ? null : fontParam();
+
 const pick = (): LookId => {
   let id: string | null = null;
   try {
@@ -59,7 +79,9 @@ const pick = (): LookId => {
   return id && id in LOOKS ? (id as LookId) : (import.meta.env.VITE_LOOK as LookId) in LOOKS ? (import.meta.env.VITE_LOOK as LookId) : "cobalt";
 };
 
-export const LOOK: Look = LOOKS[typeof location === "undefined" ? "cobalt" : pick()];
+const base = LOOKS[typeof location === "undefined" ? "cobalt" : pick()];
+const f = FONT ? FONTS[FONT] : null;
+export const LOOK: Look = f ? { ...base, type: { ...base.type, display: f.display, weight: f.weight, tracking: f.tracking, adjust: f.adjust, caps: false, width: 100 } } : base;
 
 const parts = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const rgb = (hex: string) => parts(hex).join(" ");
