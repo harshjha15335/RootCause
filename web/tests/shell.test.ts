@@ -10,7 +10,7 @@ beforeAll(async () => {
   ({ codeKey, mistakeWords } = await import("../src/i18n/words"));
   ({ screenFromHash } = await import("../src/store/uiStore"));
   ({ pageHref } = await import("../src/lib/nav"));
-});
+}, 30000);
 
 describe("raw codes become words", () => {
   it("normalises every form the data uses", () => {

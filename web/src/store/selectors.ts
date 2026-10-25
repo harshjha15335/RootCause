@@ -8,7 +8,11 @@ import { useUi } from "./uiStore";
 
 export function useSelectedEvidence(): Evidence | null {
   const id = useTrace((s) => s.selectedGoalId);
-  return useMatch((s) => (id ? s.evidence[id] ?? null : null));
+  return useMatch((s) => {
+    if (id && s.evidence[id]) return s.evidence[id];
+    const firstId = Object.keys(s.evidence)[0];
+    return firstId ? s.evidence[firstId] : null;
+  });
 }
 
 /** The most recent goal, traced or not (drives the live "Tracing…" and untraced states). */

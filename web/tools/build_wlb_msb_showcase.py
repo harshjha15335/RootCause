@@ -905,7 +905,7 @@ def build_analysis(events: list, tracking: np.ndarray) -> dict:
     }
 
 
-def build_ticks_and_messages(tracking: np.ndarray, events: list) -> tuple[list, list]:
+def build_ticks_and_messages(tracking: np.ndarray, events: list, traces: dict) -> tuple[list, list]:
     print("Building ticks.json and messages.json...")
     ticks = []
     messages = []
@@ -993,6 +993,7 @@ def build_ticks_and_messages(tracking: np.ndarray, events: list) -> tuple[list, 
                     "match_id": MATCH_ID,
                     "sequence": seq,
                     "payload": {
+                        "event_id": f"{MATCH_ID}-e{s}",
                         "goal_id": g["goal_id"],
                         "second": s,
                         "team": g["side"],
@@ -1000,7 +1001,7 @@ def build_ticks_and_messages(tracking: np.ndarray, events: list) -> tuple[list, 
                     }
                 })
                 seq += 1
-                if g["traced"]:
+                if g["traced"] and g["goal_id"] in traces:
                     messages.append({
                         "type": "agent.step",
                         "match_id": MATCH_ID,
@@ -1012,7 +1013,7 @@ def build_ticks_and_messages(tracking: np.ndarray, events: list) -> tuple[list, 
                         "type": "trace.ready",
                         "match_id": MATCH_ID,
                         "sequence": seq,
-                        "payload": {"goal_id": g["goal_id"], "root_cause_evidence_id": f"{g['goal_id']}-l1"}
+                        "payload": traces[g["goal_id"]]
                     })
                     seq += 1
                     messages.append({
@@ -1329,13 +1330,7 @@ def main():
     dump_json(TARGET_DIR / "analysis.json", analysis)
     print("[OK] Wrote analysis.json")
 
-    # 6. Ticks & Messages
-    ticks, messages = build_ticks_and_messages(tracking, events)
-    dump_json(TARGET_DIR / "ticks.json", ticks)
-    dump_json(TARGET_DIR / "messages.json", messages)
-    print(f"[OK] Wrote ticks.json ({len(ticks)} ticks) and messages.json ({len(messages)} messages)")
-
-    # 7. Traces, Replays, Explanations, Reports
+    # 6. Traces, Replays, Explanations, Reports
     traces, replays, _ = build_traces_replays_and_narratives(tracking)
     dump_json(TARGET_DIR / "replays.json", replays)
     print(f"[OK] Wrote replays.json ({len(replays)} goal replay sets)")
@@ -1343,6 +1338,12 @@ def main():
     for gid, tr in traces.items():
         dump_json(TARGET_DIR / "traces" / f"{gid}.json", tr)
     print(f"[OK] Wrote {len(traces)} trace files")
+
+    # 7. Ticks & Messages (using traces for full trace.ready payload)
+    ticks, messages = build_ticks_and_messages(tracking, events, traces)
+    dump_json(TARGET_DIR / "ticks.json", ticks)
+    dump_json(TARGET_DIR / "messages.json", messages)
+    print(f"[OK] Wrote ticks.json ({len(ticks)} ticks) and messages.json ({len(messages)} messages)")
 
     explanations, reports = build_explanations_and_reports(traces)
     for (gid, mode, lang), exp in explanations.items():
@@ -1353,8 +1354,21 @@ def main():
         dump_json(TARGET_DIR / "reports" / f"{mode}.{lang}.json", rep)
     print(f"[OK] Wrote {len(reports)} report files")
 
-    # Ground truth (clean null / non-planted)
-    dump_json(TARGET_DIR / "ground_truth.json", None)
+    # Ground truth (featured goal g3 for showcase hero timestack animation)
+    ground_truth = {
+        "match_id": MATCH_ID,
+        "seed": 20231112,
+        "goal_id": f"{MATCH_ID}-g3",
+        "goal_seq": 2184,
+        "goal_clock_s": 2184,
+        "scoring_team": "HOME",
+        "planted_at_s": 2176,
+        "root_cause_clock_s": 2176,
+        "root_cause_player_id": "A5",
+        "bug": "LATE_STEP_UP",
+        "params": {"metres_behind_line": 6.3}
+    }
+    dump_json(TARGET_DIR / "ground_truth.json", ground_truth)
     print("[OK] Wrote ground_truth.json")
 
     # 8. Stacks (Shape Stack, Chance Stack, player moments, goal verdicts, dossier)

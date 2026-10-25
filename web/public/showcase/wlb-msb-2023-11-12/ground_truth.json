@@ -1,1 +1,1 @@
-null
+{"match_id":"wlb-msb-2023-11-12","seed":20231112,"goal_id":"wlb-msb-2023-11-12-g3","goal_seq":2184,"goal_clock_s":2184,"scoring_team":"HOME","planted_at_s":2176,"root_cause_clock_s":2176,"root_cause_player_id":"A5","bug":"LATE_STEP_UP","params":{"metres_behind_line":6.3}}
