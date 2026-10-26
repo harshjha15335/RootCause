@@ -77,40 +77,96 @@
     },
     {
       "goal_id": "wlb-msb-2023-11-12-g4",
-      "text": "La causa raíz es el error de H5, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g4-l1]\nH5: Perdió a su marca: Silven dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26. [wlb-msb-2023-11-12-g4-l1]\nH5: (metros del rival: 4.1) [wlb-msb-2023-11-12-g4-l1]\nEl motor atribuye el 100% de la culpa a H5. [wlb-msb-2023-11-12-g4-l1]\nCorregir este error cambió los goles de 197/200 a 124/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l1]",
+      "text": "La causa raíz es el error de H8, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g4-l1]\nH8: Perdió a su marca: Gallavan dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26. [wlb-msb-2023-11-12-g4-l1]\nH8: (metros del rival: 4.1) [wlb-msb-2023-11-12-g4-l1]\nEl motor atribuye el 52.2124% de la culpa a H8. [wlb-msb-2023-11-12-g4-l1]\nCorregir este error cambió los goles de 79/200 a 20/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l1]\nH4: Salida tardía: Disaro quedó 5.4 m por detrás del resto de su línea de cuatro en el 45:00. [wlb-msb-2023-11-12-g4-l2]\nH4: (metros detrás de la línea: 5.4) [wlb-msb-2023-11-12-g4-l2]\nEl motor atribuye el 29.2035% de la culpa a H4. [wlb-msb-2023-11-12-g4-l2]\nCorregir este error cambió los goles de 79/200 a 46/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l2]\nH5: Salida tardía: Silven quedó 5.1 m por detrás del resto de su línea de cuatro en el 45:07, dejando en posición legal a Akendo. [wlb-msb-2023-11-12-g4-l3]\nH5: (metros detrás de la línea: 5.1) [wlb-msb-2023-11-12-g4-l3]\nEl motor atribuye el 18.5841% de la culpa a H5. [wlb-msb-2023-11-12-g4-l3]\nCorregir este error cambió los goles de 79/200 a 58/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l3]",
       "sentences": [
         {
-          "text": "La causa raíz es el error de H5, clasificado primero por la reducción medida de goles del Debugger.",
+          "text": "La causa raíz es el error de H8, clasificado primero por la reducción medida de goles del Debugger.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "root"
         },
         {
-          "text": "H5: Perdió a su marca: Silven dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26.",
+          "text": "H8: Perdió a su marca: Gallavan dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "H5: (metros del rival: 4.1)",
+          "text": "H8: (metros del rival: 4.1)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "El motor atribuye el 100% de la culpa a H5.",
+          "text": "El motor atribuye el 52.2124% de la culpa a H8.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "attribution"
         },
         {
-          "text": "Corregir este error cambió los goles de 197/200 a 124/200 en las repeticiones suministradas.",
+          "text": "Corregir este error cambió los goles de 79/200 a 20/200 en las repeticiones suministradas.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H4: Salida tardía: Disaro quedó 5.4 m por detrás del resto de su línea de cuatro en el 45:00.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H4: (metros detrás de la línea: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 29.2035% de la culpa a H4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 79/200 a 46/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H5: Salida tardía: Silven quedó 5.1 m por detrás del resto de su línea de cuatro en el 45:07, dejando en posición legal a Akendo.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metros detrás de la línea: 5.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 18.5841% de la culpa a H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 79/200 a 58/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
           ],
           "kind": "counterfactual"
         }
@@ -235,7 +291,7 @@
   ],
   "patterns": {
     "MARKING_LOST": 5,
-    "LATE_STEP_UP": 1
+    "LATE_STEP_UP": 3
   },
   "top_causes": [
     "MARKING_LOST",

@@ -42,24 +42,24 @@
         "player_id": "H4",
         "team": "home",
         "position": {
-          "x": 7.96,
-          "y": 38.38
+          "x": 19.04,
+          "y": 43.48
         }
       },
       {
         "player_id": "H5",
         "team": "home",
         "position": {
-          "x": 13.43,
-          "y": 37.49
+          "x": 8.12,
+          "y": 37.98
         }
       },
       {
         "player_id": "H6",
         "team": "home",
         "position": {
-          "x": 22.61,
-          "y": 41.86
+          "x": 29.14,
+          "y": 44.12
         }
       },
       {
@@ -74,8 +74,8 @@
         "player_id": "H8",
         "team": "home",
         "position": {
-          "x": 36.8,
-          "y": 37.58
+          "x": 12.92,
+          "y": 38.56
         }
       },
       {
@@ -90,16 +90,16 @@
         "player_id": "H10",
         "team": "home",
         "position": {
-          "x": 32.22,
-          "y": 31.76
+          "x": 38.71,
+          "y": 22.02
         }
       },
       {
         "player_id": "H11",
         "team": "home",
         "position": {
-          "x": 11.2,
-          "y": 36.14
+          "x": 33.3,
+          "y": 28.8
         }
       },
       {
@@ -138,8 +138,8 @@
         "player_id": "A5",
         "team": "away",
         "position": {
-          "x": 36.75,
-          "y": 40.18
+          "x": 36.76,
+          "y": 39.59
         }
       },
       {
@@ -162,8 +162,8 @@
         "player_id": "A8",
         "team": "away",
         "position": {
-          "x": 20.56,
-          "y": 43.45
+          "x": 21.54,
+          "y": 42.76
         }
       },
       {
@@ -186,8 +186,8 @@
         "player_id": "A11",
         "team": "away",
         "position": {
-          "x": 10.15,
-          "y": 33.77
+          "x": 10.5,
+          "y": 34.52
         }
       }
     ]
@@ -195,13 +195,35 @@
   "links": [
     {
       "evidence_id": "wlb-msb-2023-11-12-g4-l1",
-      "player_id": "H5",
+      "player_id": "H8",
       "second": 2720,
       "bug_type": "MARKING_LOST",
-      "description": "Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26. (metres from runner: 4.1)",
-      "blame_percent": 100.0,
-      "baseline_goals": 197,
-      "fixed_goals": 124,
+      "description": "Lost his runner: Gallavan let Akendo go at 45:20 and was 4.1 m off him at 45:26. (metres from runner: 4.1)",
+      "blame_percent": 52.21238938053097,
+      "baseline_goals": 79,
+      "fixed_goals": 20,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l2",
+      "player_id": "H4",
+      "second": 2700,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late step-up: Disaro stood 5.4 m behind the rest of his back four at 45:00. (metres behind line: 5.4)",
+      "blame_percent": 29.20353982300885,
+      "baseline_goals": 79,
+      "fixed_goals": 46,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l3",
+      "player_id": "H5",
+      "second": 2707,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late step-up: Silven stood 5.1 m behind the rest of his back four at 45:07, keeping Akendo onside. (metres behind line: 5.1)",
+      "blame_percent": 18.58407079646018,
+      "baseline_goals": 79,
+      "fixed_goals": 58,
       "trials": 200
     }
   ],

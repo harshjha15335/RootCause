@@ -9,30 +9,96 @@
       "evidence_id": "wlb-msb-2023-11-12-g4-l1",
       "sentences": [
         {
-          "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+          "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+          "text": "H8: (खिलाड़ी से मीटर: 4.1)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "इंजन ने 100% दोष H5 को दिया।",
+          "text": "इंजन ने 52.2124% दोष H8 को दिया।",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "attribution"
         },
         {
-          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 197/200 से घटकर 124/200 हो गए।",
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 20/200 हो गए।",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l2",
+      "sentences": [
+        {
+          "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H4: (लाइन के पीछे मीटर: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 29.2035% दोष H4 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 46/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l3",
+      "sentences": [
+        {
+          "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (लाइन के पीछे मीटर: 5.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 18.5841% दोष H5 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 58/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
           ],
           "kind": "counterfactual"
         }
@@ -41,7 +107,7 @@
   ],
   "root_summary": [
     {
-      "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g4-l1"
       ],
@@ -54,9 +120,33 @@
       "start_second": 2720,
       "end_second": 2720,
       "caption": {
-        "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+        "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l2",
+      "start_second": 2700,
+      "end_second": 2700,
+      "caption": {
+        "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l3",
+      "start_second": 2707,
+      "end_second": 2707,
+      "caption": {
+        "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
         ],
         "kind": "description"
       }
@@ -65,90 +155,216 @@
   "recaps": {
     "fan": [
       {
-        "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "root"
       },
       {
-        "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+        "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+        "text": "H8: (खिलाड़ी से मीटर: 4.1)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "इंजन ने 100% दोष H5 को दिया।",
+        "text": "इंजन ने 52.2124% दोष H8 को दिया।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H4: (लाइन के पीछे मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 29.2035% दोष H4 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (लाइन के पीछे मीटर: 5.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 18.5841% दोष H5 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
         ],
         "kind": "attribution"
       }
     ],
     "analyst": [
       {
-        "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "root"
       },
       {
-        "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+        "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+        "text": "H8: (खिलाड़ी से मीटर: 4.1)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "इंजन ने 100% दोष H5 को दिया।",
+        "text": "इंजन ने 52.2124% दोष H8 को दिया।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "attribution"
       },
       {
-        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 197/200 से घटकर 124/200 हो गए।",
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 20/200 हो गए।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H4: (लाइन के पीछे मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 29.2035% दोष H4 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 46/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (लाइन के पीछे मीटर: 5.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 18.5841% दोष H5 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 79/200 से घटकर 58/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
         ],
         "kind": "counterfactual"
       }
     ],
     "studio": [
       {
-        "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "root"
       },
       {
-        "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+        "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+        "text": "H8: (खिलाड़ी से मीटर: 4.1)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g4-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H4: (लाइन के पीछे मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (लाइन के पीछे मीटर: 5.1)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g4-l3"
         ],
         "kind": "description"
       }
@@ -157,13 +373,35 @@
   "blame_order": [
     {
       "evidence_id": "wlb-msb-2023-11-12-g4-l1",
-      "player_id": "H5",
+      "player_id": "H8",
       "second": 2720,
       "bug_type": "MARKING_LOST",
-      "description": "Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26. (metres from runner: 4.1)",
-      "blame_percent": 100.0,
-      "baseline_goals": 197,
-      "fixed_goals": 124,
+      "description": "Lost his runner: Gallavan let Akendo go at 45:20 and was 4.1 m off him at 45:26. (metres from runner: 4.1)",
+      "blame_percent": 52.21238938053097,
+      "baseline_goals": 79,
+      "fixed_goals": 20,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l2",
+      "player_id": "H4",
+      "second": 2700,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late step-up: Disaro stood 5.4 m behind the rest of his back four at 45:00. (metres behind line: 5.4)",
+      "blame_percent": 29.20353982300885,
+      "baseline_goals": 79,
+      "fixed_goals": 46,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l3",
+      "player_id": "H5",
+      "second": 2707,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late step-up: Silven stood 5.1 m behind the rest of his back four at 45:07, keeping Akendo onside. (metres behind line: 5.1)",
+      "blame_percent": 18.58407079646018,
+      "baseline_goals": 79,
+      "fixed_goals": 58,
       "trials": 200
     }
   ],
@@ -172,35 +410,77 @@
   "mode": "fan",
   "lang": "hi",
   "requested_lang": "hi",
-  "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g4-l1]\nH5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे। [wlb-msb-2023-11-12-g4-l1]\nH5: (खिलाड़ी से मीटर: 4.1) [wlb-msb-2023-11-12-g4-l1]\nइंजन ने 100% दोष H5 को दिया। [wlb-msb-2023-11-12-g4-l1]",
+  "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g4-l1]\nH8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे। [wlb-msb-2023-11-12-g4-l1]\nH8: (खिलाड़ी से मीटर: 4.1) [wlb-msb-2023-11-12-g4-l1]\nइंजन ने 52.2124% दोष H8 को दिया। [wlb-msb-2023-11-12-g4-l1]\nH4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे। [wlb-msb-2023-11-12-g4-l2]\nH4: (लाइन के पीछे मीटर: 5.4) [wlb-msb-2023-11-12-g4-l2]\nइंजन ने 29.2035% दोष H4 को दिया। [wlb-msb-2023-11-12-g4-l2]\nH5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे। [wlb-msb-2023-11-12-g4-l3]\nH5: (लाइन के पीछे मीटर: 5.1) [wlb-msb-2023-11-12-g4-l3]\nइंजन ने 18.5841% दोष H5 को दिया। [wlb-msb-2023-11-12-g4-l3]",
   "translation_warning": null,
   "audio_available": false,
   "sentences": [
     {
-      "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "text": "मूल कारण H8 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g4-l1"
       ],
       "kind": "root"
     },
     {
-      "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+      "text": "H8: अपने खिलाड़ी को छोड़ा: Gallavan ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g4-l1"
       ],
       "kind": "description"
     },
     {
-      "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+      "text": "H8: (खिलाड़ी से मीटर: 4.1)",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g4-l1"
       ],
       "kind": "description"
     },
     {
-      "text": "इंजन ने 100% दोष H5 को दिया।",
+      "text": "इंजन ने 52.2124% दोष H8 को दिया।",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g4-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "H4: देर से आगे बढ़ना: 45:00 पर Disaro अपनी बैक फ़ोर से 5.4 मीटर पीछे रहे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H4: (लाइन के पीछे मीटर: 5.4)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 29.2035% दोष H4 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l2"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "H5: देर से आगे बढ़ना: 45:07 पर Silven अपनी बैक फ़ोर से 5.1 मीटर पीछे रहे, जिससे Akendo ऑनसाइड रहे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l3"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H5: (लाइन के पीछे मीटर: 5.1)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l3"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 18.5841% दोष H5 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g4-l3"
       ],
       "kind": "attribution"
     }

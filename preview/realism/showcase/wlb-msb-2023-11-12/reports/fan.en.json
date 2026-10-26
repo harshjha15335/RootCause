@@ -63,33 +63,75 @@
     },
     {
       "goal_id": "wlb-msb-2023-11-12-g4",
-      "text": "The root cause is the mistake by H5, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g4-l1]\nH5: Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26. [wlb-msb-2023-11-12-g4-l1]\nH5: (metres from runner: 4.1) [wlb-msb-2023-11-12-g4-l1]\nThe engine attributes 100% of the blame to H5. [wlb-msb-2023-11-12-g4-l1]",
+      "text": "The root cause is the mistake by H8, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g4-l1]\nH8: Lost his runner: Gallavan let Akendo go at 45:20 and was 4.1 m off him at 45:26. [wlb-msb-2023-11-12-g4-l1]\nH8: (metres from runner: 4.1) [wlb-msb-2023-11-12-g4-l1]\nThe engine attributes 52.2124% of the blame to H8. [wlb-msb-2023-11-12-g4-l1]\nH4: Late step-up: Disaro stood 5.4 m behind the rest of his back four at 45:00. [wlb-msb-2023-11-12-g4-l2]\nH4: (metres behind line: 5.4) [wlb-msb-2023-11-12-g4-l2]\nThe engine attributes 29.2035% of the blame to H4. [wlb-msb-2023-11-12-g4-l2]\nH5: Late step-up: Silven stood 5.1 m behind the rest of his back four at 45:07, keeping Akendo onside. [wlb-msb-2023-11-12-g4-l3]\nH5: (metres behind line: 5.1) [wlb-msb-2023-11-12-g4-l3]\nThe engine attributes 18.5841% of the blame to H5. [wlb-msb-2023-11-12-g4-l3]",
       "sentences": [
         {
-          "text": "The root cause is the mistake by H5, ranked first by the Debugger's measured goal-rate reduction.",
+          "text": "The root cause is the mistake by H8, ranked first by the Debugger's measured goal-rate reduction.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "root"
         },
         {
-          "text": "H5: Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26.",
+          "text": "H8: Lost his runner: Gallavan let Akendo go at 45:20 and was 4.1 m off him at 45:26.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "H5: (metres from runner: 4.1)",
+          "text": "H8: (metres from runner: 4.1)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "The engine attributes 100% of the blame to H5.",
+          "text": "The engine attributes 52.2124% of the blame to H8.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "H4: Late step-up: Disaro stood 5.4 m behind the rest of his back four at 45:00.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H4: (metres behind line: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 29.2035% of the blame to H4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "H5: Late step-up: Silven stood 5.1 m behind the rest of his back four at 45:07, keeping Akendo onside.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metres behind line: 5.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 18.5841% of the blame to H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
           ],
           "kind": "attribution"
         }
@@ -193,7 +235,7 @@
   ],
   "patterns": {
     "MARKING_LOST": 5,
-    "LATE_STEP_UP": 1
+    "LATE_STEP_UP": 3
   },
   "top_causes": [
     "MARKING_LOST",

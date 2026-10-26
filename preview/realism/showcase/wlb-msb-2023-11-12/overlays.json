@@ -99,14 +99,14 @@
     "in_s": 2717,
     "out_s": 2727,
     "kind": "root_cause",
-    "text": "ROOT CAUSE DETECTED: H5 (Tiago Silven) · MARKING_LOST (100.0% blame)",
+    "text": "ROOT CAUSE DETECTED: H8 (C. Gallavan) · MARKING_LOST (52.2% blame)",
     "data": {
       "goal_id": "wlb-msb-2023-11-12-g4",
       "evidence_id": "wlb-msb-2023-11-12-g4-l1",
-      "culprit_id": "H5",
-      "culprit_name": "Tiago Silven",
+      "culprit_id": "H8",
+      "culprit_name": "C. Gallavan",
       "bug_type": "MARKING_LOST",
-      "blame_percent": 100.0
+      "blame_percent": 52.2
     }
   },
   {
