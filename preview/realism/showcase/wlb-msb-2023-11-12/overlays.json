@@ -158,8 +158,8 @@
     }
   },
   {
-    "in_s": 4396,
-    "out_s": 4406,
+    "in_s": 4398,
+    "out_s": 4408,
     "kind": "root_cause",
     "text": "ROOT CAUSE DETECTED: A3 (Ruben Diales) · MARKING_LOST (100.0% blame)",
     "data": {

@@ -198,7 +198,7 @@
     },
     {
       "goal_id": "wlb-msb-2023-11-12-g6",
-      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros del rival: 8.3) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 100% de la culpa a A3. [wlb-msb-2023-11-12-g6-l1]",
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Perdió a su marca: Diales estaba a 6.8 m de Gallavan en el 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros del rival: 6.8) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 100% de la culpa a A3. [wlb-msb-2023-11-12-g6-l1]",
       "sentences": [
         {
           "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
@@ -208,14 +208,14 @@
           "kind": "root"
         },
         {
-          "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+          "text": "A3: Perdió a su marca: Diales estaba a 6.8 m de Gallavan en el 73:21.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "A3: (metros del rival: 8.3)",
+          "text": "A3: (metros del rival: 6.8)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],

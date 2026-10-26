@@ -95668,8 +95668,8 @@
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 40.4,
-            "y": 37.8
+            "x": 43.6,
+            "y": 35.7
           }
         },
         {
@@ -95855,7 +95855,7 @@
           "player_id": "H8",
           "team": "home",
           "position": {
-            "x": 41.3,
+            "x": 41.4,
             "y": 35.1
           }
         },
@@ -95863,8 +95863,8 @@
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 36.9,
-            "y": 37.4
+            "x": 38.8,
+            "y": 35.3
           }
         },
         {
@@ -96050,16 +96050,16 @@
           "player_id": "H8",
           "team": "home",
           "position": {
-            "x": 36.0,
-            "y": 35.5
+            "x": 36.6,
+            "y": 35.8
           }
         },
         {
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 33.0,
-            "y": 36.7
+            "x": 34.3,
+            "y": 34.6
           }
         },
         {
@@ -96245,16 +96245,16 @@
           "player_id": "H8",
           "team": "home",
           "position": {
-            "x": 34.5,
-            "y": 35.4
+            "x": 35.0,
+            "y": 35.6
           }
         },
         {
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 29.0,
-            "y": 36.5
+            "x": 30.3,
+            "y": 35.1
           }
         },
         {
@@ -96293,8 +96293,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 30.5,
-            "y": 28.4
+            "x": 31.0,
+            "y": 28.2
           }
         },
         {
@@ -96309,8 +96309,8 @@
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 25.0,
-            "y": 35.9
+            "x": 25.9,
+            "y": 34.4
           }
         },
         {
@@ -96325,8 +96325,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 32.0,
-            "y": 35.9
+            "x": 32.5,
+            "y": 36.4
           }
         },
         {
@@ -96440,16 +96440,16 @@
           "player_id": "H8",
           "team": "home",
           "position": {
-            "x": 33.2,
-            "y": 34.8
+            "x": 33.6,
+            "y": 34.9
           }
         },
         {
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 25.4,
-            "y": 36.4
+            "x": 28.1,
+            "y": 35.6
           }
         },
         {
@@ -96464,8 +96464,8 @@
           "player_id": "H11",
           "team": "home",
           "position": {
-            "x": 25.7,
-            "y": 56.6
+            "x": 26.2,
+            "y": 56.8
           }
         },
         {
@@ -96488,8 +96488,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 28.9,
-            "y": 34.5
+            "x": 30.6,
+            "y": 35.4
           }
         },
         {
@@ -96497,15 +96497,15 @@
           "team": "away",
           "position": {
             "x": 23.7,
-            "y": 58.7
+            "y": 58.6
           }
         },
         {
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 21.9,
-            "y": 36.1
+            "x": 25.8,
+            "y": 34.4
           }
         },
         {
@@ -96520,8 +96520,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 28.9,
-            "y": 37.1
+            "x": 24.8,
+            "y": 36.8
           }
         },
         {
@@ -96536,8 +96536,8 @@
           "player_id": "A9",
           "team": "away",
           "position": {
-            "x": 26.7,
-            "y": 54.5
+            "x": 26.6,
+            "y": 54.4
           }
         },
         {
@@ -96635,16 +96635,16 @@
           "player_id": "H8",
           "team": "home",
           "position": {
-            "x": 32.3,
-            "y": 35.1
+            "x": 32.5,
+            "y": 35.2
           }
         },
         {
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 21.8,
-            "y": 36.0
+            "x": 23.9,
+            "y": 35.1
           }
         },
         {
@@ -96675,7 +96675,7 @@
           "player_id": "A2",
           "team": "away",
           "position": {
-            "x": 23.5,
+            "x": 23.4,
             "y": 51.7
           }
         },
@@ -96683,24 +96683,24 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 27.2,
-            "y": 41.6
+            "x": 28.9,
+            "y": 40.9
           }
         },
         {
           "player_id": "A4",
           "team": "away",
           "position": {
-            "x": 25.9,
-            "y": 52.7
+            "x": 26.0,
+            "y": 52.4
           }
         },
         {
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 19.5,
-            "y": 34.8
+            "x": 21.5,
+            "y": 34.3
           }
         },
         {
@@ -96715,8 +96715,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 25.6,
-            "y": 30.4
+            "x": 24.1,
+            "y": 29.2
           }
         },
         {
@@ -96732,7 +96732,7 @@
           "team": "away",
           "position": {
             "x": 23.9,
-            "y": 49.1
+            "y": 49.2
           }
         },
         {
@@ -96815,7 +96815,7 @@
           "team": "home",
           "position": {
             "x": 32.4,
-            "y": 45.2
+            "y": 45.3
           }
         },
         {
@@ -96838,8 +96838,8 @@
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 17.9,
-            "y": 35.8
+            "x": 23.0,
+            "y": 35.3
           }
         },
         {
@@ -96854,7 +96854,7 @@
           "player_id": "H11",
           "team": "home",
           "position": {
-            "x": 24.2,
+            "x": 24.4,
             "y": 54.7
           }
         },
@@ -96870,7 +96870,7 @@
           "player_id": "A2",
           "team": "away",
           "position": {
-            "x": 21.3,
+            "x": 21.8,
             "y": 55.0
           }
         },
@@ -96878,7 +96878,7 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 27.1,
+            "x": 28.9,
             "y": 35.8
           }
         },
@@ -96886,7 +96886,7 @@
           "player_id": "A4",
           "team": "away",
           "position": {
-            "x": 24.4,
+            "x": 25.0,
             "y": 51.1
           }
         },
@@ -96894,8 +96894,8 @@
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 25.0,
-            "y": 32.6
+            "x": 25.2,
+            "y": 32.5
           }
         },
         {
@@ -96910,15 +96910,15 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 25.0,
-            "y": 37.4
+            "x": 25.5,
+            "y": 36.0
           }
         },
         {
           "player_id": "A8",
           "team": "away",
           "position": {
-            "x": 50.2,
+            "x": 50.9,
             "y": 27.8
           }
         },
@@ -96926,7 +96926,7 @@
           "player_id": "A9",
           "team": "away",
           "position": {
-            "x": 31.8,
+            "x": 31.9,
             "y": 47.8
           }
         },
@@ -96934,7 +96934,7 @@
           "player_id": "A10",
           "team": "away",
           "position": {
-            "x": 36.7,
+            "x": 37.4,
             "y": 14.0
           }
         },
@@ -96942,7 +96942,7 @@
           "player_id": "A11",
           "team": "away",
           "position": {
-            "x": 47.2,
+            "x": 47.9,
             "y": 44.8
           }
         }
@@ -97033,8 +97033,8 @@
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 14.8,
-            "y": 35.4
+            "x": 23.4,
+            "y": 33.5
           }
         },
         {
@@ -97065,7 +97065,7 @@
           "player_id": "A2",
           "team": "away",
           "position": {
-            "x": 20.6,
+            "x": 20.7,
             "y": 53.5
           }
         },
@@ -97073,7 +97073,7 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 22.8,
+            "x": 27.8,
             "y": 35.0
           }
         },
@@ -97089,8 +97089,8 @@
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 20.2,
-            "y": 33.2
+            "x": 20.5,
+            "y": 37.7
           }
         },
         {
@@ -97105,8 +97105,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 20.2,
-            "y": 37.5
+            "x": 21.7,
+            "y": 35.5
           }
         },
         {
@@ -97205,7 +97205,7 @@
           "team": "home",
           "position": {
             "x": 39.1,
-            "y": 37.3
+            "y": 37.4
           }
         },
         {
@@ -97228,8 +97228,8 @@
           "player_id": "H9",
           "team": "home",
           "position": {
-            "x": 10.9,
-            "y": 36.0
+            "x": 15.2,
+            "y": 35.0
           }
         },
         {
@@ -97268,40 +97268,40 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 15.3,
-            "y": 35.5
+            "x": 20.0,
+            "y": 34.1
           }
         },
         {
           "player_id": "A4",
           "team": "away",
           "position": {
-            "x": 25.0,
-            "y": 40.4
+            "x": 32.7,
+            "y": 43.6
           }
         },
         {
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 18.7,
-            "y": 26.1
+            "x": 18.9,
+            "y": 30.0
           }
         },
         {
           "player_id": "A6",
           "team": "away",
           "position": {
-            "x": 20.4,
-            "y": 35.1
+            "x": 20.6,
+            "y": 36.5
           }
         },
         {
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 13.9,
-            "y": 33.4
+            "x": 20.6,
+            "y": 31.7
           }
         },
         {
@@ -97399,8 +97399,8 @@
           "player_id": "H6",
           "team": "home",
           "position": {
-            "x": 41.9,
-            "y": 33.4
+            "x": 41.8,
+            "y": 33.5
           }
         },
         {
@@ -97463,15 +97463,15 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 6.1,
-            "y": 35.3
+            "x": 11.7,
+            "y": 35.1
           }
         },
         {
           "player_id": "A4",
           "team": "away",
           "position": {
-            "x": 28.6,
+            "x": 28.7,
             "y": 38.2
           }
         },
@@ -97479,24 +97479,24 @@
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 12.7,
-            "y": 26.6
+            "x": 13.4,
+            "y": 32.7
           }
         },
         {
           "player_id": "A6",
           "team": "away",
           "position": {
-            "x": 13.6,
-            "y": 34.2
+            "x": 14.3,
+            "y": 35.2
           }
         },
         {
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 8.5,
-            "y": 33.5
+            "x": 14.9,
+            "y": 29.5
           }
         },
         {
@@ -97622,8 +97622,8 @@
             "player_id": "H6",
             "team": "home",
             "position": {
-              "x": 41.86,
-              "y": 33.45
+              "x": 41.84,
+              "y": 33.47
             }
           },
           {
@@ -97686,40 +97686,40 @@
             "player_id": "A3",
             "team": "away",
             "position": {
-              "x": 6.1,
-              "y": 35.33
+              "x": 11.71,
+              "y": 35.07
             }
           },
           {
             "player_id": "A4",
             "team": "away",
             "position": {
-              "x": 28.64,
-              "y": 38.19
+              "x": 28.65,
+              "y": 38.22
             }
           },
           {
             "player_id": "A5",
             "team": "away",
             "position": {
-              "x": 12.69,
-              "y": 26.57
+              "x": 13.43,
+              "y": 32.65
             }
           },
           {
             "player_id": "A6",
             "team": "away",
             "position": {
-              "x": 13.59,
-              "y": 34.24
+              "x": 14.32,
+              "y": 35.21
             }
           },
           {
             "player_id": "A7",
             "team": "away",
             "position": {
-              "x": 8.53,
-              "y": 33.48
+              "x": 14.89,
+              "y": 29.51
             }
           },
           {
@@ -97760,9 +97760,9 @@
         {
           "evidence_id": "wlb-msb-2023-11-12-g6-l1",
           "player_id": "A3",
-          "second": 4399,
+          "second": 4401,
           "bug_type": "MARKING_LOST",
-          "description": "Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. (metres from runner: 8.3)",
+          "description": "Lost his runner: Diales was 6.8 m off Gallavan at 73:21. (metres from runner: 6.8)",
           "blame_percent": 100.0,
           "baseline_goals": 126,
           "fixed_goals": 30,
@@ -97905,8 +97905,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 8.4,
-            "y": 30.4
+            "x": 13.1,
+            "y": 30.1
           }
         },
         {
@@ -97921,24 +97921,24 @@
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 13.0,
-            "y": 26.8
+            "x": 13.2,
+            "y": 27.5
           }
         },
         {
           "player_id": "A6",
           "team": "away",
           "position": {
-            "x": 18.5,
-            "y": 34.0
+            "x": 19.2,
+            "y": 34.7
           }
         },
         {
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 13.2,
-            "y": 35.3
+            "x": 19.0,
+            "y": 32.1
           }
         },
         {
@@ -98100,8 +98100,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 10.7,
-            "y": 25.7
+            "x": 14.5,
+            "y": 25.0
           }
         },
         {
@@ -98109,31 +98109,31 @@
           "team": "away",
           "position": {
             "x": 18.7,
-            "y": 39.0
+            "y": 38.8
           }
         },
         {
           "player_id": "A5",
           "team": "away",
           "position": {
-            "x": 13.0,
-            "y": 27.0
+            "x": 12.9,
+            "y": 27.1
           }
         },
         {
           "player_id": "A6",
           "team": "away",
           "position": {
-            "x": 23.3,
-            "y": 34.0
+            "x": 24.7,
+            "y": 33.4
           }
         },
         {
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 18.3,
-            "y": 36.5
+            "x": 23.0,
+            "y": 35.4
           }
         },
         {
@@ -98295,16 +98295,16 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 13.1,
-            "y": 21.4
+            "x": 16.0,
+            "y": 20.3
           }
         },
         {
           "player_id": "A4",
           "team": "away",
           "position": {
-            "x": 13.9,
-            "y": 41.2
+            "x": 14.0,
+            "y": 41.1
           }
         },
         {
@@ -98327,8 +98327,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 24.0,
-            "y": 38.4
+            "x": 28.3,
+            "y": 38.0
           }
         },
         {
@@ -98490,8 +98490,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 16.6,
-            "y": 17.2
+            "x": 18.7,
+            "y": 15.7
           }
         },
         {
@@ -98522,8 +98522,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 28.4,
-            "y": 40.2
+            "x": 32.3,
+            "y": 40.6
           }
         },
         {
@@ -98685,8 +98685,8 @@
           "player_id": "A3",
           "team": "away",
           "position": {
-            "x": 18.6,
-            "y": 13.1
+            "x": 19.7,
+            "y": 11.2
           }
         },
         {
@@ -98717,8 +98717,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 33.2,
-            "y": 42.3
+            "x": 36.8,
+            "y": 43.4
           }
         },
         {
@@ -98912,8 +98912,8 @@
           "player_id": "A7",
           "team": "away",
           "position": {
-            "x": 37.8,
-            "y": 43.6
+            "x": 38.3,
+            "y": 43.8
           }
         },
         {

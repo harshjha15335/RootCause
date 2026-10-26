@@ -9,14 +9,14 @@
       "evidence_id": "wlb-msb-2023-11-12-g6-l1",
       "sentences": [
         {
-          "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+          "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "A3: (metres from runner: 8.3)",
+          "text": "A3: (metres from runner: 6.8)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],
@@ -51,10 +51,10 @@
   "highlights": [
     {
       "evidence_id": "wlb-msb-2023-11-12-g6-l1",
-      "start_second": 4399,
-      "end_second": 4399,
+      "start_second": 4401,
+      "end_second": 4401,
       "caption": {
-        "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+        "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
@@ -72,14 +72,14 @@
         "kind": "root"
       },
       {
-        "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+        "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "A3: (metres from runner: 8.3)",
+        "text": "A3: (metres from runner: 6.8)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
@@ -102,14 +102,14 @@
         "kind": "root"
       },
       {
-        "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+        "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "A3: (metres from runner: 8.3)",
+        "text": "A3: (metres from runner: 6.8)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
@@ -139,14 +139,14 @@
         "kind": "root"
       },
       {
-        "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+        "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
         "kind": "description"
       },
       {
-        "text": "A3: (metres from runner: 8.3)",
+        "text": "A3: (metres from runner: 6.8)",
         "evidence_ids": [
           "wlb-msb-2023-11-12-g6-l1"
         ],
@@ -158,9 +158,9 @@
     {
       "evidence_id": "wlb-msb-2023-11-12-g6-l1",
       "player_id": "A3",
-      "second": 4399,
+      "second": 4401,
       "bug_type": "MARKING_LOST",
-      "description": "Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. (metres from runner: 8.3)",
+      "description": "Lost his runner: Diales was 6.8 m off Gallavan at 73:21. (metres from runner: 6.8)",
       "blame_percent": 100.0,
       "baseline_goals": 126,
       "fixed_goals": 30,
@@ -172,7 +172,7 @@
   "mode": "analyst",
   "lang": "en",
   "requested_lang": "en",
-  "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres from runner: 8.3) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 100% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed goals from 126/200 to 30/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l1]",
+  "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres from runner: 6.8) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 100% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed goals from 126/200 to 30/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l1]",
   "translation_warning": null,
   "audio_available": false,
   "sentences": [
@@ -184,14 +184,14 @@
       "kind": "root"
     },
     {
-      "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+      "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g6-l1"
       ],
       "kind": "description"
     },
     {
-      "text": "A3: (metres from runner: 8.3)",
+      "text": "A3: (metres from runner: 6.8)",
       "evidence_ids": [
         "wlb-msb-2023-11-12-g6-l1"
       ],

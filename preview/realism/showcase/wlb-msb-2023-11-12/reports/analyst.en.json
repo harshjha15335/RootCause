@@ -247,7 +247,7 @@
     },
     {
       "goal_id": "wlb-msb-2023-11-12-g6",
-      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres from runner: 8.3) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 100% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed goals from 126/200 to 30/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l1]",
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres from runner: 6.8) [wlb-msb-2023-11-12-g6-l1]\nThe engine attributes 100% of the blame to A3. [wlb-msb-2023-11-12-g6-l1]\nFixing this mistake changed goals from 126/200 to 30/200 in the supplied replays. [wlb-msb-2023-11-12-g6-l1]",
       "sentences": [
         {
           "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
@@ -257,14 +257,14 @@
           "kind": "root"
         },
         {
-          "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+          "text": "A3: Lost his runner: Diales was 6.8 m off Gallavan at 73:21.",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],
           "kind": "description"
         },
         {
-          "text": "A3: (metres from runner: 8.3)",
+          "text": "A3: (metres from runner: 6.8)",
           "evidence_ids": [
             "wlb-msb-2023-11-12-g6-l1"
           ],
