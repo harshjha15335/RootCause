@@ -1,0 +1,215 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g6",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g6-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "sentences": [
+        {
+          "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 100% दोष A3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 126/200 से घटकर 30/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "start_second": 4399,
+      "end_second": 4399,
+      "caption": {
+        "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 100% दोष A3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 100% दोष A3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 126/200 से घटकर 30/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "player_id": "A3",
+      "second": 4399,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. (metres from runner: 8.3)",
+      "blame_percent": 100.0,
+      "baseline_goals": 126,
+      "fixed_goals": 30,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "analyst",
+  "lang": "hi",
+  "requested_lang": "hi",
+  "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g6-l1]\nA3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे। [wlb-msb-2023-11-12-g6-l1]\nA3: (खिलाड़ी से मीटर: 8.3) [wlb-msb-2023-11-12-g6-l1]\nइंजन ने 100% दोष A3 को दिया। [wlb-msb-2023-11-12-g6-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 126/200 से घटकर 30/200 हो गए। [wlb-msb-2023-11-12-g6-l1]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 100% दोष A3 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 126/200 से घटकर 30/200 हो गए।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "counterfactual"
+    }
+  ]
+}

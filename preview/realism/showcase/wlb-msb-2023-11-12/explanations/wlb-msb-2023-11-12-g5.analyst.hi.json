@@ -1,0 +1,362 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g5",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g5-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "sentences": [
+        {
+          "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 96.4706% दोष H3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 77/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "sentences": [
+        {
+          "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 3.52941% दोष H10 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 156/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "start_second": 3206,
+      "end_second": 3206,
+      "caption": {
+        "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "start_second": 3207,
+      "end_second": 3207,
+      "caption": {
+        "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 96.4706% दोष H3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 3.52941% दोष H10 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 96.4706% दोष H3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 77/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 3.52941% दोष H10 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 156/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "player_id": "H3",
+      "second": 3206,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Cucarena let Haalviken go at 53:26 and was 5.4 m off him at 53:31. (metres from runner: 5.4)",
+      "blame_percent": 96.47058823529412,
+      "baseline_goals": 159,
+      "fixed_goals": 77,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "player_id": "H10",
+      "second": 3207,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Fernadero let Alvaredo go at 53:27 and was 4.9 m off him at 53:28. (metres from runner: 4.9)",
+      "blame_percent": 3.5294117647058822,
+      "baseline_goals": 159,
+      "fixed_goals": 156,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "analyst",
+  "lang": "hi",
+  "requested_lang": "hi",
+  "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g5-l1]\nH3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे। [wlb-msb-2023-11-12-g5-l1]\nH3: (खिलाड़ी से मीटर: 5.4) [wlb-msb-2023-11-12-g5-l1]\nइंजन ने 96.4706% दोष H3 को दिया। [wlb-msb-2023-11-12-g5-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 77/200 हो गए। [wlb-msb-2023-11-12-g5-l1]\nH10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे। [wlb-msb-2023-11-12-g5-l2]\nH10: (खिलाड़ी से मीटर: 4.9) [wlb-msb-2023-11-12-g5-l2]\nइंजन ने 3.52941% दोष H10 को दिया। [wlb-msb-2023-11-12-g5-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 156/200 हो गए। [wlb-msb-2023-11-12-g5-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 96.4706% दोष H3 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 77/200 हो गए।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "counterfactual"
+    },
+    {
+      "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 3.52941% दोष H10 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 159/200 से घटकर 156/200 हो गए।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "counterfactual"
+    }
+  ]
+}

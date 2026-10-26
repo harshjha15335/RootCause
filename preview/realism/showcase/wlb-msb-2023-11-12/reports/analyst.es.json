@@ -1,0 +1,252 @@
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "analyst",
+  "requested_lang": "es",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "La causa raíz es el error de A2, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g3-l1]\nA2: Perdió a su marca: Wallaro estaba a 4.2 m de Sterlino en el 36:23. [wlb-msb-2023-11-12-g3-l1]\nA2: (metros del rival: 4.2) [wlb-msb-2023-11-12-g3-l1]\nEl motor atribuye el 68.9655% de la culpa a A2. [wlb-msb-2023-11-12-g3-l1]\nCorregir este error cambió los goles de 190/200 a 10/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g3-l1]\nA5: Salida tardía: Gvardello quedó 5.6 m por detrás del resto de su línea de cuatro en el 36:16, dejando en posición legal a Sterlino. [wlb-msb-2023-11-12-g3-l2]\nA5: (metros detrás de la línea: 5.6) [wlb-msb-2023-11-12-g3-l2]\nEl motor atribuye el 31.0345% de la culpa a A5. [wlb-msb-2023-11-12-g3-l2]\nCorregir este error cambió los goles de 190/200 a 109/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A2, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A2: Perdió a su marca: Wallaro estaba a 4.2 m de Sterlino en el 36:23.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metros del rival: 4.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 68.9655% de la culpa a A2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 190/200 a 10/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A5: Salida tardía: Gvardello quedó 5.6 m por detrás del resto de su línea de cuatro en el 36:16, dejando en posición legal a Sterlino.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metros detrás de la línea: 5.6)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 31.0345% de la culpa a A5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 190/200 a 109/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "text": "La causa raíz es el error de H5, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g4-l1]\nH5: Perdió a su marca: Silven dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26. [wlb-msb-2023-11-12-g4-l1]\nH5: (metros del rival: 4.1) [wlb-msb-2023-11-12-g4-l1]\nEl motor atribuye el 100% de la culpa a H5. [wlb-msb-2023-11-12-g4-l1]\nCorregir este error cambió los goles de 197/200 a 124/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l1]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de H5, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H5: Perdió a su marca: Silven dejó ir a Akendo en el 45:20 y estaba a 4.1 m de él en el 45:26.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metros del rival: 4.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 100% de la culpa a H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 197/200 a 124/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g5-l1]\nH3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31. [wlb-msb-2023-11-12-g5-l1]\nH3: (metros del rival: 5.4) [wlb-msb-2023-11-12-g5-l1]\nEl motor atribuye el 96.4706% de la culpa a H3. [wlb-msb-2023-11-12-g5-l1]\nCorregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g5-l1]\nH10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28. [wlb-msb-2023-11-12-g5-l2]\nH10: (metros del rival: 4.9) [wlb-msb-2023-11-12-g5-l2]\nEl motor atribuye el 3.52941% de la culpa a H10. [wlb-msb-2023-11-12-g5-l2]\nCorregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metros del rival: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 96.4706% de la culpa a H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (metros del rival: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 3.52941% de la culpa a H10.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros del rival: 8.3) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 100% de la culpa a A3. [wlb-msb-2023-11-12-g6-l1]\nCorregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g6-l1]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metros del rival: 8.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 100% de la culpa a A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "MARKING_LOST": 5,
+    "LATE_STEP_UP": 1
+  },
+  "top_causes": [
+    "MARKING_LOST",
+    "LATE_STEP_UP"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g4",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

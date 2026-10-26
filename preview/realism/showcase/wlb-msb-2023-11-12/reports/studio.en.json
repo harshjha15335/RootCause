@@ -1,0 +1,168 @@
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "studio",
+  "requested_lang": "en",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "The root cause is the mistake by A2, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g3-l1]\nA2: Lost his runner: Wallaro was 4.2 m off Sterlino at 36:23. [wlb-msb-2023-11-12-g3-l1]\nA2: (metres from runner: 4.2) [wlb-msb-2023-11-12-g3-l1]\nA5: Late step-up: Gvardello stood 5.6 m behind the rest of his back four at 36:16, keeping Sterlino onside. [wlb-msb-2023-11-12-g3-l2]\nA5: (metres behind line: 5.6) [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A2, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A2: Lost his runner: Wallaro was 4.2 m off Sterlino at 36:23.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metres from runner: 4.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: Late step-up: Gvardello stood 5.6 m behind the rest of his back four at 36:16, keeping Sterlino onside.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metres behind line: 5.6)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "text": "The root cause is the mistake by H5, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g4-l1]\nH5: Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26. [wlb-msb-2023-11-12-g4-l1]\nH5: (metres from runner: 4.1) [wlb-msb-2023-11-12-g4-l1]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by H5, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H5: Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metres from runner: 4.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g5-l1]\nH3: Lost his runner: Cucarena let Haalviken go at 53:26 and was 5.4 m off him at 53:31. [wlb-msb-2023-11-12-g5-l1]\nH3: (metres from runner: 5.4) [wlb-msb-2023-11-12-g5-l1]\nH10: Lost his runner: Fernadero let Alvaredo go at 53:27 and was 4.9 m off him at 53:28. [wlb-msb-2023-11-12-g5-l2]\nH10: (metres from runner: 4.9) [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Lost his runner: Cucarena let Haalviken go at 53:26 and was 5.4 m off him at 53:31.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metres from runner: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: Lost his runner: Fernadero let Alvaredo go at 53:27 and was 4.9 m off him at 53:28.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (metres from runner: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g6-l1]\nA3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metres from runner: 8.3) [wlb-msb-2023-11-12-g6-l1]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres from runner: 8.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "MARKING_LOST": 5,
+    "LATE_STEP_UP": 1
+  },
+  "top_causes": [
+    "MARKING_LOST",
+    "LATE_STEP_UP"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g4",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

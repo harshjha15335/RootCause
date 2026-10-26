@@ -1,0 +1,210 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g6",
+  "match_id": "wlb-msb-2023-11-12",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "wlb-msb-2023-11-12-e4405",
+    "match_id": "wlb-msb-2023-11-12",
+    "second": 4405,
+    "type": "goal",
+    "team": "home",
+    "player_id": "H9",
+    "ball": {
+      "x": 8.4,
+      "y": 35.4
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 95.33,
+          "y": 34.42
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 40.12,
+          "y": 11.01
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 50.58,
+          "y": 46.12
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 54.45,
+          "y": 25.39
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 54.27,
+          "y": 41.18
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 41.86,
+          "y": 33.45
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 25.73,
+          "y": 23.24
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 27.53,
+          "y": 34.02
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 8.4,
+          "y": 35.4
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 42.55,
+          "y": 39.02
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 24.15,
+          "y": 55.16
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 3.44,
+          "y": 33.95
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 16.44,
+          "y": 53.98
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 6.1,
+          "y": 35.33
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 28.64,
+          "y": 38.19
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 12.69,
+          "y": 26.57
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 13.59,
+          "y": 34.24
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 8.53,
+          "y": 33.48
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 45.68,
+          "y": 26.76
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 36.49,
+          "y": 48.04
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 32.19,
+          "y": 13.07
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 36.07,
+          "y": 41.92
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "player_id": "A3",
+      "second": 4399,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. (metres from runner: 8.3)",
+      "blame_percent": 100.0,
+      "baseline_goals": 126,
+      "fixed_goals": 30,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g6-l1"
+}

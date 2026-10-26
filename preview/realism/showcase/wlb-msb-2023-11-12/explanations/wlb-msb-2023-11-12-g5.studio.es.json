@@ -1,0 +1,334 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g5",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g5-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "sentences": [
+        {
+          "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metros del rival: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 96.4706% de la culpa a H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "sentences": [
+        {
+          "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (metros del rival: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 3.52941% de la culpa a H10.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "start_second": 3206,
+      "end_second": 3206,
+      "caption": {
+        "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "start_second": 3207,
+      "end_second": 3207,
+      "caption": {
+        "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metros del rival: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 96.4706% de la culpa a H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (metros del rival: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 3.52941% de la culpa a H10.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metros del rival: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 96.4706% de la culpa a H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Corregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (metros del rival: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 3.52941% de la culpa a H10.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Corregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metros del rival: 5.4)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H10: (metros del rival: 4.9)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "player_id": "H3",
+      "second": 3206,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Cucarena let Haalviken go at 53:26 and was 5.4 m off him at 53:31. (metres from runner: 5.4)",
+      "blame_percent": 96.47058823529412,
+      "baseline_goals": 159,
+      "fixed_goals": 77,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "player_id": "H10",
+      "second": 3207,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Fernadero let Alvaredo go at 53:27 and was 4.9 m off him at 53:28. (metres from runner: 4.9)",
+      "blame_percent": 3.5294117647058822,
+      "baseline_goals": 159,
+      "fixed_goals": 156,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "studio",
+  "lang": "es",
+  "requested_lang": "es",
+  "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g5-l1]\nH3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31. [wlb-msb-2023-11-12-g5-l1]\nH3: (metros del rival: 5.4) [wlb-msb-2023-11-12-g5-l1]\nH10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28. [wlb-msb-2023-11-12-g5-l2]\nH10: (metros del rival: 4.9) [wlb-msb-2023-11-12-g5-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "H3: Perdió a su marca: Cucarena dejó ir a Haalviken en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H3: (metros del rival: 5.4)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H10: Perdió a su marca: Fernadero dejó ir a Alvaredo en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H10: (metros del rival: 4.9)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    }
+  ]
+}

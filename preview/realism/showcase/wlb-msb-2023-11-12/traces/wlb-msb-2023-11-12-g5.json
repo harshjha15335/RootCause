@@ -1,0 +1,221 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g5",
+  "match_id": "wlb-msb-2023-11-12",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "wlb-msb-2023-11-12-e3211",
+    "match_id": "wlb-msb-2023-11-12",
+    "second": 3211,
+    "type": "goal",
+    "team": "away",
+    "player_id": "A11",
+    "ball": {
+      "x": 104.0,
+      "y": 31.3
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 103.06,
+          "y": 32.6
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 93.35,
+          "y": 12.1
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 99.08,
+          "y": 33.43
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 87.93,
+          "y": 40.85
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 100.97,
+          "y": 45.96
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 96.64,
+          "y": 32.53
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 71.82,
+          "y": 15.0
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 64.27,
+          "y": 41.44
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 63.56,
+          "y": 28.21
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 89.07,
+          "y": 50.77
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 77.05,
+          "y": 38.26
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 10.54,
+          "y": 33.75
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 63.66,
+          "y": 56.85
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 64.08,
+          "y": 10.13
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 57.98,
+          "y": 41.11
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 57.42,
+          "y": 26.41
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 70.6,
+          "y": 34.3
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 82.06,
+          "y": 42.55
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 95.8,
+          "y": 44.93
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 90.04,
+          "y": 57.97
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 90.17,
+          "y": 9.92
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 104.0,
+          "y": 31.3
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "player_id": "H3",
+      "second": 3206,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Cucarena let Haalviken go at 53:26 and was 5.4 m off him at 53:31. (metres from runner: 5.4)",
+      "blame_percent": 96.47058823529412,
+      "baseline_goals": 159,
+      "fixed_goals": 77,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "player_id": "H10",
+      "second": 3207,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Fernadero let Alvaredo go at 53:27 and was 4.9 m off him at 53:28. (metres from runner: 4.9)",
+      "blame_percent": 3.5294117647058822,
+      "baseline_goals": 159,
+      "fixed_goals": 156,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g5-l1"
+}

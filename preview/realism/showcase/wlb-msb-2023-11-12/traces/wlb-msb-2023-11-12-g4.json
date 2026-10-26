@@ -1,0 +1,210 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g4",
+  "match_id": "wlb-msb-2023-11-12",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "wlb-msb-2023-11-12-e2727",
+    "match_id": "wlb-msb-2023-11-12",
+    "second": 2727,
+    "type": "goal",
+    "team": "away",
+    "player_id": "A4",
+    "ball": {
+      "x": 9.5,
+      "y": 38.8
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 2.76,
+          "y": 34.83
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 18.65,
+          "y": 53.54
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 15.43,
+          "y": 12.42
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 7.96,
+          "y": 38.38
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 13.43,
+          "y": 37.49
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 22.61,
+          "y": 41.86
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 20.01,
+          "y": 57.52
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 36.8,
+          "y": 37.58
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 43.92,
+          "y": 48.3
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 32.22,
+          "y": 31.76
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 11.2,
+          "y": 36.14
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 95.17,
+          "y": 35.15
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 46.25,
+          "y": 16.9
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 46.09,
+          "y": 50.15
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 9.5,
+          "y": 38.8
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 36.75,
+          "y": 40.18
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 36.0,
+          "y": 30.94
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 25.75,
+          "y": 49.43
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 20.56,
+          "y": 43.45
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 17.4,
+          "y": 8.91
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 17.08,
+          "y": 60.33
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 10.15,
+          "y": 33.77
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g4-l1",
+      "player_id": "H5",
+      "second": 2720,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Silven let Akendo go at 45:20 and was 4.1 m off him at 45:26. (metres from runner: 4.1)",
+      "blame_percent": 100.0,
+      "baseline_goals": 197,
+      "fixed_goals": 124,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g4-l1"
+}

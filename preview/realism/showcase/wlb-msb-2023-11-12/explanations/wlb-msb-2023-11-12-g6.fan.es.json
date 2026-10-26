@@ -1,0 +1,208 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g6",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g6-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "sentences": [
+        {
+          "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metros del rival: 8.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 100% de la culpa a A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "start_second": 4399,
+      "end_second": 4399,
+      "caption": {
+        "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metros del rival: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 100% de la culpa a A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metros del rival: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "El motor atribuye el 100% de la culpa a A3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Corregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (metros del rival: 8.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "player_id": "A3",
+      "second": 4399,
+      "bug_type": "MARKING_LOST",
+      "description": "Lost his runner: Diales let Gallavan go at 73:19 and was 8.3 m off him at 73:21. (metres from runner: 8.3)",
+      "blame_percent": 100.0,
+      "baseline_goals": 126,
+      "fixed_goals": 30,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "fan",
+  "lang": "es",
+  "requested_lang": "es",
+  "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros del rival: 8.3) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 100% de la culpa a A3. [wlb-msb-2023-11-12-g6-l1]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A3: Perdió a su marca: Diales dejó ir a Gallavan en el 73:19 y estaba a 8.3 m de él en el 73:21.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (metros del rival: 8.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "El motor atribuye el 100% de la culpa a A3.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "attribution"
+    }
+  ]
+}

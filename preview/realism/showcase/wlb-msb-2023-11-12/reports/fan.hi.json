@@ -1,0 +1,210 @@
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "fan",
+  "requested_lang": "hi",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "मूल कारण A2 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g3-l1]\nA2: अपने खिलाड़ी को छोड़ा: 36:23 पर Wallaro Sterlino से 4.2 मीटर दूर थे। [wlb-msb-2023-11-12-g3-l1]\nA2: (खिलाड़ी से मीटर: 4.2) [wlb-msb-2023-11-12-g3-l1]\nइंजन ने 68.9655% दोष A2 को दिया। [wlb-msb-2023-11-12-g3-l1]\nA5: देर से आगे बढ़ना: 36:16 पर Gvardello अपनी बैक फ़ोर से 5.6 मीटर पीछे रहे, जिससे Sterlino ऑनसाइड रहे। [wlb-msb-2023-11-12-g3-l2]\nA5: (लाइन के पीछे मीटर: 5.6) [wlb-msb-2023-11-12-g3-l2]\nइंजन ने 31.0345% दोष A5 को दिया। [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A2 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A2: अपने खिलाड़ी को छोड़ा: 36:23 पर Wallaro Sterlino से 4.2 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (खिलाड़ी से मीटर: 4.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 68.9655% दोष A2 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "A5: देर से आगे बढ़ना: 36:16 पर Gvardello अपनी बैक फ़ोर से 5.6 मीटर पीछे रहे, जिससे Sterlino ऑनसाइड रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (लाइन के पीछे मीटर: 5.6)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 31.0345% दोष A5 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g4-l1]\nH5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे। [wlb-msb-2023-11-12-g4-l1]\nH5: (खिलाड़ी से मीटर: 4.1) [wlb-msb-2023-11-12-g4-l1]\nइंजन ने 100% दोष H5 को दिया। [wlb-msb-2023-11-12-g4-l1]",
+      "sentences": [
+        {
+          "text": "मूल कारण H5 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H5: अपने खिलाड़ी को छोड़ा: Silven ने 45:20 पर Akendo को जाने दिया और 45:26 पर उनसे 4.1 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (खिलाड़ी से मीटर: 4.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 100% दोष H5 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g5-l1]\nH3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे। [wlb-msb-2023-11-12-g5-l1]\nH3: (खिलाड़ी से मीटर: 5.4) [wlb-msb-2023-11-12-g5-l1]\nइंजन ने 96.4706% दोष H3 को दिया। [wlb-msb-2023-11-12-g5-l1]\nH10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे। [wlb-msb-2023-11-12-g5-l2]\nH10: (खिलाड़ी से मीटर: 4.9) [wlb-msb-2023-11-12-g5-l2]\nइंजन ने 3.52941% दोष H10 को दिया। [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण H3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: अपने खिलाड़ी को छोड़ा: Cucarena ने 53:26 पर Haalviken को जाने दिया और 53:31 पर उनसे 5.4 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (खिलाड़ी से मीटर: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 96.4706% दोष H3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "H10: अपने खिलाड़ी को छोड़ा: Fernadero ने 53:27 पर Alvaredo को जाने दिया और 53:28 पर उनसे 4.9 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (खिलाड़ी से मीटर: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 3.52941% दोष H10 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा। [wlb-msb-2023-11-12-g6-l1]\nA3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे। [wlb-msb-2023-11-12-g6-l1]\nA3: (खिलाड़ी से मीटर: 8.3) [wlb-msb-2023-11-12-g6-l1]\nइंजन ने 100% दोष A3 को दिया। [wlb-msb-2023-11-12-g6-l1]",
+      "sentences": [
+        {
+          "text": "मूल कारण A3 की गलती है, जिसे Debugger ने मापी गई गोल-दर में कमी के आधार पर पहले स्थान पर रखा।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: अपने खिलाड़ी को छोड़ा: Diales ने 73:19 पर Gallavan को जाने दिया और 73:21 पर उनसे 8.3 मीटर दूर थे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (खिलाड़ी से मीटर: 8.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 100% दोष A3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "MARKING_LOST": 5,
+    "LATE_STEP_UP": 1
+  },
+  "top_causes": [
+    "MARKING_LOST",
+    "LATE_STEP_UP"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g4",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}
