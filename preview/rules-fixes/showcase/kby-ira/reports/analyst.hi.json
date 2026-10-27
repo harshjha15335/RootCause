@@ -1,0 +1,312 @@
+{
+  "match_id": "kby-ira",
+  "mode": "analyst",
+  "requested_lang": "hi",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "kby-ira-g2",
+      "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [kby-ira-g2-l1]\nA4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली। [kby-ira-g2-l1]\nA4: (लाइन के पीछे मीटर: 5.3) [kby-ira-g2-l1]\nइंजन ने 83.6601% दोष A4 को दिया। [kby-ira-g2-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए। [kby-ira-g2-l1]\nA3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए। [kby-ira-g2-l2]\nA3: (लाइन के पीछे मीटर: 3.2) [kby-ira-g2-l2]\nइंजन ने 16.3399% दोष A3 को दिया। [kby-ira-g2-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए। [kby-ira-g2-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g3",
+      "text": "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [kby-ira-g3-l1]\nA5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया। [kby-ira-g3-l1]\nA5: (लाइन के पीछे मीटर: 6.3) [kby-ira-g3-l1]\nइंजन ने 74.1176% दोष A5 को दिया। [kby-ira-g3-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 138/200 से घटकर 12/200 हो गए। [kby-ira-g3-l1]\nA2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया। [kby-ira-g3-l2]\nA2: (लाइन के पीछे मीटर: 3.1) [kby-ira-g3-l2]\nइंजन ने 25.8824% दोष A2 को दिया। [kby-ira-g3-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 138/200 से घटकर 94/200 हो गए। [kby-ira-g3-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया।",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (लाइन के पीछे मीटर: 6.3)",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 74.1176% दोष A5 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 138/200 से घटकर 12/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया।",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (लाइन के पीछे मीटर: 3.1)",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 25.8824% दोष A2 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 138/200 से घटकर 94/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g5",
+      "text": "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [kby-ira-g5-l1]\nH3: बैक-पोस्ट टक-इन में विफलता: Ilan Brevik ने बैक पोस्ट पर Casper Morrow को खुला छोड़ दिया। [kby-ira-g5-l1]\nH3: (लाइन के पीछे मीटर: 5.3) [kby-ira-g5-l1]\nइंजन ने 77.4566% दोष H3 को दिया। [kby-ira-g5-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 152/200 से घटकर 18/200 हो गए। [kby-ira-g5-l1]\nH5: विलंबित रक्षात्मक स्टेप-अप: Luka Dravin रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे। [kby-ira-g5-l2]\nH5: (लाइन के पीछे मीटर: 2.8) [kby-ira-g5-l2]\nइंजन ने 22.5434% दोष H5 को दिया। [kby-ira-g5-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 152/200 से घटकर 113/200 हो गए। [kby-ira-g5-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: बैक-पोस्ट टक-इन में विफलता: Ilan Brevik ने बैक पोस्ट पर Casper Morrow को खुला छोड़ दिया।",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (लाइन के पीछे मीटर: 5.3)",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 77.4566% दोष H3 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 152/200 से घटकर 18/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H5: विलंबित रक्षात्मक स्टेप-अप: Luka Dravin रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे।",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (लाइन के पीछे मीटर: 2.8)",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 22.5434% दोष H5 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 152/200 से घटकर 113/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g6",
+      "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [kby-ira-g6-l1]\nA3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Nils Corrin रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे। [kby-ira-g6-l1]\nA3: (लाइन के पीछे मीटर: 5.2) [kby-ira-g6-l1]\nइंजन ने 81.3793% दोष A3 को दिया। [kby-ira-g6-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 22/200 हो गए। [kby-ira-g6-l1]\nA4: द्वितीयक क्लीयरेंस में देरी: Andrei Tessaro द्वितीयक रिबाउंड पर संभल नहीं पाए। [kby-ira-g6-l2]\nA4: (लाइन के पीछे मीटर: 3.8) [kby-ira-g6-l2]\nइंजन ने 18.6207% दोष A4 को दिया। [kby-ira-g6-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 113/200 हो गए। [kby-ira-g6-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Nils Corrin रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 22/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A4: द्वितीयक क्लीयरेंस में देरी: Andrei Tessaro द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 113/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "ZONAL_LEAK": 2,
+    "LATE_STEP_UP": 2,
+    "BACK_POST_EXPOSURE": 2,
+    "REBOUND_UNCHECKED": 2
+  },
+  "top_causes": [
+    "ZONAL_LEAK",
+    "LATE_STEP_UP",
+    "BACK_POST_EXPOSURE",
+    "REBOUND_UNCHECKED"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "kby-ira-g2",
+    "kby-ira-g3",
+    "kby-ira-g5",
+    "kby-ira-g6"
+  ],
+  "report_warning": null
+}

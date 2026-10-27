@@ -1,0 +1,240 @@
+[
+  {
+    "in_s": 0,
+    "out_s": 15,
+    "kind": "milestone",
+    "text": "KICK-OFF: Kestrel Bay v Ironmoor Athletic at Kestrel Park",
+    "data": {
+      "type": "kickoff",
+      "period": 1
+    }
+  },
+  {
+    "in_s": 1438,
+    "out_s": 1454,
+    "kind": "goal",
+    "text": "GOAL! C. Morrow scores (24') for IRA (0 - 1)",
+    "data": {
+      "goal_id": "kby-ira-g1",
+      "scorer": "C. Morrow",
+      "scorer_id": "A11",
+      "side": "away",
+      "xg": 0.76,
+      "score": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 1694,
+    "out_s": 1704,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: A4 (A. Tessaro) · ZONAL_LEAK (83.7% blame)",
+    "data": {
+      "goal_id": "kby-ira-g2",
+      "evidence_id": "kby-ira-g2-l1",
+      "culprit_id": "A4",
+      "culprit_name": "A. Tessaro",
+      "bug_type": "ZONAL_LEAK",
+      "blame_percent": 83.7
+    }
+  },
+  {
+    "in_s": 1698,
+    "out_s": 1714,
+    "kind": "goal",
+    "text": "GOAL! Luka Dravin scores (28') for KBY (1 - 1)",
+    "data": {
+      "goal_id": "kby-ira-g2",
+      "scorer": "Luka Dravin",
+      "scorer_id": "H5",
+      "side": "home",
+      "xg": 0.085,
+      "score": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 2173,
+    "out_s": 2183,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: A5 (M. Kerrow) · LATE_STEP_UP (74.1% blame)",
+    "data": {
+      "goal_id": "kby-ira-g3",
+      "evidence_id": "kby-ira-g3-l1",
+      "culprit_id": "A5",
+      "culprit_name": "M. Kerrow",
+      "bug_type": "LATE_STEP_UP",
+      "blame_percent": 74.1
+    }
+  },
+  {
+    "in_s": 2178,
+    "out_s": 2194,
+    "kind": "goal",
+    "text": "GOAL! J. Tamsin scores (36') for KBY (2 - 1)",
+    "data": {
+      "goal_id": "kby-ira-g3",
+      "scorer": "J. Tamsin",
+      "scorer_id": "H11",
+      "side": "home",
+      "xg": 0.534,
+      "score": [
+        2,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 2700,
+    "out_s": 2715,
+    "kind": "milestone",
+    "text": "HALF-TIME: Intense first half concludes with four goals (2 - 2)",
+    "data": {
+      "type": "halftime",
+      "period": 1
+    }
+  },
+  {
+    "in_s": 2721,
+    "out_s": 2737,
+    "kind": "goal",
+    "text": "GOAL! A. Tessaro scores (45') for IRA (2 - 2)",
+    "data": {
+      "goal_id": "kby-ira-g4",
+      "scorer": "A. Tessaro",
+      "scorer_id": "A4",
+      "side": "away",
+      "xg": 0.078,
+      "score": [
+        2,
+        2
+      ]
+    }
+  },
+  {
+    "in_s": 3200,
+    "out_s": 3210,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: H3 (Ilan Brevik) · BACK_POST_EXPOSURE (77.5% blame)",
+    "data": {
+      "goal_id": "kby-ira-g5",
+      "evidence_id": "kby-ira-g5-l1",
+      "culprit_id": "H3",
+      "culprit_name": "Ilan Brevik",
+      "bug_type": "BACK_POST_EXPOSURE",
+      "blame_percent": 77.5
+    }
+  },
+  {
+    "in_s": 3205,
+    "out_s": 3221,
+    "kind": "goal",
+    "text": "GOAL! C. Morrow scores (46') for IRA (2 - 3)",
+    "data": {
+      "goal_id": "kby-ira-g5",
+      "scorer": "C. Morrow",
+      "scorer_id": "A11",
+      "side": "away",
+      "xg": 0.614,
+      "score": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "in_s": 4394,
+    "out_s": 4404,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: A3 (Nils Corrin) · REBOUND_UNCHECKED (81.4% blame)",
+    "data": {
+      "goal_id": "kby-ira-g6",
+      "evidence_id": "kby-ira-g6-l1",
+      "culprit_id": "A3",
+      "culprit_name": "Nils Corrin",
+      "bug_type": "REBOUND_UNCHECKED",
+      "blame_percent": 81.4
+    }
+  },
+  {
+    "in_s": 4399,
+    "out_s": 4415,
+    "kind": "goal",
+    "text": "GOAL! K. Abeyo scores (66') for KBY (3 - 3)",
+    "data": {
+      "goal_id": "kby-ira-g6",
+      "scorer": "K. Abeyo",
+      "scorer_id": "H9",
+      "side": "home",
+      "xg": 0.668,
+      "score": [
+        3,
+        3
+      ]
+    }
+  },
+  {
+    "in_s": 5548,
+    "out_s": 5564,
+    "kind": "goal",
+    "text": "GOAL! Dalmar scores (85') for IRA (3 - 4)",
+    "data": {
+      "goal_id": "kby-ira-g7",
+      "scorer": "Dalmar",
+      "scorer_id": "A6",
+      "side": "away",
+      "xg": 0.085,
+      "score": [
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6079,
+    "out_s": 6095,
+    "kind": "goal",
+    "text": "GOAL! T. Wrenford scores (94') for KBY (4 - 4)",
+    "data": {
+      "goal_id": "kby-ira-g8",
+      "scorer": "T. Wrenford",
+      "scorer_id": "H7",
+      "side": "home",
+      "xg": 0.76,
+      "score": [
+        4,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6080,
+    "out_s": 6100,
+    "kind": "milestone",
+    "text": "EQUALIZER! Dramatic 90+5' equalizer caps eight-goal spectacle (4 - 4)",
+    "data": {
+      "type": "equalizer",
+      "score": [
+        4,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6400,
+    "out_s": 6420,
+    "kind": "milestone",
+    "text": "FULL-TIME: Historic 4 - 4 draw",
+    "data": {
+      "type": "fulltime",
+      "score": [
+        4,
+        4
+      ]
+    }
+  }
+]

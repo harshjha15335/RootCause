@@ -1,0 +1,83 @@
+{
+  "match_id": "kby-ira",
+  "commit": "canonical-20260314",
+  "goals": [
+    "kby-ira-e1444",
+    "kby-ira-e1704",
+    "kby-ira-e2184",
+    "kby-ira-e2727",
+    "kby-ira-e3211",
+    "kby-ira-e4405",
+    "kby-ira-e5554",
+    "kby-ira-e6085"
+  ],
+  "traced": [
+    "kby-ira-g2",
+    "kby-ira-g3",
+    "kby-ira-g5",
+    "kby-ira-g6"
+  ],
+  "untraced": [
+    {
+      "event_id": "kby-ira-e1444",
+      "reason": "kby-ira-g1: Penalty kick conceded under isolated individual contact in the box; no systemic tracking counterfactual simulated."
+    },
+    {
+      "event_id": "kby-ira-e2727",
+      "reason": "kby-ira-g4: Set-piece cross headed from central cluster; tracking noise exceeds counterfactual resolution threshold."
+    },
+    {
+      "event_id": "kby-ira-e5554",
+      "reason": "kby-ira-g7: Wicked double deflection off defensive block changed ball trajectory beyond physical simulation."
+    },
+    {
+      "event_id": "kby-ira-e6085",
+      "reason": "kby-ira-g8: 95th-minute penalty kick following foul inside box; deterministic set-piece."
+    }
+  ],
+  "windows": [
+    {
+      "from_s": 1369,
+      "to_s": 1452
+    },
+    {
+      "from_s": 1629,
+      "to_s": 1712
+    },
+    {
+      "from_s": 2109,
+      "to_s": 2192
+    },
+    {
+      "from_s": 2652,
+      "to_s": 2735
+    },
+    {
+      "from_s": 3136,
+      "to_s": 3219
+    },
+    {
+      "from_s": 4330,
+      "to_s": 4413
+    },
+    {
+      "from_s": 5479,
+      "to_s": 5562
+    },
+    {
+      "from_s": 6010,
+      "to_s": 6093
+    }
+  ],
+  "modes": [
+    "fan",
+    "analyst",
+    "studio"
+  ],
+  "langs": [
+    "en",
+    "hi",
+    "es"
+  ],
+  "source": "RootCause Synthetic Fixture + Illustrative Tactical Replay"
+}

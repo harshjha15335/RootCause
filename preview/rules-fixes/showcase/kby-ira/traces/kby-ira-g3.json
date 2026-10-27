@@ -1,0 +1,221 @@
+{
+  "goal_id": "kby-ira-g3",
+  "match_id": "kby-ira",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "kby-ira-e2184",
+    "match_id": "kby-ira",
+    "second": 2184,
+    "type": "goal",
+    "team": "home",
+    "player_id": "H11",
+    "ball": {
+      "x": 99.8,
+      "y": 33.3
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 6.4,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 94.7,
+          "y": 52.4
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 24.2,
+          "y": 44.9
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 24.2,
+          "y": 23.1
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 29.4,
+          "y": 12.2
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 41.0,
+          "y": 44.2
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 48.0,
+          "y": 27.2
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 64.4,
+          "y": 45.1
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 41.0,
+          "y": 44.2
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 99.8,
+          "y": 33.3
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 81.9,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 98.7,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 74.0,
+          "y": 14.5
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 74.8,
+          "y": 22.7
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 80.9,
+          "y": 44.9
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 75.6,
+          "y": 55.8
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 64.0,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 53.6,
+          "y": 48.3
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 53.6,
+          "y": 19.7
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 31.5,
+          "y": 11.6
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 31.5,
+          "y": 56.4
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 23.1,
+          "y": 34.0
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "kby-ira-g3-l1",
+      "player_id": "A5",
+      "second": 2176,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Late recovery run: Left defensive channel exposed on overlapping transition. (metres behind line: 6.3)",
+      "blame_percent": 74.11764705882354,
+      "baseline_goals": 138,
+      "fixed_goals": 12,
+      "trials": 200
+    },
+    {
+      "evidence_id": "kby-ira-g3-l2",
+      "player_id": "A2",
+      "second": 2174,
+      "bug_type": "LATE_STEP_UP",
+      "description": "Delayed tracking: Recovery run halted before central cross delivery. (metres behind line: 3.1)",
+      "blame_percent": 25.88235294117647,
+      "baseline_goals": 138,
+      "fixed_goals": 94,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "kby-ira-g3-l1"
+}

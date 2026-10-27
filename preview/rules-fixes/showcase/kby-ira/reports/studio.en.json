@@ -1,0 +1,200 @@
+{
+  "match_id": "kby-ira",
+  "mode": "studio",
+  "requested_lang": "en",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "kby-ira-g2",
+      "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction. [kby-ira-g2-l1]\nA4: Zonal marking leak: Andrei Tessaro vacates the near-post zone, allowing an uncontested header. [kby-ira-g2-l1]\nA4: (metres behind line: 5.3) [kby-ira-g2-l1]\nA3: Late step-up: Nils Corrin stays behind the defensive line. [kby-ira-g2-l2]\nA3: (metres behind line: 3.2) [kby-ira-g2-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A4, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A4: Zonal marking leak: Andrei Tessaro vacates the near-post zone, allowing an uncontested header.",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: Late step-up: Nils Corrin stays behind the defensive line.",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 3.2)",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g3",
+      "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction. [kby-ira-g3-l1]\nA5: Late recovery run: Left defensive channel exposed on overlapping transition. [kby-ira-g3-l1]\nA5: (metres behind line: 6.3) [kby-ira-g3-l1]\nA2: Delayed tracking: Recovery run halted before central cross delivery. [kby-ira-g3-l2]\nA2: (metres behind line: 3.1) [kby-ira-g3-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A5, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A5: Late recovery run: Left defensive channel exposed on overlapping transition.",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metres behind line: 6.3)",
+          "evidence_ids": [
+            "kby-ira-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: Delayed tracking: Recovery run halted before central cross delivery.",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metres behind line: 3.1)",
+          "evidence_ids": [
+            "kby-ira-g3-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g5",
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [kby-ira-g5-l1]\nH3: Failed back-post tuck-in: Ilan Brevik leaves Casper Morrow unmarked at the back post. [kby-ira-g5-l1]\nH3: (metres behind line: 5.3) [kby-ira-g5-l1]\nH5: Late defensive step-up: Luka Dravin fails to step up with the defensive line. [kby-ira-g5-l2]\nH5: (metres behind line: 2.8) [kby-ira-g5-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Failed back-post tuck-in: Ilan Brevik leaves Casper Morrow unmarked at the back post.",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "kby-ira-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: Late defensive step-up: Luka Dravin fails to step up with the defensive line.",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metres behind line: 2.8)",
+          "evidence_ids": [
+            "kby-ira-g5-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "kby-ira-g6",
+      "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction. [kby-ira-g6-l1]\nA3: Hesitation on rebound box clearance: Nils Corrin fails to clear parried strike. [kby-ira-g6-l1]\nA3: (metres behind line: 5.2) [kby-ira-g6-l1]\nA4: Secondary clearance delay: Andrei Tessaro caught flat-footed on secondary rebound. [kby-ira-g6-l2]\nA4: (metres behind line: 3.8) [kby-ira-g6-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by A3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Hesitation on rebound box clearance: Nils Corrin fails to clear parried strike.",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metres behind line: 5.2)",
+          "evidence_ids": [
+            "kby-ira-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: Secondary clearance delay: Andrei Tessaro caught flat-footed on secondary rebound.",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (metres behind line: 3.8)",
+          "evidence_ids": [
+            "kby-ira-g6-l2"
+          ],
+          "kind": "description"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "ZONAL_LEAK": 2,
+    "LATE_STEP_UP": 2,
+    "BACK_POST_EXPOSURE": 2,
+    "REBOUND_UNCHECKED": 2
+  },
+  "top_causes": [
+    "ZONAL_LEAK",
+    "LATE_STEP_UP",
+    "BACK_POST_EXPOSURE",
+    "REBOUND_UNCHECKED"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "kby-ira-g2",
+    "kby-ira-g3",
+    "kby-ira-g5",
+    "kby-ira-g6"
+  ],
+  "report_warning": null
+}
