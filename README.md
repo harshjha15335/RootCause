@@ -38,8 +38,10 @@ first 30% of the time overall and 81% of the time for LATE_STEP_UP, the one mist
 has a detector for so far ([eval/report.md](eval/report.md)).
 
 **Microsoft technology.** Runs today: the Microsoft Agent Framework workflow
-(`agents/orchestrator.py`) that produced every explanation, highlight list and recap in the demo,
-with evidence-only agents in place of model calls, and GitHub Actions CI. Written and tested
+(`agents/orchestrator.py`), which the backend runs for every goal with evidence-only agents in
+place of model calls (the engine-generated `p-10xx` showcase matches were exported through it;
+the 4-4 match's explanations were built by `web/tools/build_wlb_msb_showcase.py`), and GitHub
+Actions CI. Written and tested
 with mocks but not yet run against a live service: Microsoft Foundry model deployments and
 `azure-ai-evaluation`, Azure Functions, Event Hubs, Cosmos DB, Container Apps, Container
 Registry, Key Vault, Application Insights, AI Content Safety, Translator, Speech, Entra ID auth,
