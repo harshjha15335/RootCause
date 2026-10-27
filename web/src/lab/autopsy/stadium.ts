@@ -12,6 +12,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
 import { goalType, teamMotion } from "./motion";
 import { evidenceContext } from "./context";
+import { pitchKit } from "../../lib/format";
 
 /**
  * The Goal Autopsy's 3D stage: a floodlit night stadium where one goal is taken apart, the way
@@ -231,8 +232,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const backFour = [1, 2, 3, 4].map((k) => a.def * 11 + k);
   /** the defending back line: median depth of the back four, leaving one player out */
   const lineOf = (p: Snap, without = tr ? tr.j.culprit.player : -1) => median(backFour.filter((i) => i !== without).map((i) => p.pos[i][0]));
-  const kit = (team: number) => new THREE.Color(lab.clubs[team].kit_primary);
-  const trim = (team: number) => new THREE.Color(lab.clubs[team].kit_secondary);
+  // Pitch colours, not kit colours: two blue kits are indistinguishable on the stage.
+  const kit = (team: number) => new THREE.Color(pitchKit(team ? "away" : "home").kit);
+  const trim = (team: number) => new THREE.Color(pitchKit(team ? "away" : "home").trim);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
   renderer.setPixelRatio(opts.dpr);
@@ -240,6 +242,8 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // Reading back every program's link status forces the browser to finish compiling it on the spot.
+  renderer.debug.checkShaderErrors = import.meta.env.DEV;
 
   const scene = new THREE.Scene();
   const sky = document.createElement("canvas");
@@ -361,7 +365,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const ring = new THREE.Mesh(band, new THREE.MeshStandardMaterial({ color: trim(team), metalness: 0.85, roughness: 0.25, transparent: true }));
       const h = new THREE.Mesh(halo, new THREE.MeshBasicMaterial({ color: col.clone().lerp(new THREE.Color("#ffffff"), 0.35), transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false }));
       h.position.y = 0.04;
-      const num = label(String(lab.numbers[i]), { color: team ? "#2a0707" : "#06122a", bg: team ? "#f2b8b0" : "#cfe0ff", size: 30, h: 1.7 });
+      const num = label(String(lab.numbers[i]), { color: team ? "#1a1206" : "#06122a", bg: team ? "#ffe1b0" : "#cfe0ff", size: 30, h: 1.7 });
       num.position.y = 2.2;
       t.add(body, ring, h, num);
       g.add(t);
@@ -921,7 +925,16 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     scene.background = bg;
     camera.layers.set(0);
   };
-  raf = requestAnimationFrame(tick);
+  // Compile the scene's shaders in parallel (KHR_parallel_shader_compile) before the first frame,
+  // instead of freezing the page while the first render links them one by one.
+  let disposed = false;
+  const start = () => {
+    if (disposed) return;
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  };
+  if (renderer.extensions.has("KHR_parallel_shader_compile")) renderer.compileAsync(scene, camera).then(start, start);
+  else start();
 
   return {
     show(i, t = 0) {
@@ -956,6 +969,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       camera.updateProjectionMatrix();
     },
     dispose() {
+      disposed = true;
       cancelAnimationFrame(raf);
       document.removeEventListener("visibilitychange", onVisibility);
       canvas.removeEventListener("pointermove", onMove);

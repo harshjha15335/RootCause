@@ -60,5 +60,6 @@ export const PLAYER_TOKEN = /\b((?:H|A)\d{1,2}|(?:home|away)-\d{1,2})\b/g;
 /** Figures on the pitch wear the theme, not the club kit: white for home, blue for away, so the
  * Volt Lime stays free for the bug and both sides read on the cobalt pitch. Badges keep real kits. */
 export function pitchKit(side: "home" | "away"): { kit: string; trim: string } {
-  return side === "home" ? { kit: "#f3f5ff", trim: "#1530d6" } : { kit: "#5a78ff", trim: "#f3f5ff" };
+  // Same pair as the Tactics Lab: chalk vs amber reads on the cobalt page and the green pitch, unlike blue kits.
+  return side === "home" ? { kit: "#f3f5ff", trim: "#1530d6" } : { kit: "#ffb547", trim: "#1a1206" };
 }

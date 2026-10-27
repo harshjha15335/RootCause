@@ -56,13 +56,6 @@ export function ReplayBar() {
 
       <div
         ref={track}
-        role="slider"
-        tabIndex={0}
-        aria-label={t("replay.scrub")}
-        aria-valuemin={a}
-        aria-valuemax={b}
-        aria-valuenow={second}
-        aria-valuetext={clock(second)}
         className="group relative h-10 min-w-0 flex-1 cursor-pointer touch-none select-none"
         onPointerDown={(e) => {
           if (busy) return;
@@ -73,8 +66,20 @@ export function ReplayBar() {
           if (e.buttons === 1 && !busy) scrubTo(e.clientX);
         }}
       >
-        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-turf-edge" />
-        <div className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-chalk/70" style={{ width: at(second) }} />
+        {/* the slider and the marker buttons are siblings: a slider can't contain buttons */}
+        <div
+          role="slider"
+          tabIndex={0}
+          aria-label={t("replay.scrub")}
+          aria-valuemin={a}
+          aria-valuemax={b}
+          aria-valuenow={second}
+          aria-valuetext={clock(second)}
+          className="absolute inset-0 rounded-md"
+        >
+          <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-turf-edge" />
+          <div className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-chalk/70" style={{ width: at(second) }} />
+        </div>
         {goals
           .filter((g) => g.second >= a && g.second <= b)
           .map((g) => (

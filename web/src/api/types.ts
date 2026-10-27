@@ -166,7 +166,8 @@ export type ClubMeta = {
 
 export type MatchMeta = {
   match_id: string;
-  seed: number;
+  /** Engine matches only; a hand-built fixture has none (and no ground truth). */
+  seed?: number;
   pitch_length_m: number;
   pitch_width_m: number;
   duration_s: number;

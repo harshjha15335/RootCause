@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AgentStep, CitedSentence, Evidence } from "../api/types";
 import { BugName, CountUp, MomentButton, Pill, RichText } from "../components/bits";
-import { clock, pct, playerInfo, tidyNumbers } from "../lib/format";
+import { clock, pct, pitchKit, playerInfo, tidyNumbers } from "../lib/format";
 import { rootLink } from "../lib/geometry";
 import { jumpTo } from "../store/broadcast";
 import { useMatch } from "../store/matchStore";
@@ -58,7 +58,7 @@ export function RootCause({ ev }: { ev: Evidence }) {
             </div>
           </MomentButton>
           <div className="mt-2 flex items-center gap-2 text-[14px] text-chalk-dim">
-            <span className="h-2.5 w-2.5 rounded-full ring-1 ring-chalk/40" style={{ background: info.club?.kit_primary }} aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-full ring-1 ring-chalk/40" style={{ background: pitchKit(info.side).kit }} aria-hidden="true" />
             {info.club?.name}
             {info.position && <span>· {t(`pos.${info.position}`, { defaultValue: info.position })}</span>}
           </div>
@@ -83,7 +83,8 @@ export function RootCause({ ev }: { ev: Evidence }) {
           <h3 id="explain-h" className="font-display text-[17px] font-bold text-chalk">
             {t(`explain.title.${mode}`)}
           </h3>
-          {exp?.status === "pending" && <Pill>{t("explain.pending")}</Pill>}
+          {/* An evidence-only recording will never be rewritten, so "pending" would promise text that isn't coming. */}
+          {exp?.status === "pending" && exp.source !== "evidence-only" && <Pill>{t("explain.pending")}</Pill>}
           {exp?.source === "evidence-only" && <Pill>{t("explain.evidenceOnly")}</Pill>}
           {exp?.translation_warning && <Pill tone="flare">{t("explain.translationFallback")}</Pill>}
         </div>
@@ -126,32 +127,32 @@ export function Sentences({ sentences, ev, lang }: { sentences: CitedSentence[];
         const eid = s.evidence_ids[0] ?? null;
         const link = ev.links.find((l) => l.evidence_id === eid);
         const on = eid !== null && focus === eid;
+        const replay = () => {
+          if (!link) return;
+          useTrace.getState().pin(eid, link.player_id);
+          jumpTo(link.second - 1, { play: true });
+          useTrace.getState().setSpeed(0.5);
+        };
         return (
           <li key={i}>
+            {/* The row is a mouse shortcut; the time is the real button, so the player chips inside aren't nested in one. */}
             <div
-              role="button"
-              tabIndex={0}
               onPointerEnter={() => useTrace.getState().hover(eid, link?.player_id ?? null)}
               onPointerLeave={() => useTrace.getState().hover(null, null)}
               onClick={(e) => {
                 if ((e.target as HTMLElement).closest("button")) return;
-                if (!link) return;
-                useTrace.getState().pin(eid, link.player_id);
-                jumpTo(link.second - 1, { play: true });
-                useTrace.getState().setSpeed(0.5);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && link) {
-                  useTrace.getState().pin(eid, link.player_id);
-                  jumpTo(link.second - 1, { play: true });
-                }
+                replay();
               }}
               className={`-mx-2 cursor-pointer rounded-lg px-2 py-1.5 text-[16px] leading-relaxed transition-colors duration-150 ease-out ${
                 on ? "bg-turf-raised text-chalk" : "text-chalk hover:bg-turf-raised/60"
               } ${s.kind === "root" ? "font-semibold" : ""}`}
             >
               <RichText text={s.text} evidenceId={eid} />
-              {link && <span className="ml-1.5 text-[12px] text-chalk-faint tabular-nums">{clock(link.second)}</span>}
+              {link && (
+                <button type="button" onClick={replay} className="ml-1.5 rounded text-[12px] text-chalk-faint tabular-nums underline-offset-2 hover:text-chalk hover:underline">
+                  {clock(link.second)}
+                </button>
+              )}
             </div>
           </li>
         );
@@ -183,7 +184,7 @@ export function AgentSteps({ goalId }: { goalId: string }) {
             <motion.li
               key={a}
               initial={false}
-              animate={{ opacity: s || running ? 1 : 0.5 }}
+              animate={{ opacity: s || running ? 1 : 0.85 }}
               className="flex items-start gap-3 text-[14px]"
             >
               <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center" aria-hidden="true">

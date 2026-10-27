@@ -200,7 +200,7 @@ const bundles = {
   "product": {
    "demoPick": "Partido de demostración",
    "switchLabel": "Cuatro partidos de demostración. Elige uno y la pila se rehace con su gol:",
-   "eyebrow": "Root Cause · a debugger for football",
+   "eyebrow": "Root Cause · un depurador para el fútbol",
    "lede": "When a goal goes in, Root Cause rewinds the attack second by second, finds the defensive mistake that let it happen, and proves it by replaying the move 200 times with that mistake fixed. Then it reads the rest of the match too: tactics, every chance, every player.",
    "tryDemo": "Try a demo match",
    "whatItDoes": "What it does",
@@ -350,7 +350,7 @@ const bundles = {
   "product": {
    "demoPick": "डेमो मैच",
    "switchLabel": "चार डेमो मैच। कोई एक चुनें, स्टैक उसके गोल से दोबारा बनेगा:",
-   "eyebrow": "Root Cause · a debugger for football",
+   "eyebrow": "Root Cause · फ़ुटबॉल का डीबगर",
    "lede": "When a goal goes in, Root Cause rewinds the attack second by second, finds the defensive mistake that let it happen, and proves it by replaying the move 200 times with that mistake fixed. Then it reads the rest of the match too: tactics, every chance, every player.",
    "tryDemo": "Try a demo match",
    "whatItDoes": "What it does",
