@@ -76,13 +76,11 @@ test("tactics lab displays live player tracking, focus panel, and broadcast HUD"
   await expect(page.getByText("Passing options")).toBeVisible();
   await expect(page.getByRole("tab", { name: "Space" })).toBeVisible();
 
-  // Toggle Broadcast Overlays in Header preferences
-  const prefButton = page.getByRole("button", { name: /Personalization/i }).first();
-  await prefButton.click();
-  const overlayCheckbox = page.getByRole("checkbox");
-  await expect(overlayCheckbox).toBeVisible();
-  await overlayCheckbox.check();
-  await expect(overlayCheckbox).toBeChecked();
+  // Broadcast graphics toggle in the Tactics Lab transport
+  const overlay = page.getByRole("button", { name: "Broadcast graphics" });
+  await expect(overlay).toBeVisible();
+  await overlay.click();
+  await expect(overlay).toHaveAttribute("aria-pressed", "true");
 });
 
 // 4. Personalization: My Club & My Player preferences
@@ -91,21 +89,14 @@ test("preferences menu allows setting favorite club and player with persistence"
 }) => {
   await page.goto("/");
 
-  // Click preferences trigger in Header
-  const prefButton = page.getByRole("button", { name: /Personalization/i }).first();
-  await expect(prefButton).toBeVisible();
-  await prefButton.click();
-
-  // Verify club options
-  await expect(page.getByRole("button", { name: "KBY", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "IRA", exact: true })).toBeVisible();
-
-  // Select IRA
-  await page.getByRole("button", { name: "IRA", exact: true }).click();
-
-  // Verify preference in localStorage
-  const savedClub = await page.evaluate(() => localStorage.getItem("rc.club"));
-  expect(savedClub).toBe("away");
+  // The header's "Your team" picker saves the club by name
+  await page.getByRole("button", { name: "Pick your club and player" }).first().click();
+  const club = page.getByRole("radio", { name: /Ironmoor Athletic/ });
+  await expect(club).toBeVisible();
+  await club.click();
+  await expect(club).toHaveAttribute("aria-checked", "true");
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("rc.fan") ?? "{}").club);
+  expect(saved).toBe("Ironmoor Athletic");
 });
 
 // 5. Multilingual and Honest Provenance
