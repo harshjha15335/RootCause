@@ -24,6 +24,7 @@ fallback (`status: pending`), not live model output, because no Azure subscripti
 available to the team. The live path (Event Hubs → Function → Debugger → Agent Framework
 graph on Foundry → Content Safety → WebSocket UI) is implemented, tested with mocks and
 defined in Bicep, but has not been deployed. See [validation status](docs/VALIDATION.md).
+To run the agents on a live Foundry model for one goal, follow [docs/LIVE_AGENTS.md](docs/LIVE_AGENTS.md).
 
 | Hackathon stage | Where it happens |
 | --- | --- |
