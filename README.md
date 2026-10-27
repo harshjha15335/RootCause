@@ -1,8 +1,52 @@
 # Root Cause
 
-**Every goal has a bug.** Role 3 implementation for the Agents & Cloud Lead brief:
-FastAPI/WebSockets, Microsoft Agent Framework orchestration, Azure adapters, deployment
-infrastructure, and evaluation tooling. All demo clubs/players/data are synthetic.
+**Every goal has a bug.** When a goal goes in, Root Cause rewinds the play, finds the
+defensive mistakes behind it, proves which one mattered most with 200 counterfactual replays,
+and has a team of Microsoft Agent Framework agents explain it, with every sentence cited, to a
+fan, an analyst or a TV studio, in English, Hindi or Spanish.
+
+## For judges
+
+- **Live demo:** <https://harshjha15335.github.io/RootCause/>. No login, install or backend
+  needed; it runs in any modern desktop or mobile browser.
+- **Demo video (under 2 minutes):** _add the public YouTube/Vimeo link here_.
+- **Try it:** open **Match library** on the home page and pick a match. Goals marked in yellow
+  are traced. Open one in **Goal Autopsy** (for example
+  [goal 3 of the 4-4 match](https://harshjha15335.github.io/RootCause/?goal=wlb-msb-2023-11-12-g3#/autopsy)),
+  step through the beats to **Verdict**, then switch Fan / Analyst / Studio, Simple / Expert and
+  the language. **Tactics Lab** (`#/lab`) shows full-match tracking, the broadcast HUD and
+  My Club / My Player personalization. Press `?` for keyboard shortcuts.
+
+**What the public demo runs live and what it replays.** The website is static. It replays
+matches, traces, explanations and overlays that the real engine, Debugger and backend
+exported (`web/tools/export_*.py`). The explanations shown are the cited, evidence-only
+fallback (`status: pending`), not live model output, because no Azure subscription was
+available to the team. The live path (Event Hubs → Function → Debugger → Agent Framework
+graph on Foundry → Content Safety → WebSocket UI) is implemented, tested with mocks and
+defined in Bicep, but has not been deployed. See [validation status](docs/VALIDATION.md).
+
+| Hackathon stage | Where it happens |
+| --- | --- |
+| Ingest synthetic events | `engine/` match simulator, `functions/goal_detector`, `api/` WebSocket `/live/{id}` |
+| Interpret into statistics | `web/tools/export_analysis.py` (xG, passing, heatmaps, momentum), Tactics Lab |
+| Explain why it matters | `debugger/` causal chain and counterfactual blame, `agents/` Explainer → Recap |
+| Render for broadcast | timed `overlays.json`, Highlights agent clip windows, 3D Autopsy replay |
+| Personalize | Persona agent (Fan / Analyst / Studio), My Club, My Player focus, en / hi / es |
+
+**Measured accuracy.** On 99 planted goals the Debugger names the planted player and mistake
+first 30% of the time overall and 81% of the time for LATE_STEP_UP, the one mistake type it
+has a detector for so far ([eval/report.md](eval/report.md)).
+
+**Microsoft technology.** Microsoft Agent Framework (multi-agent graph), Microsoft Foundry
+model deployments and `azure-ai-evaluation`, Azure Functions, Event Hubs, Cosmos DB, Container
+Apps, Container Registry, Key Vault, Application Insights, AI Content Safety, Translator and
+Speech, Entra ID auth, Bicep with `azd`, and GitHub Actions with OIDC.
+
+## Team build notes
+
+Role 3 implementation for the Agents & Cloud Lead brief: FastAPI/WebSockets, Microsoft Agent
+Framework orchestration, Azure adapters, deployment infrastructure, and evaluation tooling.
+All demo clubs/players/data are synthetic.
 
 ## Run locally
 
