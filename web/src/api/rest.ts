@@ -83,8 +83,9 @@ export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> 
 
 const json = fetchJson;
 
-/** Canonical demo match for RootCause. */
-export const DEMO_MATCHES = ["kby-ira"] as const;
+declare const __MATCHES__: string[];
+/** Every match exported to public/showcase, found at build time (tools/matches.mjs). The first is the default. */
+export const DEMO_MATCHES: readonly string[] = __MATCHES__;
 /** ?demo= wins; otherwise the match picked last time, so every page stays on the same match. */
 const asked = (() => {
   const fromUrl = new URLSearchParams(location.search).get("demo");

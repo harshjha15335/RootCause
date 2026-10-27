@@ -2,14 +2,11 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useDemos } from "../api/demos";
 import { SHOWCASE_MATCH } from "../api/rest";
-import { useUi } from "../store/uiStore";
 import { MatchLab } from "./match/lab/MatchLab";
-import { MatchStory } from "./match/lab/MatchStory";
 
 /**
  * The Tactics Lab tab: the whole match replayed on a live pitch with a coach and one feature at a
- * time (Space raises the ground under whoever owns it), the numbers of this moment beside it, and
- * below, the match told chapter by chapter with every stat in plain words.
+ * time (Space raises the ground under whoever owns it), and the numbers of this moment beside it.
  */
 export function TacticsLab() {
   const { t } = useTranslation();
@@ -19,10 +16,6 @@ export function TacticsLab() {
   useEffect(() => {
     document.title = `${t("nav.lab")} · Root Cause`;
   }, [t]);
-  const watch = (s: number) => {
-    seek.current?.(s);
-    top.current?.scrollIntoView({ behavior: useUi.getState().reducedMotion ? "auto" : "smooth", block: "start" });
-  };
   return (
     <div className="min-h-[calc(100dvh-var(--header-h))] bg-turf-deep pb-24">
       <section className="mx-auto max-w-[1440px] px-4 pt-8 sm:px-8 sm:pt-12">
@@ -35,7 +28,6 @@ export function TacticsLab() {
         <div ref={top} className="mt-6 scroll-mt-[calc(var(--header-h)+12px)]">
           <MatchLab matchId={SHOWCASE_MATCH} control={seek} />
         </div>
-        <MatchStory matchId={SHOWCASE_MATCH} onWatch={watch} />
       </section>
     </div>
   );

@@ -48,6 +48,8 @@ export type Lab = {
   cut?: Uint8Array;
   short: [string, string];
   clubs: [MatchMeta["home"], MatchMeta["away"]];
+  /** seconds of tracking in this match (5400 for engine matches, longer with stoppage time) */
+  secs: number;
 };
 
 const flipX = (x: number, period: number) => (period === 1 ? x : PX - x);
@@ -249,6 +251,7 @@ export async function loadLab(matchId: string, base = `${import.meta.env.BASE_UR
     cut,
     short: [meta.home.short_name, meta.away.short_name] as [string, string],
     clubs: [meta.home, meta.away] as [MatchMeta["home"], MatchMeta["away"]],
+    secs: totalSeconds,
   };
   rawLab.actions = ev.map((e) => {
     const s = e[0] as number;

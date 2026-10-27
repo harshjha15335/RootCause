@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAnalysis, type Analysis } from "../../../api/analysis";
-import { PHASES, PX, PY, SECONDS, frameAt, useLab, type Frame, type Lab as LabData } from "../../../lab/data";
+import { PHASES, PX, PY, frameAt, useLab, type Frame, type Lab as LabData } from "../../../lab/data";
 import { quality } from "../../../lib/device";
 import { useUi } from "../../../store/uiStore";
+import { fanIndex, useFan } from "../../../store/fanStore";
+import { band, matchStats, playerMoments, type Moment } from "../../../lab/stats";
+import { Star } from "../../../components/FanPicker";
+import "../../../components/fanStrings";
 import { coachLine, type Line } from "./coach";
 import "./copy";
 import "./storyCopy";
@@ -11,6 +15,7 @@ import { Dna, type Marker } from "./Dna";
 import { drawScene, pick, type LensId } from "./draw";
 import { lanes, pressure, race, shape, spaceShare, teamOf, type Unit } from "./model";
 import { LAND_AWAY, type Terrain } from "./terrain";
+import { buildCues, cueText, type Cue } from "./cues";
 
 const LENSES: LensId[] = ["space", "options", "shape", "pressure", "runs", "chain"];
 const SPEEDS = [0.5, 1, 3];
@@ -63,12 +68,19 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   );
 
   // start on the build-up to the first traced mistake, where the coach has the most to say
-  const time = useRef(Math.max((faults[0]?.s ?? goals[0]?.s ?? 600) - 16, 0));
+  // a "watch in the Lab" link opens on its moment
+  const time = useRef(useFan.getState().labStart ?? Math.max((faults[0]?.s ?? goals[0]?.s ?? 600) - 16, 0));
+  useEffect(() => useFan.getState().watchInLab(null), []);
   const [playing, setPlaying] = useState(!reduced);
   const [speed, setSpeed] = useState(1);
   const [coach, setCoach] = useState(true);
   const [lenses, setLenses] = useState<Set<LensId>>(new Set(["space"]));
-  const [focus, setFocus] = useState<number | null>(null);
+  // player focus: the viewer's own player is followed from the first second
+  const fanPlayer = useFan((u) => u.player);
+  const fan = fanIndex(lab, fanPlayer);
+  const [focus, setFocus] = useState<number | null>(fan);
+  useEffect(() => setFocus(fan), [fan]);
+  const moments = useMemo(() => (focus != null ? playerMoments(lab, focus) : []), [lab, focus]);
   const [probe, setProbe] = useState<[number, number] | null>(null);
   const [hover, setHover] = useState<number | null>(null);
   const [line, setLine] = useState<Line | null>(null);
@@ -76,18 +88,18 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   const [failed, setFailed] = useState(false);
   const [phone, setPhone] = useState(false);
   const broadcastOverlay = useUi((s) => s.broadcastOverlay);
-  const [overlays, setOverlays] = useState<any[]>([]);
+  const [overlays, setOverlays] = useState<Cue[]>([]);
 
   useEffect(() => {
-    fetch(`/showcase/${an.match_id ?? "kby-ira"}/overlays.json`)
+    let off = false;
+    fetch(`${import.meta.env.BASE_URL}showcase/${an.match_id}/overlays.json`)
       .then((r) => (r.ok ? r.json() : []))
-      .then((data) => Array.isArray(data) && setOverlays(data))
-      .catch(() => {});
+      .then((data) => { if (!off) setOverlays(Array.isArray(data) ? data : []); })
+      .catch(() => { if (!off) setOverlays([]); });
+    return () => { off = true; };
   }, [an.match_id]);
-
-  const activeOverlay = broadcastOverlay
-    ? overlays.find((o) => now && o.in_s <= now.t && now.t <= o.out_s)
-    : null;
+  const cues = useMemo(() => buildCues(lab, an, overlays), [lab, an, overlays]);
+  const activeOverlay = broadcastOverlay && now ? cues.find((o) => o.in_s <= now.t && now.t <= o.out_s) ?? null : null;
 
   const host = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
@@ -130,7 +142,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
         const slow = L.coach && L.line && L.line.rank >= 5 ? 0.55 : 1;
         if (L.playing) {
           time.current += dt * L.speed * slow;
-          if (time.current >= SECONDS - 1) time.current = 0;
+          if (time.current >= lab.secs - 1) time.current = 0;
         }
         const t = time.current;
         const f = frameAt(lab, t);
@@ -183,7 +195,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   }, [lab, an, unitOf, faults, tr, reduced]);
 
   const seek = (s: number) => {
-    time.current = Math.min(Math.max(s, 0), SECONDS - 1);
+    time.current = Math.min(Math.max(s, 0), lab.secs - 1);
     live.current.line = null;
   };
   if (control) control.current = (sec: number) => {
@@ -205,7 +217,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   const drag = useRef<{ x: number; y: number; moved: boolean } | null>(null);
   const at = (e: { clientX: number; clientY: number }) => stage.current?.pitchAt(e.clientX, e.clientY) ?? null;
 
-  const s = now ? Math.min(Math.floor(now.t), SECONDS - 1) : 0;
+  const s = now ? Math.min(Math.floor(now.t), lab.secs - 1) : 0;
   const team = lab.poss[s];
   const sofar = goals.filter((a) => a.s <= (now?.t ?? 0));
   const score = [sofar.filter((a) => a.team === 0).length, sofar.filter((a) => a.team === 1).length];
@@ -291,6 +303,32 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
               <span style={{ color: "#c9d2ff" }}>{lab.short[0]}</span> {score[0]}–{score[1]} <span style={{ color: LAND_AWAY }}>{lab.short[1]}</span>
               <span className="ml-3 text-[14px] font-bold text-white/60">{now ? clock(now.t) : ""}</span>
             </span>
+            {fan != null && (
+              <button
+                type="button"
+                aria-pressed={focus === fan}
+                onClick={() => setFocus(focus === fan ? null : fan)}
+                className={`pointer-events-auto flex min-h-[40px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold backdrop-blur ${focus === fan ? "bg-white text-[#0b0c12]" : "bg-black/55 text-white/80"}`}
+              >
+                <Star filled={focus === fan} />
+                {focus === fan ? tr("fan.following", { name: lab.names[fan].split(" ").slice(-1)[0] }) : tr("fan.follow", { name: lab.names[fan].split(" ").slice(-1)[0] })}
+              </button>
+            )}
+            {focus != null && now && (
+              <button
+                type="button"
+                onClick={() => {
+                  const n = moments.find((m) => m.s > now.t + 1);
+                  if (n) {
+                    seek(n.s - 3);
+                    setPlaying(true);
+                  }
+                }}
+                className="pointer-events-auto min-h-[40px] rounded-full bg-black/55 px-3 text-[13px] font-semibold text-white/80 backdrop-blur hover:text-white"
+              >
+                {tr("fan.nextTouch")} →
+              </button>
+            )}
             {now && (
               <span className="hidden rounded-full bg-black/55 px-3 py-2 text-[13px] font-semibold text-white/70 backdrop-blur md:inline">
                 {lab.short[team]} · {tr(`tlab.phase.${PHASES[lab.phase[s]]}`)} <span className="mx-1 text-white/35">/</span> {lab.short[1 - team]} · {tr(`tlab.block.${block}`)}
@@ -299,13 +337,13 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
           </div>
         </div>
 
-        {tagAt && focusTag != null && now && <Tag lab={lab} i={focusTag} x={tagAt[0]} y={tagAt[1]} f={now.f} unit={unitOf(focusTag)} an={an} />}
+        {tagAt && focusTag != null && now && <Tag lab={lab} i={focusTag} x={tagAt[0]} y={tagAt[1]} f={now.f} unit={unitOf(focusTag)} />}
 
         {activeOverlay && (
-          <div className="pointer-events-none absolute right-4 top-4 z-20 flex items-center gap-2.5 rounded-full bg-turf-deep/90 px-4 py-2 shadow-2xl backdrop-blur-md ring-1 ring-flare">
-            <span className="h-2 w-2 rounded-full bg-flare rc-blink" />
-            <span className="text-[11px] font-black uppercase tracking-[0.16em] text-flare">{activeOverlay.kind}</span>
-            <span className="text-[13px] font-semibold text-chalk">{activeOverlay.text}</span>
+          <div className="pointer-events-none absolute right-4 top-4 z-20 flex max-w-[min(560px,calc(100%-2rem))] items-center gap-2.5 rounded-full bg-turf-deep/90 px-4 py-2 shadow-2xl backdrop-blur-md ring-1 ring-flare">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-flare rc-blink" />
+            <span className="shrink-0 text-[11px] font-black uppercase tracking-[0.16em] text-flare">{tr(`ovl.kind.${activeOverlay.kind}`)}</span>
+            <span className="truncate text-[13px] font-semibold text-chalk">{cueText(activeOverlay, tr, lab)}</span>
           </div>
         )}
 
@@ -346,6 +384,9 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
                 </button>
               ))}
             </div>
+            <button type="button" aria-pressed={broadcastOverlay} onClick={() => useUi.getState().setBroadcastOverlay(!broadcastOverlay)} title={tr("ovl.toggle")} className={`min-h-[34px] shrink-0 rounded-full px-2.5 text-[12px] font-semibold ${broadcastOverlay ? "bg-white/15 text-white" : "text-white/60"}`}>
+              {tr("ovl.toggle")}
+            </button>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
             <span className="mr-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white/45">{tr("tlab.topo.goals")}</span>
@@ -367,30 +408,19 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
           </div>
         </div>
       </div>
-      <Side lab={lab} f={now?.f ?? null} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} an={an} focus={focus} />
+      <Side lab={lab} f={now?.f ?? null} t={now?.t ?? 0} feature={feature} line={coach ? line : null} unitOf={unitOf} club={club} grid={an.xt_grid} focus={focus} moments={moments} />
       </div>
     </div>
   );
 }
 
 /** Beside the pitch: what the chosen feature shows, then this moment in numbers. */
-function Side({ lab, f, feature, line, unitOf, club, grid, an, focus }: { lab: LabData; f: Frame | null; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][]; an?: Analysis; focus?: number | null }) {
+function Side({ lab, f, t: now, feature, line, unitOf, club, grid, focus, moments }: { lab: LabData; f: Frame | null; t: number; feature: "coach" | LensId; line: Line | null; unitOf: (i: number) => Unit; club: (k: number) => string; grid?: number[][]; focus: number | null; moments: Moment[] }) {
   const { t } = useTranslation();
-  const favoritePlayerId = useUi((s) => s.favoritePlayerId);
   const lens = feature === "coach" ? line?.lens ?? null : feature;
   const how = lens === "space" ? t("tlab.topo.spaceHow", { h: club(0), a: club(1) }) : lens ? t(`tlab.how.${lens}`) : "";
   const rows: [string, string, boolean][] = [];
 
-  // Determine focused player index (either clicked in lab or chosen as favorite in header)
-  let focusIdx = focus;
-  if (focusIdx == null && favoritePlayerId) {
-    focusIdx = favoritePlayerId.startsWith("H")
-      ? Number(favoritePlayerId.slice(1)) - 1
-      : 10 + Number(favoritePlayerId.slice(1));
-  }
-  const focusedPid = focusIdx != null ? (focusIdx < 11 ? `H${focusIdx + 1}` : `A${focusIdx - 10}`) : null;
-  const focusStat = focusedPid ? an?.players.find((p) => p.id === focusedPid) : null;
-  const focusSpd = f && focusIdx != null && focusIdx < f.vel.length ? Math.hypot(f.vel[focusIdx][0], f.vel[focusIdx][1]) : 0;
 
   if (f) {
     const sp = spaceShare(f).home;
@@ -410,53 +440,7 @@ function Side({ lab, f, feature, line, unitOf, club, grid, an, focus }: { lab: L
 
   return (
     <aside className="rounded-[22px] bg-turf p-4 ring-1 ring-inset ring-turf-edge sm:p-5">
-      {/* Player Focus Panel */}
-      {focusIdx != null && focusStat && (
-        <div className="mb-4 rounded-xl bg-chalk/5 p-3.5 ring-1 ring-inset ring-flare/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-flare">Player Focus</span>
-            <span className="text-[11px] text-chalk-faint">#{lab.numbers[focusIdx]} {focusStat.position}</span>
-          </div>
-          <div className="mt-1 flex items-baseline justify-between">
-            <h3 className="font-display text-[17px] font-bold text-chalk">{lab.names[focusIdx]}</h3>
-            <span className="text-[12px] font-semibold text-chalk-dim">{lab.short[teamOf(focusIdx)]}</span>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2 text-[12px]">
-            <div className="rounded-lg bg-turf-deep p-2">
-              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Speed</span>
-              <div className="mt-0.5 flex items-center gap-1.5 font-display text-[15px] font-bold text-chalk tabular-nums">
-                {focusSpd.toFixed(1)} <span className="text-[11px] font-normal text-chalk-faint">m/s</span>
-                {focusSpd >= 6.0 && (
-                  <span className="rounded bg-flare px-1 py-0.2 text-[9px] font-black uppercase text-flare-ink">Sprint</span>
-                )}
-              </div>
-            </div>
-            <div className="rounded-lg bg-turf-deep p-2">
-              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Total Distance</span>
-              <div className="mt-0.5 flex items-center gap-1.5 font-display text-[15px] font-bold text-chalk tabular-nums">
-                {focusStat.distance_km ?? "8.4"} <span className="text-[11px] font-normal text-chalk-faint">km</span>
-                {(focusStat.distance_km ?? 0) >= 8.0 && (
-                  <span className="rounded bg-chalk/20 px-1 py-0.2 text-[9px] font-bold text-chalk">8k+</span>
-                )}
-              </div>
-            </div>
-            <div className="rounded-lg bg-turf-deep p-2">
-              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Passes (Comp)</span>
-              <div className="mt-0.5 font-display text-[15px] font-bold text-chalk tabular-nums">
-                {focusStat.passes} <span className="text-[11px] font-normal text-chalk-faint">({focusStat.pass_pct}%)</span>
-              </div>
-            </div>
-            <div className="rounded-lg bg-turf-deep p-2">
-              <span className="text-[10px] uppercase tracking-wider text-chalk-faint">Touches · Duels</span>
-              <div className="mt-0.5 font-display text-[15px] font-bold text-chalk tabular-nums">
-                {focusStat.touches} <span className="text-[11px] font-normal text-chalk-faint">· {focusStat.tackles} won</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {focus != null && f && <FocusCard lab={lab} i={focus} t={now} f={f} moments={moments} />}
       {lens && (
         <div className="mb-4 border-b border-turf-edge pb-4">
           <p className="flex items-center gap-2 font-display text-[18px] font-extrabold uppercase text-chalk [font-stretch:115%]">
@@ -487,35 +471,84 @@ function CoachIcon() {
   );
 }
 
-function Tag({ lab, i, x, y, f, unit, an }: { lab: LabData; i: number; x: number; y: number; f: Frame; unit: Unit; an?: Analysis }) {
+/** Player focus beside the pitch: ground covered so far, speed now, the last and next touch. */
+function FocusCard({ lab, i, t: sec, f, moments }: { lab: LabData; i: number; t: number; f: Frame; moments: Moment[] }) {
+  const { t } = useTranslation();
+  const st = matchStats(lab);
+  const s = Math.min(Math.max(Math.floor(sec), 0), lab.secs - 1);
+  const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
+  const last = [...moments].reverse().find((m) => m.s <= sec);
+  const next = moments.find((m) => m.s > sec);
+  return (
+    <div className="mb-4 border-b border-turf-edge pb-4">
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-chalk-faint">{t("fan.following", { name: "" }).trim()}</p>
+      <p className="mt-1 font-display text-[18px] font-extrabold text-chalk">
+        #{lab.numbers[i]} {lab.names[i]}
+      </p>
+      <p className="mt-1 text-[14px] text-chalk-dim">
+        {t("fan.focus.soFar", { km: (st.cum[i * st.n + s] / 1000).toFixed(1) })} · {Math.round(sp * 3.6)} km/h <SpeedChip ms={sp} />
+      </p>
+      {last && (
+        <p className="mt-2 text-[14px] leading-snug text-chalk">
+          <span className="text-chalk-faint">{t("fan.focus.last")} {clock(last.s)} · </span>
+          <MomentText lab={lab} m={last} />
+        </p>
+      )}
+      {next && (
+        <p className="mt-1 text-[13px] leading-snug text-chalk-dim">
+          {t("fan.focus.next")} {clock(next.s)} · <MomentText lab={lab} m={next} />
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SpeedChip({ ms }: { ms: number }) {
+  const { t } = useTranslation();
+  const b = band(ms);
+  return <span className={`ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] ${b === "hsr" || b === "sprint" ? "bg-flare text-flare-ink" : "bg-chalk/10 text-chalk-dim"}`}>{t(`fan.band.${b}`)}</span>;
+}
+
+/** One moment in words, with its speed and difficulty tags. Shared with the Match page. */
+export function MomentText({ lab, m }: { lab: LabData; m: Moment }) {
+  const { t } = useTranslation();
+  const sur = (k: number | null | undefined) => (k == null ? "" : lab.names[k].split(" ").slice(-1)[0]);
+  let text = "";
+  const tags: string[] = [];
+  if (m.kind === "pass" && m.pass) {
+    text = t(m.pass.ok ? "fan.m.pass" : m.outcome === "offside" ? "fan.m.passOffside" : "fan.m.passFail", { to: sur(m.other) });
+    tags.push(`${t(`fan.grade.${m.pass.grade}`)} ${m.pass.difficulty}`, `${m.pass.ballKmh} km/h`, ...m.pass.tags.map((g) => t(`fan.ptag.${g}`)));
+  } else if (m.kind === "received") text = t("fan.m.received", { from: sur(m.other) });
+  else if ((m.kind === "shot" || m.kind === "goal") && m.shot) {
+    text = m.kind === "goal" ? t("fan.m.goal") : t("fan.m.shot", { outcome: t(`fan.outcome.${m.outcome}`, { defaultValue: m.outcome ?? "" }) });
+    tags.push(`${m.shot.kmh} km/h`, t(`fan.stag.${m.shot.tag}`));
+  } else if (m.kind === "run" && m.run) {
+    text = t(m.run.kind === "sprint" ? "fan.m.sprint" : "fan.m.run", { m: Math.round(m.run.metres) });
+    tags.push(`${Math.round(m.run.peakKmh)} km/h`);
+  } else if (m.kind === "duel") text = t("fan.m.duel", { outcome: t(`fan.outcome.${m.outcome}`, { defaultValue: m.outcome ?? "" }) });
+  return (
+    <>
+      {text}
+      {tags.map((g) => (
+        <span key={g} className="ml-1.5 inline-block rounded-full bg-chalk/10 px-2 py-px text-[11px] font-semibold text-chalk-dim">
+          {g}
+        </span>
+      ))}
+    </>
+  );
+}
+
+function Tag({ lab, i, x, y, f, unit }: { lab: LabData; i: number; x: number; y: number; f: Frame; unit: Unit }) {
   const { t } = useTranslation();
   const sp = Math.hypot(f.vel[i][0], f.vel[i][1]);
-  const pid = i < 11 ? `H${i + 1}` : `A${i - 10}`;
-  const pStat = an?.players.find((p) => p.id === pid);
-  const isSprint = sp >= 6.0;
-
   return (
-    <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-xl bg-black/85 p-3 text-[13px] text-white shadow-2xl backdrop-blur-md ring-1 ring-white/10" style={{ left: x, top: y - 8 }}>
-      <div className="flex items-center gap-2 whitespace-nowrap font-bold">
-        <span>#{lab.numbers[i]} {lab.names[i]}</span>
-        {isSprint && (
-          <span className="rounded bg-flare px-1.5 py-0.5 text-[10px] font-black uppercase text-flare-ink">
-            Sprint
-          </span>
-        )}
+    <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-black/75 px-3 py-2 text-[13px] text-white shadow-xl backdrop-blur" style={{ left: x, top: y - 6 }}>
+      <div className="whitespace-nowrap font-semibold">
+        #{lab.numbers[i]} {lab.names[i]}
       </div>
-      <div className="mt-1 flex items-center gap-2 text-[12px] text-white/70">
-        <span>{lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)}</span>
-        <span className="tabular-nums font-semibold text-white">{sp.toFixed(1)} m/s</span>
+      <div className="whitespace-nowrap text-white/60">
+        {lab.short[teamOf(i)]} · {t(`tlab.unit.${unit}`)} · {Math.round(sp * 3.6)} km/h · {t(`fan.band.${band(sp)}`)}
       </div>
-      {pStat && (
-        <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-white/10 pt-1.5 text-[11px] text-white/60">
-          <div>Dist: <span className="font-semibold text-white">{pStat.distance_km ?? "8.4"} km</span></div>
-          <div>Top: <span className="font-semibold text-white">{pStat.top_speed_mps ?? "8.9"} m/s</span></div>
-          <div>Passes: <span className="font-semibold text-white">{pStat.passes} ({pStat.pass_pct}%)</span></div>
-          <div>Touches: <span className="font-semibold text-white">{pStat.touches}</span></div>
-        </div>
-      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import type { LibraryMatch } from "../api/types";
 import { pageHref } from "../lib/nav";
 
 /**
- * The demo matches as a series of meetings between the same two clubs. Each card carries a tiny
+ * Every demo match as a card. Each card carries a tiny
  * Timestack of its match: six 15-minute layers, kick-off at the bottom, a dot per goal on its layer,
  * yellow when Root Cause traced the mistake behind it.
  */

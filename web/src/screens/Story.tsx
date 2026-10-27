@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { EngineMatchEvent, Evidence, MatchMeta, RecordedReplay } from "../api/types";
 import { Track } from "../lib/frames";
 import { loadGsap } from "../lib/motion";
+import { SHOWCASE_MATCH } from "../api/rest";
 import { go, pageHref } from "../lib/nav";
 import { useUi } from "../store/uiStore";
 import { css } from "../theme/palette";
@@ -11,8 +12,18 @@ import type { FreeArea, Shot, StackData, StackLabel, StackState, Timestack } fro
 import "./landingCopy";
 import { buildStack } from "./TimestackStory";
 
-/** The example: the traced 36th-minute goal of Kestrel Bay vs Ironmoor. */
-const EXAMPLE = { match: "kby-ira", goal: "kby-ira-g3" };
+type Example = { match: string; goal: string; n: number };
+
+/** The example: the first traced goal of the match being viewed, or of the first match that has one. */
+async function pickExample(): Promise<Example> {
+  const r = await fetch(`${import.meta.env.BASE_URL}showcase/library.json`);
+  if (!r.ok) throw new Error(`library.json returned ${r.status}`);
+  const { matches } = (await r.json()) as { matches: { id: string; n: number; goals: { id: string; traced: boolean }[] }[] };
+  const has = (m: (typeof matches)[number]) => m.goals.some((g) => g.traced);
+  const m = matches.find((x) => x.id === SHOWCASE_MATCH && has(x)) ?? matches.find(has);
+  if (!m) throw new Error("no traced goal in the library");
+  return { match: m.id, n: m.n, goal: m.goals.find((g) => g.traced)!.id };
+}
 const STEPS = 5;
 
 // The camera stays level, beside the stack: time reads bottom to top, the goal at the far end.
@@ -32,8 +43,8 @@ const storyFree: FreeArea = (w, h) => {
   return { x0: -0.94, x1: 0.94, y0: -1 + (2 * bottom) / h, y1: 1 - (2 * top) / h };
 };
 
-async function loadExample(): Promise<StackData> {
-  const base = `${import.meta.env.BASE_URL}showcase/${EXAMPLE.match}/`;
+async function loadExample(ex: Example): Promise<StackData> {
+  const base = `${import.meta.env.BASE_URL}showcase/${ex.match}/`;
   const get = async <T,>(f: string): Promise<T> => {
     const r = await fetch(base + f);
     if (!r.ok) throw new Error(`${f} returned ${r.status}`);
@@ -43,7 +54,7 @@ async function loadExample(): Promise<StackData> {
     get<MatchMeta>("meta.json"),
     get<EngineMatchEvent[]>("ticks.json"),
     get<Record<string, Record<string, RecordedReplay>>>("replays.json"),
-    get<Evidence>(`traces/${EXAMPLE.goal}.json`),
+    get<Evidence>(`traces/${ex.goal}.json`),
   ]);
   const track = new Track([...meta.home.players, ...meta.away.players].map((p) => p.id));
   for (const e of ticks) track.addEngine(e);
@@ -74,12 +85,13 @@ export function Story() {
   const engine = useRef<{ stack: Timestack; data: StackData; gsap: typeof import("gsap").gsap | null } | null>(null);
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
+  const [example, setExample] = useState<Example | null>(null);
 
   useEffect(() => {
     let off = false;
     let dispose = () => {};
     setStatus("loading");
-    Promise.all([loadExample(), import("../three/timestack"), reduced ? Promise.resolve(null) : loadGsap()])
+    Promise.all([pickExample().then((ex) => { if (!off) setExample(ex); return loadExample(ex); }), import("../three/timestack"), reduced ? Promise.resolve(null) : loadGsap()])
       .then(([data, { Timestack, stackPoint }, g]) => {
         if (off || !canvas.current || !labels.current) return;
         const N = data.seconds.length;
@@ -195,7 +207,7 @@ export function Story() {
       <div className="pointer-events-none absolute inset-x-0 top-0 px-5 pt-5 sm:px-10 sm:pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
           <p className="font-trace text-[12px] font-bold uppercase tracking-[0.14em] text-chalk">{t("storyx.eyebrow")}</p>
-          <p className="text-[13px] text-chalk-dim">{t("storyx.example")}</p>
+          <p className="text-[13px] text-chalk-dim">{example ? t("storyx.example", { n: example.n }) : null}</p>
         </div>
         <ol className="pointer-events-auto mt-4 grid max-w-[720px] grid-cols-5 gap-1.5" aria-label={t("storyx.steps")}>
           {Array.from({ length: STEPS }, (_, i) => (
@@ -244,7 +256,7 @@ export function Story() {
             <div className="flex flex-wrap gap-3">
               {step === STEPS - 1 ? (
                 <>
-                  <a href={pageHref("autopsy", { demo: EXAMPLE.match, goal: EXAMPLE.goal })} className="rc-press inline-flex min-h-[46px] items-center rounded-full bg-flare px-6 text-[15px] font-bold text-flare-ink hover:brightness-105">
+                  <a href={pageHref("autopsy", example ? { demo: example.match, goal: example.goal } : {})} className="rc-press inline-flex min-h-[46px] items-center rounded-full bg-flare px-6 text-[15px] font-bold text-flare-ink hover:brightness-105">
                     {t("storyx.autopsy")}
                   </a>
                   <button

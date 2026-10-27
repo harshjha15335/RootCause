@@ -1,8 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+// @ts-expect-error plain JS helper shared with tools/library.mjs
+import { matchIds } from "./tools/matches.mjs";
 
 export default defineConfig({
   plugins: [react()],
+  // the exported matches in public/showcase, found at build time (see tools/matches.mjs)
+  define: { __MATCHES__: JSON.stringify(matchIds(new URL("./public/showcase", import.meta.url).pathname)) },
   build: {
     target: "es2020",
     // three.js is ~600 kB minified: keep it in its own chunk so pages that lazy-load 3D never pay

@@ -3,10 +3,10 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { matchIds } from "./matches.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "showcase");
-const rest = readFileSync(join(root, "..", "..", "src", "api", "rest.ts"), "utf8");
-const ids = JSON.parse(rest.match(/DEMO_MATCHES = (\[[^\]]*\])/)[1].replace(/'/g, '"'));
+const ids = matchIds(root);
 const read = (id, f) => JSON.parse(readFileSync(join(root, id, f), "utf8"));
 
 const matches = ids.map((id, i) => {

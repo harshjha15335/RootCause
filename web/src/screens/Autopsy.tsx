@@ -398,7 +398,6 @@ function Copy({ a, st, t, expert, elapsed, timeNow, download, openEngine, wide }
         <Kicker>{t("autopsy.plans.k")}</Kicker>
         <TitleOf wide={wide}>{fact(a.def)}</TitleOf>
         <Line>{fact(a.att)}</Line>
-        <Line dim>{a.dossier.prev ? t("autopsy.pre.prev", { home, away, h: a.dossier.prev[0], a: a.dossier.prev[1] }) : t("autopsy.pre.first")}</Line>
         {expert && (
           <ul className="mt-3 flex flex-wrap gap-1.5">
             {([a.def, a.att] as const).flatMap((k) =>

@@ -29,8 +29,7 @@ export function broadcastScript(a: Autopsy, t: TFunction): string {
         const f = a.dossier.facts[k][0];
         return t(`autopsy.pre.${f.key}`, { team: lab.clubs[k].name, ...f.params });
       });
-      const prev = a.dossier.prev ? t("autopsy.pre.prev", { home, away, h: a.dossier.prev[0], a: a.dossier.prev[1] }) : t("autopsy.pre.first");
-      out.push(`[${mmss(at)}–${mmss(at + st.dur)}] ${t("autopsy.pre.k").toUpperCase()}`, prev, ...facts, "");
+      out.push(`[${mmss(at)}–${mmss(at + st.dur)}] ${t("autopsy.pre.k").toUpperCase()}`, ...facts, "");
       at += st.dur;
     } else if (st.beat === "goal") {
       seg(st, "goal", [

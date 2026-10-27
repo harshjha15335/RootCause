@@ -1,5 +1,5 @@
 import type { Analysis } from "../../../api/analysis";
-import { PX, PY, SECONDS, fwdX, type Lab } from "../../../lab/data";
+import { PX, PY, fwdX, type Lab } from "../../../lab/data";
 
 /**
  * The match told as chapters for the Tactics Lab. A chapter ends at each goal and at half-time
@@ -89,12 +89,12 @@ function spell(lab: Lab, an: Analysis, from: number, to: number, team: 0 | 1): T
 
 export function buildChapters(lab: Lab, an: Analysis): Chapter[] {
   const goals = lab.actions.filter((a) => a.type === "shot" && a.outcome === "goal").map((a) => ({ s: a.s, team: a.team, player: a.player, xg: a.xg ?? 0 }));
-  const half = SECONDS / 2;
+  const half = lab.secs / 2;
   const marks = [...new Set([...goals.map((g) => g.s + 1), half])].sort((a, b) => a - b);
   const cuts: number[] = [0];
   for (const m of marks) if (m - cuts[cuts.length - 1] >= 360 || m === half) cuts.push(m);
-  if (SECONDS - cuts[cuts.length - 1] < 360) cuts.pop();
-  cuts.push(SECONDS);
+  if (lab.secs - cuts[cuts.length - 1] < 360) cuts.pop();
+  cuts.push(lab.secs);
   const out: Chapter[] = [];
   const score: [number, number] = [0, 0];
   for (let k = 0; k < cuts.length - 1; k++) {

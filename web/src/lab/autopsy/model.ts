@@ -71,7 +71,7 @@ const SIDES: Side[] = ["home", "away"];
 const indexOf = (id: string) => (id[0] === "H" ? 0 : 11) + Number(id.slice(1)) - 1;
 const mean = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
 export const prevented = (x: { base: number; fixed: number }) => Math.max(0, x.base - x.fixed);
-export const meetingOf = (id: string) => DEMO_MATCHES.indexOf(id as (typeof DEMO_MATCHES)[number]) + 1;
+export const meetingOf = (id: string) => DEMO_MATCHES.indexOf(id) + 1;
 /** a goal the Debugger did not trace has no goal_id: it is named by its second */
 export const honestId = (match: string, s: number) => `${match}-s${s}`;
 

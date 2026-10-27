@@ -1,5 +1,5 @@
 import type { Evidence } from "../api/types";
-import { SECONDS, frameAt, periodAt, type Frame, type Lab } from "./data";
+import { frameAt, periodAt, type Frame, type Lab } from "./data";
 
 /**
  * One traced goal, ready for the Lab views: who made the mistake, the moves leading to the goal,
@@ -118,7 +118,7 @@ export function buildCase(lab: Lab, ev: Evidence): GoalCase | null {
   const half = periodAt(lab, goalS);
   let t0 = Math.max(Math.min(root.second, goalS) - 22, 0);
   while (periodAt(lab, t0) !== half) t0++;
-  let t1 = Math.min(goalS + 8, SECONDS - 2);
+  let t1 = Math.min(goalS + 8, lab.secs - 2);
   while (periodAt(lab, t1) !== half) t1--;
 
   const base: GoalCase = {

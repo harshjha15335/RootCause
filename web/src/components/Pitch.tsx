@@ -6,7 +6,7 @@ import { samplePositions } from "../lib/sample";
 import { useMatch } from "../store/matchStore";
 import { useSelectedEvidence } from "../store/selectors";
 import { useTrace } from "../store/traceStore";
-import { useUi } from "../store/uiStore";
+import { useFan } from "../store/fanStore";
 
 const M = 3; // margin in metres
 
@@ -93,7 +93,9 @@ export function Pitch({
 
   const showBackLine = backLine && (at !== undefined ? Math.abs(at - backLine.second) < 2 : true);
 
-  const fav = useUi((s) => s.favoritePlayerId);
+  const fanPlayer = useFan((s) => s.player);
+  const fanMeta = useMatch((s) => s.meta);
+  const fav = fanPlayer ? [...(fanMeta?.home.players ?? []), ...(fanMeta?.away.players ?? [])].find((p) => p.name === fanPlayer)?.id ?? null : null;
 
   return (
     <svg

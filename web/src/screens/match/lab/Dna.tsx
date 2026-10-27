@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PHASES, SECONDS, type Lab } from "../../../lab/data";
+import { PHASES, type Lab } from "../../../lab/data";
 import { INK } from "./draw";
 
 export type Marker = { s: number; kind: "goal" | "shot" | "fault"; team: number; size?: number };
@@ -40,8 +40,8 @@ export function Dna({ lab, t, markers, onSeek }: { lab: Lab; t: number; markers:
     // 90 seconds, its brightness the phase it spent most of that time in
     const mid = H / 2, amp = H / 2 - 9;
     for (let px = 0; px < w; px++) {
-      const c = ((px + 0.5) / w) * SECONDS;
-      const s0 = Math.max(Math.floor(c - 45), 0), s1 = Math.min(Math.ceil(c + 45), SECONDS);
+      const c = ((px + 0.5) / w) * lab.secs;
+      const s0 = Math.max(Math.floor(c - 45), 0), s1 = Math.min(Math.ceil(c + 45), lab.secs);
       const tally = [new Array(4).fill(0), new Array(4).fill(0)];
       for (let s = s0; s < s1; s++) tally[lab.poss[s]][lab.phase[s]]++;
       for (const team of [0, 1]) {
@@ -72,7 +72,7 @@ export function Dna({ lab, t, markers, onSeek }: { lab: Lab; t: number; markers:
     g.clearRect(0, 0, el.width, el.height);
     g.drawImage(base.current, 0, 0);
     g.scale(dpr, dpr);
-    const X = (s: number) => (s / SECONDS) * w;
+    const X = (s: number) => (s / lab.secs) * w;
     for (const m of markers) {
       const x = X(m.s);
       if (m.kind === "fault") {
@@ -100,7 +100,7 @@ export function Dna({ lab, t, markers, onSeek }: { lab: Lab; t: number; markers:
 
   const seek = (e: React.PointerEvent) => {
     const r = ref.current!.getBoundingClientRect();
-    const s = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 0.9999) * SECONDS;
+    const s = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 0.9999) * lab.secs;
     return { x: e.clientX - r.left, s };
   };
   const dragging = useRef(false);
@@ -116,7 +116,7 @@ export function Dna({ lab, t, markers, onSeek }: { lab: Lab; t: number; markers:
         aria-valuemax={90}
         aria-valuenow={Math.floor(t / 60)}
         onKeyDown={(e) => {
-          if (e.key === "ArrowRight") onSeek(Math.min(t + 10, SECONDS - 1));
+          if (e.key === "ArrowRight") onSeek(Math.min(t + 10, lab.secs - 1));
           if (e.key === "ArrowLeft") onSeek(Math.max(t - 10, 0));
         }}
         className="block h-16 w-full cursor-ew-resize touch-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-flare"

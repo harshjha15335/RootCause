@@ -58,7 +58,7 @@ export function StackTrace({ ev }: { ev: Evidence }) {
                   <span className={root ? "text-flare" : "text-chalk"}>
                     <span className="text-chalk-faint">at </span>
                     {analyst ? l.bug_type.toLowerCase() : <BugName code={l.bug_type} />}
-                    {analyst && <span className="text-chalk-faint">({l.player_id})</span>}
+                    {analyst && <span className="text-chalk-faint">#{playerInfo(meta, l.player_id).number}</span>}
                   </span>
                   <span className="tabular-nums text-chalk-dim">{clock(l.second)}</span>
                 </div>
