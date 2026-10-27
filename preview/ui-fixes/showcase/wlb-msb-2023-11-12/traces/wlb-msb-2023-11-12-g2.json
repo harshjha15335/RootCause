@@ -1,0 +1,221 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g2",
+  "match_id": "wlb-msb-2023-11-12",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "wlb-msb-2023-11-12-e1704",
+    "match_id": "wlb-msb-2023-11-12",
+    "second": 1704,
+    "type": "goal",
+    "team": "home",
+    "player_id": "H5",
+    "ball": {
+      "x": 99.8,
+      "y": 41.5
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 6.3,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 29.4,
+          "y": 55.8
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 24.2,
+          "y": 44.9
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 99.8,
+          "y": 41.5
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 29.4,
+          "y": 12.2
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 41.0,
+          "y": 44.2
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 41.0,
+          "y": 23.8
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 67.2,
+          "y": 47.6
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 41.0,
+          "y": 44.2
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 67.2,
+          "y": 20.4
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 81.9,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 98.7,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 75.6,
+          "y": 12.2
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 80.9,
+          "y": 23.1
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 80.9,
+          "y": 44.9
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 75.6,
+          "y": 55.8
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 64.0,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 53.6,
+          "y": 48.3
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 53.6,
+          "y": 19.7
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 31.5,
+          "y": 11.6
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 31.5,
+          "y": 56.4
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 23.1,
+          "y": 34.0
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l1",
+      "player_id": "A4",
+      "second": 1697,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Zonal marking leak: Manuel Akendo vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)",
+      "blame_percent": 83.66013071895425,
+      "baseline_goals": 142,
+      "fixed_goals": 14,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g2-l2",
+      "player_id": "A3",
+      "second": 1694,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Late step-up: Ruben Diales stays behind the defensive line. (metres behind line: 3.2)",
+      "blame_percent": 16.33986928104575,
+      "baseline_goals": 142,
+      "fixed_goals": 117,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g2-l1"
+}

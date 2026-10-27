@@ -1,0 +1,523 @@
+{
+  "id": "wlb-msb-2023-11-12",
+  "name": "West London Blues v Manchester Sky Blues",
+  "date": "2023-11-12",
+  "competition": "Premier League 2023/24",
+  "stadium": "Stamford Bridge, London",
+  "duration_s": 6420,
+  "home": {
+    "id": "WLB",
+    "name": "West London Blues",
+    "short_name": "WLB",
+    "score": 4,
+    "color": "#001489",
+    "crest": "crest-wlb.svg",
+    "lineup": [
+      {
+        "id": "H1",
+        "num_id": 448687,
+        "name": "Roberto Sanchelo",
+        "number": 1,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk"
+      },
+      {
+        "id": "H2",
+        "num_id": 447357,
+        "name": "R. Jamezzi",
+        "number": 24,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "H3",
+        "num_id": 344040,
+        "name": "Marco Cucarena",
+        "number": 3,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def"
+      },
+      {
+        "id": "H4",
+        "num_id": 386292,
+        "name": "A. Disaro",
+        "number": 2,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def"
+      },
+      {
+        "id": "H5",
+        "num_id": 20394,
+        "name": "Tiago Silven",
+        "number": 6,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def"
+      },
+      {
+        "id": "H6",
+        "num_id": 614501,
+        "name": "M. Caisero",
+        "number": 25,
+        "position": "DM",
+        "role": "RDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H7",
+        "num_id": 551497,
+        "name": "C. Palmaro",
+        "number": 20,
+        "position": "RW",
+        "role": "RAMF",
+        "unit": "att"
+      },
+      {
+        "id": "H8",
+        "num_id": 447358,
+        "name": "C. Gallavan",
+        "number": 23,
+        "position": "CM",
+        "role": "RDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H9",
+        "num_id": 669602,
+        "name": "N. Jaxsen",
+        "number": 15,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      },
+      {
+        "id": "H10",
+        "num_id": 600184,
+        "name": "E. Fernadero",
+        "number": 8,
+        "position": "CM",
+        "role": "LDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H11",
+        "num_id": 11066,
+        "name": "R. Sterlino",
+        "number": 7,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att"
+      }
+    ],
+    "subs": [
+      {
+        "id": "H12",
+        "num_id": 586585,
+        "name": "M. Gustaro",
+        "number": 27,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "H13",
+        "num_id": 536494,
+        "name": "M. Mudriko",
+        "number": 10,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att"
+      },
+      {
+        "id": "H14",
+        "num_id": 532621,
+        "name": "A. Brojano",
+        "number": 19,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      }
+    ],
+    "players": [
+      {
+        "id": "H1",
+        "num_id": 448687,
+        "name": "Roberto Sanchelo",
+        "number": 1,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk"
+      },
+      {
+        "id": "H2",
+        "num_id": 447357,
+        "name": "R. Jamezzi",
+        "number": 24,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "H3",
+        "num_id": 344040,
+        "name": "Marco Cucarena",
+        "number": 3,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def"
+      },
+      {
+        "id": "H4",
+        "num_id": 386292,
+        "name": "A. Disaro",
+        "number": 2,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def"
+      },
+      {
+        "id": "H5",
+        "num_id": 20394,
+        "name": "Tiago Silven",
+        "number": 6,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def"
+      },
+      {
+        "id": "H6",
+        "num_id": 614501,
+        "name": "M. Caisero",
+        "number": 25,
+        "position": "DM",
+        "role": "RDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H7",
+        "num_id": 551497,
+        "name": "C. Palmaro",
+        "number": 20,
+        "position": "RW",
+        "role": "RAMF",
+        "unit": "att"
+      },
+      {
+        "id": "H8",
+        "num_id": 447358,
+        "name": "C. Gallavan",
+        "number": 23,
+        "position": "CM",
+        "role": "RDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H9",
+        "num_id": 669602,
+        "name": "N. Jaxsen",
+        "number": 15,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      },
+      {
+        "id": "H10",
+        "num_id": 600184,
+        "name": "E. Fernadero",
+        "number": 8,
+        "position": "CM",
+        "role": "LDMF",
+        "unit": "mid"
+      },
+      {
+        "id": "H11",
+        "num_id": 11066,
+        "name": "R. Sterlino",
+        "number": 7,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att"
+      },
+      {
+        "id": "H12",
+        "num_id": 586585,
+        "name": "M. Gustaro",
+        "number": 27,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "H13",
+        "num_id": 536494,
+        "name": "M. Mudriko",
+        "number": 10,
+        "position": "LW",
+        "role": "LAMF",
+        "unit": "att"
+      },
+      {
+        "id": "H14",
+        "num_id": 532621,
+        "name": "A. Brojano",
+        "number": 19,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      }
+    ]
+  },
+  "away": {
+    "id": "MSB",
+    "name": "Manchester Sky Blues",
+    "short_name": "MSB",
+    "score": 4,
+    "color": "#6CABDD",
+    "crest": "crest-msb.svg",
+    "lineup": [
+      {
+        "id": "A1",
+        "num_id": 71654,
+        "name": "Ederino",
+        "number": 31,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk"
+      },
+      {
+        "id": "A2",
+        "num_id": 8277,
+        "name": "K. Wallaro",
+        "number": 2,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "A3",
+        "num_id": 258154,
+        "name": "Ruben Diales",
+        "number": 3,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def"
+      },
+      {
+        "id": "A4",
+        "num_id": 297957,
+        "name": "M. Akendo",
+        "number": 25,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def"
+      },
+      {
+        "id": "A5",
+        "num_id": 568412,
+        "name": "J. Gvardello",
+        "number": 24,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def"
+      },
+      {
+        "id": "A6",
+        "num_id": 364860,
+        "name": "Roderico",
+        "number": 16,
+        "position": "DM",
+        "role": "DMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A7",
+        "num_id": 265673,
+        "name": "Bernaro Silven",
+        "number": 20,
+        "position": "CM",
+        "role": "LCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A8",
+        "num_id": 550459,
+        "name": "J. Alvaredo",
+        "number": 19,
+        "position": "AM",
+        "role": "RCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A9",
+        "num_id": 447205,
+        "name": "P. Fordan",
+        "number": 47,
+        "position": "RW",
+        "role": "RW",
+        "unit": "att"
+      },
+      {
+        "id": "A10",
+        "num_id": 549485,
+        "name": "J. Dokari",
+        "number": 11,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att"
+      },
+      {
+        "id": "A11",
+        "num_id": 427097,
+        "name": "E. Haalviken",
+        "number": 9,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      }
+    ],
+    "subs": [
+      {
+        "id": "A12",
+        "num_id": 69404,
+        "name": "M. Kovarec",
+        "number": 8,
+        "position": "CM",
+        "role": "RCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A13",
+        "num_id": 11051,
+        "name": "J. Grealton",
+        "number": 10,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att"
+      }
+    ],
+    "players": [
+      {
+        "id": "A1",
+        "num_id": 71654,
+        "name": "Ederino",
+        "number": 31,
+        "position": "GK",
+        "role": "GK",
+        "unit": "gk"
+      },
+      {
+        "id": "A2",
+        "num_id": 8277,
+        "name": "K. Wallaro",
+        "number": 2,
+        "position": "RB",
+        "role": "RB",
+        "unit": "def"
+      },
+      {
+        "id": "A3",
+        "num_id": 258154,
+        "name": "Ruben Diales",
+        "number": 3,
+        "position": "RCB",
+        "role": "RCB",
+        "unit": "def"
+      },
+      {
+        "id": "A4",
+        "num_id": 297957,
+        "name": "M. Akendo",
+        "number": 25,
+        "position": "LCB",
+        "role": "LCB",
+        "unit": "def"
+      },
+      {
+        "id": "A5",
+        "num_id": 568412,
+        "name": "J. Gvardello",
+        "number": 24,
+        "position": "LB",
+        "role": "LB",
+        "unit": "def"
+      },
+      {
+        "id": "A6",
+        "num_id": 364860,
+        "name": "Roderico",
+        "number": 16,
+        "position": "DM",
+        "role": "DMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A7",
+        "num_id": 265673,
+        "name": "Bernaro Silven",
+        "number": 20,
+        "position": "CM",
+        "role": "LCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A8",
+        "num_id": 550459,
+        "name": "J. Alvaredo",
+        "number": 19,
+        "position": "AM",
+        "role": "RCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A9",
+        "num_id": 447205,
+        "name": "P. Fordan",
+        "number": 47,
+        "position": "RW",
+        "role": "RW",
+        "unit": "att"
+      },
+      {
+        "id": "A10",
+        "num_id": 549485,
+        "name": "J. Dokari",
+        "number": 11,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att"
+      },
+      {
+        "id": "A11",
+        "num_id": 427097,
+        "name": "E. Haalviken",
+        "number": 9,
+        "position": "ST",
+        "role": "CF",
+        "unit": "att"
+      },
+      {
+        "id": "A12",
+        "num_id": 69404,
+        "name": "M. Kovarec",
+        "number": 8,
+        "position": "CM",
+        "role": "RCMF",
+        "unit": "mid"
+      },
+      {
+        "id": "A13",
+        "num_id": 11051,
+        "name": "J. Grealton",
+        "number": 10,
+        "position": "LW",
+        "role": "LW",
+        "unit": "att"
+      }
+    ]
+  },
+  "event_coordinate_frame": "attacking-right"
+}

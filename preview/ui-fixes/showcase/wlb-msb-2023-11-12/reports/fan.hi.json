@@ -1,0 +1,256 @@
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "fan",
+  "requested_lang": "hi",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g2",
+      "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [wlb-msb-2023-11-12-g2-l1]\nA4: जोनल मार्किंग में चूक: Manuel Akendo ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली। [wlb-msb-2023-11-12-g2-l1]\nA4: (लाइन के पीछे मीटर: 5.3) [wlb-msb-2023-11-12-g2-l1]\nइंजन ने 83.6601% दोष A4 को दिया। [wlb-msb-2023-11-12-g2-l1]\nA3: विलंबित स्टेप-अप: Ruben Diales रक्षात्मक रेखा के पीछे रह गए। [wlb-msb-2023-11-12-g2-l2]\nA3: (लाइन के पीछे मीटर: 3.2) [wlb-msb-2023-11-12-g2-l2]\nइंजन ने 16.3399% दोष A3 को दिया। [wlb-msb-2023-11-12-g2-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A4: जोनल मार्किंग में चूक: Manuel Akendo ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "A3: विलंबित स्टेप-अप: Ruben Diales रक्षात्मक रेखा के पीछे रह गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g2-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [wlb-msb-2023-11-12-g3-l1]\nA5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया। [wlb-msb-2023-11-12-g3-l1]\nA5: (लाइन के पीछे मीटर: 6.3) [wlb-msb-2023-11-12-g3-l1]\nइंजन ने 74.1176% दोष A5 को दिया। [wlb-msb-2023-11-12-g3-l1]\nA2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया। [wlb-msb-2023-11-12-g3-l2]\nA2: (लाइन के पीछे मीटर: 3.1) [wlb-msb-2023-11-12-g3-l2]\nइंजन ने 25.8824% दोष A2 को दिया। [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A5 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A5: विलंबित रिकवरी दौड़: ओवरलैपिंग ट्रांजिशन में बायाँ रक्षात्मक चैनल खुला छूट गया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (लाइन के पीछे मीटर: 6.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 74.1176% दोष A5 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "A2: ट्रैकिंग में देरी: केंद्रीय क्रॉस डिलीवरी से पहले रिकवरी रन रुक गया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (लाइन के पीछे मीटर: 3.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 25.8824% दोष A2 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [wlb-msb-2023-11-12-g5-l1]\nH3: बैक-पोस्ट टक-इन में विफलता: Marco Cucarena ने बैक पोस्ट पर Erling Haalviken को खुला छोड़ दिया। [wlb-msb-2023-11-12-g5-l1]\nH3: (लाइन के पीछे मीटर: 5.3) [wlb-msb-2023-11-12-g5-l1]\nइंजन ने 77.4566% दोष H3 को दिया। [wlb-msb-2023-11-12-g5-l1]\nH5: विलंबित रक्षात्मक स्टेप-अप: Tiago Silven रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे। [wlb-msb-2023-11-12-g5-l2]\nH5: (लाइन के पीछे मीटर: 2.8) [wlb-msb-2023-11-12-g5-l2]\nइंजन ने 22.5434% दोष H5 को दिया। [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण H3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: बैक-पोस्ट टक-इन में विफलता: Marco Cucarena ने बैक पोस्ट पर Erling Haalviken को खुला छोड़ दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (लाइन के पीछे मीटर: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 77.4566% दोष H3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "H5: विलंबित रक्षात्मक स्टेप-अप: Tiago Silven रक्षात्मक रेखा के साथ आगे बढ़ने में विफल रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (लाइन के पीछे मीटर: 2.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 22.5434% दोष H5 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [wlb-msb-2023-11-12-g6-l1]\nA3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे। [wlb-msb-2023-11-12-g6-l1]\nA3: (लाइन के पीछे मीटर: 5.2) [wlb-msb-2023-11-12-g6-l1]\nइंजन ने 81.3793% दोष A3 को दिया। [wlb-msb-2023-11-12-g6-l1]\nA4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए। [wlb-msb-2023-11-12-g6-l2]\nA4: (लाइन के पीछे मीटर: 3.8) [wlb-msb-2023-11-12-g6-l2]\nइंजन ने 18.6207% दोष A4 को दिया। [wlb-msb-2023-11-12-g6-l2]",
+      "sentences": [
+        {
+          "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "attribution"
+        }
+      ],
+      "lang": "hi",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "ZONAL_LEAK": 2,
+    "LATE_STEP_UP": 2,
+    "BACK_POST_EXPOSURE": 2,
+    "REBOUND_UNCHECKED": 2
+  },
+  "top_causes": [
+    "ZONAL_LEAK",
+    "LATE_STEP_UP",
+    "BACK_POST_EXPOSURE",
+    "REBOUND_UNCHECKED"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g2",
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

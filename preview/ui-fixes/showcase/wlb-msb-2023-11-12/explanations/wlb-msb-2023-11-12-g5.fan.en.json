@@ -1,0 +1,348 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g5",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g5-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "sentences": [
+        {
+          "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metres behind line: 5.3)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 77.4566% of the blame to H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 152/200 to 18/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "sentences": [
+        {
+          "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metres behind line: 2.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 22.5434% of the blame to H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 152/200 to 113/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "start_second": 3203,
+      "end_second": 3203,
+      "caption": {
+        "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "start_second": 3200,
+      "end_second": 3200,
+      "caption": {
+        "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 77.4566% of the blame to H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (metres behind line: 2.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 22.5434% of the blame to H5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 77.4566% of the blame to H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 152/200 to 18/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (metres behind line: 2.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 22.5434% of the blame to H5.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 152/200 to 113/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (metres behind line: 5.3)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H5: (metres behind line: 2.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g5-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "player_id": "H3",
+      "second": 3203,
+      "bug_type": "BACK_POST_EXPOSURE",
+      "description": "Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post. (metres behind line: 5.3)",
+      "blame_percent": 77.45664739884393,
+      "baseline_goals": 152,
+      "fixed_goals": 18,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g5-l2",
+      "player_id": "H5",
+      "second": 3200,
+      "bug_type": "BACK_POST_EXPOSURE",
+      "description": "Late defensive step-up: Tiago Silven fails to step up with the defensive line. (metres behind line: 2.8)",
+      "blame_percent": 22.54335260115607,
+      "baseline_goals": 152,
+      "fixed_goals": 113,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "fan",
+  "lang": "en",
+  "requested_lang": "en",
+  "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g5-l1]\nH3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post. [wlb-msb-2023-11-12-g5-l1]\nH3: (metres behind line: 5.3) [wlb-msb-2023-11-12-g5-l1]\nThe engine attributes 77.4566% of the blame to H3. [wlb-msb-2023-11-12-g5-l1]\nH5: Late defensive step-up: Tiago Silven fails to step up with the defensive line. [wlb-msb-2023-11-12-g5-l2]\nH5: (metres behind line: 2.8) [wlb-msb-2023-11-12-g5-l2]\nThe engine attributes 22.5434% of the blame to H5. [wlb-msb-2023-11-12-g5-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "H3: Failed back-post tuck-in: Marco Cucarena leaves Erling Haalviken unmarked at the back post.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H3: (metres behind line: 5.3)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 77.4566% of the blame to H3.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "H5: Late defensive step-up: Tiago Silven fails to step up with the defensive line.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H5: (metres behind line: 2.8)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 22.5434% of the blame to H5.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g5-l2"
+      ],
+      "kind": "attribution"
+    }
+  ]
+}

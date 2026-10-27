@@ -1,0 +1,348 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g6",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g6-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "sentences": [
+        {
+          "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 22/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "sentences": [
+        {
+          "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 113/200 हो गए।",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "start_second": 4397,
+      "end_second": 4397,
+      "caption": {
+        "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "start_second": 4394,
+      "end_second": 4394,
+      "caption": {
+        "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 22/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 140/200 से घटकर 113/200 हो गए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g6-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "player_id": "A3",
+      "second": 4397,
+      "bug_type": "REBOUND_UNCHECKED",
+      "description": "Hesitation on rebound box clearance: Ruben Diales fails to clear parried strike. (metres behind line: 5.2)",
+      "blame_percent": 81.37931034482759,
+      "baseline_goals": 140,
+      "fixed_goals": 22,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g6-l2",
+      "player_id": "A4",
+      "second": 4394,
+      "bug_type": "REBOUND_UNCHECKED",
+      "description": "Secondary clearance delay: Manuel Akendo caught flat-footed on secondary rebound. (metres behind line: 3.8)",
+      "blame_percent": 18.620689655172413,
+      "baseline_goals": 140,
+      "fixed_goals": 113,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "fan",
+  "lang": "hi",
+  "requested_lang": "hi",
+  "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [wlb-msb-2023-11-12-g6-l1]\nA3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे। [wlb-msb-2023-11-12-g6-l1]\nA3: (लाइन के पीछे मीटर: 5.2) [wlb-msb-2023-11-12-g6-l1]\nइंजन ने 81.3793% दोष A3 को दिया। [wlb-msb-2023-11-12-g6-l1]\nA4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए। [wlb-msb-2023-11-12-g6-l2]\nA4: (लाइन के पीछे मीटर: 3.8) [wlb-msb-2023-11-12-g6-l2]\nइंजन ने 18.6207% दोष A4 को दिया। [wlb-msb-2023-11-12-g6-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "मूल कारण A3 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A3: रिबाउंड बॉक्स क्लीयरेंस में हिचकिचाहट: Ruben Diales रोकी गई स्ट्राइक को क्लीयर करने में विफल रहे।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (लाइन के पीछे मीटर: 5.2)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 81.3793% दोष A3 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "A4: द्वितीयक क्लीयरेंस में देरी: Manuel Akendo द्वितीयक रिबाउंड पर संभल नहीं पाए।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A4: (लाइन के पीछे मीटर: 3.8)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 18.6207% दोष A4 को दिया।",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g6-l2"
+      ],
+      "kind": "attribution"
+    }
+  ]
+}
