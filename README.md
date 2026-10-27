@@ -118,9 +118,10 @@ runs live model agents and submits automatically generated sentence/context rows
 no separate hand-written groundedness dataset is used.
 See [validation status](docs/VALIDATION.md) for measured local results and unrun cloud checks.
 
-Local validation: 80 tests pass, including real engine-to-explanation integration and model failure recovery. The single synthetic fixture scores 1.0 for actual
-sentence grounding using the pending evidence-only fallback. Engine accuracy and live
-Foundry groundedness remain unmeasured until Role 2's dataset and Azure access are available.
+Local validation: 81 tests pass, including real engine-to-explanation integration and model failure recovery. The single synthetic fixture scores 1.0 for actual
+sentence grounding using the pending evidence-only fallback. Engine root-cause accuracy is
+measured on planted goals ([eval/report.md](eval/report.md)); live Foundry groundedness remains
+unmeasured until Azure access is available.
 
 Application Insights receives workflow/model spans, goal/match IDs, timing and returned
 token usage. Sensitive prompt/evidence content tracing stays disabled. Token prices are
@@ -198,9 +199,23 @@ the ground truth.
    nothing fixed, 20 with the late step-up fixed). Blame = that link's drop in goals ÷ the sum of
    drops, computed from the same counts. The biggest share is the root cause.
 
-**Accuracy and limitations.** _Not yet measured._ `eval/accuracy.py` (top-1 / top-3 root-cause
-accuracy on 100 planted goals) is unfinished. Only the LATE_STEP_UP detector exists so far; fixes
-exist for all five bug types. The Fabric exporter and an Event Hubs producer for the engine are
+**Accuracy and limitations.** `python -m eval.accuracy --matches 100 --seed 1000` plants one
+goal-causing mistake (random bug type, player and minute) in each match and checks whether the
+Debugger names that player and bug first. Measured on 99 planted goals (one seed failed to plant):
+
+| Planted bug | Goals | Top-1 | Innocent player blamed first | Abstained |
+| --- | --- | --- | --- | --- |
+| LATE_STEP_UP | 37 | 81% | 14% | 5% |
+| MARKING_LOST | 39 | 0% | 69% | 23% |
+| PRESS_MISSED | 16 | 0% | 31% | 56% |
+| CROSS_NOT_BLOCKED | 4 | 0% | 50% | 50% |
+| DUEL_LOST | 3 | 0% | 67% | 33% |
+| **All** | **99** | **30%** | **41%** | **23%** |
+
+A separate 50-goal run planting only LATE_STEP_UP (`--seed 2000 --bug LATE_STEP_UP`) gives 70%
+top-1 and 82% top-3. Only the LATE_STEP_UP detector exists so far, so the other four types cannot
+score a top-1 hit; fixes exist for all five. Full results: [eval/report.md](eval/report.md),
+[eval/report.LATE_STEP_UP.md](eval/report.LATE_STEP_UP.md) and the per-case JSON beside them. The Fabric exporter and an Event Hubs producer for the engine are
 placeholders. Keep measured results separate: local fixture sentence grounding
 (`eval/agents_eval.py`) is not engine root-cause accuracy, and neither proves live Foundry or Azure
 deployment.

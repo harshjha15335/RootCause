@@ -18,10 +18,11 @@ subscription was supplied, so live service validation and deployment remain bloc
 | Azure CLI / azd | Installed and version-checked; no login/account available |
 | Current source secret scan | Gitleaks passed with values redacted; dependency/build caches excluded |
 | Full Git history scan | Scanned locally after the initial commit; CI also scans full history |
-| Fixture evaluation | One labeled fixture, actual sentence grounding 1.0, pending evidence-only output; engine accuracy is null, not an accuracy claim |
+| Fixture evaluation | One labeled fixture, actual sentence grounding 1.0, pending evidence-only output; engine accuracy is measured separately below |
 | Foundry / Cosmos / Event Hubs / Function live calls | Unrun: subscription, endpoints, identities, deployments and quota unavailable |
 | Translator / Speech / Content Safety live calls | Unrun; transport/failure behavior tested with mocks |
-| Foundry groundedness upload / 100 planted-goal evaluation | Unrun: live project and Role 2 dataset unavailable |
+| 100 planted-goal evaluation | Ran locally (seed 1000): 30 of 99 planted goals top-1 overall, 81% on LATE_STEP_UP, 0% on the four bug types without a detector. LATE_STEP_UP-only run: 35 of 50 top-1. See eval/report.md |
+| Foundry groundedness upload | Unrun: live project unavailable |
 | Fabric workspace/lakehouse/access | Helper tested with mocks; live capacity and tenant access unavailable |
 | GitHub deployment workflow / settings / project board | Files prepared; hosted execution and remote administration are not validated by local checks |
 | Role 2 engine integration | Real `p-1012` goal passes revised backend evidence validation and cited explanation/highlight/Persona fallback tests; integer replay counts retained |
