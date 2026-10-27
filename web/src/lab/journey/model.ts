@@ -29,6 +29,8 @@ export type Suspect = {
   frames: { s: number; ball: Pt; pos: Pt[] }[];
   /** the attacker the fixed line catches offside at the end of the replay, and by how much */
   offside: { player: number; by: number } | null;
+  /** the second the flag goes up, when it is known (the pass to the offside player) */
+  offsideS?: number;
 };
 
 export type Stat = { now: number; usual: number | null };

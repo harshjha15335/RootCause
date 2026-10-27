@@ -139,6 +139,19 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
   const [elapsed, setElapsed] = useState(0);
   const { lab } = a;
   const say = useCallback((k: string, v?: Record<string, string | number>) => t(`autopsy.${k}`, v), [t]);
+  const railRef = useRef<{ key: string; label: string; from: number; to: number }[]>([]);
+  railRef.current = useMemo(() => {
+    const out: { key: string; label: string; from: number; to: number }[] = [];
+    steps.forEach((s, i) => {
+      const key = s.beat === "mistake" ? "mistakes" : s.beat;
+      const last = out[out.length - 1];
+      if (last && last.key === key) last.to = i;
+      else out.push({ key, label: t(`autopsy.beat.${key}`), from: i, to: i });
+    });
+    return out;
+  }, [steps, t]);
+  /** seconds into the current step, read live by the parts that animate every frame */
+  const timeNow = useCallback(() => (reduced ? 1e3 : stage.current?.time() ?? 0), [reduced]);
 
   useEffect(() => {
     const canvas = canvasRef.current!, box = boxRef.current!;
@@ -197,6 +210,15 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
     stage.current?.setPlaying(p);
   }, [steps.length, reduced]);
 
+  // the rail's fills are written straight to the DOM every frame: a React update at 60 fps would
+  // re-render the card, and a throttled one made the bars step
+  const fills = useRef<(HTMLElement | null)[]>([]);
+  const starts = useMemo(() => steps.reduce<number[]>((acc, _, i) => (acc.push(i ? acc[i - 1] + steps[i - 1].dur : 0), acc), []), [steps]);
+  const fillAt = useCallback((r: { from: number; to: number }, i: number, tt: number) => {
+    const a0 = starts[r.from], len = starts[r.to] + steps[r.to].dur - a0;
+    return Math.max(0, Math.min(1, (starts[i] + tt - a0) / len));
+  }, [starts, steps]);
+
   // the clock: advance through the steps while playing, stop after the verdict
   useEffect(() => {
     let raf = 0, lastPush = 0;
@@ -205,6 +227,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
       const s = stage.current;
       if (!s) return;
       const tt = s.time();
+      railRef.current.forEach((r, k) => { const el = fills.current[k]; if (el) el.style.transform = `scaleX(${fillAt(r, n, tt)})`; });
       if (now - lastPush > 120) { setElapsed(tt); lastPush = now; }
       if (!playing || tt < steps[n].dur - 0.01) return;
       if (n < steps.length - 1) goTo(n + 1);
@@ -212,7 +235,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [n, playing, steps, goTo]);
+  }, [n, playing, steps, goTo, fillAt]);
 
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -249,15 +272,8 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
 
   const st = steps[n];
   const total = steps.reduce((x, s) => x + s.dur, 0);
-  const before = steps.slice(0, n).reduce((x, s) => x + s.dur, 0);
   const [home, away] = [lab.clubs[0].name, lab.clubs[1].name];
-  const rail: { key: string; label: string; from: number; to: number }[] = [];
-  steps.forEach((s, i) => {
-    const key = s.beat === "mistake" ? "mistakes" : s.beat;
-    const last = rail[rail.length - 1];
-    if (last && last.key === key) last.to = i;
-    else rail.push({ key, label: t(`autopsy.beat.${key}`), from: i, to: i });
-  });
+  const rail = railRef.current;
 
   return (
     <div ref={boxRef} className="absolute inset-0 select-none">
@@ -309,7 +325,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
           wide ? "bottom-[84px] left-6 max-h-[calc(100%-200px)] w-[420px] px-6 pb-6 pt-5" : "bottom-[68px] left-3 right-3 max-h-[40%] px-4 pb-4 pt-3.5"
         }`}
       >
-        <Copy a={a} st={st} t={t} expert={expert} elapsed={reduced ? 1e3 : elapsed} download={download} openEngine={() => setEngine(true)} wide={wide} />
+        <Copy a={a} st={st} t={t} expert={expert} elapsed={reduced ? 1e3 : elapsed} timeNow={timeNow} download={download} openEngine={() => setEngine(true)} wide={wide} />
         {st.beat !== "goal" && <p className="mt-3 text-[12px] leading-relaxed text-chalk-dim">{t("autopsy.contextMotion")}</p>}
         {!wide && <DepthSwitch className="mt-3" />}
       </article>
@@ -320,10 +336,8 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <ol className="flex min-w-0 flex-1 gap-1.5">
-          {rail.map((r) => {
-            const a0 = steps.slice(0, r.from).reduce((x, s) => x + s.dur, 0);
-            const len = steps.slice(r.from, r.to + 1).reduce((x, s) => x + s.dur, 0);
-            const fillK = Math.max(0, Math.min(1, (before + elapsed - a0) / len));
+          {rail.map((r, k) => {
+            const len = starts[r.to] + steps[r.to].dur - starts[r.from];
             const here = n >= r.from && n <= r.to;
             return (
               <li key={r.key} className="min-w-0" style={{ flex: `${Math.max(len, total * 0.08)} 1 0` }}>
@@ -334,7 +348,7 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
                   className={`grid h-10 w-full content-center gap-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.08em] ${here ? "text-chalk" : "text-chalk-faint"}`}
                 >
                   <span className="relative block h-[3px] overflow-hidden rounded bg-white/20">
-                    <i className={`absolute inset-y-0 left-0 rounded ${r.key === "verdict" || r.key === "mistakes" ? "bg-[#c6ff4d]" : "bg-chalk"}`} style={{ width: `${fillK * 100}%` }} />
+                    <i ref={(el) => { fills.current[k] = el; }} className={`absolute inset-0 origin-left rounded ${r.key === "verdict" || r.key === "mistakes" ? "bg-[#c6ff4d]" : "bg-chalk"}`} style={{ transform: "scaleX(0)" }} />
                   </span>
                   <span className="hidden truncate sm:block">{r.label}</span>
                 </button>
@@ -354,20 +368,23 @@ function Theatre({ a, goals, onGoal }: { a: Data; goals: GoalRef[]; onGoal: (g: 
 
 type T = ReturnType<typeof useTranslation>["t"];
 
-function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Data; st: Step; t: T; expert: boolean; elapsed: number; download: () => void; openEngine: () => void; wide: boolean }) {
+// Defined once, outside Copy: components declared inside it were new types on every render, so
+// React tore down and rebuilt the card's text several times a second while the clock ticked.
+const Kicker = ({ children }: { children: React.ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#c6ff4d]">{children}</p>;
+const Line = ({ children, dim }: { children: React.ReactNode; dim?: boolean }) => <p className={`mt-2 text-[15px] leading-[1.45] ${dim ? "text-chalk-faint" : "text-chalk-dim"}`}>{children}</p>;
+const TitleOf = ({ children, wide }: { children: React.ReactNode; wide: boolean }) => (
+  <h2 className={`mt-1.5 text-balance font-display font-black leading-[1.02] tracking-display [font-stretch:118%] ${wide ? "text-[30px]" : "text-[22px]"}`}>{children}</h2>
+);
+
+function Copy({ a, st, t, expert, elapsed, timeNow, download, openEngine, wide }: { a: Data; st: Step; t: T; expert: boolean; elapsed: number; timeNow: () => number; download: () => void; openEngine: () => void; wide: boolean }) {
   const { lab } = a;
   const [home, away] = [lab.clubs[0].name, lab.clubs[1].name];
-  const Kicker = ({ children }: { children: React.ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#c6ff4d]">{children}</p>;
-  const Title = ({ children }: { children: React.ReactNode }) => (
-    <h2 className={`mt-1.5 text-balance font-display font-black leading-[1.02] tracking-display [font-stretch:118%] ${wide ? "text-[30px]" : "text-[22px]"}`}>{children}</h2>
-  );
-  const Line = ({ children, dim }: { children: React.ReactNode; dim?: boolean }) => <p className={`mt-2 text-[15px] leading-[1.45] ${dim ? "text-chalk-faint" : "text-chalk-dim"}`}>{children}</p>;
 
   if (st.beat === "plans") {
     if (goalType(a.chance?.honest?.kind) === "corner") return (
       <>
         <Kicker>{t("autopsy.corner.k")}</Kicker>
-        <Title>{t("autopsy.corner.title")}</Title>
+        <TitleOf wide={wide}>{t("autopsy.corner.title")}</TitleOf>
         <Line>{t("autopsy.corner.body")}</Line>
         <Line dim>{t("autopsy.reconstruction")}</Line>
       </>
@@ -379,7 +396,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.plans.k")}</Kicker>
-        <Title>{fact(a.def)}</Title>
+        <TitleOf wide={wide}>{fact(a.def)}</TitleOf>
         <Line>{fact(a.att)}</Line>
         <Line dim>{a.dossier.prev ? t("autopsy.pre.prev", { home, away, h: a.dossier.prev[0], a: a.dossier.prev[1] }) : t("autopsy.pre.first")}</Line>
         {expert && (
@@ -403,7 +420,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
           <Kicker>{t("autopsy.goal.k")}</Kicker>
           {elapsed >= slowAt(a) && <span className="autopsy-fade rounded-full border border-[#c6ff4d]/50 px-2 py-0.5 text-[11px] font-semibold text-[#c6ff4d]">{t("autopsy.goal.slow")}</span>}
         </div>
-        <Title>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</Title>
+        <TitleOf wide={wide}>{t("autopsy.goal.title", { clock: clock(a.goalS), scorer: lab.names[a.scorer] })}</TitleOf>
         <p className="mt-2 text-[13px] font-semibold text-[#c6ff4d]" data-testid="goal-type">
           {t(`autopsy.goalTypes.${goalType(a.chance?.honest?.kind)}`)}
         </p>
@@ -419,7 +436,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.move.k")}</Kicker>
-        <Title>{t("autopsy.move.title")}</Title>
+        <TitleOf wide={wide}>{t("autopsy.move.title")}</TitleOf>
         <Line>{t(a.kind === "traced" ? "autopsy.move.body" : "autopsy.move.bodyHonest", v)}</Line>
       </>
     );
@@ -428,7 +445,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.runs.k")}</Kicker>
-        <Title>{t("autopsy.runs.title")}</Title>
+        <TitleOf wide={wide}>{t("autopsy.runs.title")}</TitleOf>
         <Line>{t("autopsy.runs.body")}</Line>
       </>
     );
@@ -438,7 +455,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.fix.k")}</Kicker>
-        <Title>{t("autopsy.fix.title")}</Title>
+        <TitleOf wide={wide}>{t("autopsy.fix.title")}</TitleOf>
         <Line>{c.offside ? t("autopsy.fix.body", { ...v, m: v.by }) : t("autopsy.fix.bodyOpen", v)}</Line>
         <Line dim>{t("autopsy.verdict.why2Count", v)}</Line>
       </>
@@ -457,7 +474,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.mistake.k", { n: st.k + 1, of: a.mistakes.length })}</Kicker>
-        <Title>{t("autopsy.mistake.title", { name: lab.names[m.x.player], m: m.x.behind.toFixed(1) })}</Title>
+        <TitleOf wide={wide}>{t("autopsy.mistake.title", { name: lab.names[m.x.player], m: m.x.behind.toFixed(1) })}</TitleOf>
         <Line>{betterLine(a, st.k, t)}</Line>
         {expert && (
           <>
@@ -475,8 +492,8 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.trial.k")}</Kicker>
-        <Title>{t("autopsy.trial.title")}</Title>
-        <Trial a={a} t={t} expert={expert} elapsed={elapsed} />
+        <TitleOf wide={wide}>{t("autopsy.trial.title")}</TitleOf>
+        <Trial a={a} t={t} expert={expert} timeNow={timeNow} />
         <Line dim>{t("autopsy.trial.line")}</Line>
       </>
     );
@@ -487,9 +504,9 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
     return (
       <>
         <Kicker>{t("autopsy.verdict.k")}</Kicker>
-        <Title>{t("autopsy.verdict.title", v)}</Title>
+        <TitleOf wide={wide}>{t("autopsy.verdict.title", v)}</TitleOf>
         <Formula a={a} t={t} expert={expert} />
-        <Line>{t("autopsy.verdict.why1", v)}</Line>
+        <Line>{t(c.offside ? "autopsy.verdict.why1" : "autopsy.verdict.why1Open", v)}</Line>
         <Line>{t(c.offside && c.fixed === 0 ? "autopsy.verdict.why2" : "autopsy.verdict.why2Count", v)}</Line>
         <Actions t={t} download={download} openEngine={openEngine} show={elapsed > 2} expert={expert} />
       </>
@@ -499,7 +516,7 @@ function Copy({ a, st, t, expert, elapsed, download, openEngine, wide }: { a: Da
   return (
     <>
       <Kicker>{t("autopsy.honest.k")}</Kicker>
-      <Title>{title}</Title>
+      <TitleOf wide={wide}>{title}</TitleOf>
       <Line>{line}</Line>
       {expert && x && <Line dim>{x}</Line>}
       <Actions t={t} download={download} openEngine={openEngine} show expert={expert} />
@@ -521,8 +538,8 @@ function Actions({ t, download, openEngine, show, expert }: { t: T; download: ()
   );
 }
 
-/** 200 replays per row as a 20 × 10 field: goals fill from the left (bright), no-goals stay hollow. */
-function Trial({ a, t, expert, elapsed }: { a: Traced; t: T; expert: boolean; elapsed: number }) {
+/** 200 replays per row as a 40 × 5 field: goals fill from the left (bright), no-goals stay hollow. */
+function Trial({ a, t, expert, timeNow }: { a: Traced; t: T; expert: boolean; timeNow: () => number }) {
   const rows = [
     { key: "base", label: t("autopsy.trial.asPlayed"), g: a.j.culprit.base, n: a.j.culprit.trials, tone: "#f4f6ff", at: 0.4 },
     ...trialRows(a).map((x, k) => ({ key: String(x.player), label: t("autopsy.trial.fixed", { name: surname(a.lab.names[x.player]) }), g: x.fixed, n: x.trials, tone: k === 0 ? "#c6ff4d" : "#9ecb42", at: 1.2 + 2.4 * k })),
@@ -532,8 +549,8 @@ function Trial({ a, t, expert, elapsed }: { a: Traced; t: T; expert: boolean; el
       {rows.map((r) => (
         <div key={r.key} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1">
           <p className="truncate text-[13px] font-semibold text-chalk">{r.label}</p>
-          <p className="text-right text-[12.5px] tabular-nums text-chalk-faint">{expert ? t("autopsy.trial.count", { g: r.g, n: r.n }) : `${Math.round((100 * r.g) / r.n)}%`}</p>
-          <Field g={r.g} n={r.n} tone={r.tone} k={Math.max(0, Math.min(1, (elapsed - r.at) / 1.6))} />
+          <p className="text-right text-[12.5px] tabular-nums text-chalk-faint">{expert ? t("autopsy.trial.count", { g: r.g, n: r.n }) : t("autopsy.trial.share", { p: Math.round((100 * r.g) / r.n) })}</p>
+          <Field g={r.g} n={r.n} tone={r.tone} at={r.at} timeNow={timeNow} />
         </div>
       ))}
       <p className="flex gap-4 text-[12px] text-chalk-faint">
@@ -544,7 +561,8 @@ function Trial({ a, t, expert, elapsed }: { a: Traced; t: T; expert: boolean; el
   );
 }
 
-function Field({ g, n, tone, k }: { g: number; n: number; tone: string; k: number }) {
+/** Draws itself every frame while the replays drop in (at 60 fps, not at the card's update rate), then stops. */
+function Field({ g, n, tone, at, timeNow }: { g: number; n: number; tone: string; at: number; timeNow: () => number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = ref.current!;
@@ -554,20 +572,34 @@ function Field({ g, n, tone, k }: { g: number; n: number; tone: string; k: numbe
     const x = c.getContext("2d")!;
     x.scale(dpr, dpr);
     const cols = 40, rows = Math.ceil(n / cols), step = w / cols, r = Math.min(step, h / rows) * 0.34;
-    // each replay drops into place in a shuffled order: goals land on the left, misses on the right
-    for (let i = 0; i < n; i++) {
-      const order = (i * 97) % n;
-      const land = Math.max(0, Math.min(1, k * 1.25 - (order / n) * 0.25));
-      if (land <= 0) continue;
-      const col = Math.floor(i / rows), row = i % rows;
-      const cx = step * (col + 0.5), cy = (h / rows) * (row + 0.5) - (1 - land) * 10;
-      x.globalAlpha = land;
-      x.beginPath();
-      x.arc(cx, cy, r, 0, Math.PI * 2);
-      if (i < g) { x.fillStyle = tone; x.fill(); }
-      else { x.strokeStyle = "rgba(244,246,255,.4)"; x.lineWidth = 1; x.stroke(); }
-    }
-  }, [g, n, tone, k]);
+    let raf = 0, drawn = -1;
+    const draw = () => {
+      const k = Math.max(0, Math.min(1, (timeNow() - at) / 1.6));
+      if (k !== drawn) {
+        drawn = k;
+        x.clearRect(0, 0, w, h);
+        // each replay drops into place in a shuffled order: goals land on the left, misses on the right
+        for (let i = 0; i < n; i++) {
+          const order = (i * 97) % n;
+          const land = Math.max(0, Math.min(1, k * 1.25 - (order / n) * 0.25));
+          if (land <= 0) continue;
+          const col = Math.floor(i / rows), row = i % rows;
+          const e = 1 - (1 - land) * (1 - land);
+          const cx = step * (col + 0.5), cy = (h / rows) * (row + 0.5) - (1 - e) * 10;
+          x.globalAlpha = land;
+          x.beginPath();
+          x.arc(cx, cy, r, 0, Math.PI * 2);
+          if (i < g) { x.fillStyle = tone; x.fill(); }
+          else { x.strokeStyle = "rgba(244,246,255,.4)"; x.lineWidth = 1; x.stroke(); }
+        }
+        x.globalAlpha = 1;
+      }
+      // keep watching the clock: Back/replay can rewind it
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, [g, n, tone, at, timeNow]);
   return <canvas ref={ref} aria-hidden className="col-span-2 block h-[30px] w-full" />;
 }
 

@@ -52,8 +52,8 @@ export function broadcastScript(a: Autopsy, t: TFunction): string {
       const c = a.j.culprit, v = verdictVars(a);
       seg(st, "verdict", [
         t("autopsy.verdict.title", v),
-        t("autopsy.verdict.why1", v),
-        t(c.offside ? "autopsy.verdict.why2" : "autopsy.verdict.why2Count", v),
+        t(c.offside ? "autopsy.verdict.why1" : "autopsy.verdict.why1Open", v),
+        t(c.offside && c.fixed === 0 ? "autopsy.verdict.why2" : "autopsy.verdict.why2Count", v),
         `${t("autopsy.verdict.formula")}: ${t("autopsy.verdict.formulaX", v)}`,
       ]);
     } else if (st.beat === "fix" && a.kind === "traced") {

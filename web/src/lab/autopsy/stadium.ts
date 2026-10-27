@@ -11,7 +11,7 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { formationGroups, type Autopsy, type Pt, type Snap, type Suspect, type Traced } from "./model";
 import { goalType, teamMotion } from "./motion";
-import { evidenceContext } from "./context";
+import { ballDistance, evidenceContext } from "./context";
 import { pitchKit } from "../../lib/format";
 
 /**
@@ -56,17 +56,50 @@ const median = (a: number[]) => {
 };
 
 // ---------- the timeline ----------
+/**
+ * A playback clock that changes speed smoothly: `rates` gives the speed from each match second
+ * on, and every change of speed is eased over `ease` match seconds, so slow motion settles in
+ * instead of braking in one frame. Returns the match second at beat time t, and its inverse.
+ */
+function warp(from: number, to: number, rates: [number, number][], blend = 0.9) {
+  const smooth = (u: number) => { const v = clamp01(u); return v * v * (3 - 2 * v); };
+  const rate = (s: number) => {
+    let r = rates[0][1];
+    for (let k = 1; k < rates.length; k++) r += (rates[k][1] - rates[k - 1][1]) * smooth((s - rates[k][0] + blend / 2) / blend);
+    return r;
+  };
+  const ds = 0.01, n = Math.max(1, Math.ceil((to - from) / ds)), ts = new Float64Array(n + 1);
+  for (let k = 1; k <= n; k++) ts[k] = ts[k - 1] + ds / rate(from + (k - 0.5) * ds);
+  const at = (t: number) => {
+    if (t <= 0) return from;
+    if (t >= ts[n]) return to;
+    let lo = 0, hi = n;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (ts[m] <= t) lo = m; else hi = m; }
+    return Math.min(to, from + (lo + (t - ts[lo]) / (ts[hi] - ts[lo])) * ds);
+  };
+  const timeOf = (s: number) => ts[Math.round(clamp01((s - from) / (to - from)) * n)];
+  return { at, timeOf, dur: ts[n] };
+}
+const warps = new WeakMap<Autopsy, { goal: ReturnType<typeof warp>; move: ReturnType<typeof warp> }>();
+function warpsOf(a: Autopsy) {
+  let w = warps.get(a);
+  if (!w) {
+    const g0 = goalStart(a), m = moveSpan(a);
+    w = {
+      goal: warp(g0, a.goalS + 0.6, [[g0, GOAL.fast], [a.goalS - GOAL.slow, GOAL.slowRate]]),
+      move: warp(m.from, a.goalS + 1.5, [[m.from, m.fast], [m.slowFrom, m.slow], [m.slowTo, 1]]),
+    };
+    warps.set(a, w);
+  }
+  return w;
+}
 const GOAL = { lead: 7, fast: 1.2, slow: 3, slowRate: 0.45, hold: 2 };
 const goalStart = (a: Autopsy) => Math.max(a.moveFrom, a.goalS - GOAL.lead);
 /** match second shown t seconds into the goal beat: brisk, then slow motion into the net */
-export function goalClock(a: Autopsy, t: number) {
-  const s0 = goalStart(a), sl = a.goalS - GOAL.slow, ta = (sl - s0) / GOAL.fast;
-  if (t < ta) return s0 + t * GOAL.fast;
-  return Math.min(a.goalS + 0.6, sl + (t - ta) * GOAL.slowRate);
-}
+export const goalClock = (a: Autopsy, t: number) => warpsOf(a).goal.at(t);
 /** seconds into the goal beat when slow motion starts */
-export const slowAt = (a: Autopsy) => (a.goalS - GOAL.slow - goalStart(a)) / GOAL.fast;
-const goalDur = (a: Autopsy) => slowAt(a) + (GOAL.slow + 0.6) / GOAL.slowRate + GOAL.hold;
+export const slowAt = (a: Autopsy) => warpsOf(a).goal.timeOf(a.goalS - GOAL.slow);
+const goalDur = (a: Autopsy) => warpsOf(a).goal.dur + GOAL.hold;
 
 /** the move: brisk build-up, slow motion through the mistakes, then real time to the goal */
 function moveSpan(a: Autopsy) {
@@ -74,17 +107,8 @@ function moveSpan(a: Autopsy) {
   const slowFrom = Math.max(a.moveFrom, Math.min(...sec) - 5), slowTo = Math.min(a.goalS, Math.max(...sec) + 6);
   return { from: a.moveFrom, slowFrom, slowTo, fast: 1.6, slow: 0.5 };
 }
-export function moveClock(a: Autopsy, t: number) {
-  const m = moveSpan(a), ta = (m.slowFrom - m.from) / m.fast;
-  if (t < ta) return m.from + t * m.fast;
-  const tb = ta + (m.slowTo - m.slowFrom) / m.slow;
-  if (t < tb) return m.slowFrom + (t - ta) * m.slow;
-  return Math.min(a.goalS + 1.5, m.slowTo + (t - tb));
-}
-const moveDur = (a: Autopsy) => {
-  const m = moveSpan(a);
-  return (m.slowFrom - m.from) / m.fast + (m.slowTo - m.slowFrom) / m.slow + (a.goalS + 1.5 - m.slowTo) + 1.5;
-};
+export const moveClock = (a: Autopsy, t: number) => warpsOf(a).move.at(t);
+const moveDur = (a: Autopsy) => warpsOf(a).move.dur + 1.5;
 /** the suspects replayed side by side: the culprit first, then the next most to blame with a recorded run */
 export const shownOf = (a: Traced) => [a.j.culprit, ...a.j.suspects.filter((x) => x !== a.j.culprit)].filter((x) => x.frames.length).slice(0, 2);
 /** the suspects the trial counts: everyone with a recorded fixed run, culprit first */
@@ -211,7 +235,21 @@ function fat(width: number, o: { dashed?: boolean; order?: number } = {}) {
   l.renderOrder = o.order ?? 3;
   return l;
 }
+/** Lines are redrawn every frame: refill the existing buffers instead of allocating new ones (GC stalls). */
 function setLine(l: Line2, pts: number[], cols: number[]) {
+  const segs = pts.length / 3 - 1;
+  const ps = l.geometry.attributes.instanceStart as THREE.InterleavedBufferAttribute | undefined;
+  const cs = l.geometry.attributes.instanceColorStart as THREE.InterleavedBufferAttribute | undefined;
+  if (ps && cs && ps.data.count === segs) {
+    const P = ps.data.array as Float32Array, C = cs.data.array as Float32Array;
+    for (let i = 0; i < segs; i++) {
+      for (let k = 0; k < 6; k++) { P[i * 6 + k] = pts[i * 3 + k]; C[i * 6 + k] = cols[i * 3 + k]; }
+    }
+    ps.data.needsUpdate = true;
+    cs.data.needsUpdate = true;
+    if (l.material.dashed) l.computeLineDistances();
+    return;
+  }
   const g = new LineGeometry();
   g.setPositions(pts);
   g.setColors(cols);
@@ -310,10 +348,10 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     bowl.add(new THREE.Points(g, new THREE.PointsMaterial({ size: 0.9, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
   }
   const towers = [[-70, -48], [70, -48], [-70, 48], [70, 48]].map(([x, z]) => {
-    const head = new THREE.Mesh(new THREE.BoxGeometry(7, 3, 1.2), new THREE.MeshBasicMaterial({ color: 0xfff4d6 }));
+    const head = new THREE.Mesh(new THREE.BoxGeometry(7, 3, 1.2), new THREE.MeshBasicMaterial({ color: 0xfff4d6, transparent: true }));
     head.position.set(x, 34, z);
     head.lookAt(0, 0, 0);
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.8, 34, 8), new THREE.MeshStandardMaterial({ color: 0x33415b, roughness: 0.6, metalness: 0.4 }));
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.8, 34, 8), new THREE.MeshStandardMaterial({ color: 0x33415b, roughness: 0.6, metalness: 0.4, transparent: true }));
     pole.position.set(x, 17, z);
     const beamGeo = new THREE.ConeGeometry(30, 92, 40, 1, true);
     beamGeo.translate(0, -46, 0);
@@ -385,8 +423,16 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     return { g, pieces, ball, trail, head: hd, line, pitch, rim, verdict };
   }
 
+  /** where each universe's pieces stood when the step changed: they glide from there, never jump */
+  let carry = new Map<Universe, { pos: Pt[]; ball: Pt; h: number }>();
+  let carryK = 1;
   function pose(u: Universe, at: (s: number) => Snap, s: number, line = true) {
-    const f = at(s);
+    let f = at(s);
+    const c = carryK < 1 ? carry.get(u) : undefined;
+    if (c) {
+      const k = carryK, mix = (p: Pt, q: Pt): Pt => [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k];
+      f = { ...f, pos: f.pos.map((p, i) => mix(c.pos[i], p)), ball: mix(c.ball, f.ball), ballHeight: c.h + ((f.ballHeight ?? 0.75) - c.h) * k };
+    }
     f.pos.forEach(([x, y], i) => u.pieces[i].t.position.set(x - 52.5, 0, y - 34));
     u.ball.position.set(f.ball[0] - 52.5, f.ballHeight ?? 0.75, f.ball[1] - 34);
     // the ball's last three seconds as a fading streak
@@ -395,7 +441,8 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const sample = at(Math.max(s - k * 0.1, a.moveFrom - 30));
       const b = sample.ball;
       pts.push(b[0] - 52.5, sample.ballHeight ?? 0.75, b[1] - 34);
-      const o = 1 - k / 30;
+      // the streak fades in after a cut, so it never draws a line the ball did not travel
+      const o = (1 - k / 30) * carryK * carryK;
       cols.push(o, o * 0.93, o * 0.8);
     }
     setLine(u.trail, pts, cols);
@@ -429,7 +476,16 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const suspects = tr ? tr.j.suspects : [];
   const culprit = tr ? tr.j.culprit : null;
   const evidencePins = [a.scorer, ...suspects.map((x) => x.player), ...suspects.flatMap((x) => x.offside ? [x.offside.player] : [])];
-  const contextAt = (at: (s: number) => Snap, t: number) => (s: number) => evidenceContext(at(s), t, a.def, evidencePins);
+  const nearCache = new Map<(s: number) => Snap, (s: number) => number[]>();
+  const nearOf = (at: (s: number) => Snap) => {
+    let n = nearCache.get(at);
+    if (!n) { n = ballDistance(at, a.moveFrom - 4, a.goalS + 3); nearCache.set(at, n); }
+    return n;
+  };
+  const contextAt = (at: (s: number) => Snap, t: number) => {
+    const near = nearOf(at);
+    return (s: number) => evidenceContext(at(s), t, a.def, evidencePins, near(s));
+  };
 
   // ---------- props ----------
   const ring = (col: THREE.Color) => {
@@ -500,7 +556,8 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   cells.count = 0;
   cells.frustumCulled = false;
   cells.renderOrder = 5;
-  mGhostTag.center.set(1.08, 0.5);
+  // hangs just under the ghost, so it never covers the ghost or the pieces around it
+  mGhostTag.center.set(0.5, 1.25);
   mGhostTag.renderOrder = 40;
   const spaceTag = label(say("space"), { color: "#c6ff4d", bg: "rgba(6,8,18,.82)", size: 28, h: 2 });
   real.g.add(mGhost, mGhostTag, mArrow, cells, spaceTag);
@@ -536,7 +593,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const goal = k < goals, n = goal ? gi++ : mi++;
       return { goal, x: (goal ? -12 : 12) + ((n % 8) - 3.5) * 2.2, z: ((Math.floor(n / 8) % 3) - 1) * 2.2, y: 0.7 + Math.floor(n / 24) * 1.5, delay: rnd() * 2.6 };
     });
-    return { g, balls, slots, count, trials };
+    return { g, balls, slots, count, trials, shown: "", at: -1 };
   };
   const bins = culprit && uA ? [binsFor(real, culprit.base, culprit.trials), binsFor(uA, S1!.fixed, S1!.trials), ...(uB ? [binsFor(uB, S2!.fixed, S2!.trials)] : [])] : [];
   const m4 = new THREE.Matrix4();
@@ -555,7 +612,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   }
 
   // the fix: the culprit's universe, with a ghost where he really was and the offside line
-  const offFlag = label(" ", { color: "#0b1028", bg: "#c6ff4d", size: 36, h: 3 });
+  const offFlag = label(" ", { color: "#0b1028", bg: "#c6ff4d", size: 34, h: 2.4 });
   const offLine = fat(3, { dashed: true, order: 6 });
   const ghost = new THREE.Mesh(disc, new THREE.MeshBasicMaterial({ color: kit(a.def), transparent: true, opacity: 0.3, depthWrite: false }));
   const ghostTag = label(S1 ? say("ghost", { name: sur(S1.player) }) : " ", { color: "#f4f1e8", bg: "rgba(150,40,40,.92)", size: 30, h: 2.2 });
@@ -571,7 +628,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   type Lay = [number, number, number, number, number];
   type Layout = { real: Lay; a: Lay; b: Lay };
   const SOLO: Layout = { real: [0, 0, 0, 0, 1], a: [-140, 0, -30, 0.32, 0], b: [140, 0, -30, -0.32, 0] };
-  const MULTI: Layout = { real: [0, 0, 0, 0, 1], a: [-122, 0, -30, 0.34, 1], b: [122, 0, -30, -0.34, uB ? 1 : 0] };
+  const MULTI: Layout = { real: [0, 0, 0, 0, 1], a: [-136, 0, -30, 0.34, 1], b: [136, 0, -30, -0.34, uB ? 1 : 0] };
   const COLUMN: Layout = { real: [0, 0, 0, 0, 1], a: [0, 0, -96, 0, 1], b: [0, 0, 96, 0, uB ? 1 : 0] };
   const FIX: Layout = { real: [140, 0, -30, -0.32, 0], a: [0, 0, 0, 0, 1], b: [260, 0, -40, -0.4, 0] };
   let w = 1, h = 1, inset = { left: 0, top: 0, bottom: 0 };
@@ -583,8 +640,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     goal: { pos: [-4, 46, 68], at: [34, 0, 0] },
     plans: { pos: [0, 118, 60], at: [0, 0, 4] },
     move: { pos: [-46, 50, 82], at: [22, 0, 2] },
-    runs: { pos: [0, 285, 290], at: [0, 0, -6] },
-    trial: { pos: [0, 225, 335], at: [0, 16, -10] },
+    // the three pitches sit right of the card, so these stand further back than a full-width shot
+    runs: { pos: [0, 360, 368], at: [0, 0, -6] },
+    trial: { pos: [0, 285, 425], at: [0, 16, -10] },
     verdict: { pos: [-8, 40, 70], at: [34, 6, 2] },
     fix: { pos: [-12, 34, 58], at: [30, 0, 2] },
     engine: { pos: [-70, 120, 150], at: [10, 0, 0] },
@@ -593,17 +651,29 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const shotOf = (i: number) => {
     const b = beatOf(i);
     if (corner && (b === "plans" || b === "move")) return { pos: [18, 95, 95], at: [40, 0, 0] };
-    if (phone() && multi(b)) return { pos: [0, 330, 150], at: [0, 0, 14] };
+    // the three pitches stack in the band between the header and the card: stand back far enough to fit them
+    if (phone() && multi(b)) return { pos: [0, 520, 230], at: [0, 0, 14] };
     if (b === "mistake" && tr) {
       // close on the defender, from behind the attack, high enough to see the line he broke
       const m = tr.mistakes[steps[i].k], px = (m.real[0] + m.ghost[0]) / 2 - 52.5, pz = m.real[1] - 34;
       const z = phone() ? 1.7 : 1;
       return { pos: [px - 34 * z, 44 * z, pz + 44 * z], at: [px + 4, 0, pz] };
     }
+    if (b === "fix" && S1) {
+      // close on the culprit: where he really was, where the fix puts him and the man it catches offside, all in frame
+      const pts = [realAt(S1.end).pos[S1.player], at1(S1.end).pos[S1.player]];
+      if (S1.offside && S1.offsideS != null) pts.push(at1(S1.offsideS).pos[S1.offside.player]);
+      const cx = pts.reduce((q, p) => q + p[0], 0) / pts.length, cy = pts.reduce((q, p) => q + p[1], 0) / pts.length;
+      const spread = Math.max(...pts.map((p) => Math.hypot(p[0] - cx, p[1] - cy)));
+      const px = cx - 52.5, pz = cy - 34, z = (phone() ? 1.7 : 1) * Math.max(1, spread / 16);
+      return { pos: [px - 34 * z, 36 * z, pz + 50 * z], at: [px + 6, 0, pz] };
+    }
     return SHOTS[b]!;
   };
 
   let step = 0, since = 0, trans = 1, playing = false, shift = 1, motionRequested = false;
+  // the stand and floodlights dim away for the side-by-side pitches, and come back, smoothly
+  let standK = 1, beamK = 1;
   let from: { cam: THREE.Vector3; at: THREE.Vector3; lay: Layout } | null = null;
   let lay: Layout = JSON.parse(JSON.stringify(SOLO));
   camera.position.set(-10, 170, 170);
@@ -614,11 +684,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   const keyTime = (b: Beat) => {
     if (b === "goal") return goalDur(a);
     if (b === "plans") return 4;
-    if (b === "move") {
-      const target = culprit ? culprit.second : a.goalS;
-      for (let t = 0; t < 60; t += 0.1) if (moveClock(a, t) >= target) return t;
-      return 99;
-    }
+    if (b === "move") return warpsOf(a).move.timeOf(culprit ? culprit.second : a.goalS);
     if (b === "mistake") return 6;
     if (b === "fix" && S1) return (S1.end - fixSpan(S1).from) / 0.8;
     return 99;
@@ -631,6 +697,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     const frozen = opts.reduced && !motionRequested;
     const sx = frozen ? keyTime(b) : since;
     const T = opts.reduced || opts.still ? 1 : clamp01(trans / 2.4), e = ease(T);
+    carryK = opts.reduced || opts.still ? 1 : ease(clamp01(trans / 1.1));
     const shot = shotOf(step), to = layoutOf(b);
     if (from) {
       camera.position.lerpVectors(from.cam, new THREE.Vector3(...shot.pos), e);
@@ -639,7 +706,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       if (T >= 1) from = null;
     }
     // keep the picture clear of the card: right on wide screens, up on phones
-    shift += ((multi(b) && !phone() ? 0 : 1) - shift) * (opts.reduced ? 1 : Math.min(1, dt * 3));
+    shift += (1 - shift) * (opts.reduced ? 1 : Math.min(1, dt * 3));
     if (w >= 900) camera.setViewOffset(w, h, (-inset.left / 2) * shift, ((inset.bottom - inset.top) / 2) * 0.4 * shift, w, h);
     else camera.setViewOffset(w, h, 0, ((inset.bottom - inset.top) / 2) * shift, w, h);
     place(real, lay.real);
@@ -647,7 +714,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
     if (uB) place(uB, lay.b);
 
     // defaults; each beat turns on what it needs
-    for (const m of marks) { m.r.visible = false; m.tag.visible = false; }
+    for (const m of marks) { m.r.visible = false; m.tag.visible = false; m.tag.material.opacity = 1; }
     for (const p of pillars) p.g.visible = false;
     scorerRing.visible = false;
     cone.visible = false;
@@ -666,16 +733,21 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       u.verdict.visible = false;
       for (const p of u.pieces) { p.body.material.color.copy(p.col); p.body.material.emissive.copy(p.col); p.body.material.emissiveIntensity = 0.18; p.t.scale.setScalar(1); }
     }
+    const toward = (v: number, target: number) => (opts.reduced || opts.still ? target : v + (target - v) * Math.min(1, dt * 2.5));
+    standK = toward(standK, multi(b) ? 0 : 1);
+    beamK = toward(beamK, multi(b) || b === "fix" ? 0 : 1);
     const floods = step === 0 ? (n: number) => clamp01((sx - 0.3 - n * 0.35) * 3) : () => 1;
     towers.forEach((tw, n) => {
       const on = floods(n);
-      tw.beam.material.uniforms.o.value = on * (multi(b) || b === "fix" ? 0 : 1);
+      tw.beam.material.uniforms.o.value = on * beamK;
       tw.head.material.color.setScalar(0.12 + 0.88 * on);
-      tw.head.visible = tw.pole.visible = !multi(b);
-      tw.spot.intensity = on * (multi(b) ? 0 : 0.9);
+      tw.head.material.opacity = (tw.pole.material as THREE.MeshStandardMaterial).opacity = standK;
+      tw.head.visible = tw.pole.visible = standK > 0.02;
+      tw.spot.intensity = on * 0.9 * standK;
     });
-    (bowl.children[0] as THREE.Mesh<THREE.LatheGeometry, THREE.MeshStandardMaterial>).material.opacity = multi(b) ? 0.15 : 1;
-    bowl.visible = !(multi(b) && !from);
+    (bowl.children[0] as THREE.Mesh<THREE.LatheGeometry, THREE.MeshStandardMaterial>).material.opacity = 0.15 + 0.85 * standK;
+    (bowl.children[1] as THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>).material.opacity = standK;
+    bowl.visible = standK > 0.02;
     key.intensity = 2.1;
 
     const glow = (u: Universe, i: number, col: THREE.Color, s = 0.8) => { const m = u.pieces[i].body.material; m.color.copy(col); m.emissive.copy(col); m.emissiveIntensity = s; };
@@ -724,8 +796,9 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       const f = pose(real, contextAt(liveAt, sx), s, false), u = ease(clamp01(sx / 1.8));
       for (const team of [0, 1] as const) {
         const col = kit(team).lerp(new THREE.Color("#ffffff"), 0.45);
-        (corner ? [] : formationGroups(a.plan, team)).forEach((ps, unit) => {
+        (corner ? [] : formationGroups(a.plan, team)).forEach((group, unit) => {
           const pts: number[] = [], cols: number[] = [];
+          const ps = [...group].sort((i, j) => real.pieces[i].t.position.z - real.pieces[j].t.position.z);
           ps.forEach((i) => {
             const p = real.pieces[i].t.position;
             pts.push(p.x, 0.4, p.z);
@@ -753,22 +826,23 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       planTag.position.set(depth - 52.5, 4, -30);
     } else if (b === "move") {
       const s = moveClock(a, sx);
-      const f = pose(real, contextAt(liveAt, sx), s, !corner);
+      pose(real, contextAt(liveAt, sx), s, !corner);
       for (const m of marks) {
-        const behind = f.pos[m.x.player][0] - lineOf(f, m.x.player);
-        const on = behind > 2.5;
-        m.r.visible = on;
-        m.r.material.opacity = 0.6 + 0.4 * Math.sin(performance.now() / 160);
-        m.tag.visible = on && Math.abs(s - m.x.second) < 4;
-        if (on) glow(real, m.x.player, BUG);
+        // lit around the second the Debugger names, fading in and out (the trace decides, not the smoothed tracking)
+        const on = clamp01((s - (m.x.second - 3)) / 1.2) * clamp01((m.x.second + 4 - s) / 1.2);
+        m.r.visible = m.tag.visible = on > 0.01;
+        m.r.material.opacity = on * (0.75 + 0.25 * Math.sin(performance.now() / 160));
+        m.tag.material.opacity = on;
+        if (on > 0.01) glow(real, m.x.player, BUG.clone().lerp(real.pieces[m.x.player].col, 1 - on), 0.18 + 0.62 * on);
       }
       goalFlash(s);
     } else if (b === "mistake" && tr) {
       const m = tr.mistakes[k], who = m.x.player;
       const s = m.x.second - MISTAKE.lead + Math.min(sx, MISTAKE.lead);
       const f = pose(real, contextAt(realAt, sx), s, false);
-      const line = lineOf(f, who);
-      const [p, cl] = yellowLine(line - 52.5);
+      // the trace measures how far behind his line he was; the smoothed tracking can disagree, so the
+      // line is drawn where the trace puts it, and the ghost stands exactly on it
+      const [p, cl] = yellowLine(m.ghost[0] - 52.5);
       setLine(real.line, [...p], [...cl]);
       real.line.visible = true;
       const u = ease(clamp01((sx - MISTAKE.lead) / 1.4));
@@ -782,7 +856,7 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       (mGhost.material as THREE.MeshBasicMaterial).opacity = 0.5 * u;
       mGhost.position.set(gx - 52.5, 0, gy - 34);
       relabel(mGhostTag, say("onLine", { name: sur(who) }), { color: "#0b1028", bg: "#c6ff4d", size: 30, h: 2.2 });
-      mGhostTag.position.set(gx - 53.5, 1.6, gy - 34);
+      mGhostTag.position.set(gx - 52.5, 0.2, gy - 34);
       mGhostTag.material.opacity = u;
       const yy = 0.5;
       setLine(mArrow, [rx - 52.5, yy, ry - 34, rx + (gx - rx) * u - 52.5, yy, ry - 34], [0.776, 1, 0.302, 0.776, 1, 0.302]);
@@ -797,8 +871,12 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         });
         cells.instanceMatrix.needsUpdate = true;
         const cx = m.cells.reduce((q, c) => q + c[0], 0) / m.cells.length, cy = m.cells.reduce((q, c) => q + c[1], 0) / m.cells.length;
-        spaceTag.visible = cu > 0.5;
-        spaceTag.position.set(cx - 52.5, 2.2, cy - 34);
+        // beyond the patch, on the side away from the ghost and its tag
+        const dx = cx - gx, dy = cy - gy, d = Math.hypot(dx, dy) || 1;
+        const reach = Math.max(...m.cells.map(([x, y]) => ((x - cx) * dx + (y - cy) * dy) / d)) + 2.5;
+        spaceTag.visible = cu > 0.5 && m.cells.length >= 4;
+        spaceTag.material.opacity = clamp01((cu - 0.5) * 4);
+        spaceTag.position.set(cx + (dx / d) * reach - 52.5, 2.2, cy + (dy / d) * reach - 34);
       }
     } else if ((b === "runs" || b === "trial") && uA && S1) {
       const s = b === "runs" ? (frozen ? a.goalS + 2 : Math.min(runsFrom(tr!) + sx * 0.9, a.goalS + 2)) : a.goalS + 2;
@@ -820,7 +898,13 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
         bins.forEach((x) => {
           x.g.visible = true;
           const r = rain(x, frozen ? 99 : sx - 0.4);
-          relabel(x.count, say("count", { g: r.goals, n: r.landed }), { bg: "rgba(6,8,18,.8)", size: 56, h: 5.4, weight: 800 });
+          // a new label texture costs a canvas and an upload: tick the count a few times a second, not every frame
+          const text = say("count", { g: r.goals, n: r.landed });
+          if (text !== x.shown && (r.landed === x.trials || Math.abs(sx - x.at) > 0.15)) {
+            relabel(x.count, text, { bg: "rgba(6,8,18,.8)", size: 56, h: 5.4, weight: 800 });
+            x.shown = text;
+            x.at = sx;
+          }
         });
       }
     } else if (b === "verdict") {
@@ -840,15 +924,19 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
       ghost.position.set(r.pos[S1.player][0] - 52.5, 0, r.pos[S1.player][1] - 34);
       ghostTag.position.set(r.pos[S1.player][0] - 52.5, 1.6, r.pos[S1.player][1] - 34);
       fixTag.position.set(f.pos[S1.player][0] - 52.5, 1.6, f.pos[S1.player][1] - 34);
-      if (S1.note === "offside" && s >= S1.end - 0.5) {
-        const [p, cl] = yellowLine(tr!.j.offsideLine(f) - 52.5, 0.4);
-        setLine(offLine, [...p], [...cl]);
+      // the flag goes up as the ball is played to the offside man, and the line is drawn at that moment
+      const flagAt = S1.offside && S1.offsideS != null ? S1.offsideS : S1.end - 0.5;
+      if (S1.note === "offside" && s >= flagAt) {
+        const o = S1.offside, pf = o && S1.offsideS != null ? at1(S1.offsideS) : f;
+        const [p, cl] = yellowLine(tr!.j.offsideLine(pf) - 52.5, 0.4);
+        const fadeIn = clamp01((s - flagAt) / 0.6);
+        setLine(offLine, [...p], cl.map((v) => v * fadeIn));
         offLine.visible = true;
-        const o = S1.offside;
-        relabel(offFlag, o ? say("offsideBy", { name: sur(o.player), m: o.by.toFixed(1) }) : say("runOffside"), { color: "#0b1028", bg: "#c6ff4d", size: 36, h: 3 });
+        relabel(offFlag, o ? say("offsideBy", { name: sur(o.player), m: o.by.toFixed(1) }) : say("runOffside"), { color: "#0b1028", bg: "#c6ff4d", size: 34, h: 2.4 });
         offFlag.visible = true;
-        const at = o ? f.pos[o.player] : f.ball;
-        offFlag.position.set(at[0] - 52.5, 6, at[1] - 34);
+        offFlag.material.opacity = fadeIn;
+        const where = o ? pf.pos[o.player] : f.ball;
+        offFlag.position.set(where[0] - 52.5, 6, where[1] - 34);
       }
     } else if (b === "honest") {
       // no defender at fault: hold on the finish, the scorer ringed
@@ -939,6 +1027,15 @@ export function createStage(canvas: HTMLCanvasElement, a: Autopsy, opts: StageOp
   return {
     show(i, t = 0) {
       const instant = opts.reduced || opts.still;
+      carry = new Map();
+      for (const u of [real, uA, uB]) {
+        if (!u) continue;
+        carry.set(u, {
+          pos: u.pieces.map((p): Pt => [p.t.position.x + 52.5, p.t.position.z + 34]),
+          ball: [u.ball.position.x + 52.5, u.ball.position.z + 34],
+          h: u.ball.position.y,
+        });
+      }
       from = instant ? null : { cam: camera.position.clone(), at: controls.target.clone(), lay: JSON.parse(JSON.stringify(lay)) };
       step = Math.max(0, Math.min(steps.length - 1, i));
       since = t;

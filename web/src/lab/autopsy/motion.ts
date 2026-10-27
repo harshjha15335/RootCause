@@ -31,7 +31,72 @@ export type Play = { lab: Lab; goalS: number; moveFrom: number; att: 0 | 1; scor
  * playback rates deterministic, with no random jitter or frame-rate-dependent movement.
  */
 export function teamMotion(a: Play): (s: number) => Snap {
-  if (goalType(a.chance?.honest?.kind) === "corner") return cornerMotion(a);
+  const from = a.moveFrom - 3.5, to = a.goalS + 2;
+  if (goalType(a.chance?.honest?.kind) === "corner") return continuous(cornerMotion(a), from, to);
+  return continuous(rawTeamMotion(a), from, to);
+}
+
+/**
+ * Display-only continuity: the reconstruction switches between sources (tracking, event
+ * touches, set-piece choreography), and a switch can move the ball tens of metres in one frame.
+ * Anything faster than a struck shot (ball) or a sprint (player) is treated as a cut and
+ * flown or run there at a believable speed instead; normal motion passes through untouched.
+ */
+export function continuous(f: (s: number) => Snap, from: number, to: number): (s: number) => Snap {
+  const dt = 1 / 50, n = Math.ceil((to - from) / dt);
+  const BALL_CUT = 65, BALL_FLY = 30, RUN_CUT = 11, RUN = 8.5;
+  const balls: Pt[] = [], heights: number[] = [], players: Pt[][] = [];
+  // which samples were moved off the source: everything else is passed through exactly
+  const ballOff: boolean[] = [], playerOff: boolean[][] = [];
+  const chase = (p: Pt, q: Pt, max: number): Pt => {
+    const d = Math.hypot(q[0] - p[0], q[1] - p[1]);
+    return d <= max ? [q[0], q[1]] : [p[0] + ((q[0] - p[0]) * max) / d, p[1] + ((q[1] - p[1]) * max) / d];
+  };
+  let ballChasing = false;
+  const chasing: boolean[] = Array(22).fill(false);
+  for (let k = 0; k <= n; k++) {
+    const s = Math.min(from + k * dt, to), raw = f(s);
+    if (!k) {
+      balls.push([...raw.ball]); heights.push(raw.ballHeight ?? 0.75); players.push(raw.pos.map((p) => [...p] as Pt));
+      ballOff.push(false); playerOff.push(Array(22).fill(false));
+      continue;
+    }
+    const pb = balls[k - 1], db = Math.hypot(raw.ball[0] - pb[0], raw.ball[1] - pb[1]);
+    if (db > BALL_CUT * dt) ballChasing = true;
+    const b = ballChasing ? chase(pb, raw.ball, BALL_FLY * dt) : ([...raw.ball] as Pt);
+    if (ballChasing && b[0] === raw.ball[0] && b[1] === raw.ball[1]) ballChasing = false;
+    balls.push(b);
+    ballOff.push(ballChasing);
+    // a chased ball is in the air: a low arc instead of skating along the grass
+    heights.push(ballChasing ? Math.max(raw.ballHeight ?? 0.75, 0.75 + Math.min(2.2, Math.hypot(raw.ball[0] - b[0], raw.ball[1] - b[1]) * 0.08)) : raw.ballHeight ?? 0.75);
+    const off: boolean[] = [];
+    players.push(raw.pos.map((p, i) => {
+      const q = players[k - 1][i];
+      if (Math.hypot(p[0] - q[0], p[1] - q[1]) > RUN_CUT * dt) chasing[i] = true;
+      if (!chasing[i]) { off.push(false); return [...p] as Pt; }
+      const r = chase(q, p, RUN * dt);
+      if (r[0] === p[0] && r[1] === p[1]) chasing[i] = false;
+      off.push(chasing[i]);
+      return r;
+    }));
+    playerOff.push(off);
+  }
+  return (s) => {
+    const raw = f(s);
+    if (s < from || s > to) return raw;
+    const t = (s - from) / dt, i = Math.min(Math.floor(t), n), j = Math.min(i + 1, n), u = t - i;
+    const lerp = (p: Pt, q: Pt): Pt => [p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u];
+    const ballMoved = ballOff[i] || ballOff[j];
+    return {
+      ...raw,
+      pos: raw.pos.map((p, k) => (playerOff[i][k] || playerOff[j][k] ? lerp(players[i][k], players[j][k]) : p)),
+      ball: ballMoved ? lerp(balls[i], balls[j]) : raw.ball,
+      ballHeight: ballMoved ? heights[i] + (heights[j] - heights[i]) * u : raw.ballHeight,
+    };
+  };
+}
+
+function rawTeamMotion(a: Play): (s: number) => Snap {
   const start = Math.max(a.moveFrom, a.goalS - 24), end = a.goalS + 1.5, dt = 0.1;
   // Some imported goals put the scorer's event on another same-team tracking slot.
   // Reconcile only an unambiguous finish (exact endpoint, scorer far away), without

@@ -119,14 +119,16 @@ function planOf(lab: Lab, here: Analysis, att: 0 | 1): Plan {
 }
 
 /** What was different about this meeting, per team, from the same clubs' other meetings. Facts only. */
-export function dossierOf(lab: Lab, analyses: Record<string, Analysis>): Dossier {
+export function dossierOf(lab: Lab, analyses: Record<string, Analysis>, formations: [string, string] = [lab.clubs[0].formation, lab.clubs[1].formation]): Dossier {
   const here = analyses[lab.id];
   const others = Object.entries(analyses).filter(([id]) => id !== lab.id).map(([, a]) => a);
   const meeting = meetingOf(lab.id);
   const prevId = DEMO_MATCHES[meeting - 2];
   const prev = prevId && analyses[prevId] ? analyses[prevId].score : null;
-  const facts = SIDES.map((side) => {
+  const facts = SIDES.map((side, k) => {
     const out: Fact[] = [];
+    // with no other meeting there is no "usual" to compare against: say how they set up, nothing more
+    if (!others.length) return [{ key: "formation", params: { f: formations[k] } }];
     const usual = (get: (a: Analysis) => number | null | undefined) => mean(others.map(get).filter((v): v is number => typeof v === "number"));
     const cmp = (get: (a: Analysis) => number | null | undefined) => {
       const now = get(here), u = usual(get);
@@ -148,7 +150,7 @@ export function dossierOf(lab: Lab, analyses: Record<string, Analysis>): Dossier
 }
 
 /** The Match page's export (stacks.json → dossier), when it is there: the same facts on both pages. */
-export type StacksDossier = Record<Side, { line_m: number; notes: { key: string; params: Record<string, string | number> }[] }>;
+export type StacksDossier = Record<Side, { line_m: number; formation?: string; notes: { key: string; params: Record<string, string | number> }[] }>;
 const NOTE: Record<string, string> = {
   line_higher: "higher", line_deeper: "deeper", wider: "wider", narrower: "narrower",
   press_higher: "pressHigher", press_lower: "pressLower", more_ball: "moreBall", less_ball: "lessBall", as_usual: "same",
@@ -193,6 +195,27 @@ export function spaceLeft(pos: Pt[], who: number, ghost: Pt, att: 0 | 1): Pt[] {
   return out;
 }
 
+/**
+ * Offside is judged when the ball is played, not where the attackers end up: the first pass in
+ * the fixed replay whose receiver is beyond both the second-last defender and the ball, in the
+ * defenders' half. Measuring at the replay's last frame (the finish) put the scorer "18.9 m
+ * offside" at the goal mouth. When no pass in the replay is offside, the engine's own "offside"
+ * note stands but no player or distance is claimed.
+ */
+function judgeOffside(lab: Lab, j: Journey, x: Suspect, att: 0 | 1, goalS: number) {
+  if (x.note !== "offside" || !x.frames.length) return;
+  x.offside = null;
+  x.offsideS = undefined;
+  const passes = lab.actions
+    .filter((e) => e.team === att && e.type === "pass" && e.receiver != null && e.s >= x.start && e.s < goalS)
+    .sort((p, q) => p.s - q.s);
+  for (const e of passes) {
+    const f = j.replay(x, e.s), r = e.receiver!;
+    const by = f.pos[r][0] - Math.max(j.offsideLine(f), f.ball[0]);
+    if (f.pos[r][0] > PX / 2 && by > 0.2) { x.offside = { player: r, by }; x.offsideS = e.s; return; }
+  }
+}
+
 export function buildAutopsy(
   lab: Lab,
   goal: GoalRef,
@@ -206,14 +229,18 @@ export function buildAutopsy(
   const chance = here.chances.find((c) => c.outcome === "goal" && Math.abs(c.second - goal.s) <= 1 && c.side === SIDES[att]) ?? null;
   const score: [number, number] = [0, 0];
   for (const a of lab.actions) if (a.type === "shot" && a.outcome === "goal" && a.s <= goal.s) score[a.team]++;
-  const own = dossierOf(lab, analyses);
-  const dossier = stacks ? dossierFromStacks(stacks, own) : own;
   const plan = planOf(lab, here, att);
+  // the formation as the Match page exports it, else the club's, else counted from the units
+  const counted = (k: 0 | 1) => (["def", "mid", "att"] as const).map((u) => plan.unit.slice(k * 11, k * 11 + 11).filter((x) => x === u).length).join("-");
+  const formations = ([0, 1] as const).map((k) => stacks?.[SIDES[k]]?.formation || lab.clubs[k].formation || counted(k)) as [string, string];
+  const own = dossierOf(lab, analyses, formations);
+  const dossier = stacks ? dossierFromStacks(stacks, own) : own;
 
   if (ev) {
     const c = buildCase(lab, ev);
     const j = c ? buildJourney(lab, c, ev, replays, analyses) : null;
     if (j) {
+      for (const x of j.suspects) judgeOffside(lab, j, x, att, goal.s);
       const mistakes = j.suspects
         .map((x): Mistake => {
           // the trace says how far behind his line he was (the median depth of the back four in
