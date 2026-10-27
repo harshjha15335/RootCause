@@ -8,7 +8,7 @@ import { teamMotion } from "../src/lab/autopsy/motion";
 import { goalClock, moveClock, stepsOf } from "../src/lab/autopsy/stadium";
 import { loadLab } from "../src/lab/data";
 
-const id = "wlb-msb-2023-11-12";
+const id = "kby-ira";
 const base = `public/showcase/${id}/`;
 const fetchFile = (async (url: string) => {
   const bytes = readFileSync(url);

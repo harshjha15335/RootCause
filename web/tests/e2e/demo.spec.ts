@@ -8,7 +8,7 @@ test("home explains the product and the story walks one traced goal", async ({ p
   await expect(page.getByRole("heading", { name: "Match library" })).toBeAttached();
 
   // Verify the canonical fixture in library
-  await expect(page.getByText("WLB 4–4 MSB")).toBeAttached();
+  await expect(page.getByText("KBY 4–4 IRA")).toBeAttached();
 
   // Story walk
   await page.goto("/#/story");
@@ -21,33 +21,33 @@ test("goal autopsy preserves valid traces, respects direct goal 3 navigation, an
   page,
 }) => {
   // Navigate directly to Goal 3
-  await page.goto("/?goal=wlb-msb-2023-11-12-g3#/autopsy");
+  await page.goto("/?goal=kby-ira-g3#/autopsy");
 
   // Verify Goal 3 heading is active and rendered (not falling back to Goal 1!)
-  await expect(page.getByRole("heading", { name: /36:24 · R. Sterlino scores/ })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: /36:24 · J. Tamsin scores/ })).toBeVisible({ timeout: 15_000 });
 
   // Click Verdict step to verify culprit and causal link blame attribution
   await page.getByRole("button", { name: "Verdict" }).click();
-  await expect(page.getByRole("heading", { name: /Gvardello.*74% of the blame/ })).toBeVisible();
-  await expect(page.getByText("Wallaro 26%")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Kerrow.*74% of the blame/ })).toBeVisible();
+  await expect(page.getByText("Quint 26%")).toBeVisible();
   await expect(page.getByText(/goals fall from 138 to 12 in 200 replays/)).toBeVisible();
 
   // Untraced goals (e.g. Goal 1) are selectable in the match's goal list
-  const g1Button = page.getByRole("button", { name: /24:04.*Haalviken/i }).first();
+  const g1Button = page.getByRole("button", { name: /24:04.*Morrow/i }).first();
   await expect(g1Button).toBeVisible();
   await g1Button.click();
   // Goal 1 is now displayed with its honest answer
-  await expect(page.getByRole("heading", { name: /24:04 · E. Haalviken scores/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /24:04 · C. Morrow scores/ })).toBeVisible();
 
   // Non-existent goal handling shows honest card instead of falling back
-  await page.goto("/?goal=wlb-msb-nonexistent#/autopsy");
-  await expect(page.getByText(/Goal “wlb-msb-nonexistent” not found/i)).toBeVisible();
+  await page.goto("/?goal=kby-ira-nonexistent#/autopsy");
+  await expect(page.getByText(/Goal “kby-ira-nonexistent” not found/i)).toBeVisible();
   await expect(page.getByRole("button", { name: "View Match Autopsy" })).toBeVisible();
 });
 
 test("reduced-motion playback keeps the rendered canvas attached when changing Autopsy beats", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/?goal=wlb-msb-2023-11-12-g2#/autopsy");
+  await page.goto("/?goal=kby-ira-g2#/autopsy");
   const canvas = await page.getByRole("img", { name: "3D replay of the goal and its autopsy" }).elementHandle();
   expect(canvas).not.toBeNull();
   await page.getByRole("button", { name: "Mistakes", exact: true }).click();
@@ -97,11 +97,11 @@ test("preferences menu allows setting favorite club and player with persistence"
   await prefButton.click();
 
   // Verify club options
-  await expect(page.getByRole("button", { name: "WLB", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "MSB", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "KBY", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "IRA", exact: true })).toBeVisible();
 
-  // Select MSB
-  await page.getByRole("button", { name: "MSB", exact: true }).click();
+  // Select IRA
+  await page.getByRole("button", { name: "IRA", exact: true }).click();
 
   // Verify preference in localStorage
   const savedClub = await page.evaluate(() => localStorage.getItem("rc.club"));
@@ -111,10 +111,10 @@ test("preferences menu allows setting favorite club and player with persistence"
 // 5. Multilingual and Honest Provenance
 test("multilingual narratives switch cleanly with zero unlocalized English", async ({ page }) => {
   // Test Spanish mode
-  await page.goto("/?lang=es#/autopsy?goal=wlb-msb-2023-11-12-g3");
+  await page.goto("/?lang=es#/autopsy?goal=kby-ira-g3");
   await expect(page.getByText(/autopsia|análisis|gol|revisión/i).first()).toBeVisible({ timeout: 15_000 });
 
   // Test Hindi mode
-  await page.goto("/?lang=hi#/autopsy?goal=wlb-msb-2023-11-12-g3");
+  await page.goto("/?lang=hi#/autopsy?goal=kby-ira-g3");
   await expect(page.getByText(/गोल|समीक्षा|विश्लेषण/i).first()).toBeVisible({ timeout: 15_000 });
 });

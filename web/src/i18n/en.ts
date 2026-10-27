@@ -484,7 +484,7 @@ const en = {
   app: {
     loading: "Loading",
     screenFailed: "This page didn't load. Reloading usually fixes it.",
-    recording: "Recorded match wlb-msb-2023-11-12, replayed through the live message format.",
+    recording: "Recorded match kby-ira, replayed through the live message format.",
     failed: "The match feed stopped",
     retry: "Try again",
   },

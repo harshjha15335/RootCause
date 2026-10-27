@@ -286,7 +286,7 @@ function PreferencesMenu() {
                       : "bg-turf-raised text-chalk hover:bg-turf-edge"
                   }`}
                 >
-                  {meta?.home.short_name ?? "WLB"}
+                  {meta?.home.short_name ?? "KBY"}
                 </button>
                 <button
                   type="button"
@@ -297,7 +297,7 @@ function PreferencesMenu() {
                       : "bg-turf-raised text-chalk hover:bg-turf-edge"
                   }`}
                 >
-                  {meta?.away.short_name ?? "MSB"}
+                  {meta?.away.short_name ?? "IRA"}
                 </button>
                 {favoriteClub && (
                   <button

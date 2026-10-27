@@ -1,0 +1,362 @@
+{
+  "goal_id": "kby-ira-g2",
+  "match_id": "kby-ira",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "kby-ira-g2-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "kby-ira-g2-l1",
+      "sentences": [
+        {
+          "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "kby-ira-g2-l2",
+      "sentences": [
+        {
+          "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए।",
+          "evidence_ids": [
+            "kby-ira-g2-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "kby-ira-g2-l1",
+      "start_second": 1697,
+      "end_second": 1697,
+      "caption": {
+        "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "kby-ira-g2-l2",
+      "start_second": 1694,
+      "end_second": 1694,
+      "caption": {
+        "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+        "evidence_ids": [
+          "kby-ira-g2-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+        "evidence_ids": [
+          "kby-ira-g2-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "kby-ira-g2-l1",
+      "player_id": "A4",
+      "second": 1697,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Zonal marking leak: Andrei Tessaro vacates the near-post zone, allowing an uncontested header. (metres behind line: 5.3)",
+      "blame_percent": 83.66013071895425,
+      "baseline_goals": 142,
+      "fixed_goals": 14,
+      "trials": 200
+    },
+    {
+      "evidence_id": "kby-ira-g2-l2",
+      "player_id": "A3",
+      "second": 1694,
+      "bug_type": "ZONAL_LEAK",
+      "description": "Late step-up: Nils Corrin stays behind the defensive line. (metres behind line: 3.2)",
+      "blame_percent": 16.33986928104575,
+      "baseline_goals": 142,
+      "fixed_goals": 117,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "analyst",
+  "lang": "hi",
+  "requested_lang": "hi",
+  "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है। [kby-ira-g2-l1]\nA4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली। [kby-ira-g2-l1]\nA4: (लाइन के पीछे मीटर: 5.3) [kby-ira-g2-l1]\nइंजन ने 83.6601% दोष A4 को दिया। [kby-ira-g2-l1]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए। [kby-ira-g2-l1]\nA3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए। [kby-ira-g2-l2]\nA3: (लाइन के पीछे मीटर: 3.2) [kby-ira-g2-l2]\nइंजन ने 16.3399% दोष A3 को दिया। [kby-ira-g2-l2]\nइस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए। [kby-ira-g2-l2]",
+  "translation_warning": null,
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "मूल कारण A4 की गलती है, जिसे डिबगर की मापी गई गोल-दर में कमी द्वारा पहले स्थान पर रखा गया है।",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "A4: जोनल मार्किंग में चूक: Andrei Tessaro ने निकट-पोस्ट क्षेत्र खाली छोड़ दिया, जिससे अप्रतिद्वंद्वी हेडर की अनुमति मिली।",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A4: (लाइन के पीछे मीटर: 5.3)",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 83.6601% दोष A4 को दिया।",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 14/200 हो गए।",
+      "evidence_ids": [
+        "kby-ira-g2-l1"
+      ],
+      "kind": "counterfactual"
+    },
+    {
+      "text": "A3: विलंबित स्टेप-अप: Nils Corrin रक्षात्मक रेखा के पीछे रह गए।",
+      "evidence_ids": [
+        "kby-ira-g2-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "A3: (लाइन के पीछे मीटर: 3.2)",
+      "evidence_ids": [
+        "kby-ira-g2-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "इंजन ने 16.3399% दोष A3 को दिया।",
+      "evidence_ids": [
+        "kby-ira-g2-l2"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "इस गलती को सुधारने से प्रदान किए गए रीप्ले में गोल 142/200 से घटकर 117/200 हो गए।",
+      "evidence_ids": [
+        "kby-ira-g2-l2"
+      ],
+      "kind": "counterfactual"
+    }
+  ]
+}

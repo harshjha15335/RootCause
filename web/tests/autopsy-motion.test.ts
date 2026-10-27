@@ -7,7 +7,7 @@ import { goalFrame } from "../src/lab/journey/model";
 import { goalType, teamMotion } from "../src/lab/autopsy/motion";
 import type { Evidence } from "../src/api/types";
 
-const id = "wlb-msb-2023-11-12";
+const id = "kby-ira";
 const base = `public/showcase/${id}/`;
 const fetchFile = (async (url: string) => {
   const bytes = readFileSync(url);
@@ -76,8 +76,8 @@ describe("Autopsy goal motion", () => {
     const goal = goalsOf(lab, []).find((g) => g.s === 2727)!;
     const autopsy = buildAutopsy(lab, goal, null, {}, analyses)!;
     const pass = lab.actions.find((a) => a.s === 2726 && a.type === "pass")!;
-    expect(pass.player).toBe(17); // A7: Bernaro Silven
-    expect(pass.receiver).toBe(14); // A4: M. Akendo
+    expect(pass.player).toBe(17); // A7: Teo Varga
+    expect(pass.receiver).toBe(14); // A4: A. Tessaro
     expect(autopsy.scorer).toBe(pass.receiver);
     expect(autopsy.chance?.honest?.kind).toBe("corner_header");
     const contact = autopsy.frame(2726.6);
@@ -201,7 +201,7 @@ describe("Autopsy goal motion", () => {
     expect(replay(3211.1).ball[0] - replay(3211).ball[0]).toBeGreaterThan(replay(3211.5).ball[0] - replay(3211.4).ball[0]);
   });
 
-  it("shows a save and rebound before Jaxsen's 73:25 finish, without a premature goal", () => {
+  it("shows a save and rebound before Abeyo's 73:25 finish, without a premature goal", () => {
     const analyses = { [id]: JSON.parse(readFileSync(`${base}analysis.json`, "utf8")) as Analysis };
     const goal = goalsOf(lab, []).find((g) => g.s === 4405)!;
     const a = buildAutopsy(lab, goal, null, {}, analyses)!;

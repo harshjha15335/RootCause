@@ -79,7 +79,7 @@ function LabView({ lab, an, control }: { lab: LabData; an: Analysis; control?: R
   const [overlays, setOverlays] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`/showcase/${an.match_id ?? "wlb-msb-2023-11-12"}/overlays.json`)
+    fetch(`/showcase/${an.match_id ?? "kby-ira"}/overlays.json`)
       .then((r) => (r.ok ? r.json() : []))
       .then((data) => Array.isArray(data) && setOverlays(data))
       .catch(() => {});

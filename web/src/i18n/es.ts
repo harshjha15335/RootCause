@@ -485,7 +485,7 @@ const es: Dict = {
   app: {
     loading: "Cargando",
     screenFailed: "Esta página no se cargó. Recargar suele arreglarlo.",
-    recording: "Partido grabado wlb-msb-2023-11-12, reproducido con el formato de mensajes en directo.",
+    recording: "Partido grabado kby-ira, reproducido con el formato de mensajes en directo.",
     failed: "Se detuvo la señal del partido",
     retry: "Reintentar",
   },

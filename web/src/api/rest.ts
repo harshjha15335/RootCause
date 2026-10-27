@@ -84,7 +84,7 @@ export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> 
 const json = fetchJson;
 
 /** Canonical demo match for RootCause. */
-export const DEMO_MATCHES = ["wlb-msb-2023-11-12"] as const;
+export const DEMO_MATCHES = ["kby-ira"] as const;
 /** ?demo= wins; otherwise the match picked last time, so every page stays on the same match. */
 const asked = (() => {
   const fromUrl = new URLSearchParams(location.search).get("demo");

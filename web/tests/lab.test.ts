@@ -16,7 +16,7 @@ const fsFetch = (async (url: string) => {
 }) as unknown as typeof fetch;
 
 describe("Tactics Lab goal cases", () => {
-  for (const match of ["wlb-msb-2023-11-12", "p-1008", "p-1009", "p-1014", "p-1017"]) {
+  for (const match of ["kby-ira", "p-1008", "p-1009", "p-1014", "p-1017"]) {
     it(`finds the mistake and the pass the fix stops in ${match}`, async () => {
       const lab = await loadLab(match, `${root}/${match}/`, fsFetch);
       const dir = `${root}/${match}/traces`;

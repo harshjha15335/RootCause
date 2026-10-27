@@ -164,7 +164,7 @@ export function useBroadcast() {
         untracedEvents = new Set((x.manifest.untraced as { event_id: string }[]).map((u) => u.event_id));
         goalSeconds = (x.ticks as any[]).filter((e) => e.type === "goal").map((e) => e.clock_s);
         const tracedGoals = (x.ticks as any[]).filter(
-          (e) => e.type === "goal" && !untracedEvents.has(`wlb-msb-2023-11-12-e${e.clock_s}`)
+          (e) => e.type === "goal" && !untracedEvents.has(`kby-ira-e${e.clock_s}`)
         );
         const firstTracedSec = tracedGoals[0]?.clock_s;
         engine.extras = x;

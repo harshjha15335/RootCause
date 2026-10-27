@@ -1,0 +1,29 @@
+{
+  "id": "kby-ira",
+  "seed": null,
+  "status": "finished",
+  "score": {
+    "home": 4,
+    "away": 4
+  },
+  "goal_ids": [
+    "kby-ira-g1",
+    "kby-ira-g2",
+    "kby-ira-g3",
+    "kby-ira-g4",
+    "kby-ira-g5",
+    "kby-ira-g6",
+    "kby-ira-g7",
+    "kby-ira-g8"
+  ],
+  "scored_events": [
+    "kby-ira-e1444",
+    "kby-ira-e1704",
+    "kby-ira-e2184",
+    "kby-ira-e2727",
+    "kby-ira-e3211",
+    "kby-ira-e4405",
+    "kby-ira-e5554",
+    "kby-ira-e6085"
+  ]
+}

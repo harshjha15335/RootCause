@@ -7,7 +7,7 @@ import { loadLab } from "../src/lab/data";
 import { buildAutopsy, goalsOf } from "../src/lab/autopsy/model";
 
 const root = "public/showcase"; // vitest runs from web/
-const MATCHES = ["wlb-msb-2023-11-12", "p-1008", "p-1009", "p-1014", "p-1017"];
+const MATCHES = ["kby-ira", "p-1008", "p-1009", "p-1014", "p-1017"];
 const read = (f: string) => JSON.parse(readFileSync(f, "utf8"));
 const fsFetch = (async (url: string) => {
   const buf: Uint8Array = readFileSync(url);
@@ -93,13 +93,13 @@ describe("Goal Autopsy", () => {
     });
 
     it("loads eight goals with only four traces, keeping all goals visible and preserving valid traces", async () => {
-      const match = read(`${root}/wlb-msb-2023-11-12/match.json`);
-      const lab = await loadLab("wlb-msb-2023-11-12", `${root}/wlb-msb-2023-11-12/`, fsFetch);
+      const match = read(`${root}/kby-ira/match.json`);
+      const lab = await loadLab("kby-ira", `${root}/kby-ira/`, fsFetch);
       const goalIds = match.goal_ids as string[];
       expect(goalIds).toHaveLength(8);
 
       const mockTraceFetch = async (id: string): Promise<Evidence> => {
-        const file = `${root}/wlb-msb-2023-11-12/traces/${id}.json`;
+        const file = `${root}/kby-ira/traces/${id}.json`;
         try {
           return read(file) as Evidence;
         } catch {
@@ -126,13 +126,13 @@ describe("Goal Autopsy", () => {
       expect(untracedGoals).toHaveLength(4);
 
       // Direct Goal 3 navigation resolves cleanly to Goal 3
-      const goal3 = goals.find((g) => g.id === "wlb-msb-2023-11-12-g3");
+      const goal3 = goals.find((g) => g.id === "kby-ira-g3");
       expect(goal3).toBeDefined();
       expect(goal3?.traced).toBe(true);
       expect(goal3?.s).toBe(2184);
 
       // Untraced goal navigation resolves cleanly to honest autopsy
-      const goal1 = goals.find((g) => g.id === "wlb-msb-2023-11-12-s1444");
+      const goal1 = goals.find((g) => g.id === "kby-ira-s1444");
       expect(goal1).toBeDefined();
       expect(goal1?.traced).toBe(false);
 

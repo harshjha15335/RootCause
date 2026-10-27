@@ -7,7 +7,7 @@ import { buildCase } from "../src/lab/goal";
 import { buildJourney } from "../src/lab/journey/model";
 
 const root = "public/showcase"; // vitest runs from web/
-const MATCHES = ["wlb-msb-2023-11-12", "p-1008", "p-1009", "p-1014", "p-1017"];
+const MATCHES = ["kby-ira", "p-1008", "p-1009", "p-1014", "p-1017"];
 const read = (f: string) => JSON.parse(readFileSync(f, "utf8"));
 const fsFetch = (async (url: string) => {
   const buf: Uint8Array = readFileSync(url);

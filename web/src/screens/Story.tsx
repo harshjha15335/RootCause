@@ -11,8 +11,8 @@ import type { FreeArea, Shot, StackData, StackLabel, StackState, Timestack } fro
 import "./landingCopy";
 import { buildStack } from "./TimestackStory";
 
-/** The example: the traced 36th-minute goal of West London Blue vs Man Sky Blue. */
-const EXAMPLE = { match: "wlb-msb-2023-11-12", goal: "wlb-msb-2023-11-12-g3" };
+/** The example: the traced 36th-minute goal of Kestrel Bay vs Ironmoor. */
+const EXAMPLE = { match: "kby-ira", goal: "kby-ira-g3" };
 const STEPS = 5;
 
 // The camera stays level, beside the stack: time reads bottom to top, the goal at the far end.
