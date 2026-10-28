@@ -25,11 +25,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -sS -D - -o body.txt https://models.github.ai/inference/chat/completions \
-            -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" \
-            -d '{"model":"openai/gpt-4.1-nano","messages":[{"role":"user","content":"Say ok"}]}' \
-            | grep -iE '^(HTTP|content-type)'
-          head -c 400 body.txt; echo
+          body='{"model":"openai/gpt-4.1-nano","messages":[{"role":"user","content":"Say ok"}]}'
+          for url in https://models.github.ai/inference/chat/completions \
+                     https://models.inference.ai.azure.com/chat/completions; do
+            echo "== POST $url"
+            curl -sS -o out.txt -w 'status=%{http_code} type=%{content_type}\n' "$url" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/json" \
+              -H "Content-Type: application/json" -H "X-GitHub-Api-Version: 2022-11-28" -d "$body" || true
+            head -c 300 out.txt; echo
+          done
+          echo "== GET catalog"
+          curl -sS -o out.txt -w 'status=%{http_code} type=%{content_type}\n' https://models.github.ai/catalog/models \
+            -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" || true
+          head -c 300 out.txt; echo
       - name: Run the agents on GitHub Models
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
