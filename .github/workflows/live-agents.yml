@@ -1,0 +1,55 @@
+name: Live agents
+# Runs the Agent Framework explanation workflow on GitHub Models for showcase goals and
+# publishes the agent steps and explanations. Uses the workflow token; no secrets needed.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - agents/**
+      - scripts/live_agents.py
+      - .github/workflows/live-agents.yml
+permissions:
+  contents: read
+  models: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv .venv && uv pip sync --python .venv/bin/python --require-hashes requirements.txt
+      - name: Run the agents on GitHub Models
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          mkdir -p live
+          {
+            echo "## Live Agent Framework run on GitHub Models"
+            echo
+            echo "Commit \`${GITHUB_SHA::7}\`, $(date -u +'%Y-%m-%d %H:%M UTC')"
+          } >> "$GITHUB_STEP_SUMMARY"
+          for goal in p-1017/traces/p-1017-g2 p-1017/traces/p-1017-g6 p-1014/traces/p-1014-g1; do
+            name=$(basename "$goal")
+            .venv/bin/python scripts/live_agents.py --github --timeout 30 \
+              --evidence "web/public/showcase/$goal.json" --output "live/$name.json" \
+              2>&1 | tee "live/$name.log"
+            {
+              echo
+              echo "### $name"
+              echo '```'
+              cat "live/$name.log"
+              echo '```'
+              echo
+              python3 -c "import json,sys; e=json.load(open(sys.argv[1])); [print('> ' + ' '.join(s['text'] for s in p['sentences']) + '\n>') for p in e['paragraphs']]" "live/$name.json"
+            } >> "$GITHUB_STEP_SUMMARY"
+            sleep 20  # stay inside the free per-minute rate limit
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-agents
+          path: live/
