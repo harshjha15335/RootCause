@@ -1,0 +1,9 @@
+source/node_modules/
+source/public/
+source/.stills.mjs
+captures/**/*.jpg
+!captures/pages/*.jpg
+captures/*.log
+audio/music/*.wav
+audio/mix.wav
+source/link-public.sh.bak

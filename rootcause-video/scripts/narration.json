@@ -1,0 +1,82 @@
+[
+ {
+  "id": "s1a",
+  "at": 2.6,
+  "text": "Every goal has a story."
+ },
+ {
+  "id": "s1b",
+  "at": 6.4,
+  "text": "But what actually caused it?"
+ },
+ {
+  "id": "s2a",
+  "at": 12.6,
+  "text": "This is Root Cause. A debugger for football."
+ },
+ {
+  "id": "s2b",
+  "at": 16.0,
+  "text": "Pick a match, like this four all thriller between West London Blues and Manchester Sky Blues. Eight goals. Four of them traced to the mistake behind them."
+ },
+ {
+  "id": "s3a",
+  "at": 27.0,
+  "text": "Take the twenty-eighth minute. A corner, a header, one all."
+ },
+ {
+  "id": "s3b",
+  "at": 32.8,
+  "text": "Root Cause reconstructs the move on a three D pitch, then walks back from the goal, second by second."
+ },
+ {
+  "id": "s3c",
+  "at": 40.5,
+  "text": "The yellow line is the defending back line. Watch who drops behind it."
+ },
+ {
+  "id": "s4a",
+  "at": 48.6,
+  "text": "At every touch, it asks one question. What let this happen?"
+ },
+ {
+  "id": "s4b",
+  "at": 54.0,
+  "text": "Seven seconds before the goal, centre back Manuel Akendo is five point three metres behind his line."
+ },
+ {
+  "id": "s4c",
+  "at": 61.6,
+  "text": "A second defender, Diales, is out of position too. Two suspects. So which one cost the goal?"
+ },
+ {
+  "id": "s5a",
+  "at": 72.4,
+  "text": "Root Cause runs the experiment. Fix one mistake, then replay the attack two hundred times."
+ },
+ {
+  "id": "s5b",
+  "at": 79.2,
+  "text": "As played, seventy one percent of replays end in a goal. With Akendo level, just seven percent. Fix Diales instead, fifty nine."
+ },
+ {
+  "id": "s5c",
+  "at": 88.7,
+  "text": "Verdict: Akendo carries eighty four percent of the blame. Measured, not guessed."
+ },
+ {
+  "id": "s6a",
+  "at": 94.6,
+  "text": "The same evidence, told your way. Simple for fans. Expert for analysts."
+ },
+ {
+  "id": "s6b",
+  "at": 100.4,
+  "text": "In English, Hindi and Spanish. And the Tactics Lab opens up all ninety minutes: space, passing options, pressure and runs."
+ },
+ {
+  "id": "s7a",
+  "at": 113.4,
+  "text": "Root Cause. Every goal has a bug."
+ }
+]
