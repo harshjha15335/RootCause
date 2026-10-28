@@ -110,13 +110,20 @@ class GitHubModelsProvider(FoundryProvider):
 
     ENDPOINT = "https://models.github.ai/inference"
 
-    def __init__(self, settings: Settings, token: str, client=None, endpoint: str | None = None):
+    def __init__(
+        self,
+        settings: Settings,
+        token: str,
+        client=None,
+        endpoint: str | None = None,
+        timeout: float = 120,
+    ):
         from openai import AsyncOpenAI
 
         self.settings = settings
         self.project = None
         self.client = client or AsyncOpenAI(
-            api_key=token, base_url=endpoint or self.ENDPOINT, max_retries=0, timeout=120
+            api_key=token, base_url=endpoint or self.ENDPOINT, max_retries=0, timeout=timeout
         )
 
     def _chat(self, model: str):

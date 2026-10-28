@@ -5,7 +5,37 @@ Fan/Analyst/Studio Persona) against model deployments in a Microsoft Foundry pro
 goal, from your own machine. You need no Cosmos DB, Event Hubs or `azd up`. Expect it to take
 about an hour, mostly signup and model deployment, and to cost a few cents.
 
-## No Azure account? Use GitHub Models (15 minutes)
+## No Azure account? Use Foundry Local (30 minutes, offline)
+
+[Foundry Local](https://learn.microsoft.com/azure/ai-foundry/foundry-local/) runs Foundry
+catalogue models on your own PC behind an OpenAI-compatible endpoint. No account is needed.
+
+```powershell
+winget install Microsoft.FoundryLocal
+foundry cache cd D:\FoundryLocal\models        # optional: keep the multi-GB models off C:
+foundry model run qwen2.5-7b                   # downloads and loads it; exit the chat after
+foundry status                                 # prints the endpoint, e.g. http://127.0.0.1:62138
+.venv\Scripts\python scripts\live_agents.py --foundry-local http://127.0.0.1:62138 `
+  --model qwen2.5-7b-instruct-generic-cpu:2 `
+  --evidence web\public\showcase\p-1017\traces\p-1017-g2.json --timeout 300
+```
+
+Pass `--model` with the exact ID `foundry status` or `foundry model list` shows. `--timeout`
+sets the per-call HTTP timeout and the agent deadline, and the workflow deadline defaults to
+four of those (override with `--budget`).
+
+Tested 2026-10-28 on a laptop with Intel Iris Xe graphics and about 2 GB of free RAM:
+
+- The OpenVINO GPU builds (`phi-4-mini-instruct-openvino-gpu`, `qwen2.5-1.5b` OpenVINO) failed
+  to load with "The Foundry Local runtime reported an internal error".
+- `qwen2.5-1.5b` and `qwen2.5-3b` CPU builds loaded and every agent reached the model, but
+  their answers failed the schema check: they wrote tool calls out as JSON text instead of
+  calling the tool, or returned lists instead of the requested object. The workflow kept the
+  cited templates (`evidence-only` / `pending`), which is the guardrail working as designed.
+- So use a 7B or larger model (`qwen2.5-7b`, `phi-4-mini` CPU), which needs 8 GB or more of
+  free RAM.
+
+## GitHub Models
 
 > **Status (2026-10-28):** not working. Every request to `models.github.ai`, including the
 > model catalogue, returned a plain-text `200 OK` instead of an API response, from a home

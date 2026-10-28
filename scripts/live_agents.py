@@ -83,7 +83,9 @@ async def main() -> None:
         settings = replace(Settings.from_env(), main_model=model, light_model=model)
         print(f"Foundry Local: {base}")
         print(f"Model: {model}\n")
-        provider = GitHubModelsProvider(settings, "foundry-local", endpoint=base)
+        provider = GitHubModelsProvider(
+            settings, "foundry-local", endpoint=base, timeout=args.timeout
+        )
     elif args.github:
         from dataclasses import replace
 
