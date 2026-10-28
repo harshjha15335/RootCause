@@ -2,6 +2,7 @@
 
     python scripts/live_agents.py                       # live Foundry models (needs az login)
     python scripts/live_agents.py --github              # GitHub Models (needs GITHUB_TOKEN)
+    python scripts/live_agents.py --foundry-local URL   # Foundry Local on this PC (no account)
     python scripts/live_agents.py --local               # evidence-only agents, no Azure
     python scripts/live_agents.py --evidence path.json  # another evidence package
 
@@ -10,6 +11,8 @@ every agent step as it happens, then the explanation's source and status: "model
 means the Explainer's paragraphs came from the Foundry deployment, "evidence-only" / "pending"
 means the cited template was kept. --github runs the same agents on GitHub Models with a GitHub
 token instead of a Foundry project (models from GITHUB_MODELS_MAIN / GITHUB_MODELS_LIGHT).
+--foundry-local takes the endpoint `foundry service status` prints and uses the loaded model
+(or --model) for every agent.
 """
 
 import argparse
@@ -42,6 +45,10 @@ async def main() -> None:
     ap.add_argument("--evidence", type=Path, help="evidence package JSON (default: sample goal)")
     ap.add_argument("--local", action="store_true", help="evidence-only agents, no Azure")
     ap.add_argument("--github", action="store_true", help="GitHub Models instead of Foundry")
+    ap.add_argument(
+        "--foundry-local", metavar="URL", help="Foundry Local endpoint, e.g. http://127.0.0.1:5273"
+    )
+    ap.add_argument("--model", help="model ID for --foundry-local (default: first loaded model)")
     ap.add_argument("--timeout", type=float, default=15, help="per-agent timeout in seconds")
     ap.add_argument("--output", type=Path, default=Path("live_explanation.json"))
     args = ap.parse_args()
@@ -49,7 +56,28 @@ async def main() -> None:
     evidence = load_evidence(args.evidence)
 
     provider = credential = None
-    if args.github:
+    if args.foundry_local:
+        from dataclasses import replace
+
+        import httpx
+
+        from agents.providers import GitHubModelsProvider
+        from api.settings import Settings
+
+        base = args.foundry_local.rstrip("/")
+        base = base if base.endswith("/v1") else base + "/v1"
+        model = args.model
+        if not model:
+            async with httpx.AsyncClient(timeout=10) as http:
+                listed = (await http.get(f"{base}/models")).json().get("data", [])
+            if not listed:
+                raise SystemExit("No model loaded: run `foundry model run phi-4-mini` first")
+            model = listed[0]["id"]
+        settings = replace(Settings.from_env(), main_model=model, light_model=model)
+        print(f"Foundry Local: {base}")
+        print(f"Model: {model}\n")
+        provider = GitHubModelsProvider(settings, "foundry-local", endpoint=base)
+    elif args.github:
         from dataclasses import replace
 
         from agents.providers import GitHubModelsProvider

@@ -102,19 +102,21 @@ class FoundryProvider:
 class GitHubModelsProvider(FoundryProvider):
     """The same agents on GitHub Models (Azure-hosted models, Chat Completions, GitHub token).
 
+    With `endpoint`, any OpenAI-compatible Chat Completions server, such as Foundry Local.
+
     For running the live workflow without an Azure subscription. The Foundry deployment names
     map to GitHub Models IDs through settings.main_model / light_model.
     """
 
     ENDPOINT = "https://models.github.ai/inference"
 
-    def __init__(self, settings: Settings, token: str, client=None):
+    def __init__(self, settings: Settings, token: str, client=None, endpoint: str | None = None):
         from openai import AsyncOpenAI
 
         self.settings = settings
         self.project = None
         self.client = client or AsyncOpenAI(
-            api_key=token, base_url=self.ENDPOINT, max_retries=0, timeout=30
+            api_key=token, base_url=endpoint or self.ENDPOINT, max_retries=0, timeout=120
         )
 
     def _chat(self, model: str):
