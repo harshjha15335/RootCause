@@ -579,8 +579,8 @@ def build_meta() -> dict:
         "id": MATCH_ID,
         "name": "West London Blues v Manchester Sky Blues",
         "date": "2023-11-12",
-        "competition": "Premier League 2023/24",
-        "stadium": "Stamford Bridge, London",
+        "competition": "English World Leagues 26/27",
+        "stadium": "Blues Park, West London",
         "duration_s": DURATION_S,
         "event_coordinate_frame": "attacking-right",
         "home": {
@@ -1591,7 +1591,7 @@ def build_overlays(events: list, tracking: np.ndarray, traces: dict) -> list[dic
             "in_s": 0,
             "out_s": 15,
             "kind": "milestone",
-            "text": "KICK-OFF: Chelsea v Manchester City at Stamford Bridge",
+            "text": "KICK-OFF: West London Blues v Manchester Sky Blues at Blues Park",
             "data": {"type": "kickoff", "period": 1},
         }
     )
