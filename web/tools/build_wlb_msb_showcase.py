@@ -579,7 +579,7 @@ def build_meta() -> dict:
         "id": MATCH_ID,
         "name": "West London Blues v Manchester Sky Blues",
         "date": "2023-11-12",
-        "competition": "Premier League 2023/24",
+        "competition": "English World Leagues 26/27",
         "stadium": "Stamford Bridge, London",
         "duration_s": DURATION_S,
         "event_coordinate_frame": "attacking-right",

@@ -1,8 +1,58 @@
 # Root Cause
 
-**Every goal has a bug.** Role 3 implementation for the Agents & Cloud Lead brief:
-FastAPI/WebSockets, Microsoft Agent Framework orchestration, Azure adapters, deployment
-infrastructure, and evaluation tooling. All demo clubs/players/data are synthetic.
+**Every goal has a bug.** When a goal goes in, Root Cause rewinds the play, finds the
+defensive mistakes behind it, proves which one mattered most with 200 counterfactual replays,
+and has a team of Microsoft Agent Framework agents explain it, with every sentence cited, to a
+fan, an analyst or a TV studio, in English, Hindi or Spanish.
+
+## For judges
+
+- **Live demo:** <https://harshjha15335.github.io/RootCause/>. No login, install or backend
+  needed; it runs in any modern desktop or mobile browser.
+- **Demo video (under 2 minutes):** _add the public YouTube/Vimeo link here_.
+- **Try it:** open **Match library** on the home page and pick a match. Goals marked in yellow
+  are traced. Open one in **Goal Autopsy** (for example
+  [goal 3 of the 4-4 match](https://harshjha15335.github.io/RootCause/?goal=wlb-msb-2023-11-12-g3#/autopsy)),
+  step through the beats to **Verdict**, then switch Fan / Analyst / Studio, Simple / Expert and
+  the language. **Tactics Lab** (`#/lab`) shows full-match tracking, the broadcast HUD and
+  My Club / My Player personalization. Press `?` for keyboard shortcuts.
+
+**What the public demo runs live and what it replays.** The website is static. It replays
+matches, traces, explanations and overlays that the real engine, Debugger and backend
+exported (`web/tools/export_*.py`). The explanations shown are the cited, evidence-only
+fallback (`status: pending`), not live model output, because no Azure subscription was
+available to the team. The live path (Event Hubs → Function → Debugger → Agent Framework
+graph on Foundry → Content Safety → WebSocket UI) is implemented, tested with mocks and
+defined in Bicep, but has not been deployed. See [validation status](docs/VALIDATION.md).
+To run the agents on a live Foundry model for one goal, follow [docs/LIVE_AGENTS.md](docs/LIVE_AGENTS.md).
+
+| Hackathon stage | Where it happens |
+| --- | --- |
+| Ingest synthetic events | `engine/` match simulator, `functions/goal_detector`, `api/` WebSocket `/live/{id}` |
+| Interpret into statistics | `web/tools/export_analysis.py` (xG, passing, heatmaps, momentum), Tactics Lab |
+| Explain why it matters | `debugger/` causal chain and counterfactual blame, `agents/` Explainer → Recap |
+| Render for broadcast | timed `overlays.json`, Highlights agent clip windows, 3D Autopsy replay |
+| Personalize | Persona agent (Fan / Analyst / Studio), My Club, My Player focus, en / hi / es |
+
+**Measured accuracy.** On 99 planted goals the Debugger names the planted player and mistake
+first 30% of the time overall and 81% of the time for LATE_STEP_UP, the one mistake type it
+has a detector for so far ([eval/report.md](eval/report.md)).
+
+**Microsoft technology.** Runs today: the Microsoft Agent Framework workflow
+(`agents/orchestrator.py`), which the backend runs for every goal with evidence-only agents in
+place of model calls (the engine-generated `p-10xx` showcase matches were exported through it;
+the 4-4 match's explanations were built by `web/tools/build_wlb_msb_showcase.py`), and GitHub
+Actions CI. Written and tested
+with mocks but not yet run against a live service: Microsoft Foundry model deployments and
+`azure-ai-evaluation`, Azure Functions, Event Hubs, Cosmos DB, Container Apps, Container
+Registry, Key Vault, Application Insights, AI Content Safety, Translator, Speech, Entra ID auth,
+and the Bicep/`azd` deployment.
+
+## Team build notes
+
+Role 3 implementation for the Agents & Cloud Lead brief: FastAPI/WebSockets, Microsoft Agent
+Framework orchestration, Azure adapters, deployment infrastructure, and evaluation tooling.
+All demo clubs/players/data are synthetic.
 
 ## Run locally
 
@@ -118,9 +168,10 @@ runs live model agents and submits automatically generated sentence/context rows
 no separate hand-written groundedness dataset is used.
 See [validation status](docs/VALIDATION.md) for measured local results and unrun cloud checks.
 
-Local validation: 80 tests pass, including real engine-to-explanation integration and model failure recovery. The single synthetic fixture scores 1.0 for actual
-sentence grounding using the pending evidence-only fallback. Engine accuracy and live
-Foundry groundedness remain unmeasured until Role 2's dataset and Azure access are available.
+Local validation: 81 tests pass, including real engine-to-explanation integration and model failure recovery. The single synthetic fixture scores 1.0 for actual
+sentence grounding using the pending evidence-only fallback. Engine root-cause accuracy is
+measured on planted goals ([eval/report.md](eval/report.md)); live Foundry groundedness remains
+unmeasured until Azure access is available.
 
 Application Insights receives workflow/model spans, goal/match IDs, timing and returned
 token usage. Sensitive prompt/evidence content tracing stays disabled. Token prices are
@@ -198,9 +249,23 @@ the ground truth.
    nothing fixed, 20 with the late step-up fixed). Blame = that link's drop in goals ÷ the sum of
    drops, computed from the same counts. The biggest share is the root cause.
 
-**Accuracy and limitations.** _Not yet measured._ `eval/accuracy.py` (top-1 / top-3 root-cause
-accuracy on 100 planted goals) is unfinished. Only the LATE_STEP_UP detector exists so far; fixes
-exist for all five bug types. The Fabric exporter and an Event Hubs producer for the engine are
+**Accuracy and limitations.** `python -m eval.accuracy --matches 100 --seed 1000` plants one
+goal-causing mistake (random bug type, player and minute) in each match and checks whether the
+Debugger names that player and bug first. Measured on 99 planted goals (one seed failed to plant):
+
+| Planted bug | Goals | Top-1 | Innocent player blamed first | Abstained |
+| --- | --- | --- | --- | --- |
+| LATE_STEP_UP | 37 | 81% | 14% | 5% |
+| MARKING_LOST | 39 | 0% | 69% | 23% |
+| PRESS_MISSED | 16 | 0% | 31% | 56% |
+| CROSS_NOT_BLOCKED | 4 | 0% | 50% | 50% |
+| DUEL_LOST | 3 | 0% | 67% | 33% |
+| **All** | **99** | **30%** | **41%** | **23%** |
+
+A separate 50-goal run planting only LATE_STEP_UP (`--seed 2000 --bug LATE_STEP_UP`) gives 70%
+top-1 and 82% top-3. Only the LATE_STEP_UP detector exists so far, so the other four types cannot
+score a top-1 hit; fixes exist for all five. Full results: [eval/report.md](eval/report.md),
+[eval/report.LATE_STEP_UP.md](eval/report.LATE_STEP_UP.md) and the per-case JSON beside them. The Fabric exporter and an Event Hubs producer for the engine are
 placeholders. Keep measured results separate: local fixture sentence grounding
 (`eval/agents_eval.py`) is not engine root-cause accuracy, and neither proves live Foundry or Azure
 deployment.
