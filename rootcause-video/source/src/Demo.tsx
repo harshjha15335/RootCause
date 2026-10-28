@@ -182,12 +182,14 @@ const Replay: React.FC = () => (
       <Tag at={4} color={C.lime} style={{ position: "absolute", left: 96, top: 96 }}>Slow motion · the yellow line is the back line</Tag>
       <SourceTag text="Illustrative off-ball movement" />
     </Shot>
-    {/* 44-48: top-down replay in Explore with the run traced */}
+    {/* 44-48: close-up on the defender who dropped behind the line */}
     <Shot from={s(18)} dur={s(4)}>
-      <Cam a={{ x: 700, y: 560, z: 1.0 }} b={{ x: 520, y: 640, z: 1.35 }} dur={s(4)}>
-        <Still src="captures/pages/explore-whatif.jpg" />
-        <Callout x={360} y={700} w={190} h={180} at={s(1.4)} label="25 · Akendo" labelSide="right" />
+      <Cam a={{ x: 1160, y: 560, z: 1.6 }} b={{ x: 1160, y: 540, z: 1.85 }} dur={s(4)}>
+        <Seq clip={CLIPS.mistakes} start={20} rate={0.8} />
       </Cam>
+      <Shade />
+      <Tag at={4} color={C.lime} style={{ position: "absolute", left: 96, top: 96 }}>Recorded position · 7 s before the goal</Tag>
+      <SourceTag text="Highlighted evidence positions are recorded" />
     </Shot>
     {chip(2)}
   </AbsoluteFill>
@@ -214,14 +216,11 @@ const Autopsy: React.FC = () => (
       </Cam>
       <SourceTag text="Highlighted evidence positions are recorded" />
     </Shot>
-    {/* 57-62: the stack trace, read upward */}
+    {/* 57-62: how the engine decides */}
     <Shot from={s(9)} dur={s(5)}>
-      <Cam a={{ x: 1400, y: 470, z: 1.25 }} b={{ x: 1500, y: 500, z: 1.75 }} dur={s(5)}>
-        <Still src="captures/pages/explore-expert.jpg" />
-        <Callout x={1264} y={398} w={474} h={156} at={s(1.2)} label="Root cause · 84%" labelSide="top" />
-        <Callout x={1264} y={556} w={474} h={152} at={s(2.6)} label="Second suspect · 16%" labelSide="bottom" />
+      <Cam a={{ x: 560, y: 700, z: 1.35 }} b={{ x: 300, y: 780, z: 1.6 }} dur={s(5)}>
+        <Still src="captures/v2/autopsy-engine.jpg" />
       </Cam>
-      <Lower kicker="How it happened" title="A stack trace for a goal." at={6} out={s(4.4)} />
     </Shot>
     {/* 62-67: the test, two pitches side by side */}
     <Shot from={s(14)} dur={s(5)}>
@@ -234,9 +233,9 @@ const Autopsy: React.FC = () => (
     </Shot>
     {/* 67-72: the verdict card */}
     <Shot from={s(19)} dur={s(5)} outF={6}>
-      <Cam a={{ x: 1500, y: 380, z: 1.3 }} b={{ x: 1500, y: 380, z: 1.85 }} dur={s(5)}>
-        <Still src="captures/pages/explore-verdict-simple.jpg" />
-        <Callout x={1266} y={262} w={470} h={234} at={s(1.4)} label="The identified root cause" labelSide="bottom" />
+      <Cam a={{ x: 700, y: 640, z: 1.25 }} b={{ x: 330, y: 780, z: 1.6 }} dur={s(5)}>
+        <Seq clip={CLIPS.verdict} hold={59} />
+        <Callout x={18} y={600} w={432} h={400} at={s(1.8)} label="The identified root cause" labelSide="top" />
       </Cam>
     </Shot>
     {chip(3)}
@@ -293,14 +292,15 @@ const Counterfactual: React.FC = () => {
 const SplitWhatIf: React.FC = () => {
   const f = useCurrentFrame();
   const split = interpolate(f, [0, 18], [0, 1], { ...clamp, easing: ease });
-  const pane = (src: string, label: string, color: string, pct: number, n: string, at: number, right: boolean) => (
+  const pane = (src: React.ReactNode, ox: number, label: string, color: string, pct: number, n: string, at: number, right: boolean) => (
     <div style={{ position: "absolute", top: 0, bottom: 0, width: 960, left: right ? 960 : 0, overflow: "hidden", borderLeft: right ? `3px solid ${C.lime}` : undefined }}>
-      <div style={{ position: "absolute", left: -170, top: -70, width: 1920, height: 1080, transformOrigin: "560px 600px", transform: `scale(${1 + f / 3000})` }}>
-        <Still src={src} />
+      <div style={{ position: "absolute", left: -ox, top: -40, width: 1920, height: 1080, transformOrigin: `${ox + 480}px 600px`, transform: `scale(${1.25 + f / 3000})` }}>
+        {src}
       </div>
       <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(3,8,31,.9), rgba(3,8,31,.2) 35%, rgba(3,8,31,.2) 60%, rgba(3,8,31,.92))" }} />
       <div style={{ position: "absolute", left: 70, top: 70 }}>
         <Headline text={label} size={70} align="left" width={820} at={at} accentWords={right ? ["didn't"] : []} />
+        <Tag at={at + 12} color={right ? C.lime : C.sky} style={{ marginTop: 18 }}>{right ? "Akendo level with his line" : "Akendo 5.3 m behind his line"}</Tag>
       </div>
       <div style={{ position: "absolute", left: 70, bottom: 70 }}>
         <Tag at={at + 20} color={color}>Goals in 200 replays · {n}</Tag>
@@ -310,8 +310,8 @@ const SplitWhatIf: React.FC = () => {
   );
   return (
     <AbsoluteFill style={{ opacity: split }}>
-      {pane("captures/pages/explore-whatif.jpg", "What happened", C.chalk, 71, "142 / 200", 4, false)}
-      {pane("captures/pages/explore-whatif-fixed.jpg", "What if it didn't?", C.lime, 7, "14 / 200", 34, true)}
+      {pane(<Seq clip={CLIPS.mistakes} hold={40} />, 640, "What happened", C.chalk, 71, "142 / 200", 4, false)}
+      {pane(<Seq clip={CLIPS.fix} hold={40} />, 640, "What if it didn't?", C.lime, 7, "14 / 200", 34, true)}
     </AbsoluteFill>
   );
 };
@@ -363,8 +363,8 @@ const DuoCards: React.FC = () => {
   const a = interpolate(f, [0, 22], [0, 1], { ...clamp, easing: ease });
   const b = interpolate(f, [s(2.2), s(2.2) + 22], [0, 1], { ...clamp, easing: ease });
   const card = (src: string, label: string, sub: string, p: number, x: number, at: number, focus: { x: number; y: number }) => (
-    <div style={{ position: "absolute", left: x, top: 250, width: 860, opacity: p, transform: `translateY(${(1 - p) * 60}px)` }}>
-      <div style={{ width: 860, height: 600, borderRadius: 18, overflow: "hidden", boxShadow: "0 40px 100px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.12)", position: "relative" }}>
+    <div style={{ position: "absolute", left: x, top: 300, width: 860, opacity: p, transform: `translateY(${(1 - p) * 60}px)` }}>
+      <div style={{ width: 860, height: 430, borderRadius: 18, overflow: "hidden", boxShadow: "0 40px 100px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.12)", position: "relative" }}>
         <div style={{ position: "absolute", left: -focus.x, top: -focus.y, transformOrigin: `${focus.x + 430}px ${focus.y + 300}px`, transform: `scale(${1 + f / 2500})` }}><Still src={src} /></div>
       </div>
       <div style={{ marginTop: 26 }}>
@@ -375,15 +375,15 @@ const DuoCards: React.FC = () => {
   );
   return (
     <AbsoluteFill>
-      {card("captures/pages/explore-verdict-simple.jpg", "For the fan.", "Simple: the verdict in plain words.", a, 80, 8, { x: 1060, y: 70 })}
-      {card("captures/pages/explore-expert.jpg", "For the analyst.", "Expert: the full stack trace and replay counts.", b, 980, s(2.2) + 8, { x: 1060, y: 70 })}
+      {card("captures/v2/cards-simple.jpg", "For the fan.", "Simple: who made the mistake, in plain words.", a, 80, 8, { x: 690, y: 180 })}
+      {card("captures/v2/cards-expert.jpg", "For the analyst.", "Expert: raw replay counts and every suspect.", b, 980, s(2.2) + 8, { x: 690, y: 180 })}
       <div style={{ position: "absolute", left: 80, top: 120 }}><Tag at={4} color={C.chalk}>One match · every perspective</Tag></div>
     </AbsoluteFill>
   );
 };
 const LangFlip: React.FC = () => {
   const f = useCurrentFrame();
-  const shots = ["captures/pages/explore-verdict-simple.jpg", "captures/pages/explore-hi.jpg", "captures/pages/explore-es.jpg"];
+  const shots = ["captures/v2/cards-simple.jpg", "captures/v2/cards-hi.jpg", "captures/v2/cards-es.jpg"];
   const labels = ["English", "हिन्दी", "Español"];
   const seg = s(4.5) / 3;
   const i = Math.min(2, Math.floor(f / seg));
@@ -458,7 +458,6 @@ const EndCard: React.FC = () => {
           <div style={{ fontFamily: F.display, fontWeight: 900, fontStretch: "130%", fontSize: 140, color: C.chalk, letterSpacing: "0.02em" }}>ROOT CAUSE</div>
         </div>
         <Headline text="Every goal has a bug." size={84} accentWords={["bug"]} at={18} />
-        <div style={{ marginTop: 40 }}><Tag at={40} color={C.sky} dot={false}>Built for Microsoft × Premier League — Inside the Game</Tag></div>
       </AbsoluteFill>
     </AbsoluteFill>
   );

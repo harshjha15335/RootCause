@@ -11,7 +11,7 @@ No 4K master: the captures are native 1080p, and upscaling them would not be a r
 | Playwright 1.5x + Chromium headless shell (SwiftShader WebGL) | All product capture. The page clock is paused and advanced one frame at a time (`page.clock`), because the 3D Autopsy renders at ~3–5 s per frame without a GPU; this gives smooth 15 fps 3D clips and 30 fps page scrolls. |
 | Remotion 4.0.242 | Edit, typography, virtual camera moves, callouts, split screen, counters, end card |
 | FFmpeg | Audio mix (adelay, sidechain ducking, loudnorm), final encode, QA (blackdetect, freezedetect, ebur128, contact sheets) |
-| Kokoro-82M via kokoro-onnx (Apache-2.0) | Narration, voice `bm_george`, run locally |
+| Kokoro-82M via kokoro-onnx (Apache-2.0) | Narration, voice `af_heart`, run locally |
 | NumPy (own script) | Score and SFX synthesised from oscillators and noise — no samples |
 
 Not used: OBS (no display in the cloud container; Playwright covered capture), DaVinci Resolve (not available on Linux headless), paid TTS or music services, Anthropic Skills for video (none needed).
@@ -29,4 +29,9 @@ Captured from the GitHub Pages **root build** (`gh-pages` a16e950, built from ma
 - The Fan/Analyst/Studio switch no longer exists in this build (it became Simple ↔ Expert), so scene 6 shows Simple vs Expert plus English/हिन्दी/Español instead of a Studio mode.
 - The Explore panel's "How this was explained" shows the agents as *waiting* and the plain-words text is labelled "Template from the Debugger's numbers, no AI wording" — the video shows that honestly and says nothing about live agents.
 - Two Autopsy shots begin during the app's own camera move between chapters, so the first few frames are a moving wide view.
-- The end card text "Built for Microsoft × Premier League — Inside the Game" was requested; the official rules say the video should avoid third-party trademarks, so consider whether to keep that line.
+
+## Revision 2 (Harsh's review)
+- Removed every shot of the Explore screen (the blue top-down pitch), which reads as an older version of the app. Replacements come only from the current root build: Autopsy close-up of the recorded 5.3 m position, *How the engine decides*, the Autopsy verdict card, a split screen of Autopsy frames, and the match page cards for Simple/Expert and English/हिन्दी/Español.
+- Narration regenerated with Kokoro `af_heart`, the most natural voice of that model.
+- End card no longer mentions Microsoft or the Premier League.
+- Re-checked: 120.000 s, 3600 frames, −13.9 LUFS, no freezes over 1.5 s.

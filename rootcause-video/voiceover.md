@@ -1,6 +1,6 @@
 # Voiceover — final narration
 
-Voice: Kokoro-82M `bm_george` (British English), generated locally with `kokoro-onnx` (Apache-2.0 model). 220 words over 120 s (~110 wpm overall, with pauses for the demo and the closing logo).
+Voice: Kokoro-82M `af_heart` (American English, the model's top-rated voice), generated locally with `kokoro-onnx` (Apache-2.0 model). 220 words over 120 s (~110 wpm overall, with pauses for the demo and the closing logo).
 
 Every number is read from the recorded trace for goal `wlb-msb-2023-11-12-g2` (28:24, Tiago Silven) as shown in the ui-fixes preview: blame 84% / 16%, goals in 200 replays 142 → 14 (71% → 7%), Diales-level 59%, Akendo 5.3 m behind his line 7 s before the goal.
 

@@ -7,3 +7,4 @@ captures/*.log
 audio/music/*.wav
 audio/mix.wav
 source/link-public.sh.bak
+!captures/v2/*.jpg
