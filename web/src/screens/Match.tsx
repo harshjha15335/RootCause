@@ -491,9 +491,9 @@ function Players({ s, meta, depth, player, onPlayer, onShow }: { s: Stacks; meta
                     type="button"
                     aria-pressed={player === id}
                     onClick={() => onPlayer(player === id ? null : id)}
-                    className={`rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full pl-1.5 pr-3.5 text-[14px] ring-1 ring-inset transition-colors ${player === id ? "bg-chalk text-turf-deep ring-chalk" : "bg-turf text-chalk ring-turf-edge hover:ring-chalk/40"} ${count(id) ? "" : "opacity-60"}`}
+                    className={`rc-press inline-flex min-h-[40px] items-center gap-2 rounded-full pl-1.5 pr-3.5 text-[14px] ring-1 ring-inset transition-colors ${player === id ? "bg-chalk text-turf-deep ring-chalk" : "bg-turf text-chalk ring-turf-edge hover:ring-chalk/40"} ${count(id) ? "" : "opacity-75"}`}
                   >
-                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-[#8fa6ff] text-turf-deep"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
+                    <span className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-bold tabular-nums ${side === "home" ? "bg-chalk text-turf-deep" : "bg-[#ffb547] text-[#1a1206]"} ${player === id ? "ring-2 ring-turf-deep" : ""}`}>{n.number(id)}</span>
                     {n.short(id)}
                     {count(id) > 0 && <span className={`text-[12px] tabular-nums ${player === id ? "text-turf-deep/70" : "text-chalk-faint"}`}>{count(id)}</span>}
                   </button>

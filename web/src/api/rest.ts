@@ -110,21 +110,31 @@ export const SHOWCASE_MATCH: string = DEMO_MATCHES.find((m) => m === asked) ?? D
 export function showcaseSource(matchId = SHOWCASE_MATCH): Source & { extras(): Promise<ShowcaseExtras> } {
   const base = `${import.meta.env.BASE_URL}showcase/${matchId}`;
   let extras: Promise<ShowcaseExtras> | null = null;
+  let manifest: Promise<ShowcaseManifest> | null = null;
+  const loadManifest = () => (manifest ??= json<ShowcaseManifest>(`${base}/manifest.json`));
+  let meta: Promise<MatchMeta> | null = null;
+  const loadMeta = () => (meta ??= json<MatchMeta>(`${base}/meta.json`));
   return {
     kind: "showcase",
     matchId,
     extras() {
       extras ??= Promise.all([
-        json<MatchMeta>(`${base}/meta.json`),
+        loadMeta(),
         json<EngineMatchEvent[]>(`${base}/ticks.json`),
         json<Record<string, Record<string, RecordedReplay>>>(`${base}/replays.json`),
-        json<GroundTruth>(`${base}/ground_truth.json`).catch(() => null),
-        json<ShowcaseManifest>(`${base}/manifest.json`),
+        // Only engine matches (with a seed) have planted mistakes to check against; skip the 404 otherwise.
+        loadMeta().then((m) => (m.seed != null ? json<GroundTruth>(`${base}/ground_truth.json`) : null)).catch(() => null),
+        loadManifest(),
         json<WsMessage[]>(`${base}/messages.json`),
       ]).then(([meta, ticks, replays, truth, manifest, messages]) => ({ meta, ticks, replays, truth, manifest, messages }));
       return extras;
     },
-    trace: (goalId) => json(`${base}/traces/${goalId}.json`),
+    // Untraced goals have no trace file: answer 404 from the manifest instead of asking the server.
+    trace: async (goalId) => {
+      const m = await loadManifest().catch(() => null);
+      if (m && !m.traced.includes(goalId)) throw new HttpError(404, `${goalId} is not traced`);
+      return json(`${base}/traces/${goalId}.json`);
+    },
     explanation: (goalId, mode, lang) => json(`${base}/explanations/${goalId}.${mode}.${lang}.json`),
     report: (mode, lang) => json(`${base}/reports/${mode}.${lang}.json`),
     match: () => json(`${base}/match.json`),

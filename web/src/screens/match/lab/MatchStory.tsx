@@ -128,7 +128,7 @@ function ChapterCard({ c, prev, lab, club, traced, matchId, onWatch }: { c: Chap
           )}
           <p className="mt-1 text-[13px] text-chalk-faint">{t("tlab.story.score", { home: lab.short[0], away: lab.short[1], a: c.score[0], b: c.score[1] })}</p>
         </div>
-        <dl className="grid content-start gap-2.5">
+        <div className="grid content-start gap-2.5">
           <div className="flex justify-between text-[12px] font-bold">
             <span style={{ color: HOME }}>{lab.short[0]}</span>
             <span style={{ color: AWAY }}>{lab.short[1]}</span>
@@ -136,7 +136,7 @@ function ChapterCard({ c, prev, lab, club, traced, matchId, onWatch }: { c: Chap
           {bars.map(([k, x, y, fmt]) => (
             <Pair key={k} label={k} a={x} b={y} fmt={fmt} />
           ))}
-        </dl>
+        </div>
       </div>
     </li>
   );
@@ -151,13 +151,13 @@ function Pair({ label, a, b, fmt, lowerBetter }: { label: string; a: number; b: 
     <div>
       <div className="flex items-baseline justify-between gap-2 text-[13px]">
         <span className={`tabular-nums ${lead === 0 ? "font-bold text-chalk" : "text-chalk-dim"}`}>{fmt(a, 0)}</span>
-        <dt className="text-[12px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{label}</dt>
+        <span className="text-[12px] font-semibold uppercase tracking-[0.1em] text-chalk-faint">{label}</span>
         <span className={`tabular-nums ${lead === 1 ? "font-bold text-chalk" : "text-chalk-dim"}`}>{fmt(b, 1)}</span>
       </div>
-      <dd className="relative mt-1 h-2 overflow-hidden rounded-full bg-chalk/10">
+      <div aria-hidden="true" className="relative mt-1 h-2 overflow-hidden rounded-full bg-chalk/10">
         <i className="absolute inset-y-0 right-1/2 rounded-l-full" style={{ width: `${wa}%`, background: HOME, opacity: lead === 1 ? 0.55 : 1 }} />
         <i className="absolute inset-y-0 left-1/2 rounded-r-full" style={{ width: `${wb}%`, background: AWAY, opacity: lead === 0 ? 0.55 : 1 }} />
-      </dd>
+      </div>
     </div>
   );
 }

@@ -98,7 +98,10 @@ function NavLinks() {
             href={key === "home" ? "#/" : `#/${key}`}
             aria-current={screen === key ? "page" : on ? "true" : undefined}
             onClick={(e) => (e.preventDefault(), go(key))}
-            className={`rc-press relative flex min-h-[44px] shrink-0 items-center px-[7px] text-[14px] transition-colors duration-300 sm:px-3 ${
+            className={`rc-press relative min-h-[44px] shrink-0 items-center px-[6px] text-[14px] transition-colors max-[359px]:px-[2px] max-[359px]:text-[12.5px] duration-300 sm:px-2 lg:px-3 ${
+              // on phones the wordmark is the home link, which leaves room for Tactics Lab beside the menus
+              key === "home" ? "hidden sm:flex" : "flex"
+            } ${
               on ? "text-chalk" : "text-chalk-faint hover:text-chalk"
             }`}
           >

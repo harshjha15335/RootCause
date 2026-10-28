@@ -89,6 +89,9 @@ const hi: Dict = {
   },
   bug: {
     LATE_STEP_UP: "देर से आगे बढ़ा",
+    ZONAL_LEAK: "अपना ज़ोन छोड़ा",
+    BACK_POST_EXPOSURE: "पिछला पोस्ट खुला छोड़ा",
+    REBOUND_UNCHECKED: "रिबाउंड पर नहीं गया",
     DUEL_LOST: "मुकाबला हारा",
     PRESS_MISSED: "प्रेस नहीं किया",
     MARKING_LOST: "रनर छूट गया",
@@ -98,6 +101,9 @@ const hi: Dict = {
   },
   fix: {
     LATE_STEP_UP: "बाकी डिफ़ेंस के साथ लाइन में रहता है।",
+    ZONAL_LEAK: "अपने ज़ोन में रहता है।",
+    BACK_POST_EXPOSURE: "पिछला पोस्ट कवर करता है।",
+    REBOUND_UNCHECKED: "रिबाउंड के लिए आगे बढ़ता है।",
     DUEL_LOST: "मुकाबला जीतता है।",
     PRESS_MISSED: "गेंद वाले खिलाड़ी पर दबाव डालता है।",
     MARKING_LOST: "रनर के साथ चिपका रहता है।",
@@ -123,6 +129,7 @@ const hi: Dict = {
     attack_changed: "{{time}} पर हमला टूट जाता है",
     shot_saved: "{{time}} पर शॉट गोल में नहीं जाता",
     goal: "फिर भी {{time}} पर गोल होता है",
+    intercepted: "{{time}} पर पास बीच में रोक लिया जाता है",
   },
   cause: {
     label: "मूल कारण",
@@ -140,7 +147,7 @@ const hi: Dict = {
   explain: {
     title: { fan: "सरल शब्दों में", analyst: "सबूत", studio: "ऑन एयर" },
     pending: "व्याख्या बाकी है",
-    evidenceOnly: "सिर्फ़ डीबगर के आँकड़े",
+    evidenceOnly: "डीबगर के आँकड़ों से बना टेम्पलेट, AI भाषा नहीं",
     translationFallback: "अनुवाद उपलब्ध नहीं, अंग्रेज़ी दिखा रहे हैं",
     failed: "व्याख्या नहीं आई। ऊपर का ट्रेस और ज़िम्मेदारी पूरे हैं।",
     waiting: "व्याख्या लिखी जा रही है। ट्रेस और ज़िम्मेदारी अंतिम हैं।",

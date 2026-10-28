@@ -89,6 +89,9 @@ const es: Dict = {
   },
   bug: {
     LATE_STEP_UP: "Subió tarde",
+    ZONAL_LEAK: "Dejó su zona",
+    BACK_POST_EXPOSURE: "Dejó libre el segundo palo",
+    REBOUND_UNCHECKED: "No siguió el rechace",
     DUEL_LOST: "Perdió el duelo",
     PRESS_MISSED: "No presionó",
     MARKING_LOST: "Perdió la marca",
@@ -98,6 +101,9 @@ const es: Dict = {
   },
   fix: {
     LATE_STEP_UP: "mantiene la línea con el resto de la defensa.",
+    ZONAL_LEAK: "mantiene su zona.",
+    BACK_POST_EXPOSURE: "cubre el segundo palo.",
+    REBOUND_UNCHECKED: "sigue la jugada para el rechace.",
     DUEL_LOST: "gana el duelo.",
     PRESS_MISSED: "presiona al poseedor.",
     MARKING_LOST: "se queda pegado a su marca.",
@@ -123,6 +129,7 @@ const es: Dict = {
     attack_changed: "el ataque se rompe en el {{time}}",
     shot_saved: "el disparo del {{time}} no entra",
     goal: "aun así termina en gol en el {{time}}",
+    intercepted: "el pase es interceptado en el {{time}}",
   },
   cause: {
     label: "Causa raíz",
@@ -140,7 +147,7 @@ const es: Dict = {
   explain: {
     title: { fan: "En palabras sencillas", analyst: "La evidencia", studio: "En antena" },
     pending: "Explicación pendiente",
-    evidenceOnly: "Solo cifras del Debugger",
+    evidenceOnly: "Plantilla con las cifras del Debugger, sin redacción de IA",
     translationFallback: "Traducción no disponible, se muestra en inglés",
     failed: "La explicación no llegó. La traza y la culpa de arriba están completas.",
     waiting: "Se está redactando la explicación. La traza y la culpa ya son definitivas.",

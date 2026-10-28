@@ -1,0 +1,2738 @@
+{
+  "summary": {
+    "source": "planted-mistake-benchmark",
+    "seed": 1000,
+    "bug_filter": null,
+    "runs_per_link": null,
+    "requested": 100,
+    "planted": 99,
+    "plant_failed": 1,
+    "top1": 0.303,
+    "top1_player": 0.354,
+    "top3": 0.313,
+    "innocent_blamed": 0.414,
+    "abstained": 0.232,
+    "top1_count": 30,
+    "trace_s_median": 2.28,
+    "trace_s_max": 6.503,
+    "by_bug": {
+      "CROSS_NOT_BLOCKED": {
+        "n": 4,
+        "top1": 0.0,
+        "top1_player": 0.0,
+        "top3": 0.0,
+        "innocent_blamed": 0.5,
+        "abstained": 0.5
+      },
+      "DUEL_LOST": {
+        "n": 3,
+        "top1": 0.0,
+        "top1_player": 0.0,
+        "top3": 0.0,
+        "innocent_blamed": 0.667,
+        "abstained": 0.333
+      },
+      "LATE_STEP_UP": {
+        "n": 37,
+        "top1": 0.811,
+        "top1_player": 0.811,
+        "top3": 0.838,
+        "innocent_blamed": 0.135,
+        "abstained": 0.054
+      },
+      "MARKING_LOST": {
+        "n": 39,
+        "top1": 0.0,
+        "top1_player": 0.077,
+        "top3": 0.0,
+        "innocent_blamed": 0.692,
+        "abstained": 0.231
+      },
+      "PRESS_MISSED": {
+        "n": 16,
+        "top1": 0.0,
+        "top1_player": 0.125,
+        "top3": 0.0,
+        "innocent_blamed": 0.312,
+        "abstained": 0.562
+      }
+    }
+  },
+  "cases": [
+    {
+      "seed": 1000,
+      "planted": true,
+      "goal_id": "acc-1000-g3",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.015
+    },
+    {
+      "seed": 1001,
+      "planted": true,
+      "goal_id": "acc-1001-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.162
+    },
+    {
+      "seed": 1002,
+      "planted": true,
+      "goal_id": "acc-1002-g3",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.3356
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.3356
+        },
+        {
+          "rank": 3,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.3289
+        },
+        {
+          "rank": 4,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 4.695
+    },
+    {
+      "seed": 1003,
+      "planted": true,
+      "goal_id": "acc-1003-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8877
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1123
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 3.787
+    },
+    {
+      "seed": 1004,
+      "planted": true,
+      "goal_id": "acc-1004-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.948
+    },
+    {
+      "seed": 1005,
+      "planted": false
+    },
+    {
+      "seed": 1006,
+      "planted": true,
+      "goal_id": "acc-1006-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H4",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.365
+    },
+    {
+      "seed": 1007,
+      "planted": true,
+      "goal_id": "acc-1007-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.4812
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.3054
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.2134
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 5.215
+    },
+    {
+      "seed": 1008,
+      "planted": true,
+      "goal_id": "acc-1008-g4",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8889
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1111
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.448
+    },
+    {
+      "seed": 1009,
+      "planted": true,
+      "goal_id": "acc-1009-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9492
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0508
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.654
+    },
+    {
+      "seed": 1010,
+      "planted": true,
+      "goal_id": "acc-1010-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "A6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.998
+    },
+    {
+      "seed": 1011,
+      "planted": true,
+      "goal_id": "acc-1011-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.2
+    },
+    {
+      "seed": 1012,
+      "planted": true,
+      "goal_id": "acc-1012-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.074
+    },
+    {
+      "seed": 1013,
+      "planted": true,
+      "goal_id": "acc-1013-g2",
+      "bug": "CROSS_NOT_BLOCKED",
+      "player_id": "A2",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.881
+    },
+    {
+      "seed": 1014,
+      "planted": true,
+      "goal_id": "acc-1014-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 0.925
+    },
+    {
+      "seed": 1015,
+      "planted": true,
+      "goal_id": "acc-1015-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "H6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 3.112
+    },
+    {
+      "seed": 1016,
+      "planted": true,
+      "goal_id": "acc-1016-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "A6",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.73
+    },
+    {
+      "seed": 1017,
+      "planted": true,
+      "goal_id": "acc-1017-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8813
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1187
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 4,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.906
+    },
+    {
+      "seed": 1018,
+      "planted": true,
+      "goal_id": "acc-1018-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.484
+    },
+    {
+      "seed": 1019,
+      "planted": true,
+      "goal_id": "acc-1019-g3",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.328
+    },
+    {
+      "seed": 1020,
+      "planted": true,
+      "goal_id": "acc-1020-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.552
+    },
+    {
+      "seed": 1021,
+      "planted": true,
+      "goal_id": "acc-1021-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": true,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 2.332
+    },
+    {
+      "seed": 1022,
+      "planted": true,
+      "goal_id": "acc-1022-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.057
+    },
+    {
+      "seed": 1023,
+      "planted": true,
+      "goal_id": "acc-1023-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.609
+    },
+    {
+      "seed": 1024,
+      "planted": true,
+      "goal_id": "acc-1024-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.895
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.105
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 3.338
+    },
+    {
+      "seed": 1025,
+      "planted": true,
+      "goal_id": "acc-1025-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "A7",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.144
+    },
+    {
+      "seed": 1026,
+      "planted": true,
+      "goal_id": "acc-1026-g5",
+      "bug": "PRESS_MISSED",
+      "player_id": "H4",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.619
+    },
+    {
+      "seed": 1027,
+      "planted": true,
+      "goal_id": "acc-1027-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "H5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 0.395
+    },
+    {
+      "seed": 1028,
+      "planted": true,
+      "goal_id": "acc-1028-g4",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.238
+    },
+    {
+      "seed": 1029,
+      "planted": true,
+      "goal_id": "acc-1029-g3",
+      "bug": "CROSS_NOT_BLOCKED",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 4.194
+    },
+    {
+      "seed": 1030,
+      "planted": true,
+      "goal_id": "acc-1030-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.913
+    },
+    {
+      "seed": 1031,
+      "planted": true,
+      "goal_id": "acc-1031-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.604
+    },
+    {
+      "seed": 1032,
+      "planted": true,
+      "goal_id": "acc-1032-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.518
+    },
+    {
+      "seed": 1033,
+      "planted": true,
+      "goal_id": "acc-1033-g4",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 3.762
+    },
+    {
+      "seed": 1034,
+      "planted": true,
+      "goal_id": "acc-1034-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.28
+    },
+    {
+      "seed": 1035,
+      "planted": true,
+      "goal_id": "acc-1035-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.822
+    },
+    {
+      "seed": 1036,
+      "planted": true,
+      "goal_id": "acc-1036-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.262
+    },
+    {
+      "seed": 1037,
+      "planted": true,
+      "goal_id": "acc-1037-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "H4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": true,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.832
+    },
+    {
+      "seed": 1038,
+      "planted": true,
+      "goal_id": "acc-1038-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 3.268
+    },
+    {
+      "seed": 1039,
+      "planted": true,
+      "goal_id": "acc-1039-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9557
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0443
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.853
+    },
+    {
+      "seed": 1040,
+      "planted": true,
+      "goal_id": "acc-1040-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8434
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1566
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.385
+    },
+    {
+      "seed": 1041,
+      "planted": true,
+      "goal_id": "acc-1041-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 2.947
+    },
+    {
+      "seed": 1042,
+      "planted": true,
+      "goal_id": "acc-1042-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.167
+    },
+    {
+      "seed": 1043,
+      "planted": true,
+      "goal_id": "acc-1043-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "H8",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.552
+    },
+    {
+      "seed": 1044,
+      "planted": true,
+      "goal_id": "acc-1044-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A8",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.151
+    },
+    {
+      "seed": 1045,
+      "planted": true,
+      "goal_id": "acc-1045-g6",
+      "bug": "PRESS_MISSED",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9041
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0959
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": true,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.866
+    },
+    {
+      "seed": 1046,
+      "planted": true,
+      "goal_id": "acc-1046-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "H5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.945
+    },
+    {
+      "seed": 1047,
+      "planted": true,
+      "goal_id": "acc-1047-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.468
+    },
+    {
+      "seed": 1048,
+      "planted": true,
+      "goal_id": "acc-1048-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "H5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "H2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.359
+    },
+    {
+      "seed": 1049,
+      "planted": true,
+      "goal_id": "acc-1049-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.104
+    },
+    {
+      "seed": 1050,
+      "planted": true,
+      "goal_id": "acc-1050-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.476
+    },
+    {
+      "seed": 1051,
+      "planted": true,
+      "goal_id": "acc-1051-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 4.952
+    },
+    {
+      "seed": 1052,
+      "planted": true,
+      "goal_id": "acc-1052-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.06
+    },
+    {
+      "seed": 1053,
+      "planted": true,
+      "goal_id": "acc-1053-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "H11",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.997
+    },
+    {
+      "seed": 1054,
+      "planted": true,
+      "goal_id": "acc-1054-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.258
+    },
+    {
+      "seed": 1055,
+      "planted": true,
+      "goal_id": "acc-1055-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.725
+    },
+    {
+      "seed": 1056,
+      "planted": true,
+      "goal_id": "acc-1056-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "H5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 0.514
+    },
+    {
+      "seed": 1057,
+      "planted": true,
+      "goal_id": "acc-1057-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.674
+    },
+    {
+      "seed": 1058,
+      "planted": true,
+      "goal_id": "acc-1058-g3",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.91
+    },
+    {
+      "seed": 1059,
+      "planted": true,
+      "goal_id": "acc-1059-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.875
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.125
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 4.118
+    },
+    {
+      "seed": 1060,
+      "planted": true,
+      "goal_id": "acc-1060-g1",
+      "bug": "DUEL_LOST",
+      "player_id": "H6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 0.526
+    },
+    {
+      "seed": 1061,
+      "planted": true,
+      "goal_id": "acc-1061-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.95
+    },
+    {
+      "seed": 1062,
+      "planted": true,
+      "goal_id": "acc-1062-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 0.909
+    },
+    {
+      "seed": 1063,
+      "planted": true,
+      "goal_id": "acc-1063-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.218
+    },
+    {
+      "seed": 1064,
+      "planted": true,
+      "goal_id": "acc-1064-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 3.172
+    },
+    {
+      "seed": 1065,
+      "planted": true,
+      "goal_id": "acc-1065-g1",
+      "bug": "CROSS_NOT_BLOCKED",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9737
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0263
+        },
+        {
+          "rank": 3,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.549
+    },
+    {
+      "seed": 1066,
+      "planted": true,
+      "goal_id": "acc-1066-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.009
+    },
+    {
+      "seed": 1067,
+      "planted": true,
+      "goal_id": "acc-1067-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8909
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1091
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.819
+    },
+    {
+      "seed": 1068,
+      "planted": true,
+      "goal_id": "acc-1068-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.907
+    },
+    {
+      "seed": 1069,
+      "planted": true,
+      "goal_id": "acc-1069-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 0.945
+    },
+    {
+      "seed": 1070,
+      "planted": true,
+      "goal_id": "acc-1070-g1",
+      "bug": "PRESS_MISSED",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.036
+    },
+    {
+      "seed": 1071,
+      "planted": true,
+      "goal_id": "acc-1071-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.7866
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.2134
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 4,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 6.143
+    },
+    {
+      "seed": 1072,
+      "planted": true,
+      "goal_id": "acc-1072-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 3.271
+    },
+    {
+      "seed": 1073,
+      "planted": true,
+      "goal_id": "acc-1073-g2",
+      "bug": "DUEL_LOST",
+      "player_id": "A8",
+      "links": [],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 0.597
+    },
+    {
+      "seed": 1074,
+      "planted": true,
+      "goal_id": "acc-1074-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.831
+    },
+    {
+      "seed": 1075,
+      "planted": true,
+      "goal_id": "acc-1075-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9174
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0826
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.171
+    },
+    {
+      "seed": 1076,
+      "planted": true,
+      "goal_id": "acc-1076-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 3.496
+    },
+    {
+      "seed": 1077,
+      "planted": true,
+      "goal_id": "acc-1077-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 0.871
+    },
+    {
+      "seed": 1078,
+      "planted": true,
+      "goal_id": "acc-1078-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 5.392
+    },
+    {
+      "seed": 1079,
+      "planted": true,
+      "goal_id": "acc-1079-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 4.052
+    },
+    {
+      "seed": 1080,
+      "planted": true,
+      "goal_id": "acc-1080-g2",
+      "bug": "CROSS_NOT_BLOCKED",
+      "player_id": "H3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.7591
+        },
+        {
+          "rank": 2,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.2409
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.169
+    },
+    {
+      "seed": 1081,
+      "planted": true,
+      "goal_id": "acc-1081-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A8",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 1.047
+    },
+    {
+      "seed": 1082,
+      "planted": true,
+      "goal_id": "acc-1082-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.937
+    },
+    {
+      "seed": 1083,
+      "planted": true,
+      "goal_id": "acc-1083-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8761
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1239
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.403
+    },
+    {
+      "seed": 1084,
+      "planted": true,
+      "goal_id": "acc-1084-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8448
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1552
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": true,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 4.516
+    },
+    {
+      "seed": 1085,
+      "planted": true,
+      "goal_id": "acc-1085-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.9471
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0529
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.26
+    },
+    {
+      "seed": 1086,
+      "planted": true,
+      "goal_id": "acc-1086-g3",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.716
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.284
+        },
+        {
+          "rank": 3,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.571
+    },
+    {
+      "seed": 1087,
+      "planted": true,
+      "goal_id": "acc-1087-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 2.718
+    },
+    {
+      "seed": 1088,
+      "planted": true,
+      "goal_id": "acc-1088-g4",
+      "bug": "MARKING_LOST",
+      "player_id": "H4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 4.488
+    },
+    {
+      "seed": 1089,
+      "planted": true,
+      "goal_id": "acc-1089-g6",
+      "bug": "DUEL_LOST",
+      "player_id": "A6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 1.691
+    },
+    {
+      "seed": 1090,
+      "planted": true,
+      "goal_id": "acc-1090-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "H5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 4.046
+    },
+    {
+      "seed": 1091,
+      "planted": true,
+      "goal_id": "acc-1091-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 1.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 1.32
+    },
+    {
+      "seed": 1092,
+      "planted": true,
+      "goal_id": "acc-1092-g2",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A2",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.5194
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1893
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1845
+        },
+        {
+          "rank": 4,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1068
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 4.934
+    },
+    {
+      "seed": 1093,
+      "planted": true,
+      "goal_id": "acc-1093-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.5401
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.3212
+        },
+        {
+          "rank": 3,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1387
+        },
+        {
+          "rank": 4,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 6.349
+    },
+    {
+      "seed": 1094,
+      "planted": true,
+      "goal_id": "acc-1094-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 2.624
+    },
+    {
+      "seed": 1095,
+      "planted": true,
+      "goal_id": "acc-1095-g2",
+      "bug": "PRESS_MISSED",
+      "player_id": "A6",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8947
+        },
+        {
+          "rank": 2,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1053
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": true,
+      "trace_s": 6.503
+    },
+    {
+      "seed": 1096,
+      "planted": true,
+      "goal_id": "acc-1096-g1",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A3",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.983
+        },
+        {
+          "rank": 2,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.017
+        },
+        {
+          "rank": 3,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": true,
+      "top1_player": true,
+      "top3": true,
+      "innocent_blamed": false,
+      "trace_s": 2.202
+    },
+    {
+      "seed": 1097,
+      "planted": true,
+      "goal_id": "acc-1097-g2",
+      "bug": "MARKING_LOST",
+      "player_id": "H4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "H3",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 2,
+          "player_id": "H5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        },
+        {
+          "rank": 3,
+          "player_id": "H4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": true,
+      "top1": false,
+      "top1_player": false,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 5.469
+    },
+    {
+      "seed": 1098,
+      "planted": true,
+      "goal_id": "acc-1098-g3",
+      "bug": "LATE_STEP_UP",
+      "player_id": "A5",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A2",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.8643
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.1357
+        },
+        {
+          "rank": 3,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.0
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": false,
+      "top3": true,
+      "innocent_blamed": true,
+      "trace_s": 4.733
+    },
+    {
+      "seed": 1099,
+      "planted": true,
+      "goal_id": "acc-1099-g1",
+      "bug": "MARKING_LOST",
+      "player_id": "A4",
+      "links": [
+        {
+          "rank": 1,
+          "player_id": "A4",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.5571
+        },
+        {
+          "rank": 2,
+          "player_id": "A5",
+          "bug": "LATE_STEP_UP",
+          "blame": 0.4429
+        }
+      ],
+      "abstained": false,
+      "top1": false,
+      "top1_player": true,
+      "top3": false,
+      "innocent_blamed": false,
+      "trace_s": 2.174
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { Evidence } from "../api/types";
 import { BlameBar, BugName, MomentButton } from "../components/bits";
-import { clock, playerInfo, rate } from "../lib/format";
+import { clock, pitchKit, playerInfo, rate } from "../lib/format";
 import { useMatch } from "../store/matchStore";
 import { useTrace } from "../store/traceStore";
 import { useUi } from "../store/uiStore";
@@ -98,7 +98,7 @@ function PlayerName({ id }: { id: string }) {
   const info = playerInfo(meta, id);
   return (
     <span className="inline-flex items-baseline gap-1 font-semibold" translate="no">
-      <span aria-hidden="true" className="inline-block h-2.5 w-2.5 self-center rounded-full ring-1 ring-chalk/40" style={{ background: info.club?.kit_primary ?? "#788c82" }} />
+      <span aria-hidden="true" className="inline-block h-2.5 w-2.5 self-center rounded-full ring-1 ring-chalk/40" style={{ background: pitchKit(info.side).kit }} />
       {info.number !== null && <span className="tabular-nums text-chalk-dim">{info.number}</span>}
       {info.name}
     </span>
