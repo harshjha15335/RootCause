@@ -7,6 +7,11 @@ about an hour, mostly signup and model deployment, and to cost a few cents.
 
 ## No Azure account? Use GitHub Models (15 minutes)
 
+> **Status (2026-10-28):** not working. Every request to `models.github.ai`, including the
+> model catalogue, returned a plain-text `200 OK` instead of an API response, from a home
+> network and from GitHub Actions runners. The `--github` path is kept for when the service
+> answers again; use the Foundry steps below.
+
 If Azure for Students verification fails, run the same Agent Framework workflow on GitHub
 Models, Microsoft's Azure-hosted model catalogue for GitHub accounts. It needs only a GitHub token
 and is free within its rate limits.
