@@ -5,7 +5,7 @@ import type { ClubMeta, Link } from "../api/types";
 import { jumpTo } from "../store/broadcast";
 import { useMatch } from "../store/matchStore";
 import { useTrace } from "../store/traceStore";
-import { PLAYER_TOKEN, pct, playerInfo, surname, tidyNumbers } from "../lib/format";
+import { PLAYER_TOKEN, pct, pitchKit, playerInfo, surname, tidyNumbers } from "../lib/format";
 
 /** Invented club crest drawn from the club's kit colours (MatchMeta). No real marks. */
 export function Badge({ club, size = 28 }: { club: ClubMeta | null; size?: number }) {
@@ -53,7 +53,7 @@ export function PlayerChip({ id, evidenceId, full = false }: { id: string; evide
       <span
         aria-hidden="true"
         className="inline-block h-2.5 w-2.5 translate-y-[1px] self-center rounded-full ring-1 ring-chalk/40"
-        style={{ background: info.club?.kit_primary ?? "#788c82" }}
+        style={{ background: pitchKit(info.side).kit }}
       />
       {info.number !== null && <span className="tabular-nums text-chalk-dim">{info.number}</span>}
       <span>{full ? info.name : surname(info.name)}</span>

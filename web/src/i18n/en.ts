@@ -88,6 +88,9 @@ const en = {
   },
   bug: {
     LATE_STEP_UP: "Stepped up late",
+    ZONAL_LEAK: "Left his zone",
+    BACK_POST_EXPOSURE: "Left the back post open",
+    REBOUND_UNCHECKED: "Didn't follow the rebound",
     DUEL_LOST: "Lost the duel",
     PRESS_MISSED: "Missed the press",
     MARKING_LOST: "Lost the runner",
@@ -97,6 +100,9 @@ const en = {
   },
   fix: {
     LATE_STEP_UP: "holds the line with the rest of the back four instead.",
+    ZONAL_LEAK: "holds his zone instead.",
+    BACK_POST_EXPOSURE: "covers the back post instead.",
+    REBOUND_UNCHECKED: "follows in for the rebound instead.",
     DUEL_LOST: "wins the duel instead.",
     PRESS_MISSED: "closes the ball down instead.",
     MARKING_LOST: "stays tight to the runner instead.",
@@ -122,6 +128,7 @@ const en = {
     attack_changed: "the attack breaks down at {{time}}",
     shot_saved: "the shot at {{time}} doesn't go in",
     goal: "it still ends in the goal at {{time}}",
+    intercepted: "the pass is intercepted at {{time}}",
   },
   cause: {
     label: "Root cause",
@@ -139,7 +146,7 @@ const en = {
   explain: {
     title: { fan: "In plain words", analyst: "The evidence", studio: "On air" },
     pending: "Explanation pending",
-    evidenceOnly: "Debugger numbers only",
+    evidenceOnly: "Template from the Debugger's numbers, no AI wording",
     translationFallback: "Translation unavailable, showing English",
     failed: "The explanation didn't arrive. The trace and blame above are complete.",
     waiting: "The explanation is being written. The trace and blame are already final.",

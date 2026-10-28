@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { HttpError } from "../api/rest";
+import { HttpError, type showcaseSource } from "../api/rest";
 import type { Evidence, ExplanationResponse, GroundTruth } from "../api/types";
 import { source } from "./broadcast";
 import { useMatch } from "./matchStore";
@@ -102,9 +102,9 @@ export function useTruth(): GroundTruth | null {
   const q = useQuery({
     queryKey: ["truth", source.matchId],
     queryFn: async () => {
-      if (source.kind !== "showcase") return null;
-      const r = await fetch(`${import.meta.env.BASE_URL}showcase/${source.matchId}/ground_truth.json`);
-      return r.ok ? ((await r.json()) as GroundTruth) : null;
+      if (source.kind !== "showcase" || !("extras" in source)) return null;
+      // Shares the showcase download, which only asks for ground truth when the match has one.
+      return (await (source as ReturnType<typeof showcaseSource>).extras()).truth ?? null;
     },
     staleTime: Infinity,
   });

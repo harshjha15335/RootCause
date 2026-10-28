@@ -66,7 +66,7 @@ const en = {
       same: "Back line {{line}} m from goal",
     },
   },
-  goal: { k: "The goal", title: "{{clock}} · {{scorer}} scores.", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause traced it to a mistake {{s}} seconds earlier.", slow: "Slow motion" },
+  goal: { k: "The goal", title: "{{clock}} · {{scorer}} scores.", score: "{{home}} {{h}}–{{a}} {{away}}", traced_one: "Root Cause traced it to a mistake {{s}} second earlier.", traced: "Root Cause traced it to a mistake {{s}} seconds earlier.", slow: "Slow motion" },
   mistake: {
     k: "Mistake {{n}} of {{of}}",
     title: "{{name}} stood {{m}} m behind his line.",
@@ -199,7 +199,7 @@ const hi: Dict = {
       same: "बैक लाइन गोल से {{line}} मी",
     },
   },
-  goal: { k: "गोल", title: "{{clock}} · {{scorer}} का गोल।", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause ने इसे {{s}} सेकंड पहले की एक गलती तक ट्रेस किया।", slow: "धीमी गति" },
+  goal: { k: "गोल", title: "{{clock}} · {{scorer}} का गोल।", score: "{{home}} {{h}}–{{a}} {{away}}", traced_one: "Root Cause ने इसे {{s}} सेकंड पहले की एक गलती तक ट्रेस किया।", traced: "Root Cause ने इसे {{s}} सेकंड पहले की एक गलती तक ट्रेस किया।", slow: "धीमी गति" },
   mistake: {
     k: "गलती {{n}} / {{of}}",
     title: "{{name}} अपनी लाइन से {{m}} मी पीछे खड़े थे।",
@@ -331,7 +331,7 @@ const es: Dict = {
       same: "Línea defensiva a {{line}} m de su portería",
     },
   },
-  goal: { k: "El gol", title: "{{clock}} · marca {{scorer}}.", score: "{{home}} {{h}}–{{a}} {{away}}", traced: "Root Cause lo rastreó hasta un error {{s}} segundos antes.", slow: "Cámara lenta" },
+  goal: { k: "El gol", title: "{{clock}} · marca {{scorer}}.", score: "{{home}} {{h}}–{{a}} {{away}}", traced_one: "Root Cause lo rastreó hasta un error {{s}} segundo antes.", traced: "Root Cause lo rastreó hasta un error {{s}} segundos antes.", slow: "Cámara lenta" },
   mistake: {
     k: "Error {{n}} de {{of}}",
     title: "{{name}} estaba {{m}} m por detrás de su línea.",
