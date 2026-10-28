@@ -176,3 +176,53 @@ async def test_foundry_429_backoff_switches_to_light_deployment():
         assert models == ["main", "main", "light"]
     finally:
         await provider.close()
+
+
+async def test_github_models_adapter_uses_chat_completions_with_json_schema():
+    import httpx2
+
+    from agents.providers import GitHubModelsProvider
+
+    requests = []
+
+    def transport(request):
+        requests.append((request.url.path, json.loads(request.content)))
+        return httpx2.Response(
+            200,
+            json={
+                "id": "chatcmpl-test",
+                "object": "chat.completion",
+                "created": 1,
+                "model": "openai/gpt-4.1-nano",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {"role": "assistant", "content": '{"style":"fan"}'},
+                    }
+                ],
+                "usage": {"prompt_tokens": 2, "completion_tokens": 3, "total_tokens": 5},
+            },
+        )
+
+    client = AsyncOpenAI(
+        api_key="test-placeholder",
+        base_url=GitHubModelsProvider.ENDPOINT,
+        http_client=httpx2.AsyncClient(transport=httpx2.MockTransport(transport)),
+        max_retries=0,
+    )
+    settings = replace(
+        Settings(), main_model="openai/gpt-4.1-mini", light_model="openai/gpt-4.1-nano"
+    )
+    provider = GitHubModelsProvider(settings, "unused", client=client)
+    try:
+        result = await provider.generate(
+            "persona", {"mode": "fan", "text": "safe"}, PersonaPlan, light=True
+        )
+        assert result.style == "fan"
+        path, body = requests[0]
+        assert path == "/inference/chat/completions"
+        assert body["model"] == "openai/gpt-4.1-nano"
+        assert body["response_format"]["type"] == "json_schema"
+    finally:
+        await provider.close()

@@ -1,19 +1,22 @@
 """Run the Agent Framework explanation workflow on one goal and show which agents used a model.
 
     python scripts/live_agents.py                       # live Foundry models (needs az login)
+    python scripts/live_agents.py --github              # GitHub Models (needs GITHUB_TOKEN)
     python scripts/live_agents.py --local               # evidence-only agents, no Azure
     python scripts/live_agents.py --evidence path.json  # another evidence package
 
 Live mode reads FOUNDRY_PROJECT_ENDPOINT, FOUNDRY_MAIN_MODEL and FOUNDRY_LIGHT_MODEL. It prints
 every agent step as it happens, then the explanation's source and status: "model" / "ready"
 means the Explainer's paragraphs came from the Foundry deployment, "evidence-only" / "pending"
-means the cited template was kept.
+means the cited template was kept. --github runs the same agents on GitHub Models with a GitHub
+token instead of a Foundry project (models from GITHUB_MODELS_MAIN / GITHUB_MODELS_LIGHT).
 """
 
 import argparse
 import asyncio
 import json
 import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -38,6 +41,7 @@ async def main() -> None:
     ap = argparse.ArgumentParser(description="Run the explanation agents on one goal.")
     ap.add_argument("--evidence", type=Path, help="evidence package JSON (default: sample goal)")
     ap.add_argument("--local", action="store_true", help="evidence-only agents, no Azure")
+    ap.add_argument("--github", action="store_true", help="GitHub Models instead of Foundry")
     ap.add_argument("--timeout", type=float, default=15, help="per-agent timeout in seconds")
     ap.add_argument("--output", type=Path, default=Path("live_explanation.json"))
     args = ap.parse_args()
@@ -45,7 +49,24 @@ async def main() -> None:
     evidence = load_evidence(args.evidence)
 
     provider = credential = None
-    if not args.local:
+    if args.github:
+        from dataclasses import replace
+
+        from agents.providers import GitHubModelsProvider
+        from api.settings import Settings
+
+        token = os.getenv("GITHUB_TOKEN", "")
+        if not token:
+            raise SystemExit("Set GITHUB_TOKEN to a token with the models:read permission")
+        settings = replace(
+            Settings.from_env(),
+            main_model=os.getenv("GITHUB_MODELS_MAIN", "openai/gpt-4.1-mini"),
+            light_model=os.getenv("GITHUB_MODELS_LIGHT", "openai/gpt-4.1-nano"),
+        )
+        print(f"GitHub Models: {GitHubModelsProvider.ENDPOINT}")
+        print(f"Models: main={settings.main_model} light={settings.light_model}\n")
+        provider = GitHubModelsProvider(settings, token)
+    elif not args.local:
         from azure.identity.aio import DefaultAzureCredential
 
         from agents.providers import FoundryProvider
@@ -58,6 +79,20 @@ async def main() -> None:
         print(f"Deployments: main={settings.main_model} light={settings.light_model}\n")
         credential = DefaultAzureCredential()
         provider = FoundryProvider(settings, credential)
+
+    if provider:
+        generate = provider.generate
+
+        async def reporting_generate(role, *a, **kw):
+            # The workflow logs only error types; show the provider's message here.
+            try:
+                return await generate(role, *a, **kw)
+            except Exception as error:
+                cause = getattr(error, "inner_exception", None) or error.__cause__ or error
+                print(f"         {role} call failed: {type(cause).__name__}: {str(cause)[:300]}")
+                raise
+
+        provider.generate = reporting_generate  # type: ignore[method-assign]
 
     started = time.monotonic()
 

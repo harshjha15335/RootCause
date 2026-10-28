@@ -47,7 +47,7 @@ class FoundryProvider:
 
         from agent_framework import Agent
         from agent_framework.exceptions import ChatClientException
-        from agent_framework.openai import OpenAIChatClient, OpenAIChatOptions
+        from agent_framework.openai import OpenAIChatOptions
         from openai import RateLimitError
 
         prompt = (PROMPTS / f"{role}.txt").read_text()
@@ -56,7 +56,7 @@ class FoundryProvider:
             span.set_attribute("rootcause.role", role)
             # Bounded 429 retries, then a light deployment attempt; outer stage sets its deadline.
             for attempt in range(3):
-                chat = OpenAIChatClient(model=model, async_client=self.client)
+                chat = self._chat(model)
                 agent = Agent(chat, name=f"rootcause-{role}", instructions=prompt, tools=tools)
                 try:
                     options: OpenAIChatOptions[Any] = {
@@ -89,6 +89,38 @@ class FoundryProvider:
                         model = self.settings.light_model
             raise RuntimeError("Unreachable provider state")
 
+    def _chat(self, model: str):
+        from agent_framework.openai import OpenAIChatClient
+
+        return OpenAIChatClient(model=model, async_client=self.client)
+
     async def close(self):
         await self.client.close()
         await self.project.close()
+
+
+class GitHubModelsProvider(FoundryProvider):
+    """The same agents on GitHub Models (Azure-hosted models, Chat Completions, GitHub token).
+
+    For running the live workflow without an Azure subscription. The Foundry deployment names
+    map to GitHub Models IDs through settings.main_model / light_model.
+    """
+
+    ENDPOINT = "https://models.github.ai/inference"
+
+    def __init__(self, settings: Settings, token: str, client=None):
+        from openai import AsyncOpenAI
+
+        self.settings = settings
+        self.project = None
+        self.client = client or AsyncOpenAI(
+            api_key=token, base_url=self.ENDPOINT, max_retries=0, timeout=30
+        )
+
+    def _chat(self, model: str):
+        from agent_framework.openai import OpenAIChatCompletionClient
+
+        return OpenAIChatCompletionClient(model=model, async_client=self.client)
+
+    async def close(self):
+        await self.client.close()

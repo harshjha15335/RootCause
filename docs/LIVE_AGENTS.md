@@ -5,6 +5,30 @@ Fan/Analyst/Studio Persona) against model deployments in a Microsoft Foundry pro
 goal, from your own machine. You need no Cosmos DB, Event Hubs or `azd up`. Expect it to take
 about an hour, mostly signup and model deployment, and to cost a few cents.
 
+## No Azure account? Use GitHub Models (15 minutes)
+
+If Azure for Students verification fails, run the same Agent Framework workflow on GitHub
+Models, Microsoft's Azure-hosted model catalogue for GitHub accounts. It needs only a GitHub token
+and is free within its rate limits.
+
+1. Create a token at <https://github.com/settings/personal-access-tokens/new>: a fine-grained
+   token with **Account permissions → Models → Read-only**. No repository access is needed.
+2. Run from the repository root:
+
+   ```powershell
+   $env:GITHUB_TOKEN = "github_pat_..."
+   .venv\Scripts\python scripts\live_agents.py --github --evidence web\public\showcase\p-1017\traces\p-1017-g2.json --timeout 30
+   ```
+
+   It uses `openai/gpt-4.1-mini` and `openai/gpt-4.1-nano` by default. Set
+   `GITHUB_MODELS_MAIN` / `GITHUB_MODELS_LIGHT` to use other catalogue models.
+3. Check the output as described in step 5 below. A failing call prints its error, for example
+   `401` for a token without the Models permission or `429` for the free rate limit. Wait a
+   minute and rerun after a `429`.
+
+Describe it honestly in the submission: the agents ran on GitHub Models, and the Foundry
+deployment is implemented but not provisioned.
+
 ## 1. Get an Azure subscription (10 minutes)
 
 1. Go to <https://azure.microsoft.com/free/students> and choose **Start free**.
