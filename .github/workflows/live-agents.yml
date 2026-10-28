@@ -21,6 +21,15 @@ jobs:
           python-version: '3.12'
       - uses: astral-sh/setup-uv@v6
       - run: uv venv .venv && uv pip sync --python .venv/bin/python --require-hashes requirements.txt
+      - name: Check GitHub Models access
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sS -D - -o body.txt https://models.github.ai/inference/chat/completions \
+            -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d '{"model":"openai/gpt-4.1-nano","messages":[{"role":"user","content":"Say ok"}]}' \
+            | grep -iE '^(HTTP|content-type)'
+          head -c 400 body.txt; echo
       - name: Run the agents on GitHub Models
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
