@@ -50,6 +50,9 @@ async def main() -> None:
     )
     ap.add_argument("--model", help="model ID for --foundry-local (default: first loaded model)")
     ap.add_argument("--timeout", type=float, default=15, help="per-agent timeout in seconds")
+    ap.add_argument(
+        "--budget", type=float, help="whole-workflow deadline (default: four agent timeouts)"
+    )
     ap.add_argument("--output", type=Path, default=Path("live_explanation.json"))
     args = ap.parse_args()
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
@@ -68,11 +71,15 @@ async def main() -> None:
         base = base if base.endswith("/v1") else base + "/v1"
         model = args.model
         if not model:
+            # /v1/models lists the whole catalogue; /openai/loadedmodels lists what is loaded.
             async with httpx.AsyncClient(timeout=10) as http:
-                listed = (await http.get(f"{base}/models")).json().get("data", [])
+                loaded = await http.get(base.removesuffix("/v1") + "/openai/loadedmodels")
+            listed = loaded.json() if loaded.status_code == 200 else []
             if not listed:
-                raise SystemExit("No model loaded: run `foundry model run phi-4-mini` first")
-            model = listed[0]["id"]
+                raise SystemExit(
+                    "No model loaded: run `foundry model run phi-4-mini` or pass --model"
+                )
+            model = listed[0]
         settings = replace(Settings.from_env(), main_model=model, light_model=model)
         print(f"Foundry Local: {base}")
         print(f"Model: {model}\n")
@@ -132,7 +139,13 @@ async def main() -> None:
             )
 
     try:
-        explanation = await run(evidence, emit, timeout=args.timeout, provider=provider)
+        explanation = await run(
+            evidence,
+            emit,
+            timeout=args.timeout,
+            provider=provider,
+            budget=args.budget or 4 * args.timeout + 5,
+        )
     finally:
         if provider:
             await provider.close()
