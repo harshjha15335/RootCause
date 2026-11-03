@@ -27,71 +27,71 @@
         "team": "home",
         "position": {
           "x": 11.38,
-          "y": 56.79
+          "y": 57.31
         }
       },
       {
         "player_id": "H3",
         "team": "home",
         "position": {
-          "x": 18.0,
-          "y": 22.49
+          "x": 18.02,
+          "y": 27.43
         }
       },
       {
         "player_id": "H4",
         "team": "home",
         "position": {
-          "x": 31.96,
-          "y": 46.17
+          "x": 20.32,
+          "y": 31.94
         }
       },
       {
         "player_id": "H5",
         "team": "home",
         "position": {
-          "x": 18.0,
-          "y": 13.93
+          "x": 26.59,
+          "y": 29.71
         }
       },
       {
         "player_id": "H6",
         "team": "home",
         "position": {
-          "x": 20.45,
-          "y": 34.31
+          "x": 19.84,
+          "y": 37.42
         }
       },
       {
         "player_id": "H7",
         "team": "home",
         "position": {
-          "x": 18.61,
-          "y": 39.72
+          "x": 18.0,
+          "y": 19.88
         }
       },
       {
         "player_id": "H8",
         "team": "home",
         "position": {
-          "x": 38.25,
-          "y": 31.47
+          "x": 31.21,
+          "y": 36.28
         }
       },
       {
         "player_id": "H9",
         "team": "home",
         "position": {
-          "x": 33.01,
-          "y": 37.28
+          "x": 39.98,
+          "y": 33.82
         }
       },
       {
         "player_id": "H10",
         "team": "home",
         "position": {
-          "x": 28.7,
-          "y": 29.24
+          "x": 19.56,
+          "y": 29.53
         }
       },
       {
@@ -99,7 +99,7 @@
         "team": "home",
         "position": {
           "x": 35.87,
-          "y": 16.81
+          "y": 17.34
         }
       },
       {
@@ -162,8 +162,8 @@
         "player_id": "A8",
         "team": "away",
         "position": {
-          "x": 18.84,
-          "y": 42.31
+          "x": 18.83,
+          "y": 42.28
         }
       },
       {
@@ -198,10 +198,10 @@
       "player_id": "H3",
       "second": 1225,
       "bug_type": "FOUL_IN_BOX",
-      "description": "Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.05 xG became a penalty. (xG before the foul: 0.05)",
-      "blame_percent": 61.18143459915612,
+      "description": "Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.06 xG became a penalty. (xG before the foul: 0.06)",
+      "blame_percent": 60.851063829787236,
       "baseline_goals": 150,
-      "fixed_goals": 5,
+      "fixed_goals": 7,
       "trials": 200
     },
     {
@@ -209,8 +209,8 @@
       "player_id": "H2",
       "second": 1219,
       "bug_type": "COLLISION",
-      "description": "Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. (metres from Caicedo: 2.7)",
-      "blame_percent": 38.81856540084388,
+      "description": "Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. (metres from Caicedo: 1.7)",
+      "blame_percent": 39.148936170212764,
       "baseline_goals": 150,
       "fixed_goals": 58,
       "trials": 200
