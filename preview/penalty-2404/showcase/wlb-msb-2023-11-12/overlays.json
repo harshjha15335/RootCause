@@ -1,0 +1,276 @@
+[
+  {
+    "in_s": 0,
+    "out_s": 15,
+    "kind": "milestone",
+    "text": "KICK-OFF: Chelsea v Manchester City at Stamford Bridge, London",
+    "data": {
+      "type": "kickoff",
+      "period": 1
+    }
+  },
+  {
+    "in_s": 498,
+    "out_s": 503,
+    "kind": "sprint",
+    "text": "SPRINT: Erling Haaland accelerates to 7.9 m/s",
+    "data": {
+      "player_id": "A11",
+      "player_name": "Erling Haaland",
+      "speed_mps": 7.9
+    }
+  },
+  {
+    "in_s": 1222,
+    "out_s": 1232,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: H3 (Marc Cucurella) · FOUL_IN_BOX (61.2% blame)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g1",
+      "evidence_id": "wlb-msb-2023-11-12-g1-l1",
+      "culprit_id": "H3",
+      "culprit_name": "Marc Cucurella",
+      "bug_type": "FOUL_IN_BOX",
+      "blame_percent": 61.2
+    }
+  },
+  {
+    "in_s": 1438,
+    "out_s": 1454,
+    "kind": "goal",
+    "text": "GOAL! Erling Haaland scores (24') for MCI (0 - 1)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g1",
+      "scorer": "Erling Haaland",
+      "scorer_id": "A11",
+      "side": "away",
+      "xg": 0.76,
+      "score": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 1698,
+    "out_s": 1714,
+    "kind": "goal",
+    "text": "GOAL! Thiago Silva scores (28') for CHE (1 - 1)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g2",
+      "scorer": "Thiago Silva",
+      "scorer_id": "H5",
+      "side": "home",
+      "xg": 0.085,
+      "score": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 2178,
+    "out_s": 2194,
+    "kind": "goal",
+    "text": "GOAL! Raheem Sterling scores (36') for CHE (2 - 1)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "scorer": "Raheem Sterling",
+      "scorer_id": "H11",
+      "side": "home",
+      "xg": 0.534,
+      "score": [
+        2,
+        1
+      ]
+    }
+  },
+  {
+    "in_s": 2180,
+    "out_s": 2190,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: A2 (Kyle Walker) · MARKING_LOST (69.0% blame)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "evidence_id": "wlb-msb-2023-11-12-g3-l1",
+      "culprit_id": "A2",
+      "culprit_name": "Kyle Walker",
+      "bug_type": "MARKING_LOST",
+      "blame_percent": 69.0
+    }
+  },
+  {
+    "in_s": 2700,
+    "out_s": 2715,
+    "kind": "milestone",
+    "text": "HALF-TIME: Intense first half concludes with four goals (2 - 2)",
+    "data": {
+      "type": "halftime",
+      "period": 1
+    }
+  },
+  {
+    "in_s": 2717,
+    "out_s": 2727,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: H8 (Conor Gallagher) · MARKING_LOST (52.2% blame)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "evidence_id": "wlb-msb-2023-11-12-g4-l1",
+      "culprit_id": "H8",
+      "culprit_name": "Conor Gallagher",
+      "bug_type": "MARKING_LOST",
+      "blame_percent": 52.2
+    }
+  },
+  {
+    "in_s": 2721,
+    "out_s": 2737,
+    "kind": "goal",
+    "text": "GOAL! Manuel Akanji scores (45') for MCI (2 - 2)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "scorer": "Manuel Akanji",
+      "scorer_id": "A4",
+      "side": "away",
+      "xg": 0.078,
+      "score": [
+        2,
+        2
+      ]
+    }
+  },
+  {
+    "in_s": 3203,
+    "out_s": 3213,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: H3 (Marc Cucurella) · MARKING_LOST (96.5% blame)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "evidence_id": "wlb-msb-2023-11-12-g5-l1",
+      "culprit_id": "H3",
+      "culprit_name": "Marc Cucurella",
+      "bug_type": "MARKING_LOST",
+      "blame_percent": 96.5
+    }
+  },
+  {
+    "in_s": 3205,
+    "out_s": 3221,
+    "kind": "goal",
+    "text": "GOAL! Erling Haaland scores (46') for MCI (2 - 3)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "scorer": "Erling Haaland",
+      "scorer_id": "A11",
+      "side": "away",
+      "xg": 0.614,
+      "score": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "in_s": 4398,
+    "out_s": 4408,
+    "kind": "root_cause",
+    "text": "ROOT CAUSE DETECTED: A3 (Rúben Dias) · MARKING_LOST (100.0% blame)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "evidence_id": "wlb-msb-2023-11-12-g6-l1",
+      "culprit_id": "A3",
+      "culprit_name": "Rúben Dias",
+      "bug_type": "MARKING_LOST",
+      "blame_percent": 100.0
+    }
+  },
+  {
+    "in_s": 4399,
+    "out_s": 4415,
+    "kind": "goal",
+    "text": "GOAL! Nicolas Jackson scores (66') for CHE (3 - 3)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "scorer": "Nicolas Jackson",
+      "scorer_id": "H9",
+      "side": "home",
+      "xg": 0.668,
+      "score": [
+        3,
+        3
+      ]
+    }
+  },
+  {
+    "in_s": 5298,
+    "out_s": 5303,
+    "kind": "sprint",
+    "text": "SPRINT: Cole Palmer accelerates to 7.8 m/s",
+    "data": {
+      "player_id": "H7",
+      "player_name": "Cole Palmer",
+      "speed_mps": 7.8
+    }
+  },
+  {
+    "in_s": 5548,
+    "out_s": 5564,
+    "kind": "goal",
+    "text": "GOAL! Rodri scores (85') for MCI (3 - 4)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g7",
+      "scorer": "Rodri",
+      "scorer_id": "A6",
+      "side": "away",
+      "xg": 0.085,
+      "score": [
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6079,
+    "out_s": 6095,
+    "kind": "goal",
+    "text": "GOAL! Cole Palmer scores (94') for CHE (4 - 4)",
+    "data": {
+      "goal_id": "wlb-msb-2023-11-12-g8",
+      "scorer": "Cole Palmer",
+      "scorer_id": "H7",
+      "side": "home",
+      "xg": 0.76,
+      "score": [
+        4,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6080,
+    "out_s": 6100,
+    "kind": "milestone",
+    "text": "EQUALIZER! Dramatic 90+5' equalizer caps eight-goal spectacle (4 - 4)",
+    "data": {
+      "type": "equalizer",
+      "score": [
+        4,
+        4
+      ]
+    }
+  },
+  {
+    "in_s": 6400,
+    "out_s": 6420,
+    "kind": "milestone",
+    "text": "FULL-TIME: Historic 4 - 4 draw",
+    "data": {
+      "type": "fulltime",
+      "score": [
+        4,
+        4
+      ]
+    }
+  }
+]

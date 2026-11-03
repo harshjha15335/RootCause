@@ -1,0 +1,221 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g1",
+  "match_id": "wlb-msb-2023-11-12",
+  "source": "synthetic-fixture",
+  "goal": {
+    "id": "wlb-msb-2023-11-12-e1444",
+    "match_id": "wlb-msb-2023-11-12",
+    "second": 1444,
+    "type": "goal",
+    "team": "away",
+    "player_id": "A11",
+    "ball": {
+      "x": 10.5,
+      "y": 34.0
+    },
+    "players": [
+      {
+        "player_id": "H1",
+        "team": "home",
+        "position": {
+          "x": 0.4,
+          "y": 34.0
+        }
+      },
+      {
+        "player_id": "H2",
+        "team": "home",
+        "position": {
+          "x": 11.38,
+          "y": 56.79
+        }
+      },
+      {
+        "player_id": "H3",
+        "team": "home",
+        "position": {
+          "x": 18.0,
+          "y": 22.49
+        }
+      },
+      {
+        "player_id": "H4",
+        "team": "home",
+        "position": {
+          "x": 31.96,
+          "y": 46.17
+        }
+      },
+      {
+        "player_id": "H5",
+        "team": "home",
+        "position": {
+          "x": 18.0,
+          "y": 13.93
+        }
+      },
+      {
+        "player_id": "H6",
+        "team": "home",
+        "position": {
+          "x": 20.45,
+          "y": 34.31
+        }
+      },
+      {
+        "player_id": "H7",
+        "team": "home",
+        "position": {
+          "x": 18.61,
+          "y": 39.72
+        }
+      },
+      {
+        "player_id": "H8",
+        "team": "home",
+        "position": {
+          "x": 38.25,
+          "y": 31.47
+        }
+      },
+      {
+        "player_id": "H9",
+        "team": "home",
+        "position": {
+          "x": 33.01,
+          "y": 37.28
+        }
+      },
+      {
+        "player_id": "H10",
+        "team": "home",
+        "position": {
+          "x": 28.7,
+          "y": 29.24
+        }
+      },
+      {
+        "player_id": "H11",
+        "team": "home",
+        "position": {
+          "x": 35.87,
+          "y": 16.81
+        }
+      },
+      {
+        "player_id": "A1",
+        "team": "away",
+        "position": {
+          "x": 95.7,
+          "y": 33.81
+        }
+      },
+      {
+        "player_id": "A2",
+        "team": "away",
+        "position": {
+          "x": 45.67,
+          "y": 16.05
+        }
+      },
+      {
+        "player_id": "A3",
+        "team": "away",
+        "position": {
+          "x": 45.75,
+          "y": 50.57
+        }
+      },
+      {
+        "player_id": "A4",
+        "team": "away",
+        "position": {
+          "x": 47.39,
+          "y": 32.33
+        }
+      },
+      {
+        "player_id": "A5",
+        "team": "away",
+        "position": {
+          "x": 35.08,
+          "y": 38.95
+        }
+      },
+      {
+        "player_id": "A6",
+        "team": "away",
+        "position": {
+          "x": 34.93,
+          "y": 29.94
+        }
+      },
+      {
+        "player_id": "A7",
+        "team": "away",
+        "position": {
+          "x": 20.42,
+          "y": 25.46
+        }
+      },
+      {
+        "player_id": "A8",
+        "team": "away",
+        "position": {
+          "x": 18.84,
+          "y": 42.31
+        }
+      },
+      {
+        "player_id": "A9",
+        "team": "away",
+        "position": {
+          "x": 15.86,
+          "y": 8.1
+        }
+      },
+      {
+        "player_id": "A10",
+        "team": "away",
+        "position": {
+          "x": 16.88,
+          "y": 59.16
+        }
+      },
+      {
+        "player_id": "A11",
+        "team": "away",
+        "position": {
+          "x": 9.0,
+          "y": 34.0
+        }
+      }
+    ]
+  },
+  "links": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l1",
+      "player_id": "H3",
+      "second": 1225,
+      "bug_type": "FOUL_IN_BOX",
+      "description": "Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.05 xG became a penalty. (xG before the foul: 0.05)",
+      "blame_percent": 61.18143459915612,
+      "baseline_goals": 150,
+      "fixed_goals": 5,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l2",
+      "player_id": "H2",
+      "second": 1219,
+      "bug_type": "COLLISION",
+      "description": "Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. (metres from Caicedo: 2.7)",
+      "blame_percent": 38.81856540084388,
+      "baseline_goals": 150,
+      "fixed_goals": 58,
+      "trials": 200
+    }
+  ],
+  "events": [],
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g1-l1"
+}
