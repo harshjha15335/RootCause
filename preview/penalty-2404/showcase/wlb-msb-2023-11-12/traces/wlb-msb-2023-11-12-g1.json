@@ -26,24 +26,24 @@
         "player_id": "H2",
         "team": "home",
         "position": {
-          "x": 11.38,
-          "y": 57.31
+          "x": 31.65,
+          "y": 50.43
         }
       },
       {
         "player_id": "H3",
         "team": "home",
         "position": {
-          "x": 18.02,
-          "y": 27.43
+          "x": 18.98,
+          "y": 28.79
         }
       },
       {
         "player_id": "H4",
         "team": "home",
         "position": {
-          "x": 20.32,
-          "y": 31.94
+          "x": 20.46,
+          "y": 33.72
         }
       },
       {
@@ -58,16 +58,16 @@
         "player_id": "H6",
         "team": "home",
         "position": {
-          "x": 19.84,
-          "y": 37.42
+          "x": 18.0,
+          "y": 53.4
         }
       },
       {
         "player_id": "H7",
         "team": "home",
         "position": {
-          "x": 18.0,
-          "y": 19.88
+          "x": 19.47,
+          "y": 38.31
         }
       },
       {
@@ -90,8 +90,8 @@
         "player_id": "H10",
         "team": "home",
         "position": {
-          "x": 19.56,
-          "y": 29.53
+          "x": 20.05,
+          "y": 31.16
         }
       },
       {
