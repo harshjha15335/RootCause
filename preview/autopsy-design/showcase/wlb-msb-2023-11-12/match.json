@@ -1,0 +1,29 @@
+{
+  "id": "wlb-msb-2023-11-12",
+  "seed": null,
+  "status": "finished",
+  "score": {
+    "home": 4,
+    "away": 4
+  },
+  "goal_ids": [
+    "wlb-msb-2023-11-12-g1",
+    "wlb-msb-2023-11-12-g2",
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g4",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6",
+    "wlb-msb-2023-11-12-g7",
+    "wlb-msb-2023-11-12-g8"
+  ],
+  "scored_events": [
+    "wlb-msb-2023-11-12-e1444",
+    "wlb-msb-2023-11-12-e1704",
+    "wlb-msb-2023-11-12-e2184",
+    "wlb-msb-2023-11-12-e2727",
+    "wlb-msb-2023-11-12-e3211",
+    "wlb-msb-2023-11-12-e4405",
+    "wlb-msb-2023-11-12-e5554",
+    "wlb-msb-2023-11-12-e6085"
+  ]
+}
