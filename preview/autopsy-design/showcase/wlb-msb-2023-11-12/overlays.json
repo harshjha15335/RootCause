@@ -24,14 +24,14 @@
     "in_s": 1222,
     "out_s": 1232,
     "kind": "root_cause",
-    "text": "ROOT CAUSE DETECTED: H3 (Marc Cucurella) · FOUL_IN_BOX (60.9% blame)",
+    "text": "ROOT CAUSE DETECTED: H3 (Marc Cucurella) · FOUL_IN_BOX (59.8% blame)",
     "data": {
       "goal_id": "wlb-msb-2023-11-12-g1",
       "evidence_id": "wlb-msb-2023-11-12-g1-l1",
       "culprit_id": "H3",
       "culprit_name": "Marc Cucurella",
       "bug_type": "FOUL_IN_BOX",
-      "blame_percent": 60.9
+      "blame_percent": 59.8
     }
   },
   {
