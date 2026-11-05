@@ -26,64 +26,64 @@
         "player_id": "H2",
         "team": "home",
         "position": {
-          "x": 12.74,
-          "y": 58.16
+          "x": 19.62,
+          "y": 37.98
         }
       },
       {
         "player_id": "H3",
         "team": "home",
         "position": {
-          "x": 19.26,
-          "y": 29.28
+          "x": 32.95,
+          "y": 28.74
         }
       },
       {
         "player_id": "H4",
         "team": "home",
         "position": {
-          "x": 25.56,
-          "y": 48.9
+          "x": 17.94,
+          "y": 26.02
         }
       },
       {
         "player_id": "H5",
         "team": "home",
         "position": {
-          "x": 26.13,
-          "y": 31.51
+          "x": 20.23,
+          "y": 31.54
         }
       },
       {
         "player_id": "H6",
         "team": "home",
         "position": {
-          "x": 17.69,
-          "y": 39.39
+          "x": 20.53,
+          "y": 34.12
         }
       },
       {
         "player_id": "H7",
         "team": "home",
         "position": {
-          "x": 17.45,
-          "y": 41.98
+          "x": 15.49,
+          "y": 56.71
         }
       },
       {
         "player_id": "H8",
         "team": "home",
         "position": {
-          "x": 31.87,
-          "y": 37.9
+          "x": 31.21,
+          "y": 36.6
         }
       },
       {
         "player_id": "H9",
         "team": "home",
         "position": {
-          "x": 42.24,
-          "y": 35.75
+          "x": 32.82,
+          "y": 32.19
         }
       },
       {
@@ -91,15 +91,15 @@
         "team": "home",
         "position": {
           "x": 18.0,
-          "y": 15.89
+          "y": 14.59
         }
       },
       {
         "player_id": "H11",
         "team": "home",
         "position": {
-          "x": 36.54,
-          "y": 18.96
+          "x": 35.87,
+          "y": 17.65
         }
       },
       {
@@ -146,24 +146,24 @@
         "player_id": "A6",
         "team": "away",
         "position": {
-          "x": 34.93,
-          "y": 29.94
+          "x": 35.17,
+          "y": 30.09
         }
       },
       {
         "player_id": "A7",
         "team": "away",
         "position": {
-          "x": 20.42,
-          "y": 25.46
+          "x": 20.48,
+          "y": 25.45
         }
       },
       {
         "player_id": "A8",
         "team": "away",
         "position": {
-          "x": 19.69,
-          "y": 43.3
+          "x": 18.83,
+          "y": 42.28
         }
       },
       {
