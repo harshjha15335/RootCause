@@ -1,0 +1,362 @@
+{
+  "goal_id": "wlb-msb-2023-11-12-g1",
+  "match_id": "wlb-msb-2023-11-12",
+  "status": "pending",
+  "source": "evidence-only",
+  "root_cause_evidence_id": "wlb-msb-2023-11-12-g1-l1",
+  "paragraphs": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l1",
+      "sentences": [
+        {
+          "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (xG before the foul: 0.10)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 59.8253% of the blame to H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 150/200 to 13/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l2",
+      "sentences": [
+        {
+          "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H2: (metres from Caicedo: 1.7)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 40.1747% of the blame to H2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 150/200 to 58/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ]
+    }
+  ],
+  "root_summary": [
+    {
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "root"
+    }
+  ],
+  "highlights": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l1",
+      "start_second": 1225,
+      "end_second": 1225,
+      "caption": {
+        "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      }
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l2",
+      "start_second": 1219,
+      "end_second": 1219,
+      "caption": {
+        "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      }
+    }
+  ],
+  "recaps": {
+    "fan": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (xG before the foul: 0.10)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 59.8253% of the blame to H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H2: (metres from Caicedo: 1.7)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 40.1747% of the blame to H2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "attribution"
+      }
+    ],
+    "analyst": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (xG before the foul: 0.10)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 59.8253% of the blame to H3.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 150/200 to 13/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "counterfactual"
+      },
+      {
+        "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H2: (metres from Caicedo: 1.7)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "The engine attributes 40.1747% of the blame to H2.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "attribution"
+      },
+      {
+        "text": "Fixing this mistake changed goals from 150/200 to 58/200 in the supplied replays.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "counterfactual"
+      }
+    ],
+    "studio": [
+      {
+        "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "root"
+      },
+      {
+        "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H3: (xG before the foul: 0.10)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l1"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      },
+      {
+        "text": "H2: (metres from Caicedo: 1.7)",
+        "evidence_ids": [
+          "wlb-msb-2023-11-12-g1-l2"
+        ],
+        "kind": "description"
+      }
+    ]
+  },
+  "blame_order": [
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l1",
+      "player_id": "H3",
+      "second": 1225,
+      "bug_type": "FOUL_IN_BOX",
+      "description": "Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty. (xG before the foul: 0.10)",
+      "blame_percent": 59.82532751091703,
+      "baseline_goals": 150,
+      "fixed_goals": 13,
+      "trials": 200
+    },
+    {
+      "evidence_id": "wlb-msb-2023-11-12-g1-l2",
+      "player_id": "H2",
+      "second": 1219,
+      "bug_type": "COLLISION",
+      "description": "Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. (metres from Caicedo: 1.7)",
+      "blame_percent": 40.17467248908297,
+      "baseline_goals": 150,
+      "fixed_goals": 58,
+      "trials": 200
+    }
+  ],
+  "latency_ms": 0.0,
+  "warnings": [],
+  "mode": "analyst",
+  "lang": "en",
+  "requested_lang": "hi",
+  "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g1-l1]\nH3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty. [wlb-msb-2023-11-12-g1-l1]\nH3: (xG before the foul: 0.10) [wlb-msb-2023-11-12-g1-l1]\nThe engine attributes 59.8253% of the blame to H3. [wlb-msb-2023-11-12-g1-l1]\nFixing this mistake changed goals from 150/200 to 13/200 in the supplied replays. [wlb-msb-2023-11-12-g1-l1]\nH2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. [wlb-msb-2023-11-12-g1-l2]\nH2: (metres from Caicedo: 1.7) [wlb-msb-2023-11-12-g1-l2]\nThe engine attributes 40.1747% of the blame to H2. [wlb-msb-2023-11-12-g1-l2]\nFixing this mistake changed goals from 150/200 to 58/200 in the supplied replays. [wlb-msb-2023-11-12-g1-l2]",
+  "translation_warning": "Translation unavailable; showing English",
+  "audio_available": false,
+  "sentences": [
+    {
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "root"
+    },
+    {
+      "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H3: (xG before the foul: 0.10)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 59.8253% of the blame to H3.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "Fixing this mistake changed goals from 150/200 to 13/200 in the supplied replays.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l1"
+      ],
+      "kind": "counterfactual"
+    },
+    {
+      "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "H2: (metres from Caicedo: 1.7)",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l2"
+      ],
+      "kind": "description"
+    },
+    {
+      "text": "The engine attributes 40.1747% of the blame to H2.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l2"
+      ],
+      "kind": "attribution"
+    },
+    {
+      "text": "Fixing this mistake changed goals from 150/200 to 58/200 in the supplied replays.",
+      "evidence_ids": [
+        "wlb-msb-2023-11-12-g1-l2"
+      ],
+      "kind": "counterfactual"
+    }
+  ]
+}
