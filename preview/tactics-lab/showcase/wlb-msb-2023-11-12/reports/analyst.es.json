@@ -1,0 +1,384 @@
+{
+  "match_id": "wlb-msb-2023-11-12",
+  "mode": "analyst",
+  "requested_lang": "es",
+  "source": "evidence-only",
+  "goals": [
+    {
+      "goal_id": "wlb-msb-2023-11-12-g1",
+      "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction. [wlb-msb-2023-11-12-g1-l1]\nH3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty. [wlb-msb-2023-11-12-g1-l1]\nH3: (xG before the foul: 0.10) [wlb-msb-2023-11-12-g1-l1]\nThe engine attributes 59.8253% of the blame to H3. [wlb-msb-2023-11-12-g1-l1]\nFixing this mistake changed goals from 150/200 to 13/200 in the supplied replays. [wlb-msb-2023-11-12-g1-l1]\nH2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose. [wlb-msb-2023-11-12-g1-l2]\nH2: (metres from Caicedo: 1.7) [wlb-msb-2023-11-12-g1-l2]\nThe engine attributes 40.1747% of the blame to H2. [wlb-msb-2023-11-12-g1-l2]\nFixing this mistake changed goals from 150/200 to 58/200 in the supplied replays. [wlb-msb-2023-11-12-g1-l2]",
+      "sentences": [
+        {
+          "text": "The root cause is the mistake by H3, ranked first by the Debugger's measured goal-rate reduction.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Foul in the box: Cucurella held Haaland's shirt at 20:25 as the cross came in; a chance worth 0.10 xG became a penalty.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (xG before the foul: 0.10)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 59.8253% of the blame to H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 150/200 to 13/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H2: Collision: James went to Doku as well instead of covering Caicedo's challenge; they ran into each other at 20:19 and the ball broke loose.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H2: (metres from Caicedo: 1.7)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "The engine attributes 40.1747% of the blame to H2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Fixing this mistake changed goals from 150/200 to 58/200 in the supplied replays.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g1-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "en",
+      "translation_warning": "Translation unavailable; showing English"
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g3",
+      "text": "La causa raíz es el error de A2, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g3-l1]\nA2: Perdió a su marca: Walker estaba a 4.2 m de Sterling en el 36:23. [wlb-msb-2023-11-12-g3-l1]\nA2: (metros del rival: 4.2) [wlb-msb-2023-11-12-g3-l1]\nEl motor atribuye el 68.9655% de la culpa a A2. [wlb-msb-2023-11-12-g3-l1]\nCorregir este error cambió los goles de 190/200 a 10/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g3-l1]\nA5: Salida tardía: Gvardiol quedó 5.6 m por detrás del resto de su línea de cuatro en el 36:16, dejando en posición legal a Sterling. [wlb-msb-2023-11-12-g3-l2]\nA5: (metros detrás de la línea: 5.6) [wlb-msb-2023-11-12-g3-l2]\nEl motor atribuye el 31.0345% de la culpa a A5. [wlb-msb-2023-11-12-g3-l2]\nCorregir este error cambió los goles de 190/200 a 109/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g3-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A2, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A2: Perdió a su marca: Walker estaba a 4.2 m de Sterling en el 36:23.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A2: (metros del rival: 4.2)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 68.9655% de la culpa a A2.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 190/200 a 10/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "A5: Salida tardía: Gvardiol quedó 5.6 m por detrás del resto de su línea de cuatro en el 36:16, dejando en posición legal a Sterling.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A5: (metros detrás de la línea: 5.6)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 31.0345% de la culpa a A5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 190/200 a 109/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g3-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g4",
+      "text": "La causa raíz es el error de H8, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g4-l1]\nH8: Perdió a su marca: Gallagher dejó ir a Akanji en el 45:20 y estaba a 4.1 m de él en el 45:26. [wlb-msb-2023-11-12-g4-l1]\nH8: (metros del rival: 4.1) [wlb-msb-2023-11-12-g4-l1]\nEl motor atribuye el 52.2124% de la culpa a H8. [wlb-msb-2023-11-12-g4-l1]\nCorregir este error cambió los goles de 79/200 a 20/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l1]\nH4: Salida tardía: Disasi quedó 5.4 m por detrás del resto de su línea de cuatro en el 45:00. [wlb-msb-2023-11-12-g4-l2]\nH4: (metros detrás de la línea: 5.4) [wlb-msb-2023-11-12-g4-l2]\nEl motor atribuye el 29.2035% de la culpa a H4. [wlb-msb-2023-11-12-g4-l2]\nCorregir este error cambió los goles de 79/200 a 46/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l2]\nH5: Salida tardía: Silva quedó 5.1 m por detrás del resto de su línea de cuatro en el 45:07, dejando en posición legal a Akanji. [wlb-msb-2023-11-12-g4-l3]\nH5: (metros detrás de la línea: 5.1) [wlb-msb-2023-11-12-g4-l3]\nEl motor atribuye el 18.5841% de la culpa a H5. [wlb-msb-2023-11-12-g4-l3]\nCorregir este error cambió los goles de 79/200 a 58/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g4-l3]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de H8, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H8: Perdió a su marca: Gallagher dejó ir a Akanji en el 45:20 y estaba a 4.1 m de él en el 45:26.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H8: (metros del rival: 4.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 52.2124% de la culpa a H8.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 79/200 a 20/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H4: Salida tardía: Disasi quedó 5.4 m por detrás del resto de su línea de cuatro en el 45:00.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H4: (metros detrás de la línea: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 29.2035% de la culpa a H4.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 79/200 a 46/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l2"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H5: Salida tardía: Silva quedó 5.1 m por detrás del resto de su línea de cuatro en el 45:07, dejando en posición legal a Akanji.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H5: (metros detrás de la línea: 5.1)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 18.5841% de la culpa a H5.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 79/200 a 58/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g4-l3"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g5",
+      "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g5-l1]\nH3: Perdió a su marca: Cucurella dejó ir a Haaland en el 53:26 y estaba a 5.4 m de él en el 53:31. [wlb-msb-2023-11-12-g5-l1]\nH3: (metros del rival: 5.4) [wlb-msb-2023-11-12-g5-l1]\nEl motor atribuye el 96.4706% de la culpa a H3. [wlb-msb-2023-11-12-g5-l1]\nCorregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g5-l1]\nH10: Perdió a su marca: Fernández dejó ir a Álvarez en el 53:27 y estaba a 4.9 m de él en el 53:28. [wlb-msb-2023-11-12-g5-l2]\nH10: (metros del rival: 4.9) [wlb-msb-2023-11-12-g5-l2]\nEl motor atribuye el 3.52941% de la culpa a H10. [wlb-msb-2023-11-12-g5-l2]\nCorregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g5-l2]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de H3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "H3: Perdió a su marca: Cucurella dejó ir a Haaland en el 53:26 y estaba a 5.4 m de él en el 53:31.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H3: (metros del rival: 5.4)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 96.4706% de la culpa a H3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 77/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l1"
+          ],
+          "kind": "counterfactual"
+        },
+        {
+          "text": "H10: Perdió a su marca: Fernández dejó ir a Álvarez en el 53:27 y estaba a 4.9 m de él en el 53:28.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "H10: (metros del rival: 4.9)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 3.52941% de la culpa a H10.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 159/200 a 156/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g5-l2"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    },
+    {
+      "goal_id": "wlb-msb-2023-11-12-g6",
+      "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger. [wlb-msb-2023-11-12-g6-l1]\nA3: Perdió a su marca: Dias estaba a 6.8 m de Gallagher en el 73:21. [wlb-msb-2023-11-12-g6-l1]\nA3: (metros del rival: 6.8) [wlb-msb-2023-11-12-g6-l1]\nEl motor atribuye el 100% de la culpa a A3. [wlb-msb-2023-11-12-g6-l1]\nCorregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas. [wlb-msb-2023-11-12-g6-l1]",
+      "sentences": [
+        {
+          "text": "La causa raíz es el error de A3, clasificado primero por la reducción medida de goles del Debugger.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "root"
+        },
+        {
+          "text": "A3: Perdió a su marca: Dias estaba a 6.8 m de Gallagher en el 73:21.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "A3: (metros del rival: 6.8)",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "description"
+        },
+        {
+          "text": "El motor atribuye el 100% de la culpa a A3.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "attribution"
+        },
+        {
+          "text": "Corregir este error cambió los goles de 126/200 a 30/200 en las repeticiones suministradas.",
+          "evidence_ids": [
+            "wlb-msb-2023-11-12-g6-l1"
+          ],
+          "kind": "counterfactual"
+        }
+      ],
+      "lang": "es",
+      "translation_warning": null
+    }
+  ],
+  "patterns": {
+    "FOUL_IN_BOX": 1,
+    "COLLISION": 1,
+    "MARKING_LOST": 5,
+    "LATE_STEP_UP": 3
+  },
+  "top_causes": [
+    "FOUL_IN_BOX",
+    "COLLISION",
+    "MARKING_LOST",
+    "LATE_STEP_UP"
+  ],
+  "provisional": false,
+  "highlight_order": [
+    "wlb-msb-2023-11-12-g1",
+    "wlb-msb-2023-11-12-g3",
+    "wlb-msb-2023-11-12-g4",
+    "wlb-msb-2023-11-12-g5",
+    "wlb-msb-2023-11-12-g6"
+  ],
+  "report_warning": null
+}

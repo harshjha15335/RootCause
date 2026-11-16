@@ -1,0 +1,1 @@
+{"match_id":"p-1008","seed":1008,"goal_id":"p-1008-g4","goal_seq":3785,"goal_clock_s":3756,"scoring_team":"HOME","planted_at_s":3741,"root_cause_clock_s":3741,"root_cause_player_id":"A5","bug":"LATE_STEP_UP","params":{"metres_behind_line":4.4}}
